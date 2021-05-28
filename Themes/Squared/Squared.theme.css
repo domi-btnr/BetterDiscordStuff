@@ -1,0 +1,91 @@
+/**
+* @name Squared
+* @author HypedDomi#1711
+* @authorId 354191516979429376
+* @description Simple Discord Theme based on the Comfy Theme
+* @version 0.2
+* @source https://github.com/HypedDomi/hypeddomi.github.io/tree/master/BetterDiscord/themes/Squared
+* @updateUrl https://raw.githubusercontent.com/HypedDomi/hypeddomi.github.io/master/BetterDiscord/themes/Squared/Squared.theme.css
+* @donate https://paypal.me/dominik1711
+*/
+
+@import url(https://hypeddomi.github.io/BetterDiscord/themes/Squared/main.css);
+@import url(https://mwittrien.github.io/BetterDiscordAddons/Themes/EmojiReplace/base/WhatsApp.css);
+
+::-webkit-scrollbar { display: inline !important;}.note-3HfJZ5 { margin-right: 0; }.content-1x5b-n { margin: 0 !important; border-radius: 0; }.mainContent-u_9PKf { padding-left: 8px;}.member-3-YXUe, [id*="private-channels-"] { margin: 0; max-width: unset; }.layout-2DM8Md { border-radius: 0; padding: 0 16px;}.unread-2lAfLh { z-index: 1;}.content-1LAB8Z, .item-1tOPte { margin-right: 8px;}.scroller-2hZ97C { padding-left: 0;}.scroller-2hZ97C > .content-3YMskv, .buttons-3JBrkn, .messagesPopout-24nkyi { padding-right: 10px !important; }.inviteRow-2L02ae {border-radius: 0; padding-left: 15px;}.sidebar-CFHs9e { padding-right : 0; margin: 0 40px 0 20px;}
+
+:root {
+
+/* Avatar roundess */
+--avatar-radius: 10%;
+
+/* Avatar wdith in modals */
+--avatar-width: 130px;
+
+/* Server roundess */
+--server-radius: 8px;
+
+/* Colored emoji picker */
+--colored-emoji: grayscale(0%);
+
+/* -- Others settings -- */
+
+/* Mention color */
+--mention-color-bar: #7289DA;
+--mention-color-background: #7289DA10;
+--mention-color-hover: #7289DA1f;
+
+/* Circles next to role names */
+--role-circle: 0px;
+
+/* Tooltips */
+--tooltips: block;
+
+/* Discord logo */
+--discord-logo: block;
+
+}
+ 
+.theme-dark {
+    --background-tertiary: #18262E;
+    --background-secondary: #1F2E39;
+    --background-secondary-alt: #18262E;
+    --background-primary: #21323d;
+    --channeltextarea-background: #18262E;
+    --background-accent: #6E85D3;
+    --background-modifier-hover: #223540;
+    --background-modifier-active: #18262E;
+    --background-modifier-selected: #18262E;
+    --deprecated-card-bg: #12141f63;
+    --background-floating: #18262E;
+    --deprecated-quickswitcher-input-background:#18262E;
+    --spotify-color: #1DB954;
+    --elevation-low: none;
+    --scrollbar-auto-thumb: #18262E;
+    --scrollbar-auto-track: #21323d;
+    --scrollbar-thin-thumb: #18262E;
+    --chat-buttons: #3e5d70;
+    --user-buttons-color: #3e5d70;
+}
+ 
+.theme-light {
+    --background-tertiary: #D6D9DD; /*#E3E5E8*/
+    --background-secondary: #E4E6EA; /*#F2F3F5*/
+    --background-secondary-alt: #D6D9DD; /*#E3E5E8*/
+    --background-primary: #F2F2F2; /*#FFFFFF*/
+    --channeltextarea-background: #DDE1E4; /*#EBEDEF*/
+    --background-accent: #6E85D3;
+    --background-modifier-hover: #DADDE2; /*#E8EAED*/
+    --background-modifier-active: #D6D9DD; /*#E3E5E8*/
+    --background-modifier-selected: #D6D9DD; /*#E3E5E8*/
+    --deprecated-card-bg: #D6D9DD63;/*#E3E5E863*/
+    --background-floating: #D6D9DD; /*#E3E5E8*/
+    --deprecated-quickswitcher-input-background:#D6D9DD; /*#E3E5E8*/
+    --spotify-color: #1DB954;
+    --elevation-low: none;
+    --scrollbar-auto-thumb: #D6D9DD; /*#E3E5E8*/
+    --scrollbar-auto-track: #F2F2F2; /*#FFFFFF*/
+    --scrollbar-thin-thumb: #D6D9DD; /*#E3E5E8*/
+    --chat-buttons: #5c89a5; /*#3E5D70*/
+    --user-buttons-color: #5c89a5; /*#3E5D70*/
+}
