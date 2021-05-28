@@ -68,23 +68,23 @@
 }
  
 .theme-light {
-    --background-tertiary: #D6D9DD; /*#E3E5E8*/
-    --background-secondary: #E4E6EA; /*#F2F3F5*/
-    --background-secondary-alt: #D6D9DD; /*#E3E5E8*/
-    --background-primary: #F2F2F2; /*#FFFFFF*/
-    --channeltextarea-background: #DDE1E4; /*#EBEDEF*/
+    --background-tertiary: #D6D9DD;
+    --background-secondary: #E4E6EA;
+    --background-secondary-alt: #D6D9DD;
+    --background-primary: #F2F2F2;
+    --channeltextarea-background: #DDE1E4;
     --background-accent: #6E85D3;
-    --background-modifier-hover: #DADDE2; /*#E8EAED*/
-    --background-modifier-active: #D6D9DD; /*#E3E5E8*/
-    --background-modifier-selected: #D6D9DD; /*#E3E5E8*/
-    --deprecated-card-bg: #D6D9DD63;/*#E3E5E863*/
-    --background-floating: #D6D9DD; /*#E3E5E8*/
-    --deprecated-quickswitcher-input-background:#D6D9DD; /*#E3E5E8*/
+    --background-modifier-hover: #DADDE2;
+    --background-modifier-active: #D6D9DD;
+    --background-modifier-selected: #D6D9DD;
+    --deprecated-card-bg: #D6D9DD63;
+    --background-floating: #D6D9DD;
+    --deprecated-quickswitcher-input-background:#D6D9DD;
     --spotify-color: #1DB954;
     --elevation-low: none;
-    --scrollbar-auto-thumb: #D6D9DD; /*#E3E5E8*/
-    --scrollbar-auto-track: #F2F2F2; /*#FFFFFF*/
-    --scrollbar-thin-thumb: #D6D9DD; /*#E3E5E8*/
-    --chat-buttons: #5c89a5; /*#3E5D70*/
-    --user-buttons-color: #5c89a5; /*#3E5D70*/
+    --scrollbar-auto-thumb: #D6D9DD;
+    --scrollbar-auto-track: #F2F2F2;
+    --scrollbar-thin-thumb: #D6D9DD;
+    --chat-buttons: #5c89a5;
+    --user-buttons-color: #5c89a5;
 }
