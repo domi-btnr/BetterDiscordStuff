@@ -29,6 +29,11 @@
      },
     changelog: [
         {
+            title: "Added",
+            type: "added",
+            items: ["Added Settings", "Added setting to disable or enable all perks"]
+        },
+        {
             title: "Fixed",
             type: "fixed",
             items: ["Reloading Discord should now work with the Plugin", "Removed Support Server because it was wrong"]
