@@ -1,8 +1,8 @@
 /**
  * @name NitroPerks
  * @author HypedDomi#1711
- * @description Gives you Nitro Perks
- * @version 0.2.2
+ * @description Gives or removes you Nitro Perks
+ * @version 0.3
  * @authorId 354191516979429376
  * @donate https://paypal.me/dominik1711
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/NitroPerks
@@ -22,8 +22,8 @@
                  discord_id: "354191516979429376",
              }
          ],
-         version: "0.2.2",
-         description: "Gives you Nitro Perks",
+         version: "0.3",
+         description: "Gives or removes you Nitro Perks",
          github: "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/NitroPerks",
          github_raw: "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/NitroPerks/NitroPerks.plugin.js"
      },
@@ -32,6 +32,15 @@
             title: "Fixed",
             type: "fixed",
             items: ["Reloading Discord should now work with the Plugin", "Removed Support Server because it was wrong"]
+        }
+    ],
+    defaultConfig: [
+        {
+            type: "switch",
+            id: "removePerks",
+            name: "Disable Perks",
+            note: "Instead of activating all perks, they will be deactivated",
+            value: false
         }
     ]
  };
@@ -62,6 +71,12 @@
      const Dispatcher = BdApi.findModuleByProps("dispatch", "subscribe");
      var originalType = 2;
      class NitroPerks extends Plugin {
+        constructor() {
+            super();
+            this.getSettingsPanel = () => {
+               return this.buildSettingsPanel().getElement();
+           };
+        }
          enablePerks(){
             try{
                 const userStore = BdApi.findModuleByProps("getCurrentUser");
@@ -73,9 +88,24 @@
                 window.setTimeout(() => this.enablePerks(), 2000);
             }
          }
+         disablePerks(){
+            try{
+                const userStore = BdApi.findModuleByProps("getCurrentUser");
+                const user = userStore.getCurrentUser();
+                originalType = user.premiumType;
+                user.premiumType = 0;
+            }catch(e){
+                console.error(e);
+                window.setTimeout(() => this.disablePerks(), 2000);
+            }
+         }
  
          onStart() {
-             this.enablePerks();
+            if(this.settings.removePerks){
+                this.disablePerks();
+            }else{
+                this.enablePerks();
+            }
          }
  
          onStop() {
@@ -85,6 +115,6 @@
          }
  
      }
- 
      return NitroPerks;
+
  })(global.ZeresPluginLibrary.buildPlugin(config)); 
