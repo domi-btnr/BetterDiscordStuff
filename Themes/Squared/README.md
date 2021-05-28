@@ -2,7 +2,7 @@
 
 ### BetterDiscord
 
-1. Go [here]()
+1. Go [here](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Squared/Squared.theme.css)
 2. Save the file into your theme folder
 
 ## Credits
