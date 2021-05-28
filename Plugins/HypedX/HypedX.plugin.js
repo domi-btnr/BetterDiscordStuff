@@ -2,7 +2,7 @@
  * @name HypedX
  * @author HypedDomi#1711
  * @description Aktiviert die Spielaktivität und eine RichPresence wenn GTA erkannt wird
- * @version 0.3
+ * @version 0.3.1
  * @authorId 354191516979429376
  * @donate https://paypal.me/dominik1711
  * @source https://github.com/HypedDomi/hypeddomi.github.io/blob/master/BetterDiscord/plugins/HypedX.plugin.js
@@ -23,11 +23,18 @@
                  discord_id: "354191516979429376",
              }
          ],
-         version: "0.3",
+         version: "0.3.1",
          description: "Aktiviert die Spielaktivität und eine RichPresence sobald GTA erkannt wird",
          github: "https://github.com/HypedDomi/hypeddomi.github.io/blob/master/BetterDiscord/plugins/HypedX.plugin.js",
          github_raw: "https://raw.githubusercontent.com/HypedDomi/hypeddomi.github.io/master/BetterDiscord/plugins/HypedX.plugin.js"
      },
+     changelog: [
+        {
+            title: "Hinzugefügt",
+            type: "added",
+            items: ["Einstellungen hinzugefügt"]
+        }
+    ],
      defaultConfig: [
         {
             type: "switch",
@@ -35,13 +42,6 @@
             name: "Discord neuladen",
             note: "Lädt Discord neu, nachdem GTA geschlossen wurde (Deaktiviert schneller die RichPresence)",
             value: true
-        }
-    ],
-    changelog: [
-        {
-            title: "Hinzugefügt",
-            type: "added",
-            items: ["Einstellungen hinzugefügt"]
         }
     ]
  };
@@ -68,18 +68,15 @@
      }
      start() {this.load();}
      stop() {}
-
-     getSettingsPanel() {
-        var settings = document.createElement("settings");
-        settings.innerHTML = `<div style="color: var(--header-primary); font-size: 16px; font-weight: 300; white-space: pre; line-height: 22px;">Test</div>`;
-		return settings.content.firstElementChild;
-    }
  } : (([Plugin, Library]) => {
      const Dispatcher = BdApi.findModuleByProps("dispatch", "subscribe");
      var enabled = false;
      class HypedX extends Plugin {
          constructor() {
              super();
+             this.getSettingsPanel = () => {
+                return this.buildSettingsPanel().getElement();
+            };
          }
 
          async runningGamesChange(event) {
@@ -109,7 +106,9 @@
                             enabled = false;
                             _gameNotFound = 0;
                             console.log("[HypedX] Disabled AutoStartRichPresence");
-                            location.reload()
+                            if(this.settings.reloadDiscord){
+                                location.reload();
+                            }
                         }catch (e){
                             console.log(e);
                             BdApi.showToast("Es trat ein Fehler auf", {type: "error"})
@@ -122,7 +121,9 @@
                     enabled = false;
                     _gameNotFound = 0;
                     console.log("[HypedX] Disabled AutoStartRichPresence");
-                    location.reload()
+                    if(this.settings.reloadDiscord){
+                        location.reload();
+                    }
                 }catch (e){
                     console.log(e);
                     BdApi.showToast("Es trat ein Fehler auf", {type: "error"})
