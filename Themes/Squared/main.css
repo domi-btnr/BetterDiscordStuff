@@ -1154,6 +1154,7 @@ div:not(.headerFill-adLl4x) > .activity-1ythUs > .size16-1P40sf > .customStatus-
 }
 
 /* Colored Name */
+/* HypedDomi#1711 */
 /* Messages */
 [data-author-id="354191516979429376"] .username-1A8OIy,
 [vz-user-id="354191516979429376"] .username-1A8OIy,
@@ -1173,6 +1174,32 @@ div:not(.headerFill-adLl4x) > .activity-1ythUs > .size16-1P40sf > .customStatus-
 [aria-label^="HypedDomi"] .overflow-WK9Ogt { 
   animation: flow 6s ease-in-out infinite;
   background: linear-gradient(to right, #9900ff, #ff0000);
+  background-size: 350%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* JustInGame#5353 */
+/* Messages */
+[data-author-id="465821010042814465"] .username-1A8OIy,
+[vz-user-id="465821010042814465"] .username-1A8OIy,
+[data-user-id="465821010042814465"] .username-1A8OIy,
+
+/* Modal */
+[data-user-id="465821010042814465"] + .headerInfo-30uryT .username-2b1r56,
+[vz-user-id="465821010042814465"] .username-2b1r56,
+[data-user-id="465821010042814465"] .username-2b1r56,
+
+/* Popout */
+[aria-label="JustInGame"] .username-2b1r56,
+
+/* Friend list */
+[vz-user-id="465821010042814465"] .overflow-WK9Ogt,
+[data-user-id="465821010042814465"] .overflow-WK9Ogt,
+[aria-label^="JustInGame"] .overflow-WK9Ogt { 
+  animation: flow 6s ease-in-out infinite;
+  background: linear-gradient(to right, #0010ed, #0095ff);
   background-size: 350%;
   -webkit-background-clip: text;
   background-clip: text;
