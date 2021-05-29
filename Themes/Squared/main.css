@@ -1154,11 +1154,14 @@ div:not(.headerFill-adLl4x) > .activity-1ythUs > .size16-1P40sf > .customStatus-
 }
 
 /* Colored Name */
+
 /* HypedDomi#1711 */
 /* Messages */
-[data-author-id="354191516979429376"] .username-1A8OIy,
-[vz-user-id="354191516979429376"] .username-1A8OIy,
-[data-user-id="354191516979429376"] .username-1A8OIy,
+.repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="354191516979429376"]+.username-1A8OIy,
+
+[data-author-id="354191516979429376"] .contents-2mQqc9 .username-1A8OIy,
+[vz-user-id="354191516979429376"] .contents-2mQqc9 .username-1A8OIy,
+[data-user-id="354191516979429376"] .contents-2mQqc9 .username-1A8OIy,
 
 /* Modal */
 [data-user-id="354191516979429376"] + .headerInfo-30uryT .username-2b1r56,
@@ -1182,9 +1185,11 @@ div:not(.headerFill-adLl4x) > .activity-1ythUs > .size16-1P40sf > .customStatus-
 
 /* JustInGame#5353 */
 /* Messages */
-[data-author-id="465821010042814465"] .username-1A8OIy,
-[vz-user-id="465821010042814465"] .username-1A8OIy,
-[data-user-id="465821010042814465"] .username-1A8OIy,
+.repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="465821010042814465"]+.username-1A8OIy,
+
+[data-author-id="465821010042814465"] .contents-2mQqc9 .username-1A8OIy,
+[vz-user-id="465821010042814465"] .contents-2mQqc9 .username-1A8OIy,
+[data-user-id="465821010042814465"] .contents-2mQqc9 .username-1A8OIy,
 
 /* Modal */
 [data-user-id="465821010042814465"] + .headerInfo-30uryT .username-2b1r56,
@@ -1208,9 +1213,11 @@ div:not(.headerFill-adLl4x) > .activity-1ythUs > .size16-1P40sf > .customStatus-
 
 /* Hops#0001 */
 /* Messages */
-[data-author-id="706566395542110249"] .username-1A8OIy,
-[vz-user-id="706566395542110249"] .username-1A8OIy,
-[data-user-id="706566395542110249"] .username-1A8OIy,
+.repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="706566395542110249"]+.username-1A8OIy,
+
+[data-author-id="706566395542110249"] .contents-2mQqc9 .username-1A8OIy,
+[vz-user-id="706566395542110249"] .contents-2mQqc9 .username-1A8OIy,
+[data-user-id="706566395542110249"] .contents-2mQqc9 .username-1A8OIy,
 
 /* Modal */
 [data-user-id="706566395542110249"] + .headerInfo-30uryT .username-2b1r56,
