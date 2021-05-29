@@ -1206,6 +1206,32 @@ div:not(.headerFill-adLl4x) > .activity-1ythUs > .size16-1P40sf > .customStatus-
   -webkit-text-fill-color: transparent;
 }
 
+/* Hops#0001 */
+/* Messages */
+[data-author-id="706566395542110249"] .username-1A8OIy,
+[vz-user-id="706566395542110249"] .username-1A8OIy,
+[data-user-id="706566395542110249"] .username-1A8OIy,
+
+/* Modal */
+[data-user-id="706566395542110249"] + .headerInfo-30uryT .username-2b1r56,
+[vz-user-id="706566395542110249"] .username-2b1r56,
+[data-user-id="706566395542110249"] .username-2b1r56,
+
+/* Popout */
+[aria-label="Hops"] .username-2b1r56,
+
+/* Friend list */
+[vz-user-id="706566395542110249"] .overflow-WK9Ogt,
+[data-user-id="706566395542110249"] .overflow-WK9Ogt,
+[aria-label^="Hops"] .overflow-WK9Ogt { 
+  animation: flow 6s ease-in-out infinite;
+  background: linear-gradient(to right, #ff00ff, #00ffff);
+  background-size: 350%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 @keyframes flow {
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
