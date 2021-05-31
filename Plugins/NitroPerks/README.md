@@ -1,3 +1,7 @@
+## ⚠ Warning
+- This plugin is not official and can lead to an account ban
+- Use this Plugin at your own risk
+---
 ## 📥 Installation
 
 ### BetterDiscord
