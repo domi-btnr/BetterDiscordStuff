@@ -2,7 +2,7 @@
  * @name HypedX
  * @author HypedDomi#1711
  * @description Aktiviert die Spielaktivität und eine RichPresence wenn GTA erkannt wird
- * @version 0.3.1
+ * @version 0.3.2
  * @authorId 354191516979429376
  * @donate https://paypal.me/dominik1711
  * @source https://github.com/HypedDomi/hypeddomi.github.io/blob/master/BetterDiscord/plugins/HypedX.plugin.js
@@ -23,7 +23,7 @@
                  discord_id: "354191516979429376",
              }
          ],
-         version: "0.3.1",
+         version: "0.3.2",
          description: "Aktiviert die Spielaktivität und eine RichPresence sobald GTA erkannt wird",
          github: "https://github.com/HypedDomi/hypeddomi.github.io/blob/master/BetterDiscord/plugins/HypedX.plugin.js",
          github_raw: "https://raw.githubusercontent.com/HypedDomi/hypeddomi.github.io/master/BetterDiscord/plugins/HypedX.plugin.js"
@@ -33,6 +33,11 @@
             title: "Hinzugefügt",
             type: "added",
             items: ["Einstellungen hinzugefügt"]
+        },
+        {
+            title: "Fixed",
+            type: "fixed",
+            items: ["Changed PluginLibrary Download Link"]
         }
     ],
      defaultConfig: [
@@ -52,20 +57,20 @@
      }
  
      load() {
-         BdApi.showConfirmationModal("Library plugin is needed",
-             `The library plugin needed for ${config.info.name} is missing. Please click Download Now to install it.`, {
-                 confirmText: "Download",
-                 cancelText: "Cancel",
-                 onConfirm: () => {
-                     request.get("https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js", (error, response, body) => {
-                         if (error)
-                             return electron.shell.openExternal("https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js");
- 
-                         fs.writeFileSync(path.join(BdApi.Plugins.folder, "0PluginLibrary.plugin.js"), body);
-                     });
-                 }
-             });
-     }
+        BdApi.showConfirmationModal("Library plugin is needed",
+            `The library plugin needed for ${config.info.name} is missing. Please click Download Now to install it.`, {
+                confirmText: "Download",
+                cancelText: "Cancel",
+                onConfirm: () => {
+                    request.get("https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js", (error, response, body) => {
+                        if (error)
+                            return electron.shell.openExternal("https://betterdiscord.app/Download?id=9");
+
+                        fs.writeFileSync(path.join(BdApi.Plugins.folder, "0PluginLibrary.plugin.js"), body);
+                    });
+                }
+            });
+    }
      start() {this.load();}
      stop() {}
  } : (([Plugin, Library]) => {
