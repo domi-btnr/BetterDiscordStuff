@@ -1182,6 +1182,26 @@ div:not(.headerFill-adLl4x) > .activity-1ythUs > .size16-1P40sf > .customStatus-
   -webkit-text-fill-color: transparent;
 }
 
+/* Toasty#8126 */
+/* Messages */
+.repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="706566395542110249"]+.username-1A8OIy,
+
+[data-author-id="648794263567597569"] .contents-2mQqc9 .username-1A8OIy,
+[vz-user-id="648794263567597569"] .contents-2mQqc9 .username-1A8OIy,
+[data-user-id="648794263567597569"] .contents-2mQqc9 .username-1A8OIy,
+
+/* Modal */
+.header-QKLPzZ .avatar-3EQepX[data-user-id="648794263567597569"]+.headerInfo-30uryT .nameTag-2IFDfL .username-2b1r56,
+
+/* Popout */
+[aria-label="Toasty"] .username-2b1r56,
+
+/* Friend list */
+[vz-user-id="648794263567597569"] .overflow-WK9Ogt,
+[data-user-id="648794263567597569"] .overflow-WK9Ogt { 
+  animation: rainbow 6s linear 0s infinite normal;
+}
+
 /* JustInGame#5353 */
 /* Messages */
 .repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="465821010042814465"]+.username-1A8OIy,
@@ -1236,4 +1256,16 @@ div:not(.headerFill-adLl4x) > .activity-1ythUs > .size16-1P40sf > .customStatus-
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
   100%{background-position:0% 50%}
+}
+
+@keyframes rainbow {
+  0%{color: #ff0000;}
+  12%{color: #ffbf00;}
+  25%{color: #80ff00;}
+  37%{color: #00ff40;}
+  50%{color: #00ffff;}
+  62%{color: #0040ff;}
+  75%{color: #8000ff;}
+  87%{color: #eb34bd;}
+  100%{color: #ff0000;}
 }
