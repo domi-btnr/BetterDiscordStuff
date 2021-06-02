@@ -496,6 +496,31 @@
   transform: translateY(1px);
 }
 
+.userPopout-3XzG_A .activityUserPopout-2yItg2::after {
+  content: ""; position: absolute;
+  margin-left: -120px; margin-top: -200px;
+  background: #7289da;
+}
+.theme-dark .activityUserPopout-2yItg2::after {
+  content: ""; position: absolute;
+  width: 390px; height: 300px; z-index: -1;
+  margin-left: -120px; margin-top: -200px;
+  background: #7289da;
+}
+
+.userPopout-3XzG_A .activityUserPopout-2yItg2 + div .button-38aScr {
+  border: none;
+  background-color: #e9edff;
+  box-shadow: 0px 4px 15px #6478c2;
+  color: #7289da;
+  transition: 0.15s;
+}
+.userPopout-3XzG_A .activityUserPopout-2yItg2 + div .button-38aScr:hover { background-color: #fff;}
+.userPopout-3XzG_A .activityUserPopout-2yItg2 + div .button-38aScr:active { 
+  box-shadow: none;
+  transform: translateY(1px);
+}
+
 /* Playing */
 .userPopout-3XzG_A .contentGameImageUserPopout-2KWIsz::after {
   content: ""; position: absolute;
