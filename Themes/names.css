@@ -1,0 +1,114 @@
+/* HypedDomi#1711 */
+/* Messages */
+.repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="354191516979429376"]+.username-1A8OIy,
+
+.listRow-hutiT_ .listAvatar-1NlAhb .avatarStack-2Dr8S9[src*="354191516979429376"]+.username-2b1r56,
+
+[data-author-id="354191516979429376"] .contents-2mQqc9 .username-1A8OIy,
+[vz-user-id="354191516979429376"] .contents-2mQqc9 .username-1A8OIy,
+[data-user-id="354191516979429376"] .contents-2mQqc9 .username-1A8OIy,
+
+/* Modal */
+.header-QKLPzZ .avatar-3EQepX[data-user-id="354191516979429376"]+.headerInfo-30uryT .nameTag-2IFDfL .username-2b1r56,
+
+/* Popout */
+[aria-label="HypedDomi"] .username-2b1r56,
+
+/* Friend list */
+[vz-user-id="354191516979429376"] .overflow-WK9Ogt,
+[data-user-id="354191516979429376"] .overflow-WK9Ogt { 
+  animation: flow 6s ease-in-out infinite;
+  background: linear-gradient(to right, #9900ff, #ff0000);
+  background-size: 350%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Toasty#8126 */
+/* Messages */
+.repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="706566395542110249"]+.username-1A8OIy,
+
+[data-author-id="648794263567597569"] .contents-2mQqc9 .username-1A8OIy,
+[vz-user-id="648794263567597569"] .contents-2mQqc9 .username-1A8OIy,
+[data-user-id="648794263567597569"] .contents-2mQqc9 .username-1A8OIy,
+
+/* Modal */
+.header-QKLPzZ .avatar-3EQepX[data-user-id="648794263567597569"]+.headerInfo-30uryT .nameTag-2IFDfL .username-2b1r56,
+
+/* Popout */
+[aria-label="Toasty"] .username-2b1r56,
+
+/* Friend list */
+[vz-user-id="648794263567597569"] .overflow-WK9Ogt,
+[data-user-id="648794263567597569"] .overflow-WK9Ogt { 
+  animation: rainbow 6s linear 0s infinite normal;
+}
+
+/* JustInGame#5353 */
+/* Messages */
+.repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="465821010042814465"]+.username-1A8OIy,
+
+[data-author-id="465821010042814465"] .contents-2mQqc9 .username-1A8OIy,
+[vz-user-id="465821010042814465"] .contents-2mQqc9 .username-1A8OIy,
+[data-user-id="465821010042814465"] .contents-2mQqc9 .username-1A8OIy,
+
+/* Modal */
+.header-QKLPzZ .avatar-3EQepX[data-user-id="465821010042814465"]+.headerInfo-30uryT .nameTag-2IFDfL .username-2b1r56,
+
+/* Popout */
+[aria-label="JustInGame"] .username-2b1r56,
+
+/* Friend list */
+[vz-user-id="465821010042814465"] .overflow-WK9Ogt,
+[data-user-id="465821010042814465"] .overflow-WK9Ogt { 
+  animation: flow 6s ease-in-out infinite;
+  background: linear-gradient(to right, #0010ed, #0095ff);
+  background-size: 350%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Hops#0001 */
+/* Messages */
+.repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="706566395542110249"]+.username-1A8OIy,
+
+[data-author-id="706566395542110249"] .contents-2mQqc9 .username-1A8OIy,
+[vz-user-id="706566395542110249"] .contents-2mQqc9 .username-1A8OIy,
+[data-user-id="706566395542110249"] .contents-2mQqc9 .username-1A8OIy,
+
+/* Modal */
+.header-QKLPzZ .avatar-3EQepX[data-user-id="706566395542110249"]+.headerInfo-30uryT .nameTag-2IFDfL .username-2b1r56,
+
+/* Popout */
+[aria-label="Hops"] .username-2b1r56,
+
+/* Friend list */
+[vz-user-id="706566395542110249"] .overflow-WK9Ogt,
+[data-user-id="706566395542110249"] .overflow-WK9Ogt { 
+  animation: flow 6s ease-in-out infinite;
+  background: linear-gradient(to right, #ff00ff, #00ffff);
+  background-size: 350%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes flow {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+@keyframes rainbow {
+  0%{color: #ff0000;}
+  12%{color: #ffbf00;}
+  25%{color: #80ff00;}
+  37%{color: #00ff40;}
+  50%{color: #00ffff;}
+  62%{color: #0040ff;}
+  75%{color: #8000ff;}
+  87%{color: #eb34bd;}
+  100%{color: #ff0000;}
+}
