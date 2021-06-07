@@ -1,0 +1,99 @@
+/**
+* @name Dark
+* @author HypedDomi#1711
+* @authorId 354191516979429376
+* @description A theme based on the Twitch colors and other stuff
+* @version 0.1
+* @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Themes/
+* @donate https://paypal.me/dominik1711
+*/
+
+@import url(https://hypeddomi.github.io/BetterDiscordStuff/Themes/Dark/main.css);
+@import url(https://mwittrien.github.io/BetterDiscordAddons/Themes/EmojiReplace/base/WhatsApp.css);
+
+:root {
+
+/* Avatar roundess */
+--avatar-radius: 10%;
+
+/* Avatar wdith in modals */
+--avatar-width: 130px;
+
+/* Server roundess */
+--server-radius: 8px;
+
+/* -- Others settings -- */
+
+/* Mention color */
+--mention-color-bar: #7289DA;
+--mention-color-background: #7289DA10;
+--mention-color-hover: #7289DA1f;
+
+/* Tooltips */
+--tooltips: block;
+
+/* Discord logo */
+--discord-logo: block;
+
+/* Colors */
+--color-brand: #9147ff;
+--color-brand-darker: #772ce8;
+--color-brand-lighter: #a970ff;
+--color-red: #e91916;
+--color-red-darker: #bb1411;
+--color-orange: #FAA61A;
+--color-orange-darker: #d88804;
+--background-orange: rgba(250, 166, 0, 0.10);
+--color-green: #3BA55C;
+--color-green-darker: #2f8449;
+--color-gray: #72767d;
+--color-gray-darker: #4f545c;
+--shadow: 0 4px 8px rgba(0, 0, 0, .4), 0 0 4px rgba(0, 0, 0, .4);
+--shadow-bottom: 0 1px 2px rgba(0, 0, 0, .9), 0 0 2px rgba(0, 0, 0, .9);
+--user-background: #18181b;
+
+}
+ 
+.theme-dark {
+    --background-tertiary: #0e0e10;
+    --background-secondary: #1F1F23;
+    --background-secondary-alt: #18191C;
+    --background-primary: #0e0e10;
+    --channeltextarea-background: #18191C;
+    --background-accent: #6E85D3;
+    --background-modifier-hover: #26272C;
+    --background-modifier-active: #2E3035;
+    --background-modifier-selected: #2E3035;
+    --deprecated-card-bg: #12141f63;
+    --background-floating: #18191C;
+    --deprecated-quickswitcher-input-background:#18262E;
+    --spotify-color: #1DB954;
+    --elevation-low: none;
+    --scrollbar-auto-thumb: transparent;
+    --scrollbar-auto-track: transparent;
+    --scrollbar-thin-thumb: transparent;
+    --chat-buttons: #676775;
+    --user-buttons-color: #676775;
+}
+ 
+.theme-light {
+    --background-tertiary: #D6D9DD;
+    --background-secondary: #E4E6EA;
+    --background-secondary-alt: #D6D9DD;
+    --background-primary: #F2F2F2;
+    --channeltextarea-background: #DDE1E4;
+    --background-accent: #6E85D3;
+    --background-modifier-hover: #DADDE2;
+    --background-modifier-active: #D6D9DD;
+    --background-modifier-selected: #D6D9DD;
+    --deprecated-card-bg: #D6D9DD63;
+    --background-floating: #D6D9DD;
+    --deprecated-quickswitcher-input-background:#D6D9DD;
+    --spotify-color: #1DB954;
+    --elevation-low: none;
+    --scrollbar-auto-thumb: #D6D9DD;
+    --scrollbar-auto-track: #F2F2F2;
+    --scrollbar-thin-thumb: #D6D9DD;
+    --chat-buttons: #5c89a5;
+    --user-buttons-color: #5c89a5;
+}
