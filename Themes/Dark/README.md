@@ -4,8 +4,8 @@
 
 ### BetterDiscord
 
-1. Go [here](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Dark/Dark.theme.css)
-2. Save the file into your theme folder
+1. <a href="https://hypeddomi.github.io/BetterDiscordStuff/Themes/Dark/Dark.theme.css" download>Download</a> File
+2. Save or move the file into your theme folder
 
 ## Credits
 
