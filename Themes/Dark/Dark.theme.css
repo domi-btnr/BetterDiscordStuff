@@ -3,8 +3,8 @@
 * @author HypedDomi#1711
 * @authorId 354191516979429376
 * @description A theme based on the Twitch colors and other stuff
-* @version 0.1
-* @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Themes/
+* @version 0.2
+* @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Themes/Dark
 * @donate https://paypal.me/dominik1711
 */
 
@@ -13,13 +13,10 @@
 
 :root {
 
-/* Avatar roundess */
+/* Avatar Radius */
 --avatar-radius: 10%;
 
-/* Avatar wdith in modals */
---avatar-width: 130px;
-
-/* Server roundess */
+/* Server Radius */
 --server-radius: 8px;
 
 /* -- Others settings -- */
@@ -38,17 +35,12 @@
 /* Colors */
 --color-brand: #9147ff;
 --color-brand-darker: #772ce8;
---color-brand-lighter: #a970ff;
 --color-red: #e91916;
 --color-red-darker: #bb1411;
 --color-orange: #FAA61A;
---color-orange-darker: #d88804;
 --background-orange: rgba(250, 166, 0, 0.10);
 --color-green: #3BA55C;
 --color-green-darker: #2f8449;
---color-gray: #72767d;
---color-gray-darker: #4f545c;
---shadow: 0 4px 8px rgba(0, 0, 0, .4), 0 0 4px rgba(0, 0, 0, .4);
 --shadow-bottom: 0 1px 2px rgba(0, 0, 0, .9), 0 0 2px rgba(0, 0, 0, .9);
 --user-background: #18181b;
 
@@ -61,14 +53,6 @@
     --background-primary: #0e0e10;
     --channeltextarea-background: #18191C;
     --background-accent: #6E85D3;
-    --background-modifier-hover: #26272C;
-    --background-modifier-active: #2E3035;
-    --background-modifier-selected: #2E3035;
-    --deprecated-card-bg: #12141f63;
-    --background-floating: #18191C;
-    --deprecated-quickswitcher-input-background:#18262E;
-    --spotify-color: #1DB954;
-    --elevation-low: none;
     --scrollbar-auto-thumb: transparent;
     --scrollbar-auto-track: transparent;
     --scrollbar-thin-thumb: transparent;
@@ -83,14 +67,6 @@
     --background-primary: #F2F2F2;
     --channeltextarea-background: #DDE1E4;
     --background-accent: #6E85D3;
-    --background-modifier-hover: #DADDE2;
-    --background-modifier-active: #D6D9DD;
-    --background-modifier-selected: #D6D9DD;
-    --deprecated-card-bg: #D6D9DD63;
-    --background-floating: #D6D9DD;
-    --deprecated-quickswitcher-input-background:#D6D9DD;
-    --spotify-color: #1DB954;
-    --elevation-low: none;
     --scrollbar-auto-thumb: #D6D9DD;
     --scrollbar-auto-track: #F2F2F2;
     --scrollbar-thin-thumb: #D6D9DD;
