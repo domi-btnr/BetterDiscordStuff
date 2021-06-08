@@ -12,19 +12,13 @@
 @import url(https://mwittrien.github.io/BetterDiscordAddons/Themes/EmojiReplace/base/WhatsApp.css);
 
 :root {
-
-/* Avatar Radius */
---avatar-radius: 10%;
-
 /* Server Radius */
 --server-radius: 8px;
 
-/* -- Others settings -- */
-
 /* Mention color */
---mention-color-bar: #7289DA;
---mention-color-background: #7289DA10;
---mention-color-hover: #7289DA1f;
+--mention-color-bar: #9147ff;
+--mention-color-background: #9147ff1f;
+--mention-color-hover: #9147ff2f;
 
 /* Tooltips */
 --tooltips: block;
@@ -52,7 +46,7 @@
     --background-secondary-alt: #18191C;
     --background-primary: #0e0e10;
     --channeltextarea-background: #18191C;
-    --background-accent: #6E85D3;
+    --background-accent: var(--color-brand-darker);
     --scrollbar-auto-thumb: transparent;
     --scrollbar-auto-track: transparent;
     --scrollbar-thin-thumb: transparent;
