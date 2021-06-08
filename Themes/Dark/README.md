@@ -10,4 +10,6 @@
 Theme with snippets from the [Discord.tv](https://betterdiscord.app/theme/Discord.tv) Theme and [Comfy](https://betterdiscord.app/theme/comfy) Theme
 
 ---
+#### [Click for Live Preview](https://gibbu.github.io/ThemePreview/?file=https://hypeddomi.github.io/BetterDiscordStuff/Themes/Dark/Dark.theme.css)
+
 ![Preview](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Dark/Preview.png)
