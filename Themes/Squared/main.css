@@ -389,12 +389,29 @@
     border-radius: 10px; 
 }
 
-/* Ping pill for channel list */
+/* MentionBadge Server */
+.lowerBadge-29hYVK .numberBadge-2s8kKX {
+  color: #fff;
+  animation: 2s mention infinite;
+}
 
-.mentionsBadge-3tC7Mi { position: absolute; top: 26%; right: 0px;}
-.mentionsBadge-3tC7Mi .numberBadge-2s8kKX { color: #f04747; font-weight: bolder;background-color: transparent !important;}
-.modeUnread-1qO3K1:hover .iconItem-F7GRxr { display: none;}
-.content-1x5b-n:active { transform: none;}
+/* MentionBadge Channel */
+.mentionsBadge-3tC7Mi .numberBadge-2s8kKX {
+  animation: 2s mention infinite;
+  color: #fff;
+}
+
+@keyframes mention {
+  0% {
+    box-shadow: 0 0 0 0 #f04747;
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
 
 
 /* --- 💬 PARTIE TCHAT --- */
