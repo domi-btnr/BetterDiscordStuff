@@ -88,20 +88,34 @@
 
 /* Notice of mention */
 .mention-1f5kbO{
-  background-color: var(--color-brand);
+  background-color: var(--mention-color-bar);
   opacity: 1;
 }
 
 /* MentionBadge Server */
 .lowerBadge-29hYVK .numberBadge-2s8kKX {
-  background-color: var(--color-brand) !important;
+  background-color: var(--mention-color-bar) !important;
+  color: #fff;
+  animation: 2s mention infinite;
+}
+
+/* MentionBadge Channel */
+.mentionsBadge-3tC7Mi .numberBadge-2s8kKX {
+  background-color: var(--mention-color-bar) !important;
+  animation: 2s mention infinite;
   color: #fff;
 }
 
-/* MentionBadge Server */
-.mentionsBadge-3tC7Mi .numberBadge-2s8kKX {
-  background-color: var(--color-brand) !important;
-  color: #fff;
+@keyframes mention {
+  0% {
+    box-shadow: 0 0 0 0 var(--mention-color-bar);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
 }
 
 /* Selected Server*/
@@ -344,30 +358,19 @@
 .theme-dark .newPopoutActivityStyles .details-38sfDr, .theme-dark .newPopoutActivityStyles .name-29ETJS, 
 .theme-dark .newPopoutActivityStyles .nameNormal-2lqVQK, .theme-dark .newPopoutActivityStyles .nameWrap-3Z4G_9  { color: white;}
 
-.theme-dark .userPopout-3XzG_A .spotifyIcon-2J9kSv { display: none;}
+.theme-dark .userPopout-xaxa6l .spotifyIcon-2J9kSv { display: none;}
 .activityUserPopout-2yItg2 { z-index: 1;}
 
 .theme-dark .activityUserPopout-2yItg2 .button-38aScr {
   border: none;
   background-color: #e9edff;
+  box-shadow: 0px 4px 15px #6478c2;
   color: #7289da;
   transition: 0.15s;
 }
 
-.theme-dark .activityUserPopout-2yItg2 .button-38aScr:hover {background-color: #fff;}
-.theme-dark .activityUserPopout-2yItg2 .button-38aScr:active { 
-  box-shadow: none;
-  transform: translateY(1px);
-}
-
-.userPopout-3XzG_A .activityUserPopout-2yItg2 + div .button-38aScr:hover { background-color: #fff;}
-.userPopout-3XzG_A .activityUserPopout-2yItg2 + div .button-38aScr:active { 
-  box-shadow: none;
-  transform: translateY(1px);
-}
-
 /* Playing */
-.userPopout-3XzG_A .contentGameImageUserPopout-2KWIsz::after {
+.userPopout-xaxa6l .contentGameImageUserPopout-2KWIsz::after {
   content: ""; position: absolute;
   width: 400px; height: 300px; z-index: -1;
   margin-left: -120px; margin-top: -200px;
@@ -380,36 +383,36 @@
   background: #7289da;
 }
 
-.userPopout-3XzG_A .contentGameImageUserPopout-2KWIsz + div .button-38aScr {
+.userPopout-xaxa6l .contentGameImageUserPopout-2KWIsz + div .button-38aScr {
   border: none;
   background-color: #e9edff;
   box-shadow: 0px 4px 15px #6478c2;
   color: #7289da;
   transition: 0.15s;
 }
-.userPopout-3XzG_A .contentGameImageUserPopout-2KWIsz + div .button-38aScr:hover { background-color: #fff;}
-.userPopout-3XzG_A .contentGameImageUserPopout-2KWIsz + div .button-38aScr:active { 
+.userPopout-xaxa6l .contentGameImageUserPopout-2KWIsz + div .button-38aScr:hover { background-color: #fff;}
+.userPopout-xaxa6l .contentGameImageUserPopout-2KWIsz + div .button-38aScr:active { 
   box-shadow: none;
   transform: translateY(1px);
 }
 
 /* Spotify */
-.userPopout-3XzG_A .timeBarUserPopout-AWPFf2::after {
+.userPopout-xaxa6l .timeBarUserPopout-AWPFf2::after {
   content: ""; position: absolute;
   width: 320px; height: 300px; z-index: -1;
   margin-left: -35px; margin-top: -200px;
   background: #1db954;
 }
 
-.userPopout-3XzG_A .timeBarUserPopout-AWPFf2 + div .button-38aScr {
+.userPopout-xaxa6l .timeBarUserPopout-AWPFf2 + div .button-38aScr {
   border: none;
   background-color: #e1f1e6;
   box-shadow: 0 4px 15px #1e9148; 
   color: #1db954;
   transition: 0.15s;
 }
-.userPopout-3XzG_A .timeBarUserPopout-AWPFf2 + div .button-38aScr:hover { background-color: #fff;}
-.userPopout-3XzG_A .timeBarUserPopout-AWPFf2 + div .button-38aScr:active { 
+.userPopout-xaxa6l .timeBarUserPopout-AWPFf2 + div .button-38aScr:hover { background-color: #fff;}
+.userPopout-xaxa6l .timeBarUserPopout-AWPFf2 + div .button-38aScr:active { 
   box-shadow: none;
   transform: translateY(1px);
 }
@@ -429,71 +432,14 @@
 .container-3XJ8ns .list-1xE9GQ { margin: 0; padding: 0;}
 .container-3XJ8ns .item-2J2GlB { border-radius: 0;}
 
-/* -- USRBG Small Popout -- */
-.header-2BwW8b {
-  transform: translateZ(0);
-}
-
-#app-mount .userPopout-3XzG_A .wrapper-3t9DeA[style*="width: 80px;"]::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  border-radius: 5px 5px 0 0;
-  pointer-events: none;
-  opacity: 0.8;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: var(--user-popout-position) center;
-  background-image: var(--user-background);
-  -webkit-mask-image: linear-gradient(#000000, #0000004f);
-  mask-image: linear-gradient(0.25turn, #0009, #0000);
-}
-
-.userPopout-3XzG_A .header-2BwW8b,
-.userPopout-3XzG_A .scroller-2FKFPG,
-.userPopout-3XzG_A .footer-1fjuF6,
-.body-3iLsc4 {
-  z-index: 1;
-}
-
-/* USRBG User Popout Fix */
-.userPopout-3XzG_A[style*="--user-background"] .profileBanner-33-uE1 {
+/* -- USRBG for popouts -- */
+.userPopout-xaxa6l[style*="--user-background"] .profileBanner-33-uE1 {
   height: 120px;
   background: var(--user-background) center / cover;
 }
-.userPopout-3XzG_A[style*="--user-background"] .avatarPositionNormal-1CZUPk {
+.userPopout-xaxa6l[style*="--user-background"] .avatarPositionNormal-aZjAsn {
   top: 76px;
 }
-
-/* -- USRBG Big Popout -- */
-.root-SR8cQa .topSectionNormal-2-vo2m,
-.root-SR8cQa .topSectionPlaying-1J5E4n,
-.root-SR8cQa .topSectionSpotify-1lI0-P,
-.root-SR8cQa .topSectionStreaming-1Tpf5X,
-.root-SR8cQa .topSectionXbox-3fWLjS {transform: translateZ(0)}
-#app-mount .header-QKLPzZ .wrapper-3t9DeA::before {
-    content: '' !important;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: .35;
-    pointer-events: none;
-    background: var(--user-background) center/cover no-repeat;
-}
-.root-SR8cQa .headerInfo-30uryT,
-.root-SR8cQa .tabBarItem-1b8RUP,
-.root-SR8cQa .activity-1ythUs {
-    z-index: 1;
-    position: relative;
-}
-
-.headerFill-adLl4x { background-color: rgba(0,0,0,0);}
 
 /* Mutuals */
 .root-SR8cQa .listRow-hutiT_ {
