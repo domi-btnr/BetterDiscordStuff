@@ -456,7 +456,8 @@
 .sprite-2iCowe { filter: var(--colored-emoji) !important;}
 
 #emoji-picker-tab  > .navButton-2gQCx- > .contents-18-Yxp, 
-#sticker-picker-tab  > .navButton-2gQCx- > .contents-18-Yxp 
+#sticker-picker-tab  > .navButton-2gQCx- > .contents-18-Yxp,
+#bd-emotes-tab > .navButton-2gQCx- > .contents-18-Yxp 
 { text-indent: 100%; overflow: hidden;}
 
 .navList-2UtuhC > #sticker-picker-tab  > .navButton-2gQCx-:after { 
@@ -465,7 +466,7 @@
     width: 20px; height: 20px;
     background-size: 100%;
     background-repeat: no-repeat;
-    background-image:url("https://hypeddomi.github.io/BetterDiscordStuff/Themes/Squared/assets/stickers.png");
+    background-image:url("https://hypeddomi.github.io/BetterDiscordStuff/Themes/Dark/assets/stickers.png");
 }
 
 .navList-2UtuhC > #emoji-picker-tab  > .navButton-2gQCx-:after { 
@@ -474,8 +475,16 @@
     width: 20px; height: 20px;
     background-size: 100%;
     background-repeat: no-repeat;
-    background-image:url("https://hypeddomi.github.io/BetterDiscordStuff/Themes/Squared/assets/emoji.png");
+    background-image:url("https://hypeddomi.github.io/BetterDiscordStuff/Themes/Dark/assets/emoji.png");
 }
+
+.navList-2UtuhC > #bd-emotes-tab > .navButton-2gQCx-:after { 
+  position: absolute;
+  content: "";
+  width: 100%; height: 100%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' overflow='visible' width='40px' height='40px' version='1.1' viewBox='0 0 40 40' x='0px' y='0px'%3E%3Cpolygon xmlns='http://www.w3.org/2000/svg' points='13 8 8 13 8 31 14 31 14 36 19 31 23 31 32 22 32 8' fill='%239147ff'/%3E%3Cpolygon xmlns='http://www.w3.org/2000/svg' points='26 25 30 21 30 10 14 10 14 25 18 25 18 29 22 25' fill='%23fff'/%3E%3Cpath xmlns='http://www.w3.org/2000/svg' d='M20,14 L22,14 L22,20 L20,20 L20,14 Z M27,14 L27,20 L25,20 L25,14 L27,14 Z' fill='%239147ff'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
 .navList-2UtuhC > * > .navButton-2gQCx- { width: 40px; padding: 8px 8px;}
 .navList-2UtuhC > * > .navButton-2gQCx-.navButtonActive-1MkytQ, .emojiItem-14v6tW.emojiItemSelected-1aLkfV { background-color: #6e85d321;}
 .contentWrapper-SvZHNd { grid-row-gap: 20px; padding-top: 8px;}
