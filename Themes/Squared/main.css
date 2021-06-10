@@ -915,10 +915,10 @@ div:not(.headerFill-39azRn)
   --usrbg-modal-width: 700px; /*Maximum width of modal*/
   --usrbg-modal-height: 600px; /*Maximum height of modal*/
 }
-#app-mount .header-4zuFdR .wrapper-3t9DeA[style*="width: 80px;"] {
+#app-mount .header-4zuFdR .wrapper-3t9DeA {
   margin-right: 0 !important;
 }
-#app-mount .header-4zuFdR .wrapper-3t9DeA[style*="width: 80px;"]::after {
+.header-4zuFdR .wrapper-3t9DeA::before {
   content: "";
   position: absolute;
   top: var(--usrbg-modal-x-offset) !important;
@@ -932,16 +932,12 @@ div:not(.headerFill-39azRn)
   mask: linear-gradient(#000, transparent);
 }
 
-.headerInfo-1Y1Vge,
-.tabBarItem-3dfX8P,
-.activity-2M3PRB {
-  z-index: 1;
-  position: relative;
-}
-
-.topSection-y3p-_D *
-.body-r6_QPy {
-  z-index: 1;
+.root-3QyAh1 .headerInfo-1Y1Vge,
+.root-3QyAh1 .tabBarItem-3dfX8P,
+.root-3QyAh1 .activity-2M3PRB,
+.root-3QyAh1 .body-r6_QPy {
+    z-index: 1;
+    position: relative;
 }
 
 /* --------------------------- 👤 USER SETTINGS --------------------------- */
