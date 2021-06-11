@@ -444,14 +444,14 @@
 	--USRBG-avatar-offset: 76px;
 }
 
-.userPopout-xaxa6l[style*="--user-background"] .profileBanner-33-uE1 {
+.userPopout-xaxa6l[style*="--user-background"] .banner-2QYc2d {
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: var(--user-popout-position, center) center;
 	background-image: var(--user-background);
 }
 
-.userPopout-xaxa6l[style*="--user-background"] .profileBanner-33-uE1 {
+.userPopout-xaxa6l[style*="--user-background"] .banner-2QYc2d {
 	height: var(--USRBG-banner-height, 120px);
 }
 
@@ -459,7 +459,7 @@
   	top: var(--USRBG-avatar-offset, 76px);
 }
 
-.userPopout-xaxa6l:not([style*="--user-background"]) .avatar-22FtUu::after {
+.userPopout-xaxa6l:not([style*="--user-background"]) .avatar-37jOim::after {
 	content: '';
 	position: fixed;
 	top: 0;
@@ -475,27 +475,22 @@
 }
 
 /* -- USRBG Big Popout -- */
-.root-3QyAh1 .topSection-y3p-_D {transform: translateZ(0)}
-#app-mount .header-4zuFdR .wrapper-3t9DeA::before {
+.topSection-y3p-_D .banner-2QYc2d{
+	transform: translateZ(0);
+}
+#app-mount .topSection-y3p-_D .banner-2QYc2d::before {
     content: '' !important;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: .5;
     pointer-events: none;
     background: var(--user-background) center/cover no-repeat;
 }
-.headerInfo-1Y1Vge,
-.tabBarItem-3dfX8P,
-.activity-2M3PRB {
-    z-index: 1;
-    position: relative;
-}
 
 /* Mutuals */
-.listRow-1iDGel {
+.root-3QyAh1 .listRow-1iDGel {
   margin: 0; padding: 8px 12px;
 }
 
