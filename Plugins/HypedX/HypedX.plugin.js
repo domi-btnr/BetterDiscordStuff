@@ -2,7 +2,7 @@
  * @name HypedX
  * @author HypedDomi#1711
  * @description Aktiviert die Spielaktivität und eine RichPresence wenn GTA erkannt wird
- * @version 0.3.2
+ * @version 0.4
  * @authorId 354191516979429376
  * @donate https://paypal.me/dominik1711
  * @source https://github.com/HypedDomi/hypeddomi.github.io/blob/master/BetterDiscord/plugins/HypedX.plugin.js
@@ -23,21 +23,16 @@
                  discord_id: "354191516979429376",
              }
          ],
-         version: "0.3.2",
+         version: "0.4",
          description: "Aktiviert die Spielaktivität und eine RichPresence sobald GTA erkannt wird",
          github: "https://github.com/HypedDomi/hypeddomi.github.io/blob/master/BetterDiscord/plugins/HypedX.plugin.js",
          github_raw: "https://raw.githubusercontent.com/HypedDomi/hypeddomi.github.io/master/BetterDiscord/plugins/HypedX.plugin.js"
      },
      changelog: [
         {
-            title: "Hinzugefügt",
-            type: "added",
-            items: ["Einstellungen hinzugefügt"]
-        },
-        {
             title: "Fixed",
             type: "fixed",
-            items: ["Changed PluginLibrary Download Link"]
+            items: ["Changed PluginLibrary Download Link", "Reload Discord should work now"]
         }
     ],
      defaultConfig: [
@@ -137,11 +132,11 @@
         }
  
          onStart() {
-             Dispatcher.subscribe("RUNNING_GAMES_CHANGE", this.runningGamesChange);
+            Dispatcher.subscribe("RUNNING_GAMES_CHANGE", (e) => this.runningGamesChange(e));
          }
  
          onStop() {
-             Dispatcher.unsubscribe("RUNNING_GAMES_CHANGE", this.runningGamesChange);
+            Dispatcher.unsubscribe("RUNNING_GAMES_CHANGE", (e) => this.runningGamesChange(e));
          }
  
      }
