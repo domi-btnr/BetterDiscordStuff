@@ -489,6 +489,10 @@
     background: var(--user-background) center/cover no-repeat;
 }
 
+.activityProfile-2bJRaP .allactivities-left, .activityProfile-2bJRaP .allactivities-right {
+  display: none;
+}
+
 /* Mutuals */
 .root-3QyAh1 .listRow-1iDGel {
   margin: 0; padding: 8px 12px;
