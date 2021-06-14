@@ -815,6 +815,9 @@
 .topSection-y3p-_D .banner-2QYc2d{
 	transform: translateZ(0);
 }
+.root-3QyAh1[style*="--user-background"] .banner-2QYc2d {
+  height: 240px;
+}
 #app-mount .topSection-y3p-_D .banner-2QYc2d::before {
     content: '' !important;
     position: fixed;
