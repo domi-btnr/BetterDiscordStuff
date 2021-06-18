@@ -15,7 +15,6 @@
 
     --text-link: var(--color-brand);
     --brand-experiment: var(--color-brand);
-    --font-display: var(--font-primary);
 
     /* BetterDiscord */
     --bd-blue: var(--color-brand);
@@ -24,6 +23,10 @@
     --blurple: var(--color-brand);
 
     --bdfdb-blurple: var(--color-brand);
+}
+
+html:root {
+  --font-display: var(--font-primary);
 }
 
 /* Windows Buttons Part */
