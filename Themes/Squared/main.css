@@ -11,6 +11,8 @@
 :root {
     --settingsiconssize: 18px;
     --settingsiconsgap: 14px;
+
+    --font-display: var(--font-primary);
     
 }
 
