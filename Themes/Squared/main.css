@@ -512,6 +512,29 @@ html:root {
 .userPopout-xaxa6l { box-shadow: 0 0 10px 0 #101320d2;}
 .userPopout-xaxa6l > * { background: var(--background-secondary);}
 
+.userPopout-xaxa6l .headerTop-3vNv-a {
+  padding: 54px 16px 16px 16px;
+  background-color: var(--background-secondary);
+}
+.userPopout-xaxa6l .body-3HBlXn .customStatus-oN4ZZY, :root .userPopout-xaxa6l .body-3HBlXn .aboutMeSection-1Fw5Ia {
+  padding: 0 16px 16px 16px;
+  background-color: var(--background-secondary);
+}
+.userPopout-xaxa6l .body-3HBlXn .divider-ewBQKj {
+  display: none;
+}
+.userPopout-xaxa6l .body-3HBlXn .bodyInnerWrapper-26fQXj {
+  background-color: transparent;
+  padding: 0px 16px 0 16px;
+}
+.userPopout-xaxa6l .body-3HBlXn .bodyInnerWrapper-26fQXj .activity-2INFPu {
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 5px;
+  z-index: 1;
+  overflow: hidden;
+}
+
 .footer-1fjuF6 .inputDefault-_djjkz {
   border: none;
   background: var(--background-secondary-alt);
