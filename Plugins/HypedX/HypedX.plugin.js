@@ -2,11 +2,11 @@
  * @name HypedX
  * @author HypedDomi#1711
  * @description Aktiviert die Spielaktivität und eine RichPresence wenn GTA erkannt wird
- * @version 0.4
+ * @version 0.5
  * @authorId 354191516979429376
  * @donate https://paypal.me/dominik1711
- * @source https://github.com/HypedDomi/hypeddomi.github.io/blob/master/BetterDiscord/plugins/HypedX.plugin.js
- * @updateUrl https://raw.githubusercontent.com/HypedDomi/hypeddomi.github.io/master/BetterDiscord/plugins/HypedX.plugin.js
+ * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/HypedX
+ * @updateUrl https://hypeddomi.github.io/BetterDiscordStuff/Plugins/HypedX/HypedX.plugin.js
  * @invite Y9Ah3rE
  */
 
@@ -23,16 +23,16 @@
                  discord_id: "354191516979429376",
              }
          ],
-         version: "0.4",
+         version: "0.5",
          description: "Aktiviert die Spielaktivität und eine RichPresence sobald GTA erkannt wird",
-         github: "https://github.com/HypedDomi/hypeddomi.github.io/blob/master/BetterDiscord/plugins/HypedX.plugin.js",
-         github_raw: "https://raw.githubusercontent.com/HypedDomi/hypeddomi.github.io/master/BetterDiscord/plugins/HypedX.plugin.js"
+         github: "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/HypedX",
+         github_raw: "https://hypeddomi.github.io/BetterDiscordStuff/Plugins/HypedX/HypedX.plugin.js"
      },
      changelog: [
         {
             title: "Fixed",
             type: "fixed",
-            items: ["Changed PluginLibrary Download Link", "Reload Discord should work now"]
+            items: ["Fixed Update URL"]
         }
     ],
      defaultConfig: [
