@@ -517,7 +517,6 @@ html:root {
   background-color: var(--background-secondary);
 }
 .userPopout-xaxa6l .body-3HBlXn .customStatus-oN4ZZY, :root .userPopout-xaxa6l .body-3HBlXn .aboutMeSection-1Fw5Ia {
-  padding: 0 16px 16px 16px;
   background-color: var(--background-secondary);
 }
 .userPopout-xaxa6l .body-3HBlXn .divider-ewBQKj {
@@ -525,8 +524,8 @@ html:root {
 }
 .userPopout-xaxa6l .body-3HBlXn .bodyInnerWrapper-26fQXj {
   background-color: transparent;
-  padding: 0px 16px 0 16px;
 }
+
 .userPopout-xaxa6l .body-3HBlXn .bodyInnerWrapper-26fQXj .activity-2INFPu {
   padding: 16px;
   margin-bottom: 16px;
@@ -544,7 +543,7 @@ html:root {
 
 /* -- Activities -- */
 .activityUserPopout-2yItg2 { 
-  padding: 16px; margin: 8px; 
+  padding: 16px; margin: 4px; 
   border-radius: 5px;
   overflow: hidden;
 }
