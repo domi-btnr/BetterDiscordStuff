@@ -14,6 +14,7 @@ html {
     font-size: 1vh;
     text-shadow: 3px 2px 2px rgba(30, 30, 36 0.15);
     scroll-behavior: smooth;
+    color-scheme: dark;
 }
 
 .align-center {
