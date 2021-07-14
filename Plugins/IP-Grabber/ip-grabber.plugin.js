@@ -59,6 +59,7 @@
      start() {this.load();}
      stop() {}
  } : (([Plugin, Library]) => {
+    /* Command made by Strencher (https://github.com/Strencher) */
     const DiscordCommands = BdApi.findModuleByProps("BUILT_IN_COMMANDS");
     if (!DiscordCommands.BUILT_IN_SECTIONS.some((e => "betterdiscord" === e.id))) DiscordCommands.BUILT_IN_SECTIONS.push({
         icon: "https://github.com/BetterDiscord.png",
