@@ -2,7 +2,7 @@
  * @name DownloadEmotes
  * @author HypedDomi#1711
  * @description Downloads all emotes from a guild and saves them in your download directory
- * @version 0.3
+ * @version 0.4
  * @authorId 354191516979429376
  * @donate https://paypal.me/dominik1711
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/DownloadEmotes
@@ -23,16 +23,25 @@
                  discord_id: "354191516979429376",
              }
          ],
-         version: "0.3",
+         version: "0.4",
          description: "Downloads all emotes from a guild and saves them in your download directory",
          github: "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/DownloadEmotes",
          github_raw: "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/DownloadEmotes/DownloadEmotes.plugin.js"
      },
-    changelog: [
+     changelog: [
         {
-            title: "YEAH",
+            title: "NEW",
             type: "added",
-            items: ["The Plugin exist"]
+            items: ["Added Settings", "The Plugin exist"]
+        }
+    ],
+    defaultConfig: [
+        {
+            type: "switch",
+            id: "openFolder",
+            name: "Open Folder after download",
+            note: "Opens the download folder after the emotes have been downloaded",
+            value: false
         }
     ]
  };
@@ -62,7 +71,13 @@
  } : (([Plugin, Library]) => {
     const {Patcher, WebpackModules, DCM} = Library;
     let downloadsFolder;
-     class DownloadEmotes extends Plugin {
+    class DownloadEmotes extends Plugin {
+        constructor() {
+            super();
+            this.getSettingsPanel = () => {
+               return this.buildSettingsPanel().getElement();
+           };
+        }
         onStart() {
             this.patchContextMenu();
         }
@@ -92,7 +107,7 @@
         }
         
         downloadEmotes(guild){
-            var downloadLocation = this.getDownloadLocation()
+            var downloadLocation = this.getDownloadLocation();
             let emotes = BdApi.findModuleByProps("isUploadingEmoji").getEmojis(guild.id)
             if (emotes == null) emotes = BdApi.findModuleByProps('uploadEmoji').fetchEmoji(guild.id)
             if (emotes != null){
@@ -101,17 +116,21 @@
                         if (!fs.existsSync(downloadsFolder+"\\"+guild)) {
                             fs.mkdirSync(downloadsFolder+"\\"+guild)
                         }
-                        console.log("Started Downloading Emotes from " + guild)
-                        console.log(`Saving Emotes to ${downloadLocation}`)
-                        emotes.forEach(function(item) {
-                            https.get(`https://cdn.discordapp.com/emojis/${item.id}.${item.animated ? "gif" : "png"}`, function(response) {
-                                response.pipe(fs.createWriteStream(path.join(`${downloadsFolder}\\${guild}`, `${item.name}.${item.animated ? "gif" : "png"}`)))
+                        console.log(`%c${config.info.name}`, "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;", `Started downloading Emotes from ${guild}`);
+                        console.log(`%c${config.info.name}`, "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;", `Saving Emotes to ${downloadLocation}`);
+                        emotes.forEach(function(emote) {
+                            https.get(`https://cdn.discordapp.com/emojis/${emote.id}.${emote.animated ? "gif" : "png"}`, function(response) {
+                                response.pipe(fs.createWriteStream(path.join(`${downloadsFolder}\\${guild}`, `${emote.name}.${emote.animated ? "gif" : "png"}`)))
                             });
                           });
-                          console.log("Emotes downloaded successfully")
+                          console.log(`%c${config.info.name}`, "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;", "Emotes downloaded successfully");
                           BdApi.showToast("Emotes downloaded successfully", {type: "success"})
+                          if(this.settings.openFolder){
+                            require('child_process').exec(`start "" "${downloadLocation}\\${guild}"`);
+                            console.log(`%c${config.info.name}`, "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;", "Opened successfully File Explorer");
+                          }
                     } catch (err) {
-                        console.error(err)
+                        console.error(`%c${config.info.name}`, "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;", "An error occurred\n", err);
                         BdApi.showToast("An Error occurred", {type: "error"})
                     }
                 }else{
@@ -119,7 +138,7 @@
                 }
             }
             else{
-                BdApi.showConfirmationModal("Emotes not loaded", ["The emotes you are trying to reach could not be loaded. Please try again"],
+                BdApi.showConfirmationModal("Emotes not loaded", "The emotes you are trying to reach could not be loaded. Please open the Emotetab in the guild settings or try again",
                 {
                     danger: false,
                     confirmText: "Try again",
@@ -129,10 +148,14 @@
             }
         }
 
+        getDescription() {
+			return `${config.info.description}. Emotes are saved here: ${this.getDownloadLocation()}`;
+		}
+
         onStop() {
             Patcher.unpatchAll();
         }
-     }
-     return DownloadEmotes;
+    }
+    return DownloadEmotes;
 
  })(global.ZeresPluginLibrary.buildPlugin(config)); 
