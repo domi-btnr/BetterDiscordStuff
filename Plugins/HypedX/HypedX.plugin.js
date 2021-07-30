@@ -1,12 +1,12 @@
 /**
  * @name HypedX
  * @author HypedDomi#1711
- * @description Aktiviert die Spielaktivität und eine RichPresence wenn GTA erkannt wird
- * @version 0.5
  * @authorId 354191516979429376
- * @donate https://paypal.me/dominik1711
+ * @version 0.5
+ * @description Aktiviert die Spielaktivität und eine RichPresence wenn GTA erkannt wird
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/HypedX
  * @updateUrl https://hypeddomi.github.io/BetterDiscordStuff/Plugins/HypedX/HypedX.plugin.js
+ * @donate https://paypal.me/dominik1711
  * @invite Y9Ah3rE
  */
 

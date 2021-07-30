@@ -1,12 +1,12 @@
 /**
  * @name NitroPerks
  * @author HypedDomi#1711
- * @description Gives or removes you Nitro Perks
- * @version 0.3.1
  * @authorId 354191516979429376
- * @donate https://paypal.me/dominik1711
+ * @version 0.3.1
+ * @description Gives or removes you Nitro Perks
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/NitroPerks
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/NitroPerks/NitroPerks.plugin.js
+ * @donate https://paypal.me/dominik1711
  */
 
  const request = require("request");

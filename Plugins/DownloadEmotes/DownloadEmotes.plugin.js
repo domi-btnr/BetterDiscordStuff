@@ -1,12 +1,12 @@
 /**
  * @name DownloadEmotes
  * @author HypedDomi#1711
- * @description Downloads all emotes from a guild and saves them in your download directory
- * @version 0.4
  * @authorId 354191516979429376
- * @donate https://paypal.me/dominik1711
+ * @version 0.4
+ * @description Downloads all emotes from a guild and saves them in your download directory
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/DownloadEmotes
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/DownloadEmotes/DownloadEmotes.plugin.js
+ * @donate https://paypal.me/dominik1711
  */
 
  const request = require("request");
