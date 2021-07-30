@@ -50,9 +50,9 @@ module.exports = (() => {
        changelog: [
            {
                title: "V1.0",
-               type: "improvement",
+               type: "improved",
                items: ["New Settings Modal"]
-            }
+           }
        ]
     };
    
@@ -85,7 +85,7 @@ module.exports = (() => {
                        return {
                            reloadDiscord: false,
                            closeSettingsModal: true,
-                           pluginsToIgnore: [""]
+                           pluginsToIgnore: ["BDFDB"]
                        }
                    }
            
@@ -107,8 +107,12 @@ module.exports = (() => {
                            BdApi.showToast("Enabling all Plugins", {type: "info"});
                            var plugins = BdApi.Plugins.getAll();
                            for (var index = 0; index < plugins.length; index++) {
-                               if(!BdApi.Plugins.isEnabled(plugins[index].name)){
-                                   BdApi.Plugins.enable(plugins[index].name);
+                               if(!this.settings.pluginsToIgnore.includes(plugins[index].name)){
+                                   if(!BdApi.Plugins.isEnabled(plugins[index].name)){
+                                       BdApi.Plugins.enable(plugins[index].name);
+                                   }
+                               }else{
+                                   console.log(`%c${config.info.name}`, "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;", `Ignoring ${plugins[index].name}`);
                                }
                            }
                            console.log(`%c${config.info.name}`, "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;", "All Plugins enabled");
@@ -130,8 +134,12 @@ module.exports = (() => {
                            BdApi.showToast("Disabling all Plugins", {type: "info"});
                            var plugins = BdApi.Plugins.getAll();
                            for (var index = 0; index < plugins.length; index++) {
-                               if(BdApi.Plugins.isEnabled(plugins[index].name) && plugins[index].name != config.info.name){
-                                   BdApi.Plugins.disable(plugins[index].name);
+                               if(!this.settings.pluginsToIgnore.includes(plugins[index].name)){
+                                   if(BdApi.Plugins.isEnabled(plugins[index].name) && plugins[index].name != config.info.name){
+                                       BdApi.Plugins.disable(plugins[index].name);
+                                   }
+                               }else{
+                                   console.log(`%c${config.info.name}`, "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;", `Ignoring ${plugins[index].name}`);
                                }
                            }
                            console.log(`%c${config.info.name}`, "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;", "All Plugins disabled");
