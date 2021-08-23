@@ -60,6 +60,19 @@ html:root {
   --font-display: var(--font-primary);
 }
 
+/* UnfinishedWarning */
+#app-mount .app-2rEoOp::before {
+    content: "Midnightcord is currently still in progress. You are using an unfinished version";
+    display: block;
+    background-color: #4a90e2;
+    color: #fff;
+    font-size: 14px;
+    line-height: 36px;
+    font-weight: 500;
+    text-align: center;
+    z-index: 101;
+}
+
 /* Home */
 /* Home Icon Background */
 .wrapper-1BJsBx.selected-bZ3Lue .childWrapper-anI2G9, .wrapper-1BJsBx:hover .childWrapper-anI2G9{
