@@ -72,8 +72,7 @@ html:root {
     text-align: center;
     z-index: 101;
 }
-
-/* Home */
+/* --------------- Home --------------- */
 /* Home Icon Background */
 .wrapper-1BJsBx.selected-bZ3Lue .childWrapper-anI2G9, .wrapper-1BJsBx:hover .childWrapper-anI2G9{
     background-color: var(--midnightcord-blurple-replace);
@@ -94,7 +93,18 @@ html:root {
 .regionSelectPopout-p9-0_W { background: var(--background-accent) !important;}
 .quickSelect-3BxO0K { margin-top: 10px;}
 
-/* Chat */
+/* --------------- Chat --------------- */
+/* Hover Chatbuttons */
+.buttonWrapper-1ZmCpA:hover { color: var(--interactive-hover); }
+
+/* Autocomplete */
+.autocompleteInner-zh20B_ {
+    background-color: var(--background-secondary-alt);
+}
+.autocompleteInner-zh20B_ .selected-1Tbx07 {
+    background-color: var(--background-primary);
+}
+
 /* Bar "Failed to load messages */
 .messagesErrorBar-nyJGU7 {
     background-color: var(--midnightcord-bright-red);
@@ -107,10 +117,46 @@ html:root {
     opacity: 1;
 }
 
+/* Bar "Jump to present" */
+.jumpToPresentBar-G1R9s6 {
+    opacity: 1;
+    background-color: var(--background-secondary-alt);
+}
+.jumpToPresentBar-G1R9s6 .barButtonBase-2uLO1z {
+    color: var(--midnightcord-blurple-replace);
+}
+
+/* New Message Channellist */
+.unread-1xRYoj {
+    background-color: var(--midnightcord-blurple-replace);
+    opacity: 1;
+}
+
 /* Mentions */
 .mentioned-xhSam7:before { background: var(--midnightcord-blurple-replace); padding: 1px; }
-.mentioned-xhSam7 { background-color: var(--midnightcord-blurple-mention);}
-.message-2qnXI6.mentioned-xhSam7.selected-2P5D_Z, .mouse-mode.full-motion .mentioned-xhSam7:hover { background-color: var(--midnightcord-blurple-mention-hover);}
+.mentioned-xhSam7 { background-color: var(--midnightcord-blurple-mention); }
+.message-2qnXI6.mentioned-xhSam7.selected-2P5D_Z, .mouse-mode.full-motion .mentioned-xhSam7:hover { background-color: var(--midnightcord-blurple-mention-hover); }
+.mention.wrapper-3WhCwL {
+    color: var(--midnightcord-blurple-replace);
+    background-color: rgba(97, 179, 222, 0.1);
+}
+.mention.wrapper-3WhCwL:hover {
+    filter: brightness(140%);
+}
+.mention-1f5kbO, .numberBadge-2s8kKX {
+    background-color: var(--midnightcord-bright-red) !important;
+    opacity: 1;
+}
+
+/* New Message Divider */
+.divider-JfaTT5 {
+    --divider-color: var(--midnightcord-bright-red);
+}
+
+/* Spoilers */
+.spoilerText-3p6IlD.hidden-HHr2R9, .spoilerWarning-2aAZq1 {
+    background-color: var(--background-accent) !important;
+}
 
 /* Upload Modal */
 .uploadModal-2ifh8j { background: var(--background-primary) !important;}
@@ -118,9 +164,6 @@ html:root {
 .uploadModal-2ifh8j .footer-3mqk7D .lookFilled-1Gx00P.colorBrand-3pXr91 {
     background-color: var(--midnightcord-blurple-replace);
 }
-
-/* Invalid Invite Mention Button */
-.container-1ov-mD .lookFilled-1Gx00P.colorBrand-3pXr91 { background-color: var(--midnightcord-blurple-replace); }
 
 /* Deleting message confirmation */
 .theme-dark .root-1gCeng {
@@ -133,11 +176,167 @@ html:root {
     background: var(--midnightcord-bright-red);
 }
 
-/* ----- More ----- */
+/* Invalid Invite Mention Button */
+.container-1ov-mD .lookFilled-1Gx00P.colorBrand-3pXr91 { background-color: var(--midnightcord-blurple-replace); }
+
+/* Follow Button */
+.wrapper-39oAo3 .buttonContainer-3AU1Ij .lookFilled-1Gx00P.colorPrimary-3b3xI6 { background-color: var(--midnightcord-blurple-replace); }
+
+/* HLJS Support */
+.hljs.scrollbar-3dvm_9 {
+    background-color: var(--background-secondary) !important;
+}
+
+/* Search */
+.searchBar-3dMhjb {
+	background-color: var(--channeltextarea-background);
+	transition: 0.25s;
+}
+.searchBar-3dMhjb:hover {
+	background-color: var(--channeltextarea-background);
+}
+.searchBar-3dMhjb:focus-within {
+	background-color: var(--channeltextarea-background);
+}
+.search-2oPWTC.focused-31_ccS { transition: 0.25s;}
+.focused-31_ccS .searchBar-3dMhjb, .searchBar-3dMhjb:hover { width: 220px;}
+.container-3ayLPN {
+    background-color: var(--background-accent) !important;
+}
+.option-96V44q.selected-rZcOL- {
+    background-color: var(--background-tertiary) !important;
+}
+.option-96V44q:after, .resultsGroup-r_nuzN .plusIcon-v0BTrL{
+    display: none !important;
+    /*background: linear-gradient(90deg,rgba(0,0,0,0), var(--background-accent) 45%) !important;*/
+}
+.searchAnswer-3Dz2-q, .searchFilter-2ESiM3{
+    background-color: var(--background-primary) !important;
+}
+
+/* DatePicker */
+.react-datepicker__navigation.react-datepicker__navigation--previous, .react-datepicker__navigation.react-datepicker__navigation--next {
+    border-color: transparent !important;
+}
+.react-datepicker, .react-datepicker__header{
+    background-color: var(--background-accent) !important;
+}
+.calendarPicker-2yf6Ci .react-datepicker__current-month {
+    font-size: 20px;
+}
+.react-datepicker__day--disabled, .react-datepicker__day--outside-month {
+    background-color: var(--background-primary) !important;
+}
+.react-datepicker__day:hover{
+    background-color: var(--background-secondary) !important;
+}
+.react-datepicker__day.react-datepicker__day--keyboard-selected, .react-datepicker__day.react-datepicker__day--selected:after, .datePicker--XZbmJ .hintValue-29ny8Z{
+    background-color: var(--midnightcord-blurple-replace) !important;
+}
+.calendarPicker-2yf6Ci .react-datepicker__day {
+    border-color: black;
+    background-color: var(--background-modifier-hover);
+    font-weight: 550;
+}
+.calendarPicker-2yf6Ci .react-datepicker__day:hover {
+    background-color: var(--background-secondary);
+}
+.calendarPicker-2yf6Ci .react-datepicker__day--selected::after {
+    background-color: var(--midnightcord-blurple-replace);
+}
+.calendarPicker-2yf6Ci .react-datepicker__day--disabled, .calendarPicker-2yf6Ci .react-datepicker__day--disabled:hover {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --------------- Userpopout/modal --------------- */
+/* -- USRBG for popouts -- */
+.userPopout-xaxa6l {
+	overflow: hidden;
+	transform: translateZ(0) !important;
+	--USRBG-banner-height: 60px;
+}
+
+.userPopout-xaxa6l[style*="--user-background"] {
+	--USRBG-banner-height: 120px;
+	--USRBG-avatar-offset: 76px;
+}
+
+.userPopout-xaxa6l[style*="--user-background"] .banner-2QYc2d {
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: var(--user-popout-position, center) center;
+	background-image: var(--user-background);
+}
+
+.userPopout-xaxa6l[style*="--user-background"] .banner-2QYc2d {
+	height: var(--USRBG-banner-height, 120px);
+}
+
+.userPopout-xaxa6l[style*="--user-background"] .avatarWrapperNormal-26WQIb {
+  	top: var(--USRBG-avatar-offset, 76px);
+}
+
+.userPopout-xaxa6l:not([style*="--user-background"]) .avatar-37jOim::after {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: -1;
+	height: var(--USRBG-banner-height, 120px);
+	pointer-events: none;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: var(--user-popout-position, center) center;
+	background-image: var(--user-background);
+}
+
+/* -- USRBG Big Popout -- */
+.topSection-y3p-_D .banner-2QYc2d{
+	transform: translateZ(0);
+}
+.root-3QyAh1[style*="--user-background"] .banner-2QYc2d {
+  height: 240px;
+}
+#app-mount .topSection-y3p-_D .banner-2QYc2d::before {
+    content: '' !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: var(--user-background) center/cover no-repeat;
+}
+
+.activityProfile-2bJRaP .allactivities-left, .activityProfile-2bJRaP .allactivities-right {
+  display: none;
+}
+
+/* Mutuals */
+.root-3QyAh1 .listRow-1iDGel {
+  margin: 0;
+  padding: 8px 12px;
+}
+
+/* --------------- More --------------- */
 /* Actionbuttons */
-.container-1giJp5 .actionButtons-14eAc_ .button-1YfofB.buttonActive-3FrkXp, .focused-3afm-j {
+.container-1giJp5 .actionButtons-14eAc_ .button-1YfofB.buttonActive-3FrkXp, .focused-3afm-j, .colorDefault-2K3EoJ.focused-3afm-j {
     background-color: var(--midnightcord-blurple-replace);
     color: #fff;
+}
+.colorDefault-2K3EoJ:active:not(.hideInteraction-1iHO1O) {
+    background-color: rgb(85, 155, 222);
+}
+
+/* Danger Color */
+.colorDanger-2qLCe1 { color: var(--midnightcord-bright-red);}
+.colorDanger-2qLCe1.focused-3afm-j {
+    background-color: var(--midnightcord-bright-red);
+}
+.colorDanger-2qLCe1:active:not(.hideInteraction-1iHO1O) {
+    background-color: rgb(227, 30, 12);
 }
 
 /* Screenshare Modal */
@@ -145,6 +344,11 @@ html:root {
 .footer-2gL1pp { background: var(--background-secondary) !important; }
 .selectorButtonSelected-t5V9On, .root-1gCeng .lookFilled-1Gx00P.colorBrand-3pXr91 {
     background-color: var(--midnightcord-blurple-replace);
+}
+
+/* Channel Hover */
+.containerDefault--pIXnN:hover .icon-1DeIlz, .containerDefault--pIXnN:hover .channelName-2YrOjO {
+    color: var(--midnightcord-blurple-replace);
 }
 
 /* Bot tags */
@@ -163,16 +367,7 @@ html:root {
     background: var(--background-tertiary);
 }
 
-/* Danger Color */
-.colorDanger-2qLCe1 { color: var(--midnightcord-bright-red);}
-.colorDanger-2qLCe1.focused-3afm-j {
-    background-color: var(--midnightcord-bright-red);
-}
-.colorDanger-2qLCe1:active:not(.hideInteraction-1iHO1O) {
-    background-color: rgb(227, 30, 12);
-}
-
-/* ----- CUSTOM CSS ----- */
+/* --------------- CUSTOM CSS --------------- */
 /* Revert Role Design by Ashtrath#9079 */
 .role-2irmRk{
     background: transparent;
