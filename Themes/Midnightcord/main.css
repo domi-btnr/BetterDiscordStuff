@@ -1,0 +1,188 @@
+/* USRBG */
+@import url(https://discord-custom-covers.github.io/usrbg/dist/usrbg.css);
+
+/* Effects for some User */
+@import url(https://hypeddomi.github.io/BetterDiscordStuff/Themes/supporter.css);
+
+/* Settings Icons */
+@import url(https://mwittrien.github.io/BetterDiscordAddons/Themes/_res/SettingsIcons.css);
+
+:root {
+    /* Midnightcord */
+    --midnightcord-blurple-replace: #61b3de;
+    --midnightcord-blurple-mention: rgb(97, 179, 222, .075);
+    --midnightcord-blurple-mention-hover: rgba(97, 179, 222, .1);
+    --midnightcord-bright-red: #e33c17;
+    --midnightcord-almost-white: #fbfbfb;
+    --midnightcord-nitro-pink: #fa6ef6;
+
+    /* Discord */
+    --color-brand: var(--midnightcord-blurple-replace);
+
+    --background-accent: rgb(20, 23, 31);
+    --background-primary: rgb(24, 28, 37);
+    --background-secondary: var(--background-accent);
+    --background-secondary-alt: #0c0e13;
+    --background-floating: var(--background-secondary-alt);
+    --background-tertiary: var(--background-secondary-alt);
+    --background-modifier-hover: rgba(255, 255, 255, 0.01);
+    --background-modifier-active: rgba(255, 255, 255, 0.03);
+    --background-modifier-selected: rgba(255, 255, 255, 0.04);
+    --activity-card-background: var(--background-secondary-alt);
+    --channeltextarea-background: var(--background-accent);
+    --radio-group-dot-foreground: var(--midnightcord-blurple-replace);
+    --text-link: rgb(129, 216, 208);
+    --text-normal: var(--midnightcord-almost-white);
+    --text-muted: rgb(182, 182, 182);
+    --header-secondary: rgb(201, 201, 201);
+    --channels-default: rgb(159, 159, 159);
+    --offline-color: rgb(60, 60, 60);
+    --interactive-normal: rgb(200, 200, 200);
+    --interactive-hover: var(--midnightcord-blurple-replace);
+    --interactive-active: white;
+    --interactive-muted: #30343d;
+
+    --scrollbar-auto-thumb: var(--background-accent);
+    --scrollbar-auto-track: transparent;
+    --scrollbar-thin-thumb: transparent;
+
+    /* Settings Icons */
+    --settingsiconssize: 18px;
+    --settingsiconsgap: 14px;
+
+    /* BetterDiscord */
+    --bd-blue: var(--color-brand);
+    --blurple: var(--color-brand);
+    --bdfdb-blurple: var(--color-brand);
+}
+
+html:root {
+  --font-display: var(--font-primary);
+}
+
+/* Home */
+/* Home Icon Background */
+.wrapper-1BJsBx.selected-bZ3Lue .childWrapper-anI2G9, .wrapper-1BJsBx:hover .childWrapper-anI2G9{
+    background-color: var(--midnightcord-blurple-replace);
+}
+/* Friends column */
+.peopleColumn-29fq28 { background: var(--background-primary);}
+
+/* Call Buttons */
+.primaryDark-3mSFDl {background: var(--background-primary) !important;}
+
+/* End Call Button */
+.voiceAvatar-14IynY + .status-1WEaea,
+.callContainer-36WRfH .bottomControls-lIJyYL .red-33-Lnk {
+    background-color: var(--midnightcord-bright-red);
+}
+
+/* Region Selector Private call */
+.regionSelectPopout-p9-0_W { background: var(--background-accent) !important;}
+.quickSelect-3BxO0K { margin-top: 10px;}
+
+/* Chat */
+/* Bar "Failed to load messages */
+.messagesErrorBar-nyJGU7 {
+    background-color: var(--midnightcord-bright-red);
+    opacity: 1;
+}
+
+/* Bar "New message" */
+.newMessagesBar-265mhP {
+	background-color: var(--midnightcord-blurple-replace);
+    opacity: 1;
+}
+
+/* Mentions */
+.mentioned-xhSam7:before { background: var(--midnightcord-blurple-replace); padding: 1px; }
+.mentioned-xhSam7 { background-color: var(--midnightcord-blurple-mention);}
+.message-2qnXI6.mentioned-xhSam7.selected-2P5D_Z, .mouse-mode.full-motion .mentioned-xhSam7:hover { background-color: var(--midnightcord-blurple-mention-hover);}
+
+/* Upload Modal */
+.uploadModal-2ifh8j { background: var(--background-primary) !important;}
+.footer-3mqk7D { background: var(--background-secondary) !important;}
+.uploadModal-2ifh8j .footer-3mqk7D .lookFilled-1Gx00P.colorBrand-3pXr91 {
+    background-color: var(--midnightcord-blurple-replace);
+}
+
+/* Invalid Invite Mention Button */
+.container-1ov-mD .lookFilled-1Gx00P.colorBrand-3pXr91 { background-color: var(--midnightcord-blurple-replace); }
+
+/* Deleting message confirmation */
+.theme-dark .root-1gCeng {
+    background: var(--background-primary);
+}
+.theme-dark .root-1gCeng .message-2qRu38 {
+    background: var(--background-secondary);
+}
+.theme-dark .root-1gCeng .lookFilled-1Gx00P.colorRed-1TFJan{
+    background: var(--midnightcord-bright-red);
+}
+
+/* ----- More ----- */
+/* Actionbuttons */
+.container-1giJp5 .actionButtons-14eAc_ .button-1YfofB.buttonActive-3FrkXp, .focused-3afm-j {
+    background-color: var(--midnightcord-blurple-replace);
+    color: #fff;
+}
+
+/* Screenshare Modal */
+.root-1gCeng { background: var(--background-primary); }
+.footer-2gL1pp { background: var(--background-secondary) !important; }
+.selectorButtonSelected-t5V9On, .root-1gCeng .lookFilled-1Gx00P.colorBrand-3pXr91 {
+    background-color: var(--midnightcord-blurple-replace);
+}
+
+/* Bot tags */
+.botTag-2WPJ74 {
+  color: var(--text-normal);
+  background-color: var(--midnightcord-blurple-replace);
+}
+
+/* Streaming Indicator */
+.live-vBWnV6 {
+    background-color: var(--midnightcord-bright-red) !important;
+}
+
+/* Watch stream popout */
+.theme-dark .body-Ogsp8i {
+    background: var(--background-tertiary);
+}
+
+/* Danger Color */
+.colorDanger-2qLCe1 { color: var(--midnightcord-bright-red);}
+.colorDanger-2qLCe1.focused-3afm-j {
+    background-color: var(--midnightcord-bright-red);
+}
+.colorDanger-2qLCe1:active:not(.hideInteraction-1iHO1O) {
+    background-color: rgb(227, 30, 12);
+}
+
+/* ----- CUSTOM CSS ----- */
+/* Revert Role Design by Ashtrath#9079 */
+.role-2irmRk{
+    background: transparent;
+    border: 1px solid;
+    border-radius: 11px;
+}
+.roleCircle-3xAZ1j {
+    margin-left: 0;
+}
+.addButton-pcyyf6.role-2irmRk {
+    border-color: #4f545c;
+}
+.addButtonIcon-1NMJ8u {
+    width: 10px;
+    height: 10px;
+}
+
+/* Jump to Message by _david_#0218 */
+[title^="https://discord.com/channels/"] {
+    line-height: 0;
+    font-size: 0;
+}
+[title^="https://discord.com/channels/"]::before {
+    content: 'Jump to Message';
+    font-size: 16px;
+}
