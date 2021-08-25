@@ -238,6 +238,12 @@ html:root {
 .theme-dark .tile-2OwFgW { background-color: var(--background-floating) !important; }
 .theme-dark .invalidPoop-pnUbq7 { background-color: var(--background-accent) !important; }
 
+/* Spotify Listening Party */
+.theme-dark .invite-18yqGF {
+    background: var(--background-accent) !important;
+    border-color: transparent;
+}
+
 /* Upload Modal */
 .uploadModal-2ifh8j { background: var(--background-primary) !important;}
 .footer-3mqk7D { background: var(--background-secondary) !important;}
