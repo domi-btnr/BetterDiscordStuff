@@ -125,23 +125,18 @@ html:root {
 .root-1gCeng { background: rgb(20, 23, 31) !important; }
 .theme-light .footer-2gL1pp { background: #0c0e13 !important; }
 .base-1x0h_U, .colorHeaderSecondary-3Sp3Ft, .colorStandard-2KCXvj,
-.contents-18-Yxp, .inputDefault-_djjkz { color: var(--midnightcord-almost-white) !important; }
+.container-1CE3eW .button-38aScr, .inputDefault-_djjkz { color: var(--midnightcord-almost-white) !important; }
 .container-UC8Ug1 {
     border-color: transparent !important;
     background-color: rgb(24, 28, 37);
 }
 .uploadIcon-2IFzZU .iconContainer-2B0ixr svg circle { fill: var(--midnightcord-blurple-replace) !important; }
-.input-cIJ7To.focused-1mmYsC, .input-cIJ7To:focus { border-color: var(--midnightcord-blurple-replace) !important; }
-.anchor-3Z-8Bb { color: var(--midnightcord-blurple-replace) !important; }
+.container-1CE3eW .anchor-3Z-8Bb { color: var(--midnightcord-blurple-replace) !important; }
 
 /* Join a Server */
 .input--jS-j2 {
     border-radius: 8px;
     background-color: rgb(24, 28, 37) !important;
-}
-.input-cIJ7To.focused-1mmYsC, .input-cIJ7To:focus, .input-cIJ7To:hover{
-    border: 1px solid var(--midnightcord-blurple-replace) !important;
-    border-radius: 8px;
 }
 .sampleLink-2NLvZg { color: var(--midnightcord-almost-white); }
 
@@ -290,41 +285,6 @@ html:root {
     background-color: var(--background-accent) !important;
 }
 
-/* DatePicker */
-.react-datepicker__navigation.react-datepicker__navigation--previous, .react-datepicker__navigation.react-datepicker__navigation--next {
-    border-color: transparent !important;
-}
-.react-datepicker, .react-datepicker__header{
-    background-color: var(--background-accent) !important;
-}
-.calendarPicker-2yf6Ci .react-datepicker__current-month {
-    font-size: 20px;
-}
-.react-datepicker__day--disabled, .react-datepicker__day--outside-month {
-    background-color: var(--background-primary) !important;
-}
-.react-datepicker__day:hover{
-    background-color: var(--background-secondary) !important;
-}
-.react-datepicker__day.react-datepicker__day--keyboard-selected, .react-datepicker__day.react-datepicker__day--selected:after, .datePicker--XZbmJ .hintValue-29ny8Z{
-    background-color: var(--midnightcord-blurple-replace) !important;
-}
-.calendarPicker-2yf6Ci .react-datepicker__day {
-    border-color: black;
-    background-color: var(--background-modifier-hover);
-    font-weight: 550;
-}
-.calendarPicker-2yf6Ci .react-datepicker__day:hover {
-    background-color: var(--background-secondary);
-}
-.calendarPicker-2yf6Ci .react-datepicker__day--selected::after {
-    background-color: var(--midnightcord-blurple-replace);
-}
-.calendarPicker-2yf6Ci .react-datepicker__day--disabled, .calendarPicker-2yf6Ci .react-datepicker__day--disabled:hover {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
 
 /* --------------- Userpopout/modal --------------- */
 /* -- USRBG for popouts -- */
@@ -403,8 +363,10 @@ html:root {
 .accountList-33MS45 { background-color: var(--background-secondary); }
 
 /* Nitro Tab */
+.premiumTabItem-1QTfBr:hover:not(.disabled-1Hwwfb):not([aria-selected=true]) { color: var(--midnightcord-nitro-pink) !important; }
 .premiumTabItem-1QTfBr[aria-selected=true] {
-    background-color: var(--midnightcord-blurple-replace) !important;
+    color: var(--midnightcord-almost-white) !important;
+    background-color: var(--midnightcord-nitro-pink) !important;
 }
 
 /* Gift Inventory */
@@ -422,6 +384,7 @@ html:root {
 /* Activity Status */
 .notDetected-33MY4s { background-color: var(--background-secondary) !important; }
 .addGamePopout-2RY8Ju { background-color: var(--background-primary) !important; }
+.overlayToggleIconOff-1kT42w g path, .overlayToggleIconOff-1kT42w g rect { fill: var(--midnightcord-bright-red) !important; }
 .detectedApplication-1qfUIv .flowerStar-1GeTsn path { fill: var(--midnightcord-blurple-replace) !important; }
 
 /* Game Overlay */
@@ -493,6 +456,9 @@ html:root {
 }
 .prefixInput-14nUik.focused-2QzoMt { border-color: var(--midnightcord-blurple-replace) !important; }
 
+/* Server Boost Status */
+.serverBoostTabItem-2hFTIN[aria-selected=true] { background-color: var(--midnightcord-nitro-pink) !important; }
+
 /* Members */
 .pruneLink-3V7wes { color: var(--midnightcord-bright-red) !important; }
 
@@ -535,7 +501,6 @@ html:root {
 /* Remove Button */
 .default-3oAQTF { background-color: var(--background-accent) !important; }
 
-
 /* Dropdown menu */
 .css-3vaxre-menu {
     background-color: var(--background-primary);
@@ -545,6 +510,7 @@ html:root {
     background-color: var(--background-secondary) !important;
 }
 .css-bcsufo-menu { background-color: var(--background-accent) !important; }
+.css-gvi9bl-control:hover, .css-6fzn47-control, .css-17e1tep-control { border-color: var(--midnightcord-blurple-replace) !important; }
 
 /* Actionbuttons */
 .button-1YfofB.buttonColor-7qQbGO, .button-1YfofB .buttonColor-7qQbGO {
@@ -620,6 +586,58 @@ html:root {
 
 /* Card */
 .cardPrimary-1Hv-to { background-color: var(--background-secondary); }
+
+/* DatePicker */
+.react-datepicker__navigation.react-datepicker__navigation--previous, .react-datepicker__navigation.react-datepicker__navigation--next {
+    border-color: transparent !important;
+}
+.react-datepicker, .react-datepicker__header{
+    background-color: var(--background-accent) !important;
+}
+.calendarPicker-2yf6Ci .react-datepicker__current-month {
+    font-size: 20px;
+}
+.react-datepicker__day--disabled, .react-datepicker__day--outside-month {
+    background-color: var(--background-primary) !important;
+}
+.react-datepicker__day:hover{
+    background-color: var(--background-secondary) !important;
+}
+.react-datepicker__day.react-datepicker__day--keyboard-selected, .react-datepicker__day.react-datepicker__day--selected:after, .datePicker--XZbmJ .hintValue-29ny8Z{
+    background-color: var(--midnightcord-blurple-replace) !important;
+}
+.calendarPicker-2yf6Ci .react-datepicker__day {
+    border-color: black;
+    background-color: var(--background-modifier-hover);
+    font-weight: 550;
+}
+.calendarPicker-2yf6Ci .react-datepicker__day:hover {
+    background-color: var(--background-secondary);
+}
+.calendarPicker-2yf6Ci .react-datepicker__day--selected::after {
+    background-color: var(--midnightcord-blurple-replace);
+}
+.calendarPicker-2yf6Ci .react-datepicker__day--disabled, .calendarPicker-2yf6Ci .react-datepicker__day--disabled:hover {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Colorpicker */
+.colorPickerCustom-2CWBn2 {
+    background: var(--background-primary) !important;
+}
+.colorPickerCustom-2CWBn2 .input-cIJ7To {
+    background: var(--background-secondary);
+}
+
+/* Input Border */
+.input-cIJ7To {
+    border-radius: 8px !important;
+    border-color: transparent !important;
+}
+.input-cIJ7To.focused-1mmYsC, .input-cIJ7To:hover {
+    border: 1px solid var(--midnightcord-blurple-replace) !important;
+}
 
 
 /* --------------- CUSTOM CSS --------------- */
