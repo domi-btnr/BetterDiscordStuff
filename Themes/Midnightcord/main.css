@@ -60,18 +60,6 @@ html:root {
   --font-display: var(--font-primary);
 }
 
-/* UnfinishedWarning */
-#app-mount .app-2rEoOp::before {
-    content: "Midnightcord is currently still in progress. You are using an unfinished version";
-    display: block;
-    background-color: #4a90e2;
-    color: #fff;
-    font-size: 14px;
-    line-height: 36px;
-    font-weight: 500;
-    text-align: center;
-    z-index: 101;
-}
 /* Info Settings */
 .info-1VyQPT::before {
     content: "Midnightcord Theme";
@@ -79,6 +67,19 @@ html:root {
     line-height: 16px;
     font-weight: 500;
     color: var(--blurple);
+}
+
+/* UpdateCheck */
+#app-mount .app-2rEoOp::before {
+    content: "Your version of Midnightcord is outdated. Please download the newest version from GitHub";
+    display: var(--version1, block);
+    background-color: #4a90e2;
+    color: #fff;
+    font-size: 14px;
+    line-height: 36px;
+    font-weight: 500;
+    text-align: center;
+    z-index: 101;
 }
 
 /* --------------- Home --------------- */
@@ -96,7 +97,8 @@ html:root {
 /* Friends column */
 .peopleColumn-29fq28 { background: var(--background-primary); }
 
-/* Activity Hover */
+/* Activity */
+.theme-dark .inset-3sAvek, .separator-XqIyoz { background-color: transparent !important; }
 .outer-1AjyKL.active-1xchHY, .outer-1AjyKL.interactive-3B9GmY:hover { background: var(--background-modifier-hover) !important; }
 
 /* Call Buttons */
@@ -121,10 +123,17 @@ html:root {
 .regionSelectPopout-p9-0_W { background: var(--background-accent) !important; }
 .quickSelect-3BxO0K { margin-top: 10px; }
 
+/* Nitro Tab */
+.clickable-1JJAn8[href="/store"]:hover:not([aria-selected=true]) { color: var(--midnightcord-nitro-pink) !important; }
+.selected-aXhQR6[href="/store"] {
+    color: var(--midnightcord-almost-white) !important;
+    background-color: var(--midnightcord-nitro-pink) !important;
+}
+
 /*Create a Server */
 .root-1gCeng { background: rgb(20, 23, 31) !important; }
 .theme-light .footer-2gL1pp { background: #0c0e13 !important; }
-.base-1x0h_U, .colorHeaderSecondary-3Sp3Ft, .colorStandard-2KCXvj,
+.container-1CE3eW .base-1x0h_U, .colorHeaderSecondary-3Sp3Ft, .container-UC8Ug1 .colorStandard-2KCXvj,
 .container-1CE3eW .button-38aScr, .inputDefault-_djjkz { color: var(--midnightcord-almost-white) !important; }
 .container-UC8Ug1 {
     border-color: transparent !important;
@@ -245,9 +254,11 @@ html:root {
 
 /* Invalid Invite Mention Button */
 .container-1ov-mD .lookFilled-1Gx00P.colorBrand-3pXr91 { background-color: var(--midnightcord-blurple-replace); }
+.container-1ov-mD .lookFilled-1Gx00P.colorBrand-3pXr91:hover { background-color: rgba(97, 179, 222, 0.7); }
 
 /* Follow Button */
 .wrapper-39oAo3 .buttonContainer-3AU1Ij .lookFilled-1Gx00P.colorPrimary-3b3xI6 { background-color: var(--midnightcord-blurple-replace); }
+.wrapper-39oAo3 .buttonContainer-3AU1Ij .lookFilled-1Gx00P.colorPrimary-3b3xI6:hover { background-color: rgba(97, 179, 222, 0.7); }
 
 /* HLJS Support */
 .hljs.scrollbar-3dvm_9 {
@@ -359,6 +370,15 @@ html:root {
 
 
 /* --------------- User Settings --------------- */
+/* Authorized Apps */
+.authedApp-mj2Hmd{
+    border-color: transparent !important;
+    background-color: rgba(20, 23, 31, .7) !important;
+    border-radius: 8px;
+}
+.authedApp-mj2Hmd:hover {
+    background-color: var(--background-accent) !important;
+}
 /* Connections */
 .accountList-33MS45 { background-color: var(--background-secondary); }
 
@@ -457,6 +477,7 @@ html:root {
 .prefixInput-14nUik.focused-2QzoMt { border-color: var(--midnightcord-blurple-replace) !important; }
 
 /* Server Boost Status */
+.serverBoostTabItem-2hFTIN:hover:not(.disabled-1Hwwfb):not([aria-selected=true]) { color: var(--midnightcord-nitro-pink) !important; }
 .serverBoostTabItem-2hFTIN[aria-selected=true] { background-color: var(--midnightcord-nitro-pink) !important; }
 
 /* Members */
@@ -468,6 +489,21 @@ html:root {
     background-color: var(--background-accent) !important;
     border-radius: 8px;
 }
+
+/* Channel Settings */
+.autocompleteArrow-Zxoy9H, .header-2bNvm4 { background-color: var(--background-secondary-alt) !important; }
+.container-VSDcQc .sectionTag-pXyto9 { background-color: var(--background-secondary) !important; }
+.deny-3nAuT6.selected-2YhbGh { background-color: var(--midnightcord-bright-red); }
+.item-PXvHYJ[aria-controls="delete-tab"] { color: var(--midnightcord-bright-red) !important; }
+.item-PXvHYJ[aria-controls="delete-tab"]:active {
+    color: var(--midnightcord-almost-white) !important;
+    background-color: var(--midnightcord-bright-red) !important;
+}
+
+/* Server Boost Page */
+.theme-dark .perksModal-fSYqOq { background-color: var(--background-primary) !important; }
+.theme-dark .perk-2WeBWW { background-color: var(--background-secondary) !important; }
+.theme-dark .tierBody-16Chc9 { background-color: var(--background-accent) !important; }
 
 
 /* --------------- More --------------- */
@@ -585,7 +621,10 @@ html:root {
 }
 
 /* Card */
-.cardPrimary-1Hv-to { background-color: var(--background-secondary); }
+.cardPrimary-1Hv-to {
+    border-color: transparent;
+    background-color: var(--background-secondary);
+}
 
 /* DatePicker */
 .react-datepicker__navigation.react-datepicker__navigation--previous, .react-datepicker__navigation.react-datepicker__navigation--next {
