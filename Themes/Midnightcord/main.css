@@ -154,6 +154,8 @@ html:root {
 .categoryItem-1QIroW.selectedCategoryItem-FHKU_o .itemInner-gPkiWb,
 .categoryPill-34fszg.selected-1dONk0 { background-color: var(--midnightcord-blurple-replace) !important; }
 .searchPage-3GKAdT .search-1iTphC .searchBox-2_mAlO:focus, .searchPage-3GKAdT .search-1iTphC .searchBox-2_mAlO:focus-within { border-color: var(--midnightcord-blurple-replace) !important; }
+.search-1iTphC .searchBox-2_mAlO .searchBoxInput-K6mkng { color: var(--background-accent) !important; }
+.searchPage-3GKAdT .search-1iTphC .searchBox-2_mAlO .searchBoxInput-K6mkng { color: var(--midnightcord-almost-white) !important; }
 .guildList-1ItbxP { grid-gap: 0 !important; }
 .card-Lnpy-k { padding: 16px; }
 .card-Lnpy-k:hover {
@@ -624,6 +626,11 @@ html:root {
     color: var(--midnightcord-blurple-replace);
 }
 
+/* Threads Bar */
+.spine--Wla_O {
+    color: var(--background-modifier-selected);
+}
+
 /* Bot tags */
 .botTag-2WPJ74 {
   color: var(--text-normal);
@@ -684,7 +691,7 @@ html:root {
     border-radius: 8px !important;
     border-color: transparent !important;
 }
-.input-cIJ7To.focused-1mmYsC, .input-cIJ7To:hover {
+.input-cIJ7To.focused-1mmYsC, .input-cIJ7To:focus, .input-cIJ7To:hover {
     border: 1px solid var(--midnightcord-blurple-replace) !important;
 }
 
