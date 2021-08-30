@@ -616,10 +616,9 @@ html:root {
 .theme-dark .body-Ogsp8i {
     background: var(--background-tertiary);
 }
-.theme-dark .previewContainer-12UlHl {
+.theme-dark .previewContainer-12UlHl, .applicationStreamingPreviewSize-3NIvhL {
     background-color: var(--background-accent);
 }
-.emptyPreviewText-2IOfAL { padding-left: 11px; }
 
 /* Channel Hover */
 .containerDefault--pIXnN:hover .icon-1DeIlz, .containerDefault--pIXnN:hover .channelName-2YrOjO {
