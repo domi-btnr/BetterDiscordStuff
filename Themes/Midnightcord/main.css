@@ -698,6 +698,16 @@ html:root {
 .theme-dark .contentWrapper-3WC1ID { background: var(--background-accent) !important; }
 
 
+/* --------------- Plugin Support --------------- */
+/* PermissionViewer */
+#permissions-modal-wrapper .header,
+#permissions-modal-wrapper .perm-side { background-color: var(--background-primary) !important; }
+#permissions-modal-wrapper .role-side { background-color: var(--background-secondary) !important; }
+
+/* BetterFormatingRedux */
+.bf-toolbar::before { background-color: var(--background-primary) !important; }
+
+
 /* --------------- CUSTOM CSS --------------- */
 /* Revert Role Design by Ashtrath#9079 */
 .role-2irmRk{
