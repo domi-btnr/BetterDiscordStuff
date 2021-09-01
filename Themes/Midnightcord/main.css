@@ -457,18 +457,18 @@ html:root {
 .selectedBrand-1UKrSX.focused-dKLoQt, .selectedBrand-1UKrSX:hover {
     background-color: rgba(97, 179, 222, 0.7) !important;
 }
-.auditLog-3jNbM6{
+.auditLog-2ph_aK{
     border-color: transparent !important;
 }
-.headerClickable-2IVFo9, .headerDefault-1wrJcN {
+.headerClickable-g5d9lT, .headerDefault-2D4Kcg {
     background-color: var(--background-accent) !important;
     border-radius: 8px;
 }
-.headerExpanded-CUEwZ5 {
+.headerExpanded-2egR38 {
     background-color: var(--background-accent) !important;
     border-radius: 8px 8px 0 0;
 }
-.changeDetails-bk98pu {
+.changeDetails-2dV5gP {
     background-color: var(--background-accent) !important;
     border-radius: 0 0 8px 8px;
 }
