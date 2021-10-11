@@ -108,8 +108,8 @@
         
         downloadEmotes(guild){
             var downloadLocation = this.getDownloadLocation();
-            let emotes = BdApi.findModuleByProps("isUploadingEmoji").getEmojis(guild.id)
-            if (emotes == null) emotes = BdApi.findModuleByProps('uploadEmoji').fetchEmoji(guild.id)
+            let emoteStore = BdApi.findModuleByProps('getGuildEmoji')
+            let emotes = emoteStore.getGuilds()[guild.id].emojis
             if (emotes != null){
                 if(emotes.length != 0){
                     try {
