@@ -15,6 +15,7 @@
     --midnightcord-bright-red: #e33c17;
     --midnightcord-almost-white: #fbfbfb;
     --midnightcord-nitro-pink: #fa6ef6;
+    --midnightcord-spoiler: #050507;
 
     /* Discord */
     --color-brand: var(--midnightcord-blurple-replace);
@@ -231,9 +232,14 @@ html:root {
     --divider-color: var(--midnightcord-bright-red);
 }
 
-/* Spoilers */
-.spoilerText-3p6IlD.hidden-HHr2R9, .spoilerWarning-2aAZq1 {
-    background-color: var(--background-accent) !important;
+.spoilerWarning-2aAZq1 {
+    background-color: var(--midnightcord-spoiler) !important;
+}
+.spoilerText-3p6IlD {
+    background-color: var(--midnightcord-spoiler) !important;
+}
+.spoilerText-3p6IlD:hover > .inlineContent-3ZjPuv {
+    opacity: 1;
 }
 
 /* Gifts */
