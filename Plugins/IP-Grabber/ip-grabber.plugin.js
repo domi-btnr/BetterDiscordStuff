@@ -2,7 +2,7 @@
  * @name IP-Grabber
  * @author HypedDomi#1711
  * @description Grabs peoples IP address through a custom exploit. Made by Waves for Powercord
- * @version 0.1
+ * @version 0.2
  * @authorId 354191516979429376
  * @donate https://paypal.me/dominik1711
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/IP-Grabber
@@ -22,16 +22,16 @@
                  discord_id: "354191516979429376",
              }
          ],
-         version: "0.1",
+         version: "0.2",
          description: "Grabs peoples IP address through a custom exploit. Made by Waves for Powercord",
          github: "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/IP-Grabber",
          github_raw: "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/IP-Grabber/ip-grabber.plugin.js"
      },
     changelog: [
         {
-            title: "YEAH",
-            type: "added",
-            items: ["The Plugin exist"]
+            title: "v0.2",
+            type: "fixed",
+            items: ["Commands should now work"]
         }
     ]
  };
@@ -56,43 +56,47 @@
                  }
              });
      }
-     start() {this.load();}
+     start() { this.load(); }
      stop() {}
  } : (([Plugin, Library]) => {
-    /* Command made by Strencher (https://github.com/Strencher) */
-    const DiscordCommands = BdApi.findModuleByProps("BUILT_IN_COMMANDS");
-    if (!DiscordCommands.BUILT_IN_SECTIONS.some((e => "betterdiscord" === e.id))) DiscordCommands.BUILT_IN_SECTIONS.push({
-        icon: "https://github.com/BetterDiscord.png",
-        id: "betterdiscord",
-        name: "BetterDiscord",
-        type: 0
-    });
-    function registerCommand(caller, options) {
-        const cmd = Object.assign({}, options, {
-            __registerId: caller,
-            applicationId: "betterdiscord"
-        });
-        DiscordCommands.BUILT_IN_COMMANDS.push(cmd);
-        return () => {
-            const index = DiscordCommands.BUILT_IN_COMMANDS.findIndex((c => c === cmd));
-            if (index < 0) return false;
-            DiscordCommands.BUILT_IN_COMMANDS.splice(index, 1);
+        /* Command made by Strencher (https://github.com/Strencher) */
+        const DiscordCommands = BdApi.findModuleByProps("BUILT_IN_COMMANDS");
+        const DiscordCommandTypes = BdApi.findModuleByProps("ApplicationCommandType");
+        const Types = DiscordCommandTypes.ApplicationCommandType;
+        if (!DiscordCommands.BUILT_IN_SECTIONS["betterdiscord"]) DiscordCommands.BUILT_IN_SECTIONS["betterdiscord"] = {
+            icon: "https://github.com/BetterDiscord.png",
+            id: "betterdiscord",
+            name: "BetterDiscord",
+            type: 0
         };
-    }
-    function unregisterAllCommands(caller) {
-        let index = DiscordCommands.BUILT_IN_COMMANDS.findIndex((cmd => cmd.__registerId === caller));
-        while (index > -1) {
-            DiscordCommands.BUILT_IN_COMMANDS.splice(index, 1);
-            index = DiscordCommands.BUILT_IN_COMMANDS.findIndex((cmd => cmd.__registerId === caller));
+        function registerCommand(caller, options) {
+            const cmd = Object.assign({}, options, {
+                __registerId: caller,
+                applicationId: "betterdiscord",
+                type: Types.BOT,
+                target: 1
+            });
+            DiscordCommands.BUILT_IN_COMMANDS.push(cmd);
+            return () => {
+                const index = DiscordCommands.BUILT_IN_COMMANDS.indexOf(cmd);
+                if (index < 0) return false;
+                DiscordCommands.BUILT_IN_COMMANDS.splice(index, 1);
+            };
         }
-    }
-    const Commands = {
-        registerCommand,
-        unregisterAllCommands
-    };
-    const commands = Commands;
+        function unregisterAllCommands(caller) {
+            let index = DiscordCommands.BUILT_IN_COMMANDS.findIndex((cmd => cmd.__registerId === caller));
+            while (index > -1) {
+                DiscordCommands.BUILT_IN_COMMANDS.splice(index, 1);
+                index = DiscordCommands.BUILT_IN_COMMANDS.findIndex((cmd => cmd.__registerId === caller));
+            }
+        }
+        const Commands = {
+            registerCommand,
+            unregisterAllCommands
+        };
+        const commands = Commands;
+
      class IPGrabber extends Plugin {
-         
         KEKW() {
             let KEKW = document.createElement('audio')
             KEKW.src = 'https://ia800605.us.archive.org/8/items/NeverGonnaGiveYouUp/jocofullinterview41.ogg'
@@ -109,7 +113,7 @@
                     image.src = 'https://media1.tenor.com/images/23aeaaa34afd591deee6c163c96cb0ee/tenor.gif?itemid=7220603'
                 ))
         }
-         onStart() {
+        onStart() {
             commands.registerCommand(this.getName(), {
                 id: "ipgrab",
                 name: "ipgrab",
@@ -121,7 +125,7 @@
                 options: [{
                     name: "user",
                     type: 6,
-                    description: "The user"
+                    description: "The user you want the IP from"
                 }],
                 type: 3
             });
