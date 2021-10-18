@@ -51,7 +51,16 @@ html {
     width: 100%;
     height: 64px;
     z-index: 100;
-    animation: floating-navbar 150ms ease;
+    animation: floating-navbar 350ms ease;
+}
+
+@keyframes floating-navbar{
+    0%{
+        transform: translateY(-100%)
+    }
+    100%{
+        transform: none
+    }
 }
 
 #navbar.sticky .navbar-logo.small {
