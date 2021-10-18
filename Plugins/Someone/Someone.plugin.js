@@ -22,7 +22,7 @@
                  discord_id: "354191516979429376",
              }
          ],
-         version: "1.1",
+         version: "1.1.0",
          description: "Brings back the @someone function",
          github: "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/Someone",
          github_raw: "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/Someone/Someone.plugin.js"
@@ -46,6 +46,11 @@
             title: "NEW",
             type: "added",
             items: ["Added settings"]
+        },
+        {
+            title: "FIXED",
+            type: "fixed",
+            items: ["Updating should now work"]
         }
     ]
  };
