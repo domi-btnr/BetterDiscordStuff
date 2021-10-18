@@ -22,16 +22,21 @@
                  discord_id: "354191516979429376",
              }
          ],
-         version: "0.2",
+         version: "1.0.0",
          description: "Grabs peoples IP address through a custom exploit. Made by Waves for Powercord",
          github: "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/IP-Grabber",
          github_raw: "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/IP-Grabber/ip-grabber.plugin.js"
      },
     changelog: [
         {
-            title: "v0.2",
+            title: "1.0",
             type: "fixed",
             items: ["Commands should now work"]
+        },
+        {
+            title: "FIXED",
+            type: "fixed",
+            items: ["Updating should now work"]
         }
     ]
  };

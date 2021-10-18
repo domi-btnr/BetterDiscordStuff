@@ -23,12 +23,17 @@
                  discord_id: "354191516979429376",
              }
          ],
-         version: "0.5",
+         version: "0.5.0",
          description: "Downloads all emotes from a guild and saves them in your download directory",
          github: "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/DownloadEmotes",
          github_raw: "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/DownloadEmotes/DownloadEmotes.plugin.js"
      },
      changelog: [
+        {
+            title: "FIXED",
+            type: "fixed",
+            items: ["Updating should now work"]
+        },
         {
             title: "0.5",
             type: "added",

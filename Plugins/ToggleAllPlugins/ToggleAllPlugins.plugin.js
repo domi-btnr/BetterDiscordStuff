@@ -42,7 +42,7 @@ module.exports = (() => {
                     discord_id: "354191516979429376",
                 }
             ],
-            version: "1.0",
+            version: "1.0.0",
             description: "Toggles all Plugins",
             github: "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/ToggleAllPlugins",
             github_raw: "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/ToggleAllPlugins/ToggleAllPlugins.plugin.js"
@@ -52,6 +52,11 @@ module.exports = (() => {
                title: "V1.0",
                type: "improved",
                items: ["New Settings Modal"]
+           },
+           {
+            title: "FIXED",
+            type: "fixed",
+            items: ["Updating should now work"]
            }
        ]
     };
