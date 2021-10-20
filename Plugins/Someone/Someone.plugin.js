@@ -2,7 +2,7 @@
  * @name Someone
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 1.1
+ * @version 1.2
  * @description Brings back the @someone function
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/Someone
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/Someone/Someone.plugin.js
@@ -22,7 +22,7 @@
                  discord_id: "354191516979429376",
              }
          ],
-         version: "1.1.0",
+         version: "1.2.0",
          description: "Brings back the @someone function",
          github: "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/Someone",
          github_raw: "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/Someone/Someone.plugin.js"
@@ -43,14 +43,9 @@
     ],
      changelog: [
         {
-            title: "NEW",
-            type: "added",
-            items: ["Added settings"]
-        },
-        {
             title: "FIXED",
             type: "fixed",
-            items: ["Updating should now work"]
+            items: ["Fixed freezing", "All @someone mentions will now be changed"]
         }
     ]
  };
@@ -96,26 +91,35 @@
 
         patchMessage() {
             Patcher.before(DiscordModules.MessageActions, "sendMessage", (_, [, msg]) => {
-                msg.content = this.getSomeone(msg.content);
+                let count = (msg.content.match(/@someone/g) || []).length;
+                for (let i = 0; i < count; i++) {
+                    msg.content = msg.content.replace("@someone", this.getSomeone());
+                }
+                if (msg.content.includes("@someone")) BdApi.showToast("No user found who is online\nDeactivate Ignore offline to ping offline members", {type: "info", timeout: 3500});
             });
         }
 
-        getSomeone(msg) {
-            let content = msg;
+        getSomeone() {
             let MemberStore = BdApi.findModuleByProps('getMembers', 'getMemberIds');
             let Member = MemberStore.getMemberIds(BdApi.findModuleByProps('getLastSelectedGuildId').getLastSelectedGuildId());
             if(this.settings.ignoreSelf) {
                 Member = Member.filter(e => e !== BdApi.findModuleByProps("getCurrentUser").getCurrentUser()["id"]);
             }
+            let online = 0;
+            for (let id in Member) {
+                if (BdApi.findModuleByProps("getStatus").getStatus(Member[id]) != "offline") online++;
+            }
+            if (this.settings.ignoreOffline && online <= 0) {
+                return "@someone";
+            }
             Member = Member[Math.floor(Math.random() * Member.length)];
-            let status = BdApi.findModuleByProps("getStatus").getStatus(Member)
+            let status = BdApi.findModuleByProps("getStatus").getStatus(Member);
             if(this.settings.ignoreOffline) {
-                if(status == "offline") return this.getSomeone(msg);
-            }            
-            content = content.replace("@someone", `<@${Member}>`);
-            return content;
+                if(status == "offline") return this.getSomeone();
+            }
+            return `<@${Member}>`;
         }
     }
     return Someone;
 
- })(global.ZeresPluginLibrary.buildPlugin(config)); 
+ })(global.ZeresPluginLibrary.buildPlugin(config));
