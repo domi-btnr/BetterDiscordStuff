@@ -34,12 +34,24 @@
      },
      changelog: [
         {
+            title: "New",
+            type: "added",
+            items: ["Added the ability to ignore yourself"]
+        },
+        {
             title: "Improved",
             type: "improved",
-            items: ["Supports now all Discord Gift Urls"]
+            items: ["Supports now all Discord Gift Links"]
         }
     ],
     defaultConfig: [
+        {
+            type: "switch",
+            id: "ignoreSelf",
+            name: "Ignore yourself",
+            note: "Ignore Discord Gift Links from yourself",
+            value: true
+        },
         {
             type: "dropdown",
             id:"toast",
@@ -117,6 +129,9 @@
                     return;
                 
                 const message = dispatched.methodArguments[0].message;
+                
+                if (this.settings.ignoreSelf)
+                    return;
 
                 if (message.content == null)
                     return;
