@@ -2,7 +2,7 @@
  * @name NitroSniper
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 0.1
+ * @version 0.2
  * @description Automatically redeems Discord nitro gift codes
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/NitroSniper
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/NitroSniper/NitroSniper.plugin.js
@@ -27,16 +27,16 @@
                 github_username: "Nexons"
             }
          ],
-         version: "0.1.0",
+         version: "0.2.0",
          description: "Automatically redeems Discord nitro gift codes",
          github: "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/NitroSniper",
          github_raw: "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/NitroSniper/NitroSniper.plugin.js"
      },
      changelog: [
         {
-            title: "YEAH",
-            type: "added",
-            items: ["The Plugin exists"]
+            title: "Improved",
+            type: "improved",
+            items: ["Supports now all Discord Gift Urls"]
         }
     ],
     defaultConfig: [
@@ -121,14 +121,15 @@
                 if (message.content == null)
                     return;
                 
-                const giftUrlArray = message.content.match(/(https?:\/\/)?(www\.)?(discord\.gift)\/[^_\W]+/g);
+                const giftUrlArray = message.content.match(/(https?:\/\/)?(www\.)?(discord\.gift)\/[^_\W]+/g) || message.content.match(/(https?:\/\/)?(www\.)?(discordapp\.com\/gifts)\/[^_\W]+/g)  || message.content.match(/(https?:\/\/)?(www\.)?(discord\.com\/gifts)\/[^_\W]+/g);
 
                 if (giftUrlArray == null)
                     return;
                 
                 const channel = ChannelStore.getChannel(message.channel_id).name;
                 giftUrlArray.forEach(async (giftUrl) => {
-                    const code = giftUrl.replace(/(https?:\/\/)?(www\.)?(discord\.gift)\//g, "");
+                    const code = giftUrl.replace(/(https?:\/\/)?(www\.)?(discord\.gift)\//g, "").replace(/(https?:\/\/)?(www\.)?(discordapp\.com\/gifts)\//g, "").replace(/(https?:\/\/)?(www\.)?(discord\.com\/gifts)\//g, "");
+                    console.log(code);
                     if (token == null || token === "") {
                         if (this.settings.notifications != 1 && this.settings.notifications != 2) BdApi.showToast("Invalid token. Please restart NitroSniper or Discord", {type: "error", timeout: 5000});
                         return;
@@ -144,12 +145,12 @@
                         }
                     });
                     if (response.status == 200) {
-                        if (this.settings.notifications != 2){
+                        if (this.settings.notifications != 2) {
                             if (this.settings.toast) BdApi.showToast(`Successfully redeemed nitro code ${code}`, {type: "success"});
                             else BdApi.alert("Nitro code redeemed | NitroSniper", `Code: ${code}\n\nServer: ${message.guild_id}\n\nChannel: #${channel}\n\nAuthor: ${message.author.username}#${message.author.discriminator}\n\nMessage Link: https://discord.com/channels/${message.guild_id}/${message.channel_id}/${message.id}`);
                         }
                         return;
-                    } else if (response.status == 400){
+                    } else if (response.status == 400) {
                         if (this.settings.notifications != 2 && this.settings.notifications != 1){
                             if (this.settings.toast) BdApi.showToast(`Failed to redeem invalid nitro code ${code}`, {type: "error"});
                             else BdApi.alert("Invalid Nitro code | NitroSniper", `Code: ${code}\n\nServer: ${message.guild_id}\n\nChannel: #${channel}\n\nAuthor: ${message.author.username}#${message.author.discriminator}\n\nMessage Link: https://discord.com/channels/${message.guild_id}/${message.channel_id}/${message.id}`);
