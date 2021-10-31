@@ -31,7 +31,7 @@ html:root {
 
 /* UpdateCheck */
 #app-mount .app-2rEoOp::before {
-  content: "Your version of Midnightcord is outdated. Please download the newest version from GitHub";
+  content: "Your version of Dark is outdated. Please download the newest version from GitHub";
   display: var(--version0_4, block);
   background-color: #4a90e2;
   color: #fff;
