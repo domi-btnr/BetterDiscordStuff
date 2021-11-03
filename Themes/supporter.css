@@ -1,22 +1,19 @@
 /* HypedDomi#1711 */
+
 /* Messages */
 .repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="354191516979429376"]+.username-1A8OIy,
-
 .listRow-hutiT_ .listAvatar-1NlAhb .avatarStack-2Dr8S9[src*="354191516979429376"]+.username-2b1r56,
-
 [data-author-id="354191516979429376"] .contents-2mQqc9 .username-1A8OIy,
-[vz-user-id="354191516979429376"] .contents-2mQqc9 .username-1A8OIy,
 [data-user-id="354191516979429376"] .contents-2mQqc9 .username-1A8OIy,
 
 /* Modal */
-.header-QKLPzZ .avatar-3EQepX[data-user-id="354191516979429376"]+.headerInfo-30uryT .nameTag-2IFDfL .username-2b1r56,
+.root-3QyAh1[data-user-id="354191516979429376"] .username-2b1r56,
 
 /* Popout */
 [aria-label="HypedDomi"] .username-2b1r56,
 
 /* Friend list */
-[vz-user-id="354191516979429376"] .overflow-WK9Ogt,
-[data-user-id="354191516979429376"] .overflow-WK9Ogt { 
+.peopleListItem-2nzedh[data-user-id="354191516979429376"] .username-2b1r56.username-31C1TQ { 
   animation: flow 6s ease-in-out infinite;
   background: linear-gradient(to right, #9900ff, #ff0000);
   background-size: 350%;
@@ -26,22 +23,21 @@
 }
 
 /* JustInGame#5353 */
+
 /* Messages */
 .repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="465821010042814465"]+.username-1A8OIy,
-
+.listRow-hutiT_ .listAvatar-1NlAhb .avatarStack-2Dr8S9[src*="465821010042814465"]+.username-2b1r56,
 [data-author-id="465821010042814465"] .contents-2mQqc9 .username-1A8OIy,
-[vz-user-id="465821010042814465"] .contents-2mQqc9 .username-1A8OIy,
 [data-user-id="465821010042814465"] .contents-2mQqc9 .username-1A8OIy,
 
 /* Modal */
-.header-QKLPzZ .avatar-3EQepX[data-user-id="465821010042814465"]+.headerInfo-30uryT .nameTag-2IFDfL .username-2b1r56,
+.root-3QyAh1[data-user-id="465821010042814465"] .username-2b1r56,
 
 /* Popout */
 [aria-label="JustInGame"] .username-2b1r56,
 
 /* Friend list */
-[vz-user-id="465821010042814465"] .overflow-WK9Ogt,
-[data-user-id="465821010042814465"] .overflow-WK9Ogt { 
+.peopleListItem-2nzedh[data-user-id="465821010042814465"] .username-2b1r56.username-31C1TQ { 
   animation: flow 6s ease-in-out infinite;
   background: linear-gradient(to right, #0010ed, #0095ff);
   background-size: 350%;
@@ -50,23 +46,22 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* Hops#0001 */
+/* Hops#3227 */
+
 /* Messages */
 .repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="706566395542110249"]+.username-1A8OIy,
-
+.listRow-hutiT_ .listAvatar-1NlAhb .avatarStack-2Dr8S9[src*="706566395542110249"]+.username-2b1r56,
 [data-author-id="706566395542110249"] .contents-2mQqc9 .username-1A8OIy,
-[vz-user-id="706566395542110249"] .contents-2mQqc9 .username-1A8OIy,
 [data-user-id="706566395542110249"] .contents-2mQqc9 .username-1A8OIy,
 
 /* Modal */
-.header-QKLPzZ .avatar-3EQepX[data-user-id="706566395542110249"]+.headerInfo-30uryT .nameTag-2IFDfL .username-2b1r56,
+.root-3QyAh1[data-user-id="706566395542110249"] .username-2b1r56,
 
 /* Popout */
 [aria-label="Hops"] .username-2b1r56,
 
 /* Friend list */
-[vz-user-id="706566395542110249"] .overflow-WK9Ogt,
-[data-user-id="706566395542110249"] .overflow-WK9Ogt { 
+.peopleListItem-2nzedh[data-user-id="706566395542110249"] .username-2b1r56.username-31C1TQ { 
   animation: flow 6s ease-in-out infinite;
   background: linear-gradient(to right, #ff00ff, #00ffff);
   background-size: 350%;
@@ -76,22 +71,21 @@
 }
 
 /* Keksrabatt#1030 */
+
 /* Messages */
 .repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="678753992066727946"]+.username-1A8OIy,
-
+.listRow-hutiT_ .listAvatar-1NlAhb .avatarStack-2Dr8S9[src*="678753992066727946"]+.username-2b1r56,
 [data-author-id="678753992066727946"] .contents-2mQqc9 .username-1A8OIy,
-[vz-user-id="678753992066727946"] .contents-2mQqc9 .username-1A8OIy,
 [data-user-id="678753992066727946"] .contents-2mQqc9 .username-1A8OIy,
 
 /* Modal */
-.header-QKLPzZ .avatar-3EQepX[data-user-id="678753992066727946"]+.headerInfo-30uryT .nameTag-2IFDfL .username-2b1r56,
+.root-3QyAh1[data-user-id="678753992066727946"] .username-2b1r56,
 
 /* Popout */
 [aria-label="Keksrabatt"] .username-2b1r56,
 
 /* Friend list */
-[vz-user-id="678753992066727946"] .overflow-WK9Ogt,
-[data-user-id="678753992066727946"] .overflow-WK9Ogt { 
+.peopleListItem-2nzedh[data-user-id="678753992066727946"] .username-2b1r56.username-31C1TQ { 
   animation: flow 6s ease-in-out infinite;
   background: linear-gradient(to right, #9900ff, #ff0000);
   background-size: 350%;
@@ -101,28 +95,49 @@
 }
 
 /* laurii#4649 */
+
 /* Messages */
 .repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="709775475140198451"]+.username-1A8OIy,
-
+.listRow-hutiT_ .listAvatar-1NlAhb .avatarStack-2Dr8S9[src*="709775475140198451"]+.username-2b1r56,
 [data-author-id="709775475140198451"] .contents-2mQqc9 .username-1A8OIy,
-[vz-user-id="709775475140198451"] .contents-2mQqc9 .username-1A8OIy,
 [data-user-id="709775475140198451"] .contents-2mQqc9 .username-1A8OIy,
 
 /* Modal */
-.header-QKLPzZ .avatar-3EQepX[data-user-id="709775475140198451"]+.headerInfo-30uryT .nameTag-2IFDfL .username-2b1r56,
+.root-3QyAh1[data-user-id="709775475140198451"] .username-2b1r56,
 
 /* Popout */
 [aria-label="laurii"] .username-2b1r56,
 
 /* Friend list */
-[vz-user-id="709775475140198451"] .overflow-WK9Ogt,
-[data-user-id="709775475140198451"] .overflow-WK9Ogt { 
+.peopleListItem-2nzedh[data-user-id="709775475140198451"] .username-2b1r56.username-31C1TQ { 
   animation: flow 6s ease-in-out infinite;
   background: linear-gradient(to right, #E91E63, #861EE9);
   background-size: 350%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Bαmbus#6118 */
+
+/* Messages */
+.repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="648794263567597569"]+.username-1A8OIy,
+.listRow-hutiT_ .listAvatar-1NlAhb .avatarStack-2Dr8S9[src*="648794263567597569"]+.username-2b1r56,
+[data-author-id="648794263567597569"] .contents-2mQqc9 .username-1A8OIy,
+[data-user-id="648794263567597569"] .contents-2mQqc9 .username-1A8OIy,
+
+/* Modal */
+.root-3QyAh1[data-user-id="648794263567597569"] .username-2b1r56,
+
+/* Popout */
+[aria-label="Bαmbus"] .username-2b1r56,
+
+/* DM List */
+.channel-2QD9_O[data-user-id="648794263567597569"] .overflow-WK9Ogt,
+
+/* Friend list */
+.peopleListItem-2nzedh[data-user-id="648794263567597569"] .username-2b1r56 { 
+  animation: rainbow 9s ease-in-out infinite;
 }
 
 @keyframes flow {
