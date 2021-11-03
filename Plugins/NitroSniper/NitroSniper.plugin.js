@@ -38,7 +38,7 @@ const config = {
     {
       title: "Fixed",
       type: "fixed",
-      items: ["NitroSniper works again"],
+      items: ["NitroSniper works again", "Private Messages working too"],
     },
     {
       title: "Improved",
@@ -192,7 +192,7 @@ module.exports = !global.ZeresPluginLibrary
         if (giftUrlArray == null) return;
 
         const guild =
-          GuildStore.getGuild(message.guild_id).name || "Private Message";
+          (message.guild_id && GuildStore.getGuild(message.guild_id).name) || UserStore.getUser(message.author.id).tag;
         const UserRow = React.createElement(
           "div",
           {
@@ -226,7 +226,7 @@ module.exports = !global.ZeresPluginLibrary
                 document.getElementsByClassName("button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMedium-1AC_Sl grow-q77ONN")[0].click();
                 NavigationUtils.transitionTo(`/channels/${message.guild_id || "@me"}/${message.channel_id}`)
               },
-              children: [ChannelStore.getChannel(message.channel_id).name],
+              children: [ChannelStore.getChannel(message.channel_id).name || UserStore.getUser(message.author.id).tag],
             }),
           ]
         );
