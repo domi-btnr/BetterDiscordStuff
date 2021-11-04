@@ -21,7 +21,7 @@ body:
   - type: textarea
     id: steps-to-reproduce
     attributes:
-      label: How do you recreate this bug
+      label: How can i recreate this bug
       description: Give me a list of steps in order to recreate the bug.
       placeholder: |
         1. Do ...
