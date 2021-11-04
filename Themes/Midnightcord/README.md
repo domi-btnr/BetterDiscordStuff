@@ -12,6 +12,6 @@ A simple midnight theme
 ## Previews
 #### [Click for Live Preview](https://gibbu.github.io/ThemePreview/?file=https://hypeddomi.github.io/BetterDiscordStuff/Themes/Midnightcord/Midnightcord.theme.css)
 
-![Preview](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Midnightcord/Preview1.png)
-![Preview](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Midnightcord/Preview2.png)
-![Preview](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Midnightcord/Preview3.png)
+![Preview](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Midnightcord/assets/Preview1.png)
+![Preview](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Midnightcord/assets/Preview2.png)
+![Preview](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Midnightcord/assets/Preview3.png)

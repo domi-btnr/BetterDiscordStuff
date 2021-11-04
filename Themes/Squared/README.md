@@ -12,4 +12,4 @@ Based on the [Comfy](https://github.com/NYRI4/Comfy) Theme by [NYRI4](https://gi
 ---
 #### [Click for Live Preview](https://gibbu.github.io/ThemePreview/?file=https://hypeddomi.github.io/BetterDiscordStuff/Themes/Squared/Squared.theme.css)
 
-![Preview](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Squared/Preview.png)
+![Preview](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Squared/assets/Preview.png)

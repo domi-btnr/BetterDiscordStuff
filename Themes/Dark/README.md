@@ -12,4 +12,4 @@ Theme with snippets from the [Discord.tv](https://betterdiscord.app/theme/Discor
 ---
 #### [Click for Live Preview](https://gibbu.github.io/ThemePreview/?file=https://hypeddomi.github.io/BetterDiscordStuff/Themes/Dark/Dark.theme.css)
 
-![Preview](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Dark/Preview.png)
+![Preview](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Dark/assets/Preview.png)
