@@ -15,7 +15,6 @@
     --midnightcord-bright-red: #e33c17;
     --midnightcord-almost-white: #fbfbfb;
     --midnightcord-nitro-pink: #fa6ef6;
-    --midnightcord-spoiler: #0C0E13;
 
     /* Discord */
     --color-brand: var(--midnightcord-blurple-replace);
@@ -68,6 +67,15 @@ html:root {
     line-height: 16px;
     font-weight: 500;
     color: var(--blurple);
+}
+/* Custom Badge for me */
+#app-mount [data-user-id="354191516979429376"] .badgeList-1R1WgZ::after,
+#app-mount [data-user-id="354191516979429376"] .profileBadges-ohc0Vu::after,
+#app-mount [data-user-id="354191516979429376"] .badges-XRnWAp::after {
+    content: "";
+    width: 22px;
+    height: 22px;
+    background: url(https://bambus.me/BetterDiscordStuff/Themes/Midnightcord/assets/verified.png) center / 100% 100%;
 }
 
 /* UpdateCheck */
@@ -232,14 +240,17 @@ html:root {
     --divider-color: var(--midnightcord-bright-red);
 }
 
-.spoilerWarning-2aAZq1 {
-    background-color: var(--midnightcord-spoiler) !important;
-}
-.spoilerText-3p6IlD {
-    background-color: var(--midnightcord-spoiler) !important;
+/* Spoiler */
+/* Blur Spoiler from ashtrath#9079 */
+.spoilerText-3p6IlD,
+.spoilerText-3p6IlD.hidden-HHr2R9 { background-color: transparent !important; }
+.spoilerText-3p6IlD.hidden-HHr2R9 > .inlineContent-3ZjPuv {
+    opacity: 1 !important;
+    filter: blur(3px);
+    pointer-events: unset;
 }
 .spoilerText-3p6IlD:hover > .inlineContent-3ZjPuv {
-    opacity: 1;
+    filter: none;
 }
 
 /* Gifts */
@@ -401,8 +412,10 @@ html:root {
 .accountList-33MS45 { background-color: var(--background-secondary); }
 
 /* Nitro Tab */
-.premiumTabItem-1QTfBr:hover:not(.disabled-1Hwwfb):not([aria-selected=true]) { color: var(--midnightcord-nitro-pink) !important; }
-.premiumTabItem-1QTfBr[aria-selected=true] {
+.premiumLabel-fDtYys > svg { display: none; }
+.item-PXvHYJ[aria-controls="discord-nitro-tab"][aria-selected=true]::before { z-index: 2; }
+.item-PXvHYJ[aria-controls="discord-nitro-tab"]:hover:not(.disabled-1Hwwfb):not([aria-selected=true]) { color: var(--midnightcord-nitro-pink) !important; }
+.item-PXvHYJ[aria-controls="discord-nitro-tab"][aria-selected=true] .selectedBackground-2KQZ6B {
     color: var(--midnightcord-almost-white) !important;
     background-color: var(--midnightcord-nitro-pink) !important;
 }
@@ -574,6 +587,18 @@ html:root {
     background-color: var(--midnightcord-blurple-replace);
 }
 
+/* Multi Account - Add Account */
+.theme-dark.authBox-hW6HRx { background: rgb(24, 28, 37); }
+.navRow-3bgpKd { background: var(--background-secondary-alt); }
+
+/* RTC Connection Debug */
+.theme-dark .container-2x5lvQ .header-2C89wJ {
+    background-color: var(--background-secondary);
+}
+.theme-dark .container-2x5lvQ section {
+    background-color: var(--background-primary);
+}
+
 /* Context Menu */
 .colorDefault-2K3EoJ { color: var(--midnightcord-almost-white); }
 .colorDefault-2K3EoJ.focused-3afm-j { background-color: var(--background-modifier-selected); } 
@@ -583,6 +608,7 @@ html:root {
 #guild-header-popout-premium-subscribe {
     color: var(--midnightcord-nitro-pink);
 }
+#guild-header-popout-premium-subscribe .icon-LYJorE { color: var(--midnightcord-nitro-pink); }
 #guild-header-popout-premium-subscribe.focused-3afm-j {
     background-color: rgba(250, 110, 246, 0.15);
 }
