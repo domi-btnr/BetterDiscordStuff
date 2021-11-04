@@ -1,5 +1,5 @@
 name: Bug Report
-about: Create an Bug report for my Plugins or Themes
+description: Create an Bug report for my Plugins or Themes
 labels: [bug]
 body:
   - type: input
