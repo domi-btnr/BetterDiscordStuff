@@ -1,0 +1,32 @@
+name: Bug Report
+about: Create an Bug report for my Plugins or Themes
+labels: [bug]
+body:
+  - type: input
+    id: discord
+    attributes:
+      label: Discord Account
+      description: Who on Discord is making this request? Not required.
+      placeholder: Wumpus#0000
+    validations:
+      required: false
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Describe the bug
+      description: Where does this bug occur, when does it occur, etc.
+      placeholder: The bug happens sometimes when I do ..., causing this to not work. I think it happens because of ..., I hope that can help!
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: How do you recreate this bug
+      description: Give me a list of steps in order to recreate the bug.
+      placeholder: |
+        1. Do ...
+        2. Then ...
+        3. Do this ..., ... and then ...
+        4. Observe "the bug"
+    validations:
+      required: false
