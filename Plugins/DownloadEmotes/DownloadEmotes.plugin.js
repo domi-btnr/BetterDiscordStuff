@@ -252,11 +252,11 @@ module.exports = !global.ZeresPluginLibrary
           }
         }
 
-        /*getDescription() {
+        getDescription() {
           return `${
             config.info.description
           }. Emotes are saved here: ${this.getDownloadLocation()}`;
-        }*/
+        }
 
         onStop() {
           Patcher.unpatchAll();
