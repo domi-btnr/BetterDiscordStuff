@@ -87,7 +87,7 @@ module.exports = !global.ZeresPluginLibrary
       stop() {}
     }
   : (([Plugin, Library]) => {
-      const { Patcher, WebpackModules, DCM } = Library;
+      const { Patcher, WebpackModules, DCM, PluginUtilities } = Library;
       let downloadsFolder;
       class DownloadEmotes extends Plugin {
         constructor() {
@@ -130,7 +130,7 @@ module.exports = !global.ZeresPluginLibrary
             return (downloadsFolder = downloadPath);
           else {
             downloadsFolder = path.join(
-              BDUtils.getPluginsFolder(),
+              PluginUtilities.getPluginsFolder(),
               "downloads"
             );
             if (!fs.existsSync(downloadsFolder)) fs.mkdirSync(downloadsFolder);
