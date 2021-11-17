@@ -155,6 +155,33 @@
   animation: rainbow 9s ease-in-out infinite;
 }
 
+/* JustDannyboi#9376 */
+
+/* Messages */
+.repliedMessage-VokQwo .replyAvatar-1K9Wmr[src*="674664573118447636"]+.username-1A8OIy,
+.listRow-hutiT_ .listAvatar-1NlAhb .avatarStack-2Dr8S9[src*="674664573118447636"]+.username-2b1r56,
+[data-author-id="674664573118447636"] .contents-2mQqc9 .username-1A8OIy,
+[data-user-id="674664573118447636"] .contents-2mQqc9 .username-1A8OIy,
+
+/* Modal */
+.root-3QyAh1[data-user-id="674664573118447636"] .username-2b1r56,
+
+/* DM List */
+.channel-2QD9_O[data-user-id="674664573118447636"] .overflow-WK9Ogt,
+
+/* Popout */
+[aria-label="JustDannyboi"] .username-2b1r56,
+
+/* Friend list */
+.peopleListItem-2nzedh[data-user-id="674664573118447636"] .username-2b1r56.username-31C1TQ { 
+  animation: flow 6s ease-in-out infinite;
+  background: linear-gradient(to right, #00F7F4, #E91E63);
+  background-size: 350%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 @keyframes flow {
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
