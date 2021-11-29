@@ -105,6 +105,10 @@ html:root {
 
 /* Friends column */
 .peopleColumn-29fq28 { background: var(--background-primary); }
+.discriminator-22Okc1 {
+    display: block !important;
+    visibility: visible;
+}
 
 /* Activity */
 .theme-dark .inset-3sAvek, .separator-XqIyoz { background-color: transparent !important; }
@@ -508,11 +512,12 @@ html:root {
 .prefixInput-14nUik.focused-2QzoMt { border-color: var(--midnightcord-blurple-replace) !important; }
 
 /* Server Boost Status */
-.serverBoostTabItem-2hFTIN:hover:not(.disabled-1Hwwfb):not([aria-selected=true]) { color: var(--midnightcord-nitro-pink) !important; }
-.serverBoostTabItem-2hFTIN[aria-selected=true] { background-color: var(--midnightcord-nitro-pink) !important; }
+.serverBoostTabItem-3vujbv:hover:not(.disabled-1Hwwfb):not([aria-selected=true]) { color: var(--midnightcord-nitro-pink) !important; }
+.serverBoostTabItem-3vujbv[aria-selected=true] { background-color: var(--midnightcord-nitro-pink) !important; }
 
 /* Members */
 .pruneLink-3V7wes { color: var(--midnightcord-bright-red) !important; }
+.theme-dark .overflowRolesPopout-140n9i { background-color: var(--background-accent); }
 
 /* Invites & Bans */
 .card-FDVird.active-nvdKfC:before, .card-FDVird:focus-within:before, .card-FDVird:hover:before {
@@ -539,13 +544,13 @@ html:root {
 
 /* --------------- More --------------- */
 /* Buttons */
-.lookFilled-1Gx00P.colorBrand-3pXr91 {
+.lookFilled-1Gx00P.colorBrand-3pXr91, .lookFilled-1Gx00P.colorBrandNew-g5lmBU {
     background-color: var(--midnightcord-blurple-replace);
 }
-.lookFilled-1Gx00P.colorBrand-3pXr91:hover {
+.lookFilled-1Gx00P.colorBrand-3pXr91:hover, .lookFilled-1Gx00P.colorBrandNew-g5lmBU:hover {
     background-color: rgba(97, 179, 222, 0.7);
 }
-.lookFilled-1Gx00P.colorBrand-3pXr91:disabled {
+.lookFilled-1Gx00P.colorBrand-3pXr91:disabled, .lookFilled-1Gx00P.colorBrandNew-g5lmBU:disabled {
     background-color: var(--midnightcord-blurple-replace);
 }
 .lookFilled-1Gx00P.colorRed-1TFJan {
@@ -563,6 +568,18 @@ html:root {
 }
 .lookLink-9FtZy-.colorRed-1TFJan {
     color: var(--midnightcord-bright-red);
+}
+
+/* BetterDiscord Buttons */
+.bd-button {
+    background-color: var(--midnightcord-blurple-replace);
+}
+.bd-button:hover {
+    background-color: rgba(97, 179, 222, 0.7);
+}
+.checkbox-3kaeSU .checkboxInner-3yjcPe .checkboxElement-1qV33p:checked+span {
+    background-color: var(--midnightcord-blurple-replace);
+    border-color: var(--midnightcord-blurple-replace);
 }
 
 /* Remove Button */
