@@ -3,7 +3,7 @@ A simple midnight theme
 
 ## 📥 Installation
 
-- [Download](https://bambus.me/BetterDiscordStuff/Themes/Midnightcord/Midnightcord.theme.css) the Theme File
+- <a href="https://bambus.me/BetterDiscordStuff/Themes/Midnightcord/Midnightcord.theme.css" download target="_blank">Download</a> the Theme File
 - Save or move the file into your theme folder
 - Enable the Theme and enjoy
 
