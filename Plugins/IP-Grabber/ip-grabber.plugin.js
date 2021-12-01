@@ -7,6 +7,7 @@
  * @donate https://paypal.me/dominik1711
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/IP-Grabber
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/IP-Grabber/ip-grabber.plugin.js
+ * @website https://bambus.me/BetterDiscordStuff/
  */
 
 const request = require("request");

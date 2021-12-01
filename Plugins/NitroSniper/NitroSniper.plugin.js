@@ -7,6 +7,7 @@
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/NitroSniper
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/NitroSniper/NitroSniper.plugin.js
  * @donate https://paypal.me/dominik1711
+ * @website https://bambus.me/BetterDiscordStuff/
  */
 
 const request = require("request");

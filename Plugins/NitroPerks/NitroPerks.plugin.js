@@ -7,6 +7,7 @@
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/NitroPerks
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/NitroPerks/NitroPerks.plugin.js
  * @donate https://paypal.me/dominik1711
+ * @website https://bambus.me/BetterDiscordStuff/
  */
 
 const request = require("request");
