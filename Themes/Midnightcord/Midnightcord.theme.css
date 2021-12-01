@@ -3,13 +3,13 @@
 * @author HypedDomi#1711
 * @authorId 354191516979429376
 * @description A simple midnight theme
-* @version 1.1
+* @version 1
 * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Themes/Midnightcord
 * @donate https://paypal.me/dominik1711
 */
 
-@import url(https://bambus.me/BetterDiscordStuff/Themes/Midnightcord/main.css);
+@import url(https://hypeddomi.github.io/BetterDiscordStuff/Themes/Midnightcord/main.css);
 
 :root{
-    --version1_1: none;
+    --version1: none;
 }

@@ -4,7 +4,7 @@
 @import url(https://discord-custom-covers.github.io/usrbg/dist/usrbg.css);
 
 /* Effects for some User */
-@import url(https://bambus.me/BetterDiscordStuff/Themes/supporter.css);
+@import url(https://hypeddomi.github.io/BetterDiscordStuff/Themes/supporter.css);
 
 /* Settings Icons */
 @import url(https://mwittrien.github.io/BetterDiscordAddons/Themes/_res/SettingsIcons.css);
@@ -324,7 +324,7 @@ html:root {
     width: 20px; height: 20px;
     background-size: 100%;
     background-repeat: no-repeat;
-    background-image:url("https://bambus.me/BetterDiscordStuff/Themes/Dark/assets/stickers.png");
+    background-image:url("https://hypeddomi.github.io/BetterDiscordStuff/Themes/Dark/assets/stickers.png");
 }
 
 .navList-2UtuhC > #emoji-picker-tab  > .navButton-2gQCx-:after { 
@@ -333,7 +333,7 @@ html:root {
     width: 20px; height: 20px;
     background-size: 100%;
     background-repeat: no-repeat;
-    background-image:url("https://bambus.me/BetterDiscordStuff/Themes/Dark/assets/emoji.png");
+    background-image:url("https://hypeddomi.github.io/BetterDiscordStuff/Themes/Dark/assets/emoji.png");
 }
 
 .navList-2UtuhC > #bd-emotes-tab > .navButton-2gQCx-:after { 
