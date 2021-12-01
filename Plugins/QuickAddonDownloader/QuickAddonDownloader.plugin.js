@@ -2,7 +2,7 @@
  * @name QuickAddonDownloader
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 0.1
+ * @version 1.0
  * @description Allows you to download Addons from Chat directly to your Plugins or Themes folder
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/QuickAddonDownloader
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/QuickAddonDownloader/QuickAddonDownloader.plugin.js
@@ -23,7 +23,7 @@ const config = {
         discord_id: "354191516979429376",
       },
     ],
-    version: "0.1.0",
+    version: "1.0.0",
     description:
       "Allows you to download Addons from Chat directly to your Plugins or Themes folder",
     github:
@@ -109,10 +109,9 @@ module.exports = !global.ZeresPluginLibrary
         Patcher.after(MiniPopover, "default", (_, [args], component) => {
           const props = Utilities.findInTree(args, e => e && e.message);
           if (!props) return;
-          const { message } = props;
-          const { attachments } = message;
+          const { attachments } = props.message;
+          if (attachments.length == 0 || !attachments[0].url || !attachments[0].proxy_url) return;
           const fileUrl = attachments[0].url || attachments[0].proxy_url;
-          if (attachments.length == 0 || !fileUrl) return;
           let isPluginExtension = fileUrl.endsWith(".plugin.js");
           let isThemeExtension = fileUrl.endsWith(".theme.css");
           if (!isPluginExtension && !isThemeExtension) return;
