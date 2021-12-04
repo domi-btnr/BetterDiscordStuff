@@ -75,7 +75,7 @@ html:root {
     content: "";
     width: 22px;
     height: 22px;
-    background: url(https://bambus.me/BetterDiscordStuff/Themes/Midnightcord/assets/verified.png) center / 100% 100%;
+    background: url(https://bd.bambus.me/Themes/Midnightcord/assets/verified.png) center / 100% 100%;
 }
 
 /* UpdateCheck */
@@ -537,9 +537,9 @@ html:root {
 }
 
 /* Server Boost Page */
-.theme-dark .perksModal-1pSu7w { background-color: var(--background-primary) !important; }
-.theme-dark .tierHeaderLocked-CPaKnj { background-color: var(--background-secondary) !important; }
-.theme-dark .tierBody-3gjrjH { background-color: var(--background-accent) !important; }
+.theme-dark .perksModal-12XaFK { background-color: var(--background-primary) !important; }
+.theme-dark .tierHeaderLocked-AmFepj { background-color: var(--background-floating) !important; }
+.theme-dark .tierBody-24neog { background-color: var(--background-accent) !important; }
 
 
 /* --------------- More --------------- */
