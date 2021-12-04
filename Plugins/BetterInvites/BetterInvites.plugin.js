@@ -23,7 +23,7 @@ const config = {
                 discord_id: "354191516979429376",
             },
         ],
-        version: "1.0.0",
+        version: "1.0.1",
         description:
             "Shows some useful information in the invitation",
         github:
@@ -33,9 +33,9 @@ const config = {
     },
     changelog: [
         {
-            title: "YEAH",
-            type: "added",
-            items: ["The Plugin exists"],
+            title: "Fixed",
+            type: "fixed",
+            items: ["Fixed Typo in NSFW"],
         },
     ],
 };
@@ -125,9 +125,9 @@ module.exports = !global.ZeresPluginLibrary
                                 React.createElement(TooltipContainer, { text: `Verification Level ${guild?.verification_level}` },
                                     React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: "https://discord.com/assets/e62b930d873735bbede7ae1785d13233.svg" }))
                                 : null,
-                            // NFSW
+                            // NSFW
                             guild?.nsfw_level > 0 ?
-                                React.createElement(TooltipContainer, { text: `NFSW Level ${guild?.nsfw_level}` },
+                                React.createElement(TooltipContainer, { text: `NSFW Level ${guild?.nsfw_level}` },
                                     React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: "https://discord.com/assets/ece853d6c1c1cd81f762db6c26fade40.svg" }))
                                 : null,
                         )
