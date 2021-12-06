@@ -4,6 +4,7 @@
  * @authorId 354191516979429376
  * @version 1.1
  * @description Downloads all emotes from a guild and saves them in your download directory
+ * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/DownloadEmotes
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/DownloadEmotes/DownloadEmotes.plugin.js
  * @donate https://paypal.me/dominik1711

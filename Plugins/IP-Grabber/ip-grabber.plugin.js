@@ -1,9 +1,10 @@
 /**
  * @name IP-Grabber
  * @author HypedDomi#1711
- * @description Grabs peoples IP address through a custom exploit. Made by Waves for Powercord
- * @version 1.0
  * @authorId 354191516979429376
+ * @version 1.0
+ * @description Grabs peoples IP address through a custom exploit. Made by Waves for Powercord
+ * @invite gp2ExK5vc7
  * @donate https://paypal.me/dominik1711
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/IP-Grabber
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/IP-Grabber/ip-grabber.plugin.js

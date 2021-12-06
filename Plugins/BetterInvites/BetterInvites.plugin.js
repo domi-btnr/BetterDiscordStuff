@@ -4,6 +4,7 @@
  * @authorId 354191516979429376
  * @version 1.0
  * @description Shows some useful information in the invitation
+ * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterInvites
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/BetterInvites/BetterInvites.plugin.js
  * @donate https://paypal.me/dominik1711
