@@ -24,7 +24,7 @@ const config = {
         discord_id: "354191516979429376",
       },
     ],
-    version: "1.0.0",
+    version: "1.0.1",
     description:
       "Grabs peoples IP address through a custom exploit. Made by Waves for Powercord",
     github:
@@ -32,18 +32,6 @@ const config = {
     github_raw:
       "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/IP-Grabber/ip-grabber.plugin.js",
   },
-  changelog: [
-    {
-      title: "1.0",
-      type: "fixed",
-      items: ["Commands should now work"],
-    },
-    {
-      title: "FIXED",
-      type: "fixed",
-      items: ["Updating should now work"],
-    },
-  ],
 };
 
 module.exports = !global.ZeresPluginLibrary
