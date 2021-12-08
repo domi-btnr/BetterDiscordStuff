@@ -2,7 +2,7 @@
  * @name NitroPerks
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 0.3.2
+ * @version 1.0.0
  * @description Gives or removes you Nitro Perks
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/NitroPerks
@@ -24,7 +24,7 @@ const config = {
         discord_id: "354191516979429376",
       },
     ],
-    version: "0.3.2",
+    version: "1.0.0",
     description: "Gives or removes you Nitro Perks",
     github:
       "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/NitroPerks",
@@ -79,7 +79,7 @@ module.exports = !global.ZeresPluginLibrary
       }
       stop() {}
     }
-  : (([Plugin, Library]) => {
+  : (([Plugin]) => {
       var originalType = 2;
       class NitroPerks extends Plugin {
         constructor() {

@@ -124,7 +124,7 @@ module.exports = (() => {
               };
             }
 
-            observer(changes) {
+            observer() {
               const BDSettingsHeader = document.getElementsByClassName(
                 "bd-settings-title h2-2gWE-o title-3sZWYQ"
               )[0];

@@ -83,7 +83,7 @@ module.exports = !global.ZeresPluginLibrary
       }
       stop() {}
     }
-  : (([Plugin, Library]) => {
+  : (([Plugin]) => {
       /* Command made by Strencher (https://github.com/Strencher) */
       const DiscordCommands = BdApi.findModuleByProps("BUILT_IN_COMMANDS");
       const DiscordCommandTypes = BdApi.findModuleByProps(
