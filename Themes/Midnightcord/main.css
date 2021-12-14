@@ -335,7 +335,7 @@ html:root {
 .userPopout-xaxa6l {
 	overflow: hidden;
 	transform: translateZ(0) !important;
-	--USRBG-banner-height: 60px;
+	--USRBG-banner-height: 120px;
 }
 
 .userPopout-xaxa6l[style*="--user-background"] {
