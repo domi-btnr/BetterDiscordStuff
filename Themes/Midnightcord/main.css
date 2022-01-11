@@ -9,6 +9,7 @@
 /* Settings Icons */
 
 @import url(https://mwittrien.github.io/BetterDiscordAddons/Themes/_res/SettingsIcons.css);
+
 :root {
     /* Midnightcord */
     --midnightcord-blurple-replace: #61b3de;
@@ -197,7 +198,7 @@ html:root {
 
 /*Create a Server */
 
-.root-1gCeng {
+.root-g14mjS {
     background: rgb(20, 23, 31) !important;
 }
 
@@ -365,7 +366,7 @@ html:root {
 }
 
 .mention-1f5kbO,
-.numberBadge-2s8kKX {
+.numberBadge-37OJ3S {
     background-color: var(--midnightcord-bright-red) !important;
     opacity: 1;
 }
@@ -454,16 +455,16 @@ html:root {
 
 /* Deleting message confirmation */
 
-.theme-dark .root-1gCeng {
+.theme-dark .root-g14mjS {
     background: var(--background-primary);
 }
 
-.theme-dark .root-1gCeng .message-G6O-Wv {
+.theme-dark .root-g14mjS .message-G6O-Wv {
     background: var(--background-secondary);
 }
 
-.theme-dark .root-1gCeng .lookFilled-yCfaCM.colorRed-1TFJan {
-    background: var(--midnightcord-bright-red);
+.theme-dark .footer-31IekZ {
+    background-color: var(--background-secondary-alt)
 }
 
 
@@ -491,7 +492,7 @@ html:root {
 
 /* HLJS Support */
 
-.hljs.scrollbar-3dvm_9 {
+.hljs.scrollbar-3vVt8d {
     background-color: var(--background-secondary) !important;
 }
 
@@ -520,7 +521,7 @@ html:root {
     width: 220px;
 }
 
-.container-3ayLPN {
+.container-2McqkF {
     background-color: var(--background-accent) !important;
 }
 
@@ -944,24 +945,24 @@ html:root {
     background-color: var(--midnightcord-blurple-replace);
 }
 
-.lookFilled-yCfaCM.colorRed-1TFJan {
+.lookFilled-yCfaCM.colorRed-rQXKgM {
     background-color: var(--midnightcord-bright-red);
 }
 
-.lookFilled-yCfaCM.colorRed-1TFJan:hover {
+.lookFilled-yCfaCM.colorRed-rQXKgM:hover {
     background-color: rgba(227, 60, 23, 0.7);
 }
 
-.lookOutlined-3sRXeN.colorRed-1TFJan {
+.lookOutlined-3sRXeN.colorRed-rQXKgM {
     color: var(--midnightcord-bright-red);
     border-color: var(--midnightcord-bright-red);
 }
 
-.lookOutlined-3sRXeN.colorRed-1TFJan:active {
+.lookOutlined-3sRXeN.colorRed-rQXKgM:active {
     background-color: rgba(227, 60, 23, 0.10);
 }
 
-.lookLink-9FtZy-.colorRed-1TFJan {
+.lookLink-9FtZy-.colorRed-rQXKgM {
     color: var(--midnightcord-bright-red);
 }
 
@@ -1104,7 +1105,7 @@ html:root {
 
 /* Screenshare Modal */
 
-.root-1gCeng {
+.root-g14mjS {
     background: var(--background-primary);
 }
 
@@ -1112,12 +1113,12 @@ html:root {
     background: var(--background-secondary) !important;
 }
 
-.selectorButtonSelected-t5V9On,
-.root-1gCeng .lookFilled-yCfaCM.colorBrand-I6CyqQ {
+.selectorButtonSelected-3Z0WNU,
+.root-g14mjS .lookFilled-yCfaCM.colorBrand-I6CyqQ {
     background-color: var(--midnightcord-blurple-replace);
 }
 
-.selectorButton-EEUWed:not(.selectorButtonPremiumRequired-mKMbIu):hover {
+.selectorButton-3sW6Qm:not(.selectorButtonPremiumRequired-mKMbIu):hover {
     background-color: rgba(97, 179, 222, .7);
 }
 
