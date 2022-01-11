@@ -2,7 +2,7 @@
  * @name BetterInvites
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 1.1.0
+ * @version 1.2.0
  * @description Shows some useful information in the invitation
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterInvites
@@ -24,7 +24,7 @@ const config = {
                 discord_id: "354191516979429376",
             },
         ],
-        version: "1.1.0",
+        version: "1.2.0",
         description:
             "Shows some useful information in the invitation",
         github:
@@ -71,6 +71,12 @@ const config = {
         },
         {
             type: "switch",
+            id: "showExpire",
+            name: "Show Invite Expiration",
+            value: true,
+        },
+        {
+            type: "switch",
             id: "bigJoinButton",
             name: "Shows a bigger join button",
             value: true,
@@ -81,8 +87,13 @@ const config = {
         {
             title: "NEW",
             type: "added",
-            items: ["Added Guild Description and bigger Join Button", "Added settings"],
+            items: ["Added Invite Expiration"],
         },
+        {
+            title: "FIXED",
+            type: "fixed",
+            items: ["Fixed some classes"],
+        }
     ],
 };
 
@@ -124,7 +135,7 @@ module.exports = !global.ZeresPluginLibrary
         stop() { }
     }
     : (([Plugin, Library]) => {
-        const { Patcher, DiscordModules } = Library;
+        const { Patcher, DiscordModules, PluginUtilities } = Library;
         const { React } = DiscordModules;
         const Invite = BdApi.findModule(m => m.default?.displayName === "GuildInvite");
         const TooltipContainer = BdApi.findModuleByProps('TooltipContainer').TooltipContainer;
@@ -137,6 +148,7 @@ module.exports = !global.ZeresPluginLibrary
             }
             onStart() {
                 this.patchInvite();
+                PluginUtilities.addStyle(this.getName(), ".content-1r-J1r { flex-wrap: wrap; }");
             }
 
             patchInvite() {
@@ -150,6 +162,21 @@ module.exports = !global.ZeresPluginLibrary
                     else if (guild.features.includes("BANNER")) boostLevel = 2;
                     else if (guild.features.includes("ANIMATED_ICON")) boostLevel = 1;
 
+                    let expireTooltip = "";
+                    if (invite.expires_at != null) {
+                        const inviteExpireDays = Math.floor((new Date(invite.expires_at) - Date.now()) / 1000 / 60 / 60 / 24);
+                        const inviteExpireHours = Math.floor((new Date(invite.expires_at) - Date.now()) / 1000 / 60 / 60);
+                        const inviteExpireMinutes = Math.floor((new Date(invite.expires_at) - Date.now()) / 1000 / 60);
+
+                        if (inviteExpireDays > 0) {
+                            inviteExpireDays === 1 ? expireTooltip = `${inviteExpireDays} day` : expireTooltip = `${inviteExpireDays} days`;
+                        } else if (inviteExpireHours > 0) {
+                            inviteExpireHours === 1 ? expireTooltip = `${inviteExpireHours} hour` : expireTooltip = `${inviteExpireHours} hours`;
+                        } else {
+                            inviteExpireMinutes === 1 ? expireTooltip = `${inviteExpireMinutes} minute` : expireTooltip = `${inviteExpireMinutes} minutes`;
+                        }
+                    }
+
                     if (this.settings.showBanner && guild?.banner) {
                         component.props.children.splice(1, 0,
                             React.createElement("div", { className: `${config.info.name}-guildBanner`, style: { position: "relative", marginBottom: "1%" } },
@@ -161,7 +188,7 @@ module.exports = !global.ZeresPluginLibrary
                         )
                     }
                     component.props.children[this.settings.showBanner && guild?.banner ? 2 : 1].props.children.splice(2, 0,
-                        this.settings.showBoost || this.settings.showInviter || this.settings.showVerification || this.settings.showNSFW ?
+                        this.settings.showBoost || this.settings.showInviter || this.settings.showVerification || this.settings.showNSFW || this.settings.showExpire ?
                             React.createElement("div", { className: `${config.info.name}-iconWrapper`, style: { display: "grid", grid: "auto / auto auto", direction: "rtl", "grid-gap": "3px" } },
                                 // Boost
                                 this.settings.showBoost && boostLevel > 0 ?
@@ -183,33 +210,40 @@ module.exports = !global.ZeresPluginLibrary
                                     React.createElement(TooltipContainer, { text: `NSFW Level ${guild?.nsfw_level}` },
                                         React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: "https://discord.com/assets/ece853d6c1c1cd81f762db6c26fade40.svg" }))
                                     : null,
+                                // Invite Expiration
+                                this.settings.showExpire && invite.expires_at != null ?
+                                    React.createElement(TooltipContainer, { text: `Expires in: ${expireTooltip}` },
+                                        React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: "https://discord.com/assets/630f5938948131784285d97d57a3e8a0.svg" }))
+                                    : null,
                             ) : null
                     );
 
+                    const contentDiv = component.props.children[this.settings.showBanner && guild?.banner ? 2 : 1];
+
                     if (this.settings.showDescription && guild?.description) {
                         // Description
-                        component.props.children.splice(this.settings.showBanner && guild?.banner ? 3 : 2, 0,
+                        contentDiv.props.children.push(
                             React.createElement("div", { className: `${config.info.name}-guildDescription`, style: { marginTop: "1%" } },
-                                React.createElement("div", { className: "markup-2BOw-j" }, guild.description)
+                                React.createElement("div", { className: "markup-eYLPri" }, guild.description)
                             )
                         );
                     }
 
                     if (this.settings.bigJoinButton) {
-                        const joinButton = component.props.children[this.settings.showBanner && guild?.banner ? 2 : 1].props.children[3];
-                        component.props.children[this.settings.showBanner && guild?.banner ? 2 : 1].props.children.splice(3, 1);
+                        const joinButton = contentDiv.props.children[3];
+                        contentDiv.props.children.splice(3, 1);
                         joinButton.props.style = {
                             width: "100%",
-                            margin: "0"
+                            margin: "3% 0 0 0"
                         };
-                        component.props.children.push(
-                            React.createElement("div", { className: `${config.info.name}-guildJoinButton`, style: { marginTop: "3%" } }, joinButton));
+                        contentDiv.props.children.push(joinButton);
                     }
                 });
             }
 
             onStop() {
                 Patcher.unpatchAll();
+                PluginUtilities.removeStyle(this.getName());
             }
         }
         return BetterInvites;
