@@ -1,3 +1,6 @@
+# DownloadEmotes
+> Downloads all emotes from a guild and saves them in your download directory
+
 ## 📥 Installation
 
 ### BetterDiscord

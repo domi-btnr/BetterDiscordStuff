@@ -1,7 +1,7 @@
 # BetterInvites
 > Shows some useful information in the invitation
 
-![DownloadPlugin](https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/BetterInvites/images/Preview.png)
+![Preview](https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/BetterInvites/images/Preview.png)
 
 ## 📥 Installation
 

@@ -1,3 +1,6 @@
+# Someone
+> Brings back the @someone function
+
 ## 📥 Installation
 
 ### BetterDiscord

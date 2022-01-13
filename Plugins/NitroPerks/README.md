@@ -1,3 +1,6 @@
+# NitroPerks
+> Gives or removes you Nitro Perks
+
 ## ⚠ Warning
 - This Plugin can lead to an account ban
 - Use this Plugin at your own risk

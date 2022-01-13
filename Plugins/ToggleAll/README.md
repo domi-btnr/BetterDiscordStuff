@@ -1,3 +1,6 @@
+# ToggleAll
+> Toggles all Plugins or Themes
+
 ## 📥 Installation
 
 ### BetterDiscord
