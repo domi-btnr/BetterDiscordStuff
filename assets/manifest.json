@@ -1,0 +1,22 @@
+{
+  "short_name": "BetterDiscordStuff",
+  "name": "BetterDiscordStuff",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "256x256",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "BetterDiscord.svg",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "BD.svg",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#E54B4B"
+}

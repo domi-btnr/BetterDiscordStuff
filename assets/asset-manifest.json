@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/assets/static/css/main.d9d470ac.css",
+    "main.js": "/assets/static/js/main.92943bb9.js",
+    "static/media/BetterDiscord.svg": "/assets/static/media/BetterDiscord.svg",
+    "index.html": "/index.html",
+    "static/media/thumbnail.svg": "/assets/static/media/thumbnail.svg",
+    "main.d9d470ac.css.map": "/asstets/static/css/main.d9d470ac.css.map",
+    "main.92943bb9.js.map": "/assets/static/js/main.92943bb9.js.map"
+  },
+  "entrypoints": [
+    "assets/static/css/main.d9d470ac.css",
+    "assets/static/js/main.92943bb9.js"
+  ]
+}
