@@ -1,15 +1,16 @@
 {
   "files": {
-    "main.css": "/assets/static/css/main.d9d470ac.css",
-    "main.js": "/assets/static/js/main.92943bb9.js",
-    "static/media/BetterDiscord.svg": "/assets/static/media/BetterDiscord.svg",
+    "main.css": "/assets/static/css/main.0bc90a68.css",
+    "main.js": "/assets/static/js/main.9d2b88fe.js",
+    "static/media/BetterDiscord.svg": "/assets/static/media/BetterDiscord.bccf032424a2bbf84a601bb62ad7371e.svg",
+    "static/media/BD.svg": "/assets/static/media/BD.d4bf39c1d85971e17a3751757133b891.svg",
     "index.html": "/index.html",
-    "static/media/thumbnail.svg": "/assets/static/media/thumbnail.svg",
-    "main.d9d470ac.css.map": "/asstets/static/css/main.d9d470ac.css.map",
-    "main.92943bb9.js.map": "/assets/static/js/main.92943bb9.js.map"
+    "static/media/thumbnail.svg": "/assets/static/media/thumbnail.4d1711ea1de851fcf965313e37d8379d.svg",
+    "main.0bc90a68.css.map": "/assets/static/css/main.0bc90a68.css.map",
+    "main.9d2b88fe.js.map": "/assets/static/js/main.9d2b88fe.js.map"
   },
   "entrypoints": [
-    "assets/static/css/main.d9d470ac.css",
-    "assets/static/js/main.92943bb9.js"
+    "assets/static/css/main.0bc90a68.css",
+    "assets/static/js/main.9d2b88fe.js"
   ]
 }
