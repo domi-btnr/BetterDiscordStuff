@@ -25,25 +25,25 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* JustInGame#5353 */
+/* JustInGame#2834 */
 
 /* Messages */
-.repliedMessage-3Z6XBG .replyAvatar-sHd2sU[src*="465821010042814465"]+.username-h_Y3Us,
-.listRow-hutiT_ .listAvatar-1NlAhb .avatarStack-3vfSFa[src*="465821010042814465"]+.username-3JLfHz,
-[data-author-id="465821010042814465"] .contents-2MsGLg .username-h_Y3Us,
-[data-user-id="465821010042814465"] .contents-2MsGLg .username-h_Y3Us,
+.repliedMessage-3Z6XBG .replyAvatar-sHd2sU[src*="924418487173144616"]+.username-h_Y3Us,
+.listRow-hutiT_ .listAvatar-1NlAhb .avatarStack-3vfSFa[src*="924418487173144616"]+.username-3JLfHz,
+[data-author-id="924418487173144616"] .contents-2MsGLg .username-h_Y3Us,
+[data-user-id="924418487173144616"] .contents-2MsGLg .username-h_Y3Us,
 
 /* Modal */
-.root-8LYsGj[data-user-id="465821010042814465"] .username-3JLfHz,
+.root-8LYsGj[data-user-id="924418487173144616"] .username-3JLfHz,
 
 /* Popout */
 [aria-label="JustInGame"] .username-3JLfHz,
 
 /* DM List */
-.channel-1Shao0[data-user-id="465821010042814465"] .overflow-1wOqNV,
+.channel-1Shao0[data-user-id="924418487173144616"] .overflow-1wOqNV,
 
 /* Friend list */
-.peopleListItem-u6dGxF[data-user-id="465821010042814465"] .username-3JLfHz.username-Qpc78p { 
+.peopleListItem-u6dGxF[data-user-id="924418487173144616"] .username-3JLfHz.username-Qpc78p { 
   animation: flow 6s ease-in-out infinite;
   background: linear-gradient(to right, #0010ed, #0095ff);
   background-size: 350%;
@@ -133,7 +133,7 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* Bαmbus#6118 */
+/* Bambus#6118 */
 
 /* Messages */
 .repliedMessage-3Z6XBG .replyAvatar-sHd2sU[src*="648794263567597569"]+.username-h_Y3Us,
@@ -145,7 +145,7 @@
 .root-8LYsGj[data-user-id="648794263567597569"] .username-3JLfHz,
 
 /* Popout */
-[aria-label="Bαmbus"] .username-3JLfHz,
+[aria-label="Bambus"] .username-3JLfHz,
 
 /* DM List */
 .channel-1Shao0[data-user-id="648794263567597569"] .overflow-1wOqNV,
@@ -176,6 +176,33 @@
 .peopleListItem-u6dGxF[data-user-id="674664573118447636"] .username-3JLfHz.username-Qpc78p { 
   animation: flow 6s ease-in-out infinite;
   background: linear-gradient(to right, #00F7F4, #E91E63);
+  background-size: 350%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Hustensaft#8610 */
+
+/* Messages */
+.repliedMessage-3Z6XBG .replyAvatar-sHd2sU[src*="900114159591649280"]+.username-h_Y3Us,
+.listRow-hutiT_ .listAvatar-1NlAhb .avatarStack-3vfSFa[src*="900114159591649280"]+.username-3JLfHz,
+[data-author-id="900114159591649280"] .contents-2MsGLg .username-h_Y3Us,
+[data-user-id="900114159591649280"] .contents-2MsGLg .username-h_Y3Us,
+
+/* Modal */
+.root-8LYsGj[data-user-id="900114159591649280"] .username-3JLfHz,
+
+/* DM List */
+.channel-1Shao0[data-user-id="900114159591649280"] .overflow-1wOqNV,
+
+/* Popout */
+[aria-label="Hustensaft"] .username-3JLfHz,
+
+/* Friend list */
+.peopleListItem-u6dGxF[data-user-id="900114159591649280"] .username-3JLfHz.username-Qpc78p { 
+  animation: flow 6s ease-in-out infinite;
+  background: linear-gradient(to right, #4fd4a7, #ff00ff);
   background-size: 350%;
   -webkit-background-clip: text;
   background-clip: text;
