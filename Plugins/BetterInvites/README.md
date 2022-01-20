@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="images/banner.png" />
+    <img src="https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/BetterInvites/images/banner.png" />
 </div>
 <h1 align="center">
     BetterInvites
