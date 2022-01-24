@@ -2,7 +2,7 @@
  * @name DownloadEmotes
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 1.1
+ * @version 1.1.1
  * @description Downloads all emotes from a guild and saves them in your download directory
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/DownloadEmotes
@@ -25,7 +25,7 @@ const config = {
         discord_id: "354191516979429376",
       },
     ],
-    version: "1.1.0",
+    version: "1.1.1",
     description:
       "Downloads all emotes from a guild and saves them in your download directory",
     github:
@@ -37,7 +37,7 @@ const config = {
     {
       title: "FIXED",
       type: "fixed",
-      items: ["Fix constructor error and BDUtils not existing (Thanks acendvgnt)"],
+      items: ["Fixed ContextMenu"],
     },
   ],
   defaultConfig: [
@@ -53,179 +53,96 @@ const config = {
 
 module.exports = !global.ZeresPluginLibrary
   ? class {
-      constructor() {
-        this._config = config;
-      }
-
-      load() {
-        BdApi.showConfirmationModal(
-          "Library plugin is needed",
-          `The library plugin needed for ${config.info.name} is missing. Please click Download Now to install it.`,
-          {
-            confirmText: "Download",
-            cancelText: "Cancel",
-            onConfirm: () => {
-              request.get(
-                "https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js",
-                (error, response, body) => {
-                  if (error)
-                    return electron.shell.openExternal(
-                      "https://betterdiscord.app/Download?id=9"
-                    );
-
-                  fs.writeFileSync(
-                    path.join(BdApi.Plugins.folder, "0PluginLibrary.plugin.js"),
-                    body
-                  );
-                }
-              );
-            },
-          }
-        );
-      }
-      start() {
-        this.load();
-      }
-      stop() {}
+    constructor() {
+      this._config = config;
     }
-  : (([Plugin, Library]) => {
-      const { Patcher, WebpackModules, DCM, PluginUtilities } = Library;
-      let downloadsFolder;
-      class DownloadEmotes extends Plugin {
-        constructor() {
-          super();
-          this.getSettingsPanel = () => {
-            return this.buildSettingsPanel().getElement();
-          };
-        }
-        onStart() {
-          this.patchContextMenu();
-        }
 
-        patchContextMenu() {
-          const GuildContextMenu = WebpackModules.getModule(
-            (m) => m?.default?.displayName === "GuildContextMenu"
-          );
-          Patcher.after(
-            GuildContextMenu,
-            "default",
-            (_, [props], component) => {
-              const { guild } = props;
-              component.props.children.push(
-                DCM.buildMenuItem({
-                  label: "Download Emotes",
-                  type: "text",
-                  action: () => this.downloadEmotes(guild),
-                })
-              );
-            }
-          );
-        }
-
-        getDownloadLocation() {
-          if (downloadsFolder && fs.existsSync(downloadsFolder))
-            return downloadsFolder;
-          let homePath =
-            process.env.USERPROFILE || process.env.HOMEPATH || process.env.HOME;
-          let downloadPath = homePath && path.join(homePath, "Downloads");
-          if (downloadPath && fs.existsSync(downloadPath))
-            return (downloadsFolder = downloadPath);
-          else {
-            downloadsFolder = path.join(
-              PluginUtilities.getPluginsFolder(),
-              "downloads"
-            );
-            if (!fs.existsSync(downloadsFolder)) fs.mkdirSync(downloadsFolder);
-            return downloadsFolder;
-          }
-        }
-
-        downloadEmotes(guild) {
-          var downloadLocation = this.getDownloadLocation();
-          let emoteStore = BdApi.findModuleByProps("getGuildEmoji");
-          let emotes = emoteStore.getGuilds()[guild.id].emojis;
-          console.log(emotes);
-          if (emotes != null) {
-            if (emotes.length != 0) {
-              let folderName = guild;
-              try {
-                if (!fs.existsSync(downloadsFolder + "\\" + guild)) {
-                  fs.mkdirSync(downloadsFolder + "\\" + guild);
-                }
-              } catch (err) {
-                console.warn(
-                  `%c${config.info.name}`,
-                  "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;",
-                  "An error occurred. Trying to use ID as Foldername"
-                );
-                try {
-                  if (!fs.existsSync(downloadsFolder + "\\" + guild.id)) {
-                    fs.mkdirSync(downloadsFolder + "\\" + guild.id);
-                  }
-                  folderName = guild.id;
-                } catch (err) {
-                  console.error(
-                    `%c${config.info.name}`,
-                    "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;",
-                    "An error occurred\n",
-                    err
-                  );
-                  return BdApi.showToast("An Error occurred", {
-                    type: "error",
-                  });
-                }
+    load() {
+      BdApi.showConfirmationModal(
+        "Library plugin is needed",
+        `The library plugin needed for ${config.info.name} is missing. Please click Download Now to install it.`,
+        {
+          confirmText: "Download",
+          cancelText: "Cancel",
+          onConfirm: () => {
+            request.get(
+              "https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js",
+              (error, response, body) => {
+                if (error) return electron.shell.openExternal("https://betterdiscord.app/Download?id=9");
+                fs.writeFileSync(path.join(BdApi.Plugins.folder, "0PluginLibrary.plugin.js"), body);
               }
+            );
+          },
+        }
+      );
+    }
+    start() {
+      this.load();
+    }
+    stop() { }
+  }
+  : (([Plugin, Library]) => {
+    const { Patcher, ContextMenu, DCM, PluginUtilities } = Library;
+    let downloadsFolder;
+    class DownloadEmotes extends Plugin {
+      constructor() {
+        super();
+        this.getSettingsPanel = () => {
+          return this.buildSettingsPanel().getElement();
+        };
+      }
+      onStart() {
+        this.patchContextMenu();
+      }
+
+      async patchContextMenu() {
+        const GuildContextMenu = await ContextMenu.getDiscordMenu("GuildContextMenu");
+        Patcher.after(GuildContextMenu, "default", (_, [props], component) => {
+          const { guild } = props;
+          component.props.children.push(
+            DCM.buildMenuItem({
+              label: "Download Emotes",
+              type: "text",
+              action: () => this.downloadEmotes(guild),
+            })
+          );
+        });
+      }
+
+      getDownloadLocation() {
+        if (downloadsFolder && fs.existsSync(downloadsFolder)) return downloadsFolder;
+        const homePath = process.env.USERPROFILE || process.env.HOMEPATH || process.env.HOME;
+        const downloadPath = homePath && path.join(homePath, "Downloads");
+        if (downloadPath && fs.existsSync(downloadPath)) return (downloadsFolder = downloadPath);
+        else {
+          downloadsFolder = path.join(PluginUtilities.getPluginsFolder(), "downloads");
+          if (!fs.existsSync(downloadsFolder)) fs.mkdirSync(downloadsFolder);
+          return downloadsFolder;
+        }
+      }
+
+      downloadEmotes(guild) {
+        const downloadLocation = this.getDownloadLocation();
+        const emoteStore = BdApi.findModuleByProps("getGuildEmoji");
+        const emotes = emoteStore.getGuilds()[guild.id].emojis;
+        if (emotes != null) {
+          if (emotes.length != 0) {
+            let folderName = guild;
+            try {
+              if (!fs.existsSync(downloadsFolder + "\\" + guild)) {
+                fs.mkdirSync(downloadsFolder + "\\" + guild);
+              }
+            } catch (err) {
+              console.warn(
+                `%c${config.info.name}`,
+                "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;",
+                "An error occurred. Trying to use ID as Foldername"
+              );
               try {
-                console.log(
-                  `%c${config.info.name}`,
-                  "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;",
-                  `Started downloading Emotes from ${guild}`
-                );
-                console.log(
-                  `%c${config.info.name}`,
-                  "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;",
-                  `Saving Emotes to ${path.join(
-                    downloadsFolder + "\\" + folderName
-                  )}`
-                );
-                emotes.forEach(function (emote) {
-                  https.get(
-                    `https://cdn.discordapp.com/emojis/${emote.id}.${
-                      emote.animated ? "gif" : "png"
-                    }`,
-                    function (response) {
-                      response.pipe(
-                        fs.createWriteStream(
-                          path.join(
-                            `${downloadsFolder}\\${folderName}`,
-                            `${emote.name}.${emote.animated ? "gif" : "png"}`
-                          )
-                        )
-                      );
-                    }
-                  );
-                });
-                console.log(
-                  `%c${config.info.name}`,
-                  "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;",
-                  "Emotes downloaded successfully"
-                );
-                BdApi.showToast(
-                  `Emotes downloaded to ${path.join(
-                    `${downloadsFolder}\\${folderName}`
-                  )}`,
-                  { type: "success" }
-                );
-                if (this.settings.openFolder) {
-                  require("child_process").exec(
-                    `start "" "${downloadLocation}\\${folderName}"`
-                  );
-                  console.log(
-                    `%c${config.info.name}`,
-                    "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;",
-                    "Opened successfully File Explorer"
-                  );
+                if (!fs.existsSync(downloadsFolder + "\\" + guild.id)) {
+                  fs.mkdirSync(downloadsFolder + "\\" + guild.id);
                 }
+                folderName = guild.id;
               } catch (err) {
                 console.error(
                   `%c${config.info.name}`,
@@ -233,36 +150,88 @@ module.exports = !global.ZeresPluginLibrary
                   "An error occurred\n",
                   err
                 );
-                BdApi.showToast("An Error occurred", { type: "error" });
+                return BdApi.showToast("An Error occurred", {
+                  type: "error",
+                });
               }
-            } else {
-              BdApi.showToast("This guild has no Emotes", { type: "error" });
+            }
+            try {
+              console.log(
+                `%c${config.info.name}`,
+                "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;",
+                `Started downloading Emotes from ${guild}`
+              );
+              console.log(
+                `%c${config.info.name}`,
+                "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;",
+                `Saving Emotes to ${path.join(
+                  downloadsFolder + "\\" + folderName
+                )}`
+              );
+              emotes.forEach(function (emote) {
+                https.get(`https://cdn.discordapp.com/emojis/${emote.id}.${emote.animated ? "gif" : "png"}`, function (response) {
+                  response.pipe(
+                    fs.createWriteStream(
+                      path.join(`${downloadsFolder}\\${folderName}`,`${emote.name}.${emote.animated ? "gif" : "png"}`))
+                  );
+                });
+              });
+              console.log(
+                `%c${config.info.name}`,
+                "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;",
+                "Emotes downloaded successfully"
+              );
+              BdApi.showToast(
+                `Emotes downloaded to ${path.join(
+                  `${downloadsFolder}\\${folderName}`
+                )}`,
+                { type: "success" }
+              );
+              if (this.settings.openFolder) {
+                require("child_process").exec(
+                  `start "" "${downloadLocation}\\${folderName}"`
+                );
+                console.log(
+                  `%c${config.info.name}`,
+                  "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;",
+                  "Opened successfully File Explorer"
+                );
+              }
+            } catch (err) {
+              console.error(
+                `%c${config.info.name}`,
+                "background: #e91e63; color: white; padding: 2px; border-radius: 4px; font-weight: bold;",
+                "An error occurred\n",
+                err
+              );
+              BdApi.showToast("An Error occurred", { type: "error" });
             }
           } else {
-            BdApi.showConfirmationModal(
-              "Emotes not loaded",
-              "The emotes you are trying to reach could not be loaded. Please open the Emotetab in the guild settings or try again",
-              {
-                danger: false,
-                confirmText: "Try again",
-                cancelText: "Close",
-                onConfirm: () => {
-                  this.downloadEmotes(guild);
-                },
-              }
-            );
+            BdApi.showToast("This guild has no Emotes", { type: "error" });
           }
-        }
-
-        getDescription() {
-          return `${
-            config.info.description
-          }. Emotes are saved here: ${this.getDownloadLocation()}`;
-        }
-
-        onStop() {
-          Patcher.unpatchAll();
+        } else {
+          BdApi.showConfirmationModal(
+            "Emotes not loaded",
+            "The emotes you are trying to reach could not be loaded. Please open the Emotetab in the guild settings or try again",
+            {
+              danger: false,
+              confirmText: "Try again",
+              cancelText: "Close",
+              onConfirm: () => {
+                this.downloadEmotes(guild);
+              },
+            }
+          );
         }
       }
-      return DownloadEmotes;
-    })(global.ZeresPluginLibrary.buildPlugin(config));
+
+      getDescription() {
+        return `${config.info.description}. Emotes are saved here: ${this.getDownloadLocation()}`;
+      }
+
+      onStop() {
+        Patcher.unpatchAll();
+      }
+    }
+    return DownloadEmotes;
+  })(global.ZeresPluginLibrary.buildPlugin(config));
