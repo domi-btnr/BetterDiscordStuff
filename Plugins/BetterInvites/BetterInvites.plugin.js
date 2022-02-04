@@ -2,7 +2,7 @@
  * @name BetterInvites
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 1.2.2
+ * @version 1.2.3
  * @description Shows some useful information in the invitation
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterInvites
@@ -24,7 +24,7 @@ const config = {
                 discord_id: "354191516979429376",
             },
         ],
-        version: "1.2.2",
+        version: "1.2.3",
         description:
             "Shows some useful information in the invitation",
         github:
@@ -87,7 +87,7 @@ const config = {
         {
             title: "FIXED",
             type: "fixed",
-            items: ["Plugin works again"],
+            items: ["Changed order back for the Banner"],
         }
     ],
 };
@@ -153,7 +153,7 @@ module.exports = !global.ZeresPluginLibrary
                     const { guild, inviter } = invite;
 
                     if (this.settings.showBanner && guild?.banner) {
-                        component.props.children.splice(1, 0,
+                        component.props.children.splice(2, 0,
                             React.createElement("div", { className: `${config.info.name}-guildBanner`, style: { position: "relative", marginBottom: "1%" } },
                                 React.createElement("img", {
                                     src: `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024`,
