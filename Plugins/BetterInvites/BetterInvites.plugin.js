@@ -191,7 +191,7 @@ module.exports = !global.ZeresPluginLibrary
                                 // Inviter
                                 this.settings.showInviter && inviter ?
                                     React.createElement(TooltipContainer, { text: `Invited by: ${inviter?.username}#${inviter?.discriminator}` },
-                                        React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: `https://cdn.discordapp.com/avatars/${inviter?.id}/${inviter?.avatar}.png?size=1024`, onError: (e) => { e.target.src = "https://cdn.discordapp.com/embed/avatars/0.png"; } }))
+                                        React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, onClick: (i) => { Library.DiscordModules.ElectronModule.copy(inviter?.id); window.BdApi.showToast("Copied ID", {type: "info", icon:true, timeout: 4000}) }, src: `https://cdn.discordapp.com/avatars/${inviter?.id}/${inviter?.avatar}.png?size=1024`, onError: (e) => { e.target.src = "https://cdn.discordapp.com/embed/avatars/0.png"; } }))
                                     : null,
                                 // Verification
                                 this.settings.showVerification && guild?.verification_level > 0 ?
