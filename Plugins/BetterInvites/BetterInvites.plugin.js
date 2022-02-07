@@ -2,7 +2,7 @@
  * @name BetterInvites
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 1.2.3
+ * @version 1.3.3
  * @description Shows some useful information in the invitation
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterInvites
@@ -24,7 +24,7 @@ const config = {
                 discord_id: "354191516979429376",
             },
         ],
-        version: "1.2.3",
+        version: "1.3.3",
         description:
             "Shows some useful information in the invitation",
         github:
@@ -85,9 +85,9 @@ const config = {
     ],
     changelog: [
         {
-            title: "FIXED",
-            type: "fixed",
-            items: ["Changed order back for the Banner"],
+            title: "What's new",
+            type: "added",
+            items: ["Added copy id when clicking on the inviter (Thanks to FrostBird347)"],
         }
     ],
 };
@@ -191,7 +191,7 @@ module.exports = !global.ZeresPluginLibrary
                                 // Inviter
                                 this.settings.showInviter && inviter ?
                                     React.createElement(TooltipContainer, { text: `Invited by: ${inviter?.username}#${inviter?.discriminator}` },
-                                        React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, onClick: (i) => { Library.DiscordModules.ElectronModule.copy(inviter?.id); window.BdApi.showToast("Copied ID", {type: "info", icon:true, timeout: 4000}) }, src: `https://cdn.discordapp.com/avatars/${inviter?.id}/${inviter?.avatar}.png?size=1024`, onError: (e) => { e.target.src = "https://cdn.discordapp.com/embed/avatars/0.png"; } }))
+                                        React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, onClick: () => { DiscordNative.clipboard.copy(inviter?.id); window.BdApi.showToast("Copied ID", {type: "info", icon:true, timeout: 4000}) }, src: `https://cdn.discordapp.com/avatars/${inviter?.id}/${inviter?.avatar}.png?size=1024`, onError: (e) => { e.target.src = "https://cdn.discordapp.com/embed/avatars/0.png"; } }))
                                     : null,
                                 // Verification
                                 this.settings.showVerification && guild?.verification_level > 0 ?
