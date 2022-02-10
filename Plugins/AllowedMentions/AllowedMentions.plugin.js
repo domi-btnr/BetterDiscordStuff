@@ -2,7 +2,7 @@
  * @name AllowedMentions
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 0.1.0
+ * @version 0.2.0
  * @description Allows you to mention people without pinging them
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/AllowedMentions
@@ -24,7 +24,7 @@ const config = {
                 discord_id: "354191516979429376",
             },
         ],
-        version: "0.1.0",
+        version: "0.2.0",
         description:
             "Allows you to mention people without pinging them",
         github:
@@ -34,9 +34,9 @@ const config = {
     },
     changelog: [
         {
-            title: "YEAH",
-            type: "added",
-            items: ["The plugin exists"],
+            title: "FIXED",
+            type: "fixed",
+            items: ["Referencing to a message works now"],
         }
     ],
 };
@@ -131,7 +131,7 @@ module.exports = !global.ZeresPluginLibrary
             }
 
             patchMessageSend() {
-                Patcher.after(DiscordModules.MessageActions, "sendMessage", (_, [channelID, msg]) => {
+                Patcher.after(DiscordModules.MessageActions, "sendMessage", (_, [channelID, msg, , { messageReference }]) => {
                     if (shouldMention) return;
                     console.log("Sending with disabled mention");
                     MessageQueue.enqueue({
@@ -140,6 +140,7 @@ module.exports = !global.ZeresPluginLibrary
                             channelId: channelID,
                             content: msg.content,
                             tts: msg.tts,
+                            message_reference: messageReference,
                             allowed_mentions: { "parse": [] }
                         }
                     }, r => {
