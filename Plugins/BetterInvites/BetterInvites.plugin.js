@@ -2,7 +2,7 @@
  * @name BetterInvites
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 1.3.3
+ * @version 1.4.3
  * @description Shows some useful information in the invitation
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterInvites
@@ -24,7 +24,7 @@ const config = {
                 discord_id: "354191516979429376",
             },
         ],
-        version: "1.3.3",
+        version: "1.4.3",
         description:
             "Shows some useful information in the invitation",
         github:
@@ -87,7 +87,7 @@ const config = {
         {
             title: "What's new",
             type: "added",
-            items: ["Added copy id when clicking on the inviter (Thanks to FrostBird347)"],
+            items: ["Added GIF Banner if available (Thanks to Steveplays28)"],
         }
     ],
 };
