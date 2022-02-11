@@ -156,8 +156,12 @@ module.exports = !global.ZeresPluginLibrary
                         component.props.children.splice(2, 0,
                             React.createElement("div", { className: `${config.info.name}-guildBanner`, style: { position: "relative", marginBottom: "1%" } },
                                 React.createElement("img", {
-                                    src: `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024`,
-                                    style: { width: "100%", height: "auto", maxHeight: "100px", borderRadius: "5px", objectFit: "cover" }
+                                    src: `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.gif?size=1024`,
+                                    style: { width: "100%", height: "auto", maxHeight: "100px", borderRadius: "5px", objectFit: "cover" },
+                                    onError: (e) => {
+                                        e.target.onError = null
+                                        e.target.src = `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024`
+                                    }
                                 })
                             )
                         )
