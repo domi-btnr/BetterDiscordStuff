@@ -12,7 +12,7 @@
  */
 /*@cc_on
 @if (@_jscript)
-	
+
     // Offer to self-install for clueless users that try to run this directly.
     var shell = WScript.CreateObject("WScript.Shell");
     var fs = new ActiveXObject("Scripting.FileSystemObject");
@@ -121,7 +121,7 @@ module.exports = (() => {
             BdApi.showToast("Enabling all Plugins", { type: "info" });
             const plugins = BdApi.Plugins.getAll();
             plugins.forEach(plugin => {
-              if (!this.settings.pluginsToIgnore.includes(plugin.name) || plugin.name != config.info.name) BdApi.Plugins.enable(plugin.id);
+              if (!this.settings.pluginsToIgnore.includes(plugin.name) && plugin.name != config.info.name) BdApi.Plugins.enable(plugin.id);
             });
             console.log(
               `%c${config.info.name}`,
@@ -140,7 +140,7 @@ module.exports = (() => {
             BdApi.showToast("Disabling all Plugins", { type: "info" });
             const plugins = BdApi.Plugins.getAll();
             plugins.forEach(plugin => {
-              if (!this.settings.pluginsToIgnore.includes(plugin.name) || plugin.name != config.info.name) BdApi.Plugins.disable(plugin.id);
+              if (!this.settings.pluginsToIgnore.includes(plugin.name) && plugin.name != config.info.name) BdApi.Plugins.disable(plugin.id);
             });
             console.log(
               `%c${config.info.name}`,
@@ -234,7 +234,7 @@ module.exports = (() => {
 
                 disableAll.innerText = "Disable all Plugins";
                 disableAll.addEventListener("click", () => { this.disablePlugins(); });
-                
+
                 enableAll.innerText = "Enable all Plugins";
                 enableAll.addEventListener("click", () => { this.enablePlugins(); });
 
@@ -258,7 +258,7 @@ module.exports = (() => {
                 });
                 disableAll.innerText = "Disable all Themes";
                 disableAll.addEventListener("click", () => { this.disableThemes(); });
-                
+
                 enableAll.innerText = "Enable all Themes";
                 enableAll.addEventListener("click", () => { this.enableThemes(); });
 
