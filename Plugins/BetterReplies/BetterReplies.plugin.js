@@ -2,7 +2,7 @@
  * @name BetterReplies
  * @author HypedDomi
  * @authorId 354191516979429376
- * @version 1.0.1
+ * @version 1.0.0
  * @description Enhanced version of Strencher's SuppressReplies plugin
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterReplies
@@ -25,7 +25,7 @@ const config = {
                 github_username: "HypedDomi"
             }
         ],
-        version: "1.0.1",
+        version: "1.0.0",
         description:
             "Enhanced version of Strencher's SuppressReplies plugin",
         github:
@@ -56,9 +56,9 @@ const config = {
     ],
     changelog: [
         {
-            title: "Fixed",
-            type: "fixed",
-            items: ["Fixed Dispatcher"],
+            title: "YEAH",
+            type: "added",
+            items: ["The plugin exists"],
         }
     ],
 };
@@ -101,8 +101,9 @@ module.exports = !global.ZeresPluginLibrary
     }
     : (([Plugin, Library]) => {
         const { Patcher } = Library;
-        const Dispatcher = BdApi.findModuleByProps("dirtyDispatch");
         const UserUtils = BdApi.findModuleByProps("getCurrentUser");
+        const Message = BdApi.findModuleByProps("default", "ThreadStarterChatMessage", "getElementFromMessageId")
+        const MessageStore = BdApi.findModuleByProps("getMessages");
         class BetterReplies extends Plugin {
             constructor() {
                 super();
@@ -116,12 +117,15 @@ module.exports = !global.ZeresPluginLibrary
             }
 
             patchMessages() {
-                Patcher.before(Dispatcher, "dispatch", (_, [action]) => {
-                    if (action.type !== "MESSAGE_CREATE") return;
-                    const { message } = action;
+                Patcher.before(Message.default, "type", (_, [{ message }]) => {
                     const currentUser = UserUtils.getCurrentUser();
-                    if (!currentUser || !Array.isArray(message.mentions) || !message.referenced_message) return;
+                    if (!currentUser || !Array.isArray(message.mentions) || !message.messageReference) return;
+
+                    const msgReference = MessageStore.getMessage(message.messageReference.channel_id, message.messageReference.message_id);
+                    if (!msgReference) return;
+
                     const mentionIndex = message.mentions.findIndex(e => e.id === currentUser.id);
+
                     // Suppress Mentions
                     if (this.settings.mentionSettings == 1) {
                         if (msgReference.author.id === currentUser.id && mentionIndex > -1) {
@@ -136,7 +140,7 @@ module.exports = !global.ZeresPluginLibrary
                             message.mentioned = true;
                         }
                     }
-                });
+                })
             }
 
             // Code from Strencher's SuppressReplies plugin
