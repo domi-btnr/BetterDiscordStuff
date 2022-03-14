@@ -8,6 +8,6 @@
 
 ### BetterDiscord
 
-1. Download [here](https://hypeddomi.github.io/BetterDiscordStuff/Plugins/QuickAddonDownloader/QuickAddonDownloader.plugin.js)
+1. Download [here](https://hypeddomi.github.io/download/?plugin=QuickAddonDownloader)
 2. Save the file into your plugins folder
 3. Hover over a Theme or Theme sent in chat and click the Download button

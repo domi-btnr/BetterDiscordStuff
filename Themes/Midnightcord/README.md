@@ -19,7 +19,7 @@
 
 ## 📥 Installation
 
-1. Download the file [here](https://hypeddomi.github.io/BetterDiscordStuff/Themes/Midnightcord/Midnightcord.theme.css)
+1. Download the file [here](https://hypeddomi.github.io/download/?theme=Midnightcord)
 2. Save or move the file into your themes folder
 3. Enable the theme in the settings
 

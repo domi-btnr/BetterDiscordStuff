@@ -19,6 +19,6 @@
 
 ## 📥 Installation
 
-1. Download the file [here](https://hypeddomi.github.io/BetterDiscordStuff/Plugins/BetterReplies/BetterReplies.plugin.js)
+1. Download the file [here](https://hypeddomi.github.io/download/?plugin=BetterReplies)
 2. Save or move the file into your plugins folder
 3. Enable the plugin in the settings
