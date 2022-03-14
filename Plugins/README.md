@@ -12,6 +12,9 @@
 - ### [QuickAddonDownloader](https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/QuickAddonDownloader "QuickAddonDownloader")
     > Allows you to download Addons from Chat directly to your Plugins or Themes folder
 
+- ### [ReplaceTimestamps](https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/ReplaceTimestamps "ReplaceTimestamps")
+    > Replaces plaintext 24 hour timestamps into Discord's timestamps
+
 - ### [Someone](https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/Someone "Someone")
     > Brings back the @someone function
 
