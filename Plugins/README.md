@@ -18,5 +18,8 @@
 - ### [Someone](https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/Someone "Someone")
     > Brings back the @someone function
 
+- ### [SuppressPings](https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/SuppressPings "SuppressPings")
+    > Suppresses mentions from messages
+
 - ### [ToggleAll](https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/ToggleAll "ToggleAll")
     > Toggles all Plugins or Themes
