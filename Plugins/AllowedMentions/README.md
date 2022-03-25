@@ -1,3 +1,6 @@
+<div align="center">
+    <img src="https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/AllowedMentions/images/banner.png" />
+</div>
 <h1 align="center">
     AllowedMentions
 </h1>
