@@ -598,6 +598,10 @@ html:root {
     background-color: var(--background-accent);
 }
 
+.item-3XjbnG[aria-controls="library-inventory-tab"] .numberBadge-37OJ3S {
+    margin-left: 65px;
+}
+
 
 /* Billing */
 
@@ -647,6 +651,16 @@ html:root {
 .option-1QI4c9:hover {
     background-color: var(--midnightcord-blurple-replace);
     border-color: var(--midnightcord-blurple-replace);
+}
+
+/* Kernel - BD-Compat */
+
+[class^="bdcompat-settings-item"]:not([aria-controls="plugins-tab"]) > div > svg {
+    margin-left: 100px;
+}
+
+.bdcompat-settings-item-plugins > div > svg {
+    margin-left: 106px;
 }
 
 
@@ -1031,12 +1045,12 @@ html:root {
     background: var(--background-secondary) !important;
 }
 
-.selectorButtonSelected-3Z0WNU,
+.selectorButtonSelected-3cQUnj,
 .root-g14mjS .lookFilled-yCfaCM.colorBrand-I6CyqQ {
     background-color: var(--midnightcord-blurple-replace);
 }
 
-.selectorButton-3sW6Qm:not(.selectorButtonPremiumRequired-2pGGEj):hover {
+.selectorButton-3fWZ0_:not(.selectorButtonPremiumRequired-IZXhgV):hover {
     background-color: rgba(97, 179, 222, .7);
 }
 
@@ -1194,6 +1208,16 @@ html:root {
 
 .bf-toolbar::before {
     background-color: var(--background-primary) !important;
+}
+
+/* ChannelDMs */
+
+.ChannelDms-channelmembers-header {
+    background-color: var(--background-secondary) !important;
+}
+
+.ChannelDms-channelmembers-header .selected-g-kMVV {
+    background-color: var(--background-modifier-active) !important;
 }
 
 
