@@ -6,7 +6,6 @@
  * @description Toggles all Plugins or Themes
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/ToggleAll
- * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/ToggleAll/ToggleAll.plugin.js
  * @donate https://paypal.me/dominik1711
  * @website https://bambus.me/BetterDiscordStuff/
  */

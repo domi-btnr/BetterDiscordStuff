@@ -6,7 +6,6 @@
  * @description Brings back the @someone function
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/Someone
- * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/Someone/Someone.plugin.js
  * @donate https://paypal.me/dominik1711
  * @website https://bambus.me/BetterDiscordStuff/
  */

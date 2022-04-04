@@ -6,7 +6,7 @@
  * @description Replaces plaintext 24 hour timestamps into Discord's timestamps
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/ReplaceTimestamps
- * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/ReplaceTimestamps/ReplaceTimestamps.plugin.js
+ * @updateUrl https://betterdiscord.app/gh-redirect/?id=
  * @donate https://paypal.me/dominik1711
  * @website https://bambus.me/BetterDiscordStuff/
  */
