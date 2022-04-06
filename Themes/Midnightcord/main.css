@@ -2,9 +2,6 @@
 @import url("https://discord-custom-covers.github.io/usrbg/snippets/modals.css");
 @import url("https://discord-custom-covers.github.io/usrbg/snippets/userPopouts.css");
 
-/* Effects for some User */
-@import url(https://bambus.me/BetterDiscordStuff/Themes/special.css);
-
 /* Settings Icons */
 @import url(https://mwittrien.github.io/BetterDiscordAddons/Themes/_res/SettingsIcons.css);
 
@@ -924,25 +921,18 @@ html:root {
 
 /* Dropdown menu */
 
-.css-3vaxre-menu {
+.select-1Ia3hD.lookFilled-1GseHa {
+    background-color: transparent;
+    border-color: var(--background-secondary-alt);
+}
+
+.popout-1KHNAq {
     background-color: var(--background-primary);
     box-shadow: rgba(12, 14, 19, .7) 0px 1px 5px 0px;
 }
 
-.css-2dw5y-control,
-.css-1a1o7fb-control,
-.css-p0ralp-control {
-    background-color: var(--background-secondary) !important;
-}
-
-.css-bcsufo-menu {
+.option-2eIyOn[aria-selected=true]{
     background-color: var(--background-accent) !important;
-}
-
-.css-gvi9bl-control:hover,
-.css-6fzn47-control,
-.css-17e1tep-control {
-    border-color: var(--midnightcord-blurple-replace) !important;
 }
 
 
