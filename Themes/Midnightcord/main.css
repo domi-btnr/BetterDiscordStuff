@@ -185,12 +185,32 @@ html:root {
 
 /* Create a Server */
 
-.root-g14mjS {
+.theme-light .root-g14mjS {
     background: rgb(20, 23, 31) !important;
 }
 
 .theme-light .footer-31IekZ {
     background: #0c0e13 !important;
+}
+
+.theme-light .base-21yXnu {
+    color: #fff;
+}
+
+.theme-light .lookBlank-21BCro,
+.theme-light .lookLink-15mFoz.colorPrimary-2AuQVo {
+    color: #fff;
+    text-decoration-color: #fff;
+}
+
+.theme-light .lookBlank-21BCro:hover,
+.theme-light .lookLink-15mFoz.colorPrimary-2AuQVo:hover {
+    text-decoration: underline;
+}
+
+.theme-light .inputDefault-3FGxgL  {
+    background-color: rgb(24, 28, 37);
+    font-weight: 400;
 }
 
 .container-36u7Lw .base-21yXnu,
@@ -1158,17 +1178,18 @@ html:root {
 }
 
 
-/* Input Border */
+/* Input */
 
-.input-2g-os5 {
+.input-2g-os5, .inputDefault-3FGxgL {
+    background-color: var(--background-secondary);
     border-radius: 8px !important;
-    border-color: transparent !important;
+    border: 1px solid transparent !important;
 }
 
 .input-2g-os5.focused-1AtTHC,
 .input-2g-os5:focus,
 .input-2g-os5:hover {
-    border: 1px solid var(--midnightcord-blurple-replace) !important;
+    border-color: var(--midnightcord-blurple-replace) !important;
 }
 
 
