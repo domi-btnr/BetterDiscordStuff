@@ -117,6 +117,13 @@ html:root {
 
 /* Friends column */
 
+.container-ZMc96U.themed-Hp1KC_ {
+    background-color: rgb(24, 28, 37);
+}
+.theme-dark .children-3xh0VB:after {
+    background: transparent;
+}
+
 .peopleColumn-1wMU14 {
     background: var(--background-primary);
 }
