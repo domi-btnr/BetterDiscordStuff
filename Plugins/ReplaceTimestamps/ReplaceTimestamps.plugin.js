@@ -2,7 +2,7 @@
  * @name ReplaceTimestamps
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 1.0.0
+ * @version 1.1.0
  * @description Replaces plaintext 24 hour timestamps into Discord's timestamps
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/ReplaceTimestamps
@@ -24,7 +24,7 @@ const config = {
                 discord_id: "354191516979429376",
             },
         ],
-        version: "1.0.0",
+        version: "1.1.0",
         description:
             "Replaces plaintext 24 hour timestamps into Discord's timestamps",
         github:
@@ -34,9 +34,9 @@ const config = {
     },
     changelog: [
         {
-            title: "YEAH",
+            title: "AM/PM Support",
             type: "added",
-            items: ["The plugin exists"],
+            items: ["Added AM/PM support. To use, add `am` or `pm` to the end of the timestamp."],
         }
     ],
 };
@@ -87,8 +87,24 @@ module.exports = !global.ZeresPluginLibrary
 
             patchMessage() {
                 Patcher.before(DiscordModules.MessageActions, "sendMessage", (_, [, msg]) => {
-                    if (msg.content.search(/(?<!\d)\d{1,2}:\d{2}(?!\d)/) !== -1) msg.content = msg.content.replace(/\d?\d:\d\d/g, x => (this.getUnixTimestamp(x)));
-                })
+                    const regexAGlobal = new RegExp("(?<!\\d)\\d{1,2}:\\d{2}(?!\\d)(am|pm)?", 'gi');
+                    const regexA = new RegExp("((?<!\\d)\\d{1,2}:\\d{2}(?!\\d))(am|pm)?", 'i');
+                    if (msg.content.search(regexAGlobal) !== -1) msg.content = msg.content.replace(regexAGlobal, x => {
+                        let [, time, mode] = x.match(regexA);
+                        let [hours, minutes] = time.split(':').map(e => parseInt(e));
+                        if (mode && mode.toLowerCase() === 'pm' && hours < 12 && hours !== 0) {
+                            hours += 12;
+                            minutes = minutes.toString().padStart(2, '0');
+                            time = `${hours}:${minutes}`;
+                        } else if ((mode && mode.toLowerCase() === 'am' && hours === 12) || (hours === 24)) time = `00:${minutes}`;
+                        else if (minutes >= 60) {
+                            hours += Math.floor(minutes / 60);
+                            minutes = (minutes % 60);
+                            time = `${hours}:${minutes}`;
+                        }
+                        return this.getUnixTimestamp(time);
+                    });
+                });
             }
 
             getUnixTimestamp(time) {
