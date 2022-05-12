@@ -7,7 +7,7 @@
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/ToggleAll
  * @donate https://paypal.me/dominik1711
- * @website https://bambus.me/BetterDiscordStuff/
+ * @website https://bd.bambus.me/
  */
 /*@cc_on
 @if (@_jscript)

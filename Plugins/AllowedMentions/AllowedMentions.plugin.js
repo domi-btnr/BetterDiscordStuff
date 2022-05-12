@@ -8,7 +8,7 @@
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/AllowedMentions
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/AllowedMentions/AllowedMentions.plugin.js
  * @donate https://paypal.me/dominik1711
- * @website https://bambus.me/BetterDiscordStuff/
+ * @website https://bd.bambus.me/
  */
 
 const request = require("request");

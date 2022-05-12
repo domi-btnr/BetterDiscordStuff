@@ -8,7 +8,7 @@
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterInvites
  * @updateUrl https://betterdiscord.app/gh-redirect/?id=539
  * @donate https://paypal.me/dominik1711
- * @website https://bambus.me/BetterDiscordStuff/
+ * @website https://bd.bambus.me/
  */
 
 const request = require("request");
