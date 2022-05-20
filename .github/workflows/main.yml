@@ -92,3 +92,4 @@ jobs:
         with:
           github_token: ${{ github.token }}
           branch: main
+          directory: Plugins
