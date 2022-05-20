@@ -23,18 +23,18 @@ jobs:
       - name: Clean working directory
         run: rm -rf /home/runner/work/${{ github.repository }}
 
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v2
         with:
           submodules: recursive
           fetch-depth: 0
           
-      - name: Cetup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
           node-version: 16.x
 
-      - name: setup env
+      - name: Setup env
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_NPM_TOKEN }}" >> .npmrc
           echo '@betterdiscordbuilder:registry=https://npm.pkg.github.com' >> .npmrc
