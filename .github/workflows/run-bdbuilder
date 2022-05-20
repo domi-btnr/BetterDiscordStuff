@@ -8,8 +8,7 @@ const _fs = require("fs");
 //_cp.execSync("npm i -g pnpm", {cwd: ".", stdio: ["ignore", "inherit", "inherit"]});
 
 const changedFilesIgnore = [
-  "bdbuilder",
-  "scripts"
+  "bdbuilder"
 ];
 const releaseExtensions = [".md", ".plugin.js"];
 

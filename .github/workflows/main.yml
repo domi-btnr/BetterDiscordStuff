@@ -50,7 +50,7 @@ jobs:
 
       - name: Build plugins
         run: >-
-          sh .github/workflows/run-bdbuilder
+          .github/workflows/run-bdbuilder
           "--trigger=${{ github.event_name }}"
           "--plugin=${{ github.event.inputs.plugin }}"
           ${{ steps.files.outputs.all }}
