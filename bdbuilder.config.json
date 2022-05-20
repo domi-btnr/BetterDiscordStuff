@@ -1,0 +1,21 @@
+{
+    "build": {
+        "watch": false,
+        "folder": "./[plugin]",
+        "readme": true,
+        "filename": "[name].plugin.js"
+    },
+    "discord": {
+        "userId": "354191516979429376",
+        "username": "HypedDomi"
+    },
+    "github": {
+        "username": "HypedDomi",
+        "branch": "main",
+        "repo": "BetterDiscordStuff"
+    },
+    "paths": {
+        "bdfolder": "C:/Users/domin/AppData/Roaming/BetterDiscord",
+        "release_folder": "<seret>"
+    }
+}

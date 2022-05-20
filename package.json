@@ -1,0 +1,23 @@
+{
+  "name": "betterdiscordstuff",
+  "version": "1.0.0",
+  "description": "Just my Plugins for BetterDiscord",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx bdbuilder --plugin='Plugin' --build --config=bdbuilder.dev.config.json",
+    "prod": "npx bdbuilder --plugin='Plugin' --build --config=bdbuilder.prod.config.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HypedDomi/BetterDiscordStuff.git"
+  },
+  "author": "HypedDomi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HypedDomi/BetterDiscordStuff/issues"
+  },
+  "homepage": "https://github.com/HypedDomi/BetterDiscordStuff",
+  "devDependencies": {
+    "@betterdiscordbuilder/bdbuilder": "^1.2.22"
+  }
+}
