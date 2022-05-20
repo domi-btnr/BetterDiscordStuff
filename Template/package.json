@@ -1,0 +1,36 @@
+{
+	"info": {
+		"name": "Template",
+		"version": "0.1.0",
+		"description": "Template for new Plugins",
+		"authors": [
+			{
+				"name": "HypedDomi",
+				"discord_id": "415849376598982656",
+				"github_username": "HypedDomi"
+			}
+		],
+		"github": "https://github.com/HypedDomi/BetterDiscordStuff/Plugins/Template",
+		"github_raw": "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/Template/Template.plugin.js"
+	},
+	"changelog": [
+		{
+			"type": "added",
+			"title": "YEAH",
+			"items": [
+				"The plugin exists"
+			]
+		}
+	],
+	"build": {
+		"zlibrary": true,
+		"copy": true,
+		"production": false,
+		"alias": {},
+		"release": {
+			"source": true,
+			"readme": true,
+			"public": true
+		}
+	}
+}
