@@ -6,7 +6,7 @@
 		"authors": [
 			{
 				"name": "HypedDomi",
-				"discord_id": "415849376598982656",
+				"discord_id": "354191516979429376",
 				"github_username": "HypedDomi"
 			}
 		],
@@ -29,7 +29,7 @@
 		"alias": {},
 		"release": {
 			"source": true,
-			"readme": true,
+			"readme": false,
 			"public": true
 		}
 	}
