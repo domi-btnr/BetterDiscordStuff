@@ -3,6 +3,9 @@
  * @version 0.1.0
  * @description Generate FriendCodes to easily add friends
  * @author HypedDomi
+ * @invite gp2ExK5vc7
+ * @donate https://paypal.me/dominik1711
+ * @website https://bd.bambus.me/
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/FriendCodes
  * @updateUrl https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/FriendCodes/FriendCodes.plugin.js
  */
@@ -39,6 +42,9 @@ const config = {
 			"discord_id": "354191516979429376",
 			"github_username": "HypedDomi"
 		}],
+		"invite": "gp2ExK5vc7",
+		"donate": "https://paypal.me/dominik1711",
+		"website": "https://bd.bambus.me/",
 		"github": "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/FriendCodes",
 		"github_raw": "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/FriendCodes/FriendCodes.plugin.js"
 	},
