@@ -1,6 +1,6 @@
 /**
  * @name FriendCodes
- * @version 0.1.0
+ * @version 0.1.1
  * @description Generate FriendCodes to easily add friends
  * @author HypedDomi
  * @invite gp2ExK5vc7
@@ -35,7 +35,7 @@
 const config = {
 	"info": {
 		"name": "FriendCodes",
-		"version": "0.1.0",
+		"version": "0.1.1",
 		"description": "Generate FriendCodes to easily add friends",
 		"authors": [{
 			"name": "HypedDomi",
@@ -49,10 +49,10 @@ const config = {
 		"github_raw": "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/FriendCodes/FriendCodes.plugin.js"
 	},
 	"changelog": [{
-		"type": "added",
-		"title": "YEAH",
+		"type": "fixed",
+		"title": "Fixed",
 		"items": [
-			"The plugin exists"
+			"Shows the TabItem now on startup"
 		]
 	}],
 	"build": {
@@ -405,15 +405,15 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				return _extends.apply(this, arguments);
 			}
 			const {
-				Heading
-			} = external_PluginApi_namespaceObject.WebpackModules.getByProps("Heading") ?? {
-				Heading: () => null
-			};
-			const {
 				createFriendInvite,
 				getAllFriendInvites,
 				revokeFriendInvites
 			} = external_PluginApi_namespaceObject.WebpackModules.getByProps("createFriendInvite");
+			const {
+				Heading
+			} = external_PluginApi_namespaceObject.WebpackModules.getByProps("Heading") ?? {
+				Heading: () => null
+			};
 			const Markdown = external_PluginApi_namespaceObject.WebpackModules.getByProps("parseTopic");
 			function InviteCard(props) {
 				return React.createElement("div", {
@@ -477,6 +477,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								(0, modal_namespaceObject.openModal)((props => external_BdApi_React_default().createElement(Modal, props)));
 							}
 						}, "Friend Codes"));
+						returnValue.forceUpdate();
 					}));
 				}
 				onStop() {
