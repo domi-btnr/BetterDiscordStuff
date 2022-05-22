@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { WebpackModules, Toasts } from "@zlibrary";
 import { ModalContent, ModalFooter, ModalHeader, ModalRoot } from "@discord/modal";
 import { Button, Flex } from "@discord/components";
-const { Heading } = WebpackModules.getByProps("Heading") ?? { Heading: () => null };
 import { copy } from "@discord/native";
 import styles from "./style.css";
 
 const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = WebpackModules.getByProps("createFriendInvite");
+const { Heading } = WebpackModules.getByProps("Heading") ?? { Heading: () => null };
 const Markdown = WebpackModules.getByProps("parseTopic");
 
 function InviteCard(props) {
