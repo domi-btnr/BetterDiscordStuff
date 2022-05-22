@@ -1,8 +1,8 @@
 {
 	"info": {
-		"name": "Template",
+		"name": "FriendCodes",
 		"version": "0.1.0",
-		"description": "Template for new Plugins",
+		"description": "Generate FriendCodes to easily add friends",
 		"authors": [
 			{
 				"name": "HypedDomi",
@@ -10,8 +10,8 @@
 				"github_username": "HypedDomi"
 			}
 		],
-		"github": "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/Template",
-		"github_raw": "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/Template/Template.plugin.js"
+		"github": "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/FriendCodes",
+		"github_raw": "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/FriendCodes/FriendCodes.plugin.js"
 	},
 	"changelog": [
 		{
@@ -29,7 +29,7 @@
 		"alias": {},
 		"release": {
 			"source": true,
-			"readme": false,
+			"readme": true,
 			"public": true
 		}
 	}
