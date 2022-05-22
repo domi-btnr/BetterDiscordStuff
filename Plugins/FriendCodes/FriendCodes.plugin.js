@@ -1,6 +1,6 @@
 /**
  * @name FriendCodes
- * @version 0.1.1
+ * @version 0.1.2
  * @description Generate FriendCodes to easily add friends
  * @author HypedDomi
  * @invite gp2ExK5vc7
@@ -35,7 +35,7 @@
 const config = {
 	"info": {
 		"name": "FriendCodes",
-		"version": "0.1.1",
+		"version": "0.1.2",
 		"description": "Generate FriendCodes to easily add friends",
 		"authors": [{
 			"name": "HypedDomi",
@@ -52,7 +52,8 @@ const config = {
 		"type": "fixed",
 		"title": "Fixed",
 		"items": [
-			"Shows the TabItem now on startup"
+			"Shows the TabItem now on startup",
+			"Doesn't shows the TabItem in the User Modal anymore"
 		]
 	}],
 	"build": {
@@ -469,15 +470,17 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				async onStart() {
 					external_StyleLoader_default().inject();
 					const FriendsTabBar = await external_PluginApi_namespaceObject.ReactComponents.getComponentByName("TabBar", ".tabBar-ra-EuL");
-					external_PluginApi_namespaceObject.Patcher.after(FriendsTabBar.component.prototype, "render", ((_, __, returnValue) => {
-						returnValue.props.children.push(external_BdApi_React_default().createElement("div", {
-							className: "item-3mHhwr item-3XjbnG themed-2-lozF",
-							key: "friend-codes",
-							onClick: () => {
-								(0, modal_namespaceObject.openModal)((props => external_BdApi_React_default().createElement(Modal, props)));
-							}
-						}, "Friend Codes"));
-						returnValue.forceUpdate();
+					external_PluginApi_namespaceObject.Patcher.after(FriendsTabBar.component.prototype, "render", ((e, __, returnValue) => {
+						if (e.props.className && -1 !== e.props.className.indexOf("tabBar-ra-EuL")) {
+							returnValue.props.children.push(external_BdApi_React_default().createElement("div", {
+								className: "item-3mHhwr item-3XjbnG themed-2-lozF",
+								key: "friend-codes",
+								onClick: () => {
+									(0, modal_namespaceObject.openModal)((props => external_BdApi_React_default().createElement(Modal, props)));
+								}
+							}, "Friend Codes"));
+							returnValue.forceUpdate();
+						}
 					}));
 				}
 				onStop() {
