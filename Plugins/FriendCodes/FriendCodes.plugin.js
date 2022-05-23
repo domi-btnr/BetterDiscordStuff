@@ -1,6 +1,6 @@
 /**
  * @name FriendCodes
- * @version 0.1.2
+ * @version 0.2.0
  * @description Generate FriendCodes to easily add friends
  * @author HypedDomi
  * @invite gp2ExK5vc7
@@ -35,7 +35,7 @@
 const config = {
 	"info": {
 		"name": "FriendCodes",
-		"version": "0.1.2",
+		"version": "0.2.0",
 		"description": "Generate FriendCodes to easily add friends",
 		"authors": [{
 			"name": "HypedDomi",
@@ -49,11 +49,10 @@ const config = {
 		"github_raw": "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/FriendCodes/FriendCodes.plugin.js"
 	},
 	"changelog": [{
-		"type": "fixed",
-		"title": "Fixed",
+		"type": "improved",
+		"title": "IMPROVED",
 		"items": [
-			"Shows the TabItem now on startup",
-			"Doesn't shows the TabItem in the User Modal anymore"
+			"Cleaner Design (Thanks Gibbu)"
 		]
 	}],
 	"build": {
@@ -280,7 +279,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 			}
 		};
 		var __webpack_modules__ = {
-			971: (module, __webpack_exports__, __webpack_require__) => {
+			24: (module, __webpack_exports__, __webpack_require__) => {
 				__webpack_require__.d(__webpack_exports__, {
 					Z: () => __WEBPACK_DEFAULT_EXPORT__
 				});
@@ -289,11 +288,12 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()((function(i) {
 					return i[1];
 				}));
-				___CSS_LOADER_EXPORT___.push([module.id, ".FriendCodes-style-item {\n    color: #fff;\n    display: flex;\n    position: relative;\n    flex-direction: column;\n    border-radius: 8px;\n    padding: 10px;\n    margin-bottom: 10px;\n    background: var(--background-secondary);\n}\n\n.FriendCodes-style-buttonContainer {\n    display: flex;\n    justify-content: flex-end;\n    align-items: center;\n    padding: 10px;\n}\n\n.FriendCodes-style-buttonContainerInner {\n    display: block;\n    position: absolute;\n    bottom: 0;\n    right: 0;\n    padding: 10px;\n}\n\n.FriendCodes-style-buttonContainerInner button {\n    width: 100%;\n}", ""]);
+				___CSS_LOADER_EXPORT___.push([module.id, ".FriendCodes-style-item{color:#fff;display:flex;position:relative;flex-direction:column;border-radius:8px;padding:10px;margin-bottom:10px;background:var(--background-secondary)}.FriendCodes-style-item code{background:var(--background-tertiary);padding:2px}.FriendCodes-style-item div{margin:2px}.FriendCodes-style-buttonContainer{display:flex;justify-content:flex-end;align-items:center}.FriendCodes-style-buttonContainer .FriendCodes-style-buttonContainerInner{display:block;position:absolute;bottom:0;right:0;padding:10px}.FriendCodes-style-noInvites img{display:block;margin-left:auto;margin-right:auto}.FriendCodes-style-noInvites h3{margin-top:25px;text-align:center;font-weight:500;font-size:large}", ""]);
 				___CSS_LOADER_EXPORT___.locals = {
 					item: "FriendCodes-style-item",
 					buttonContainer: "FriendCodes-style-buttonContainer",
-					buttonContainerInner: "FriendCodes-style-buttonContainerInner"
+					buttonContainerInner: "FriendCodes-style-buttonContainerInner",
+					noInvites: "FriendCodes-style-noInvites"
 				};
 				StyleLoader.append(module.id, ___CSS_LOADER_EXPORT___.toString());
 				const __WEBPACK_DEFAULT_EXPORT__ = Object.assign(___CSS_LOADER_EXPORT___, ___CSS_LOADER_EXPORT___.locals);
@@ -392,7 +392,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 			var external_StyleLoader_default = __webpack_require__.n(external_StyleLoader_namespaceObject);
 			const components_namespaceObject = Modules["@discord/components"];
 			const native_namespaceObject = Modules["@discord/native"];
-			var style = __webpack_require__(971);
+			var style = __webpack_require__(24);
 			var React = __webpack_require__(113);
 			function _extends() {
 				_extends = Object.assign || function(target) {
@@ -416,24 +416,41 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				Heading: () => null
 			};
 			const Markdown = external_PluginApi_namespaceObject.WebpackModules.getByProps("parseTopic");
+			function CopyButton({
+				copyText,
+				copiedText,
+				onClick
+			}) {
+				const [copied, setCopied] = (0, external_BdApi_React_.useState)(false);
+				return React.createElement(components_namespaceObject.Button, {
+					onClick: e => {
+						setCopied(true);
+						setTimeout((() => setCopied(false)), 1e3);
+						onClick(e);
+					},
+					color: copied ? components_namespaceObject.Button.Colors.GREEN : components_namespaceObject.Button.Colors.BRAND,
+					size: components_namespaceObject.Button.Sizes.SMALL,
+					look: components_namespaceObject.Button.Looks.FILLED
+				}, copied ? copiedText : copyText);
+			}
 			function InviteCard(props) {
 				return React.createElement("div", {
 					className: style.Z.item
-				}, React.createElement("b", null, props.invite.code), React.createElement("div", {
+				}, React.createElement("div", {
+					className: style.Z.code
+				}, React.createElement("span", null, React.createElement("b", null, "Code:"), " ", Markdown.parse(`\`${props.invite.code}\``))), React.createElement("div", {
 					className: style.Z.uses
-				}, React.createElement("span", null, "Uses: ", React.createElement("b", null, props.invite.uses, "/", props.invite.max_uses))), React.createElement("div", {
+				}, React.createElement("span", null, React.createElement("b", null, "Uses:"), " ", props.invite.uses, "/", props.invite.max_uses)), React.createElement("div", {
 					className: style.Z.expiresAt
-				}, React.createElement("span", null, "Expires in: ", Markdown.parse(`<t:${Math.floor(Date.parse(props.invite.expires_at).toString().slice(0, -3))}:R>`))), React.createElement("div", {
+				}, React.createElement("span", null, React.createElement("b", null, "Expires in:"), " ", Markdown.parse(`<t:${Math.floor(Date.parse(props.invite.expires_at).toString().slice(0, -3))}:R>`))), React.createElement("div", {
 					className: style.Z.buttonContainer
 				}, React.createElement("div", {
 					className: style.Z.buttonContainerInner
-				}, React.createElement(components_namespaceObject.Button, {
-					size: components_namespaceObject.Button.Sizes.SMALL,
-					onClick: () => {
-						(0, native_namespaceObject.copy)(`https://discord.gg/${props.invite.code}`);
-						external_PluginApi_namespaceObject.Toasts.info("Copied to clipboard!");
-					}
-				}, "Copy"))));
+				}, React.createElement(CopyButton, {
+					copiedText: "Copied!",
+					copyText: "Copy",
+					onClick: () => (0, native_namespaceObject.copy)(`https://discord.gg/${props.invite.code}`)
+				}))));
 			}
 			function Modal(props) {
 				const [invites, setInvites] = (0, external_BdApi_React_.useState)([]);
@@ -441,26 +458,36 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					getAllFriendInvites().then((invites => setInvites(invites)));
 				}), []);
 				return React.createElement(modal_namespaceObject.ModalRoot, _extends({}, props, {
-					size: "medium"
+					size: modal_namespaceObject.ModalSize.MEDIUM
 				}), React.createElement(modal_namespaceObject.ModalHeader, {
 					separator: false
 				}, React.createElement(Heading, {
 					level: "2",
 					variant: "heading-lg/medium"
-				}, "Friend Codes")), React.createElement(modal_namespaceObject.ModalContent, null, invites.map((invite => React.createElement(InviteCard, {
+				}, "Friend Codes")), React.createElement(modal_namespaceObject.ModalContent, null, invites.length > 0 ? invites.map((invite => React.createElement(InviteCard, {
 					key: invite.code,
 					invite
-				})))), React.createElement(modal_namespaceObject.ModalFooter, null, React.createElement(components_namespaceObject.Flex, {
+				}))) : React.createElement("div", {
+					className: style.Z.noInvites
+				}, React.createElement("img", {
+					src: "https://discord.com/assets/b36c705f790dad253981f1893085015a.svg"
+				}), React.createElement(Heading, {
+					level: "3",
+					variant: "heading-lg/small"
+				}, "You don't have any friend codes yet"))), React.createElement(modal_namespaceObject.ModalFooter, null, React.createElement(components_namespaceObject.Flex, {
 					justify: components_namespaceObject.Flex.Justify.BETWEEN
 				}, React.createElement(components_namespaceObject.Flex, {
 					justify: components_namespaceObject.Flex.Justify.START
 				}, React.createElement(components_namespaceObject.Button, {
 					color: components_namespaceObject.Button.Colors.GREEN,
+					look: components_namespaceObject.Button.Looks.OUTLINED,
 					onClick: () => createFriendInvite().then(getAllFriendInvites().then((invites => setInvites(invites))))
 				}, "Create Friend Invite"), React.createElement(components_namespaceObject.Flex, {
 					justify: components_namespaceObject.Flex.Justify.START
 				}, React.createElement(components_namespaceObject.Button, {
 					color: components_namespaceObject.Button.Colors.RED,
+					look: components_namespaceObject.Button.Looks.LINK,
+					disabled: !invites.length,
 					onClick: () => revokeFriendInvites().then(getAllFriendInvites().then((invites => setInvites(invites))))
 				}, "Revoke all Friend Invites"))), React.createElement(components_namespaceObject.Button, {
 					onClick: props.onClose
@@ -471,16 +498,13 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					external_StyleLoader_default().inject();
 					const FriendsTabBar = await external_PluginApi_namespaceObject.ReactComponents.getComponentByName("TabBar", ".tabBar-ra-EuL");
 					external_PluginApi_namespaceObject.Patcher.after(FriendsTabBar.component.prototype, "render", ((e, __, returnValue) => {
-						if (e.props.className && -1 !== e.props.className.indexOf("tabBar-ra-EuL")) {
-							returnValue.props.children.push(external_BdApi_React_default().createElement("div", {
-								className: "item-3mHhwr item-3XjbnG themed-2-lozF",
-								key: "friend-codes",
-								onClick: () => {
-									(0, modal_namespaceObject.openModal)((props => external_BdApi_React_default().createElement(Modal, props)));
-								}
-							}, "Friend Codes"));
-							returnValue.forceUpdate();
-						}
+						if (e.props.className && -1 !== e.props.className.indexOf("tabBar-ra-EuL")) returnValue.props.children.push(external_BdApi_React_default().createElement("div", {
+							className: "item-3mHhwr item-3XjbnG themed-2-lozF",
+							key: "friend-codes",
+							onClick: () => {
+								(0, modal_namespaceObject.openModal)((props => external_BdApi_React_default().createElement(Modal, props)));
+							}
+						}, "Friend Codes"));
 					}));
 				}
 				onStop() {
