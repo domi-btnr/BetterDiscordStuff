@@ -22,7 +22,6 @@ export default class FriendCodes extends BasePlugin {
                         }
                     }, "Friend Codes")
                 );
-                returnValue.forceUpdate();
             }
         });
     }

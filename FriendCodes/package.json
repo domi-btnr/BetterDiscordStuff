@@ -1,7 +1,7 @@
 {
 	"info": {
 		"name": "FriendCodes",
-		"version": "0.1.2",
+		"version": "0.2.0",
 		"description": "Generate FriendCodes to easily add friends",
 		"authors": [
 			{
@@ -18,11 +18,10 @@
 	},
 	"changelog": [
 		{
-			"type": "fixed",
-			"title": "Fixed",
+			"type": "improved",
+			"title": "IMPROVED",
 			"items": [
-				"Shows the TabItem now on startup",
-				"Doesn't shows the TabItem in the User Modal anymore"
+				"Cleaner Design (Thanks Gibbu)"
 			]
 		}
 	],

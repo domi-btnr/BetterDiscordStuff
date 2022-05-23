@@ -1,30 +1,56 @@
 import { useState, useEffect } from "react";
-import { WebpackModules, Toasts } from "@zlibrary";
-import { ModalContent, ModalFooter, ModalHeader, ModalRoot } from "@discord/modal";
+import { WebpackModules } from "@zlibrary";
+import { ModalContent, ModalFooter, ModalHeader, ModalRoot, ModalSize } from "@discord/modal";
 import { Button, Flex } from "@discord/components";
 import { copy } from "@discord/native";
-import styles from "./style.css";
+import styles from "./style.scss";
 
 const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = WebpackModules.getByProps("createFriendInvite");
 const { Heading } = WebpackModules.getByProps("Heading") ?? { Heading: () => null };
 const Markdown = WebpackModules.getByProps("parseTopic");
 
+// Copy Button from Strencher
+// https://github.com/Strencher/BetterDiscordStuff/blob/development/ShowSessions/components/list.tsx#L25-L44
+function CopyButton({ copyText, copiedText, onClick }) {
+    const [copied, setCopied] = useState(false);
+
+    const handleButtonClick = (e) => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1000);
+        onClick(e);
+    };
+
+    return (
+        <Button
+            onClick={handleButtonClick}
+            color={copied ? Button.Colors.GREEN : Button.Colors.BRAND}
+            size={Button.Sizes.SMALL}
+            look={Button.Looks.FILLED}
+        >
+            {copied ? copiedText : copyText}
+        </Button>
+    );
+}
+
 function InviteCard(props) {
     return (
         <div className={styles.item}>
-            <b>{props.invite.code}</b>
+            <div className={styles.code}>
+                <span><b>Code:</b> {Markdown.parse(`\`${props.invite.code}\``)}</span>
+            </div>
             <div className={styles.uses}>
-                <span>Uses: <b>{props.invite.uses}/{props.invite.max_uses}</b></span>
+                <span><b>Uses:</b> {props.invite.uses}/{props.invite.max_uses}</span>
             </div>
             <div className={styles.expiresAt}>
-                <span>Expires in: {Markdown.parse(`<t:${Math.floor(Date.parse(props.invite.expires_at).toString().slice(0, -3))}:R>`)}</span>
+                <span><b>Expires in:</b> {Markdown.parse(`<t:${Math.floor(Date.parse(props.invite.expires_at).toString().slice(0, -3))}:R>`)}</span>
             </div>
             <div className={styles.buttonContainer}>
                 <div className={styles.buttonContainerInner}>
-                    <Button size={Button.Sizes.SMALL} onClick={() => {
-                        copy(`https://discord.gg/${props.invite.code}`);
-                        Toasts.info("Copied to clipboard!");
-                    }}>Copy</Button>
+                    <CopyButton
+                        copiedText="Copied!"
+                        copyText="Copy"
+                        onClick={() => copy(`https://discord.gg/${props.invite.code}`)}
+                    />
                 </div>
             </div>
         </div>
@@ -37,26 +63,32 @@ export default function Modal(props) {
         getAllFriendInvites().then(invites => setInvites(invites));
     }, []);
     return (
-        <ModalRoot {...props} size={"medium"}>
+        <ModalRoot {...props} size={ModalSize.MEDIUM}>
             <ModalHeader separator={false}>
                 <Heading level="2" variant="heading-lg/medium">Friend Codes</Heading>
             </ModalHeader>
             <ModalContent>
                 {
-                    invites.map(invite =>
-                        <InviteCard
-                            key={invite.code}
-                            invite={invite}
-                        />
-                    )
+                    invites.length > 0 ?
+                        invites.map(invite =>
+                            <InviteCard
+                                key={invite.code}
+                                invite={invite}
+                            />
+                        )
+                        :
+                        <div className={styles.noInvites}>
+                            <img src="https://discord.com/assets/b36c705f790dad253981f1893085015a.svg" />
+                            <Heading level="3" variant="heading-lg/small">You don't have any friend codes yet</Heading>
+                        </div>
                 }
             </ModalContent>
             <ModalFooter>
                 <Flex justify={Flex.Justify.BETWEEN}>
                     <Flex justify={Flex.Justify.START}>
-                        <Button color={Button.Colors.GREEN} onClick={() => createFriendInvite().then(getAllFriendInvites().then(invites => setInvites(invites)))}>Create Friend Invite</Button>
+                        <Button color={Button.Colors.GREEN} look={Button.Looks.OUTLINED} onClick={() => createFriendInvite().then(getAllFriendInvites().then(invites => setInvites(invites)))}>Create Friend Invite</Button>
                         <Flex justify={Flex.Justify.START}>
-                            <Button color={Button.Colors.RED} onClick={() => revokeFriendInvites().then(getAllFriendInvites().then(invites => setInvites(invites)))}>Revoke all Friend Invites</Button>
+                            <Button color={Button.Colors.RED} look={Button.Looks.LINK} disabled={!invites.length} onClick={() => revokeFriendInvites().then(getAllFriendInvites().then(invites => setInvites(invites)))}>Revoke all Friend Invites</Button>
                         </Flex>
                     </Flex>
                     <Button onClick={props.onClose}>Okay</Button>

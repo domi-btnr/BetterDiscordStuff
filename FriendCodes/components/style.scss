@@ -1,0 +1,54 @@
+.item {
+    color: #fff;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: var(--background-secondary);
+
+    code {
+        background: var(--background-tertiary);
+        padding: 2px;
+    }
+
+    div {
+        margin: 2px;
+    }
+
+    .code {}
+
+    .uses {}
+
+    .expiresAt {}
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .buttonContainerInner {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding: 10px;
+    }
+}
+
+.noInvites {
+    img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto
+    }
+
+    h3 {
+        margin-top: 25px;
+        text-align: center;
+        font-weight: 500;
+        font-size: large;
+    }
+}
