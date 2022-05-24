@@ -1,6 +1,6 @@
 /**
  * @name FriendCodes
- * @version 0.2.0
+ * @version 1.0.0
  * @description Generate FriendCodes to easily add friends
  * @author HypedDomi
  * @invite gp2ExK5vc7
@@ -35,7 +35,7 @@
 const config = {
 	"info": {
 		"name": "FriendCodes",
-		"version": "0.2.0",
+		"version": "1.0.0",
 		"description": "Generate FriendCodes to easily add friends",
 		"authors": [{
 			"name": "HypedDomi",
@@ -49,10 +49,10 @@ const config = {
 		"github_raw": "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/FriendCodes/FriendCodes.plugin.js"
 	},
 	"changelog": [{
-		"type": "improved",
-		"title": "IMPROVED",
+		"type": "added",
+		"title": "YEAH",
 		"items": [
-			"Cleaner Design (Thanks Gibbu)"
+			"The plugin exists"
 		]
 	}],
 	"build": {
@@ -288,7 +288,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()((function(i) {
 					return i[1];
 				}));
-				___CSS_LOADER_EXPORT___.push([module.id, ".FriendCodes-style-item{color:#fff;display:flex;position:relative;flex-direction:column;border-radius:8px;padding:10px;margin-bottom:10px;background:var(--background-secondary)}.FriendCodes-style-item code{background:var(--background-tertiary);padding:2px}.FriendCodes-style-item div{margin:2px}.FriendCodes-style-buttonContainer{display:flex;justify-content:flex-end;align-items:center}.FriendCodes-style-buttonContainer .FriendCodes-style-buttonContainerInner{display:block;position:absolute;bottom:0;right:0;padding:10px}.FriendCodes-style-noInvites img{display:block;margin-left:auto;margin-right:auto}.FriendCodes-style-noInvites h3{margin-top:25px;text-align:center;font-weight:500;font-size:large}", ""]);
+				___CSS_LOADER_EXPORT___.push([module.id, ".FriendCodes-style-item{color:#fff;display:flex;position:relative;flex-direction:column;border-radius:8px;padding:10px;margin-bottom:10px;background:var(--background-secondary)}.FriendCodes-style-item code{background:var(--background-tertiary);padding:2px}.FriendCodes-style-item div{margin:2px}.FriendCodes-style-buttonContainer{display:flex;justify-content:flex-end;align-items:center}.FriendCodes-style-buttonContainer .FriendCodes-style-buttonContainerInner{display:block;position:absolute;bottom:0;right:0;padding:10px}.FriendCodes-style-buttonContainer .FriendCodes-style-buttonContainerInner button{width:80px}.FriendCodes-style-noInvites img{display:block;margin-left:auto;margin-right:auto}.FriendCodes-style-noInvites h3{margin-top:25px;text-align:center;font-weight:500;font-size:large}", ""]);
 				___CSS_LOADER_EXPORT___.locals = {
 					item: "FriendCodes-style-item",
 					buttonContainer: "FriendCodes-style-buttonContainer",
@@ -454,8 +454,10 @@ function buildPlugin([BasePlugin, PluginApi]) {
 			}
 			function Modal(props) {
 				const [invites, setInvites] = (0, external_BdApi_React_.useState)([]);
+				const [loading, setLoading] = (0, external_BdApi_React_.useState)(false);
 				(0, external_BdApi_React_.useEffect)((() => {
-					getAllFriendInvites().then((invites => setInvites(invites)));
+					setLoading(true);
+					getAllFriendInvites().then((invites => setInvites(invites))).then((() => setLoading(false)));
 				}), []);
 				return React.createElement(modal_namespaceObject.ModalRoot, _extends({}, props, {
 					size: modal_namespaceObject.ModalSize.MEDIUM
@@ -464,7 +466,9 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}, React.createElement(Heading, {
 					level: "2",
 					variant: "heading-lg/medium"
-				}, "Friend Codes")), React.createElement(modal_namespaceObject.ModalContent, null, invites.length > 0 ? invites.map((invite => React.createElement(InviteCard, {
+				}, "Friend Codes")), React.createElement(modal_namespaceObject.ModalContent, null, loading ? React.createElement("div", {
+					className: style.Z.loading
+				}) : invites.length > 0 ? invites.map((invite => React.createElement(InviteCard, {
 					key: invite.code,
 					invite
 				}))) : React.createElement("div", {
@@ -481,14 +485,14 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}, React.createElement(components_namespaceObject.Button, {
 					color: components_namespaceObject.Button.Colors.GREEN,
 					look: components_namespaceObject.Button.Looks.OUTLINED,
-					onClick: () => createFriendInvite().then(getAllFriendInvites().then((invites => setInvites(invites))))
+					onClick: () => createFriendInvite().then((invite => setInvites([...invites, invite])))
 				}, "Create Friend Invite"), React.createElement(components_namespaceObject.Flex, {
 					justify: components_namespaceObject.Flex.Justify.START
 				}, React.createElement(components_namespaceObject.Button, {
 					color: components_namespaceObject.Button.Colors.RED,
 					look: components_namespaceObject.Button.Looks.LINK,
 					disabled: !invites.length,
-					onClick: () => revokeFriendInvites().then(getAllFriendInvites().then((invites => setInvites(invites))))
+					onClick: () => revokeFriendInvites().then(setInvites([]))
 				}, "Revoke all Friend Invites"))), React.createElement(components_namespaceObject.Button, {
 					onClick: props.onClose
 				}, "Okay"))));
