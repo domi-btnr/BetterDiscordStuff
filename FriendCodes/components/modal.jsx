@@ -59,8 +59,10 @@ function InviteCard(props) {
 
 export default function Modal(props) {
     const [invites, setInvites] = useState([]);
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
-        getAllFriendInvites().then(invites => setInvites(invites));
+        setLoading(true);
+        getAllFriendInvites().then(invites => setInvites(invites)).then(() => setLoading(false));
     }, []);
     return (
         <ModalRoot {...props} size={ModalSize.MEDIUM}>
@@ -69,26 +71,21 @@ export default function Modal(props) {
             </ModalHeader>
             <ModalContent>
                 {
-                    invites.length > 0 ?
-                        invites.map(invite =>
-                            <InviteCard
-                                key={invite.code}
-                                invite={invite}
-                            />
-                        )
-                        :
-                        <div className={styles.noInvites}>
-                            <img src="https://discord.com/assets/b36c705f790dad253981f1893085015a.svg" />
-                            <Heading level="3" variant="heading-lg/small">You don't have any friend codes yet</Heading>
-                        </div>
+                    loading ? <div className={styles.loading} /> :
+                        invites.length > 0 ?
+                            invites.map(invite => <InviteCard key={invite.code} invite={invite} />) :
+                            <div className={styles.noInvites}>
+                                <img src="https://discord.com/assets/b36c705f790dad253981f1893085015a.svg" />
+                                <Heading level="3" variant="heading-lg/small">You don't have any friend codes yet</Heading>
+                            </div>
                 }
             </ModalContent>
             <ModalFooter>
                 <Flex justify={Flex.Justify.BETWEEN}>
                     <Flex justify={Flex.Justify.START}>
-                        <Button color={Button.Colors.GREEN} look={Button.Looks.OUTLINED} onClick={() => createFriendInvite().then(getAllFriendInvites().then(invites => setInvites(invites)))}>Create Friend Invite</Button>
+                        <Button color={Button.Colors.GREEN} look={Button.Looks.OUTLINED} onClick={() => createFriendInvite().then(invite => setInvites([...invites, invite]))}>Create Friend Invite</Button>
                         <Flex justify={Flex.Justify.START}>
-                            <Button color={Button.Colors.RED} look={Button.Looks.LINK} disabled={!invites.length} onClick={() => revokeFriendInvites().then(getAllFriendInvites().then(invites => setInvites(invites)))}>Revoke all Friend Invites</Button>
+                            <Button color={Button.Colors.RED} look={Button.Looks.LINK} disabled={!invites.length} onClick={() => revokeFriendInvites().then(setInvites([]))}>Revoke all Friend Invites</Button>
                         </Flex>
                     </Flex>
                     <Button onClick={props.onClose}>Okay</Button>
