@@ -500,14 +500,12 @@ function buildPlugin([BasePlugin, PluginApi]) {
 			class FriendCodes extends(external_BasePlugin_default()) {
 				async onStart() {
 					external_StyleLoader_default().inject();
+					const TabBar = external_PluginApi_namespaceObject.WebpackModules.getByProps("Item", "Header");
 					const FriendsTabBar = await external_PluginApi_namespaceObject.ReactComponents.getComponentByName("TabBar", ".tabBar-ra-EuL");
-					external_PluginApi_namespaceObject.Patcher.after(FriendsTabBar.component.prototype, "render", ((e, __, returnValue) => {
-						if (e.props.className && -1 !== e.props.className.indexOf("tabBar-ra-EuL")) returnValue.props.children.push(external_BdApi_React_default().createElement("div", {
-							className: "item-3mHhwr item-3XjbnG themed-2-lozF",
-							key: "friend-codes",
-							onClick: () => {
-								(0, modal_namespaceObject.openModal)((props => external_BdApi_React_default().createElement(Modal, props)));
-							}
+					external_PluginApi_namespaceObject.Patcher.after(FriendsTabBar.component.prototype, "render", ((e, _, returnValue) => {
+						if (e.props.className && -1 !== e.props.className.indexOf("tabBar-ra-EuL")) returnValue.props.children.push(external_BdApi_React_default().createElement(TabBar.Item, {
+							selectedItem: 0,
+							onClick: () => (0, modal_namespaceObject.openModal)((props => external_BdApi_React_default().createElement(Modal, props)))
 						}, "Friend Codes"));
 					}));
 				}
