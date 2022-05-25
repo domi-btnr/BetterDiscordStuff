@@ -62,7 +62,7 @@ const config = {
 		"alias": {},
 		"release": {
 			"source": true,
-			"readme": true,
+			"readme": false,
 			"public": true
 		}
 	}
@@ -395,7 +395,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 			var style = __webpack_require__(24);
 			var React = __webpack_require__(113);
 			function _extends() {
-				_extends = Object.assign || function(target) {
+				_extends = Object.assign ? Object.assign.bind() : function(target) {
 					for (var i = 1; i < arguments.length; i++) {
 						var source = arguments[i];
 						for (var key in source)
