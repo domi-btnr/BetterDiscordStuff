@@ -32,7 +32,7 @@
 		"alias": {},
 		"release": {
 			"source": true,
-			"readme": true,
+			"readme": false,
 			"public": true
 		}
 	}
