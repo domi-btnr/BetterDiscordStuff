@@ -63,7 +63,16 @@ const config = {
 		"release": {
 			"source": true,
 			"readme": false,
-			"public": true
+			"public": true,
+			"previews": [{
+					"name": "",
+					"src": "images/Tabbar.png"
+				},
+				{
+					"name": "",
+					"src": "images/Modal.png"
+				}
+			]
 		}
 	}
 };
