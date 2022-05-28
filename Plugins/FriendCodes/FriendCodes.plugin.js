@@ -65,7 +65,7 @@ const config = {
 			"readme": false,
 			"public": true,
 			"previews": [{
-					"name": "",
+					"name": "Friends Page",
 					"src": "images/Tabbar.png"
 				},
 				{
