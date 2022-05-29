@@ -495,14 +495,14 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					color: components_namespaceObject.Button.Colors.GREEN,
 					look: components_namespaceObject.Button.Looks.OUTLINED,
 					onClick: () => createFriendInvite().then((invite => setInvites([...invites, invite])))
-				}, "Create Friend Invite"), React.createElement(components_namespaceObject.Flex, {
+				}, "Create Friend Codes"), React.createElement(components_namespaceObject.Flex, {
 					justify: components_namespaceObject.Flex.Justify.START
 				}, React.createElement(components_namespaceObject.Button, {
 					color: components_namespaceObject.Button.Colors.RED,
 					look: components_namespaceObject.Button.Looks.LINK,
 					disabled: !invites.length,
 					onClick: () => revokeFriendInvites().then(setInvites([]))
-				}, "Revoke all Friend Invites"))), React.createElement(components_namespaceObject.Button, {
+				}, "Revoke all Friend Codes"))), React.createElement(components_namespaceObject.Button, {
 					onClick: props.onClose
 				}, "Okay"))));
 			}
