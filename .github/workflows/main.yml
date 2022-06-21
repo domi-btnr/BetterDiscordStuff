@@ -37,11 +37,11 @@ jobs:
       - name: Setup env
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_NPM_TOKEN }}" >> .npmrc
-          echo '@betterdiscordbuilder:registry=https://npm.pkg.github.com' >> .npmrc
+          echo '@hypeddomi:registry=https://npm.pkg.github.com' >> .npmrc
 
       - name: Install latest BDBuilder version
         run: |
-          npm i -D @betterdiscordbuilder/bdbuilder@latest
+          npm i -D @hypeddomi/bdbuilder@latest
 
       - name: Detect changed files
         id: files
