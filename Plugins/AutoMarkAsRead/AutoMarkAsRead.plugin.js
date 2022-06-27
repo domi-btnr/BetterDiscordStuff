@@ -1,6 +1,6 @@
 /**
  * @name AutoMarkAsRead
- * @version 1.0.0
+ * @version 1.1.0
  * @description Automatically marks Channels or Guilds as read when you receive a message
  * @author HypedDomi
  * @invite gp2ExK5vc7
@@ -35,7 +35,7 @@
 const config = {
 	"info": {
 		"name": "AutoMarkAsRead",
-		"version": "1.0.0",
+		"version": "1.1.0",
 		"description": "Automatically marks Channels or Guilds as read when you receive a message",
 		"authors": [{
 			"name": "HypedDomi",
@@ -50,9 +50,9 @@ const config = {
 	},
 	"changelog": [{
 		"type": "added",
-		"title": "YEAH",
+		"title": "Folder Support",
 		"items": [
-			"The plugin exists"
+			"You can now mark all guilds in a folder"
 		]
 	}],
 	"build": {
@@ -319,15 +319,39 @@ function buildPlugin([BasePlugin, PluginApi]) {
 		var external_BasePlugin_default = __webpack_require__.n(external_BasePlugin_namespaceObject);
 		const external_PluginApi_namespaceObject = PluginApi;
 		const AckUtils = BdApi.findModuleByProps("ack");
+		const GuildFolders = BdApi.findModuleByProps("getGuildsTree").getCompatibleGuildFolders();
 		class AutoMarkAsRead extends(external_BasePlugin_default()) {
 			onStart() {
+				this.patchFolderContextMenu();
 				this.patchGuildContextMenu();
 				this.patchChannelContextMenu();
 				this.patchIncomingMessages();
 			}
+			patchFolderContextMenu() {
+				external_PluginApi_namespaceObject.ContextMenu.getDiscordMenu("GuildFolderContextMenu").then((cm => {
+					external_PluginApi_namespaceObject.Patcher.after(cm, "default", ((_, [{
+						folderId
+					}], ret) => {
+						const guilds = BdApi.getData("AutoMarkAsRead", "markAsReadGuilds") ?? [];
+						const guildsInFolder = GuildFolders.find((e => e.folderId == folderId)).guildIds;
+						const autoMarkAsRead = guildsInFolder.some((id => guilds.includes(id)));
+						const menu = external_PluginApi_namespaceObject.ContextMenu.buildMenuChildren([{
+							label: "AutoMarkAsRead",
+							children: external_PluginApi_namespaceObject.ContextMenu.buildMenuChildren([{
+								label: autoMarkAsRead ? "Disable AutoMarkAsRead" : "Automaticly mark as read",
+								danger: autoMarkAsRead,
+								action: () => {
+									BdApi.saveData("AutoMarkAsRead", "markAsReadGuilds", autoMarkAsRead ? guilds.filter((e => !guildsInFolder.includes(e))) : [...guilds, ...guildsInFolder]);
+								}
+							}])
+						}]);
+						ret.props.children = [ret.props.children, menu];
+					}));
+				}));
+			}
 			patchGuildContextMenu() {
-				external_PluginApi_namespaceObject.ContextMenu.getDiscordMenu("GuildContextMenu").then((m => {
-					external_PluginApi_namespaceObject.Patcher.after(m, "default", ((_, [{
+				external_PluginApi_namespaceObject.ContextMenu.getDiscordMenu("GuildContextMenu").then((cm => {
+					external_PluginApi_namespaceObject.Patcher.after(cm, "default", ((_, [{
 						guild
 					}], ret) => {
 						const guilds = BdApi.getData("AutoMarkAsRead", "markAsReadGuilds") ?? [];
@@ -338,7 +362,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								label: autoMarkAsRead ? "Disable AutoMarkAsRead" : "Automaticly mark as read",
 								danger: autoMarkAsRead,
 								action: () => {
-									BdApi.saveData("AutoMarkAsRead", "markAsReadGuilds", autoMarkAsRead ? guilds.filter((c => c != guild.id)) : [...guilds, guild.id]);
+									BdApi.saveData("AutoMarkAsRead", "markAsReadGuilds", autoMarkAsRead ? guilds.filter((e => e != guild.id)) : [...guilds, guild.id]);
 								}
 							}])
 						}]);
@@ -347,8 +371,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}));
 			}
 			patchChannelContextMenu() {
-				external_PluginApi_namespaceObject.ContextMenu.getDiscordMenu("useChannelDeleteItem").then((m => {
-					external_PluginApi_namespaceObject.Patcher.after(m, "default", ((_, [{
+				external_PluginApi_namespaceObject.ContextMenu.getDiscordMenu("useChannelDeleteItem").then((cm => {
+					external_PluginApi_namespaceObject.Patcher.after(cm, "default", ((_, [{
 						id
 					}], ret) => {
 						const channels = BdApi.getData("AutoMarkAsRead", "markAsReadChannels") ?? [];
@@ -359,7 +383,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								label: autoMarkAsRead ? "Disable AutoMarkAsRead" : "Automaticly mark as read",
 								danger: autoMarkAsRead,
 								action: () => {
-									BdApi.saveData("AutoMarkAsRead", "markAsReadChannels", autoMarkAsRead ? channels.filter((c => c != id)) : [...channels, id]);
+									BdApi.saveData("AutoMarkAsRead", "markAsReadChannels", autoMarkAsRead ? channels.filter((e => e != id)) : [...channels, id]);
 								}
 							}])
 						}]);
