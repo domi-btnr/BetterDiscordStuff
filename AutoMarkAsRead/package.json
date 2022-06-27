@@ -1,7 +1,7 @@
 {
 	"info": {
 		"name": "AutoMarkAsRead",
-		"version": "1.0.0",
+		"version": "1.1.0",
 		"description": "Automatically marks Channels or Guilds as read when you receive a message",
 		"authors": [
 			{
@@ -19,9 +19,9 @@
 	"changelog": [
 		{
 			"type": "added",
-			"title": "YEAH",
+			"title": "Folder Support",
 			"items": [
-				"The plugin exists"
+				"You can now mark all guilds in a folder"
 			]
 		}
 	],
