@@ -2,7 +2,7 @@
  * @name BetterInvites
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 1.6.0
+ * @version 1.6.1
  * @description Shows some useful information in the invitation
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterInvites
@@ -24,7 +24,7 @@ const config = {
                 discord_id: "354191516979429376",
             },
         ],
-        version: "1.6.0",
+        version: "1.6.1",
         description:
             "Shows some useful information in the invitation",
         github:
@@ -37,6 +37,11 @@ const config = {
             title: "What's new",
             type: "added",
             items: ["Added Option to change Discords Splash to the Guild Banner"],
+        },
+        {
+            title: "Small Bugfix",
+            type: "fixed",
+            items: ["Fixed wrong order"],
         }
     ],
     defaultConfig: [
@@ -253,13 +258,13 @@ module.exports = !global.ZeresPluginLibrary
                                     onError: (e) => { e.target.onError = null, e.target.src = `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024` }
                                 })));
                         } else if (this.settings.bannerType === 0) {
-                            if (guild.features.includes("INVITE_SPLASH")) component.props.children.splice(0, 1);
                             component.props.children.splice(2, 0, React.createElement("img", {
                                 className: `${config.info.name}-banner`,
                                 src: `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.gif?size=1024`,
                                 style: { width: "100%", height: "auto", maxHeight: "100px", borderRadius: "5px", objectFit: "cover" },
                                 onError: (e) => { e.target.onError = null, e.target.src = `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024` }
                             }));
+                            if (guild.features.includes("INVITE_SPLASH")) component.props.children.splice(0, 1);
                         }
                     }
                 });
