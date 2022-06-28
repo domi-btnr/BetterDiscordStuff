@@ -2,7 +2,7 @@
  * @name BetterInvites
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 1.5.0
+ * @version 1.6.0
  * @description Shows some useful information in the invitation
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterInvites
@@ -24,7 +24,7 @@ const config = {
                 discord_id: "354191516979429376",
             },
         ],
-        version: "1.5.0",
+        version: "1.6.0",
         description:
             "Shows some useful information in the invitation",
         github:
@@ -32,6 +32,13 @@ const config = {
         github_raw:
             "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/BetterInvites/BetterInvites.plugin.js",
     },
+    changelog: [
+        {
+            title: "What's new",
+            type: "added",
+            items: ["Added Option to change Discords Splash to the Guild Banner"],
+        }
+    ],
     defaultConfig: [
         {
             type: "switch",
@@ -49,6 +56,13 @@ const config = {
                 { label: "BetterInvites Banner", value: 0 },
                 { label: "Discord Invite Splash", value: 1 }
             ]
+        },
+        {
+            type: "switch",
+            id: "showServerBannerForSplash",
+            name: "Shows the Server Banner instead of the Invite Banner",
+            note: "Only works for Discord Invite Splash",
+            value: false,
         },
         {
             type: "switch",
@@ -93,14 +107,7 @@ const config = {
             value: true,
         },
 
-    ],
-    changelog: [
-        {
-            title: "What's new",
-            type: "added",
-            items: ["Added Option to switch the banner type"],
-        }
-    ],
+    ]
 };
 
 module.exports = !global.ZeresPluginLibrary
@@ -213,7 +220,6 @@ module.exports = !global.ZeresPluginLibrary
                     const contentDiv = component.props.children[2];
 
                     if (this.settings.showDescription && guild?.description) {
-                        // Description
                         contentDiv.props.children.push(
                             React.createElement("div", { className: `${config.info.name}-guildDescription`, style: { marginTop: "1%" } },
                                 React.createElement("div", { className: "markup-eYLPri" }, guild.description)
@@ -231,23 +237,29 @@ module.exports = !global.ZeresPluginLibrary
                         contentDiv.props.children.push(joinButton);
                     }
 
+
                     if (!this.settings.showBanner && guild.features.includes("INVITE_SPLASH")) {
                         component.props.children.splice(0, 1);
-                    } else if (this.settings.showBanner && this.settings.bannerType === 0 && guild?.banner) {
-                        component.props.children.splice(2, 0,
-                            React.createElement("div", { className: `${config.info.name}-guildBanner`, style: { position: "relative", marginBottom: "1%" } },
+                    } else if (this.settings.showBanner && guild?.banner) {
+                        if (this.settings.bannerType === 1 && this.settings.showServerBannerForSplash) {
+                            if (guild.features.includes("INVITE_SPLASH")) component.props.children.splice(0, 1);
+                            component.props.children.splice(0, 0, React.createElement("div", {
+                                className: `${config.info.name}-banner`,
+                                style: { position: "relative", borderRadius: "4px 4px 0 0", height: "64px", margin: "-16px -16px 16px", overflow: "hidden" }
+                            },
                                 React.createElement("img", {
+                                    style: { display: "block", width: "100%", height: "100%", objectFit: "cover" },
                                     src: `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.gif?size=1024`,
-                                    style: { width: "100%", height: "auto", maxHeight: "100px", borderRadius: "5px", objectFit: "cover" },
-                                    onError: (e) => {
-                                        e.target.onError = null
-                                        e.target.src = `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024`
-                                    }
-                                })
-                            )
-                        )
-                        if (guild.features.includes("INVITE_SPLASH")) {
-                            component.props.children.splice(0, 1);
+                                    onError: (e) => { e.target.onError = null, e.target.src = `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024` }
+                                })));
+                        } else if (this.settings.bannerType === 0) {
+                            if (guild.features.includes("INVITE_SPLASH")) component.props.children.splice(0, 1);
+                            component.props.children.splice(2, 0, React.createElement("img", {
+                                className: `${config.info.name}-banner`,
+                                src: `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.gif?size=1024`,
+                                style: { width: "100%", height: "auto", maxHeight: "100px", borderRadius: "5px", objectFit: "cover" },
+                                onError: (e) => { e.target.onError = null, e.target.src = `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024` }
+                            }));
                         }
                     }
                 });
