@@ -469,7 +469,7 @@ html:root {
 
 /* Deleting message confirmation */
 
-.theme-dark .root-g14mjS {
+.theme-dark .root-g14mjS:not(.carouselModal-1eUFoq) {
     background: var(--background-primary);
 }
 
@@ -1053,10 +1053,6 @@ html:root {
 
 
 /* Screenshare Modal */
-
-.root-g14mjS {
-    background: var(--background-primary);
-}
 
 .footer-31IekZ {
     background: var(--background-secondary) !important;
