@@ -64,7 +64,8 @@ html:root {
     content: "";
     width: 22px;
     height: 22px;
-    background: url(https://hypeddomi.github.io/BetterDiscordStuff/Themes/Midnightcord/assets/verified.png) center / 100% 100%;
+    background: url(https://hypeddomi.github.io/BetterDiscordStuff/Themes/Midnightcord/assets/verified.png) center /
+        100% 100%;
 }
 /* UpdateCheck */
 #app-mount .app-2CXKsg::before {
