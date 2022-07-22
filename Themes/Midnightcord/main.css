@@ -334,7 +334,7 @@ html:root {
     background-color: var(--midnightcord-blurple-replace);
 }
 /* Deleting message confirmation */
-.theme-dark .root-g14mjS {
+.theme-dark .root-g14mjS:not(.carouselModal-1eUFoq) {
     background: var(--background-primary);
 }
 .theme-dark .root-g14mjS .message-G6O-Wv {
@@ -740,9 +740,9 @@ html:root {
     background-color: rgba(227, 60, 23, 0.7);
 }
 /* Screenshare Modal */
-.root-g14mjS {
+/* .root-g14mjS {
     background: var(--background-primary);
-}
+}*/
 .footer-31IekZ {
     background: var(--background-secondary) !important;
 }
