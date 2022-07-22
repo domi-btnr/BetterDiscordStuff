@@ -739,10 +739,6 @@ html:root {
 .colorDanger-3n-KnP:active:not(.hideInteraction-2jPGL_) {
     background-color: rgba(227, 60, 23, 0.7);
 }
-/* Screenshare Modal */
-/* .root-g14mjS {
-    background: var(--background-primary);
-}*/
 .footer-31IekZ {
     background: var(--background-secondary) !important;
 }
