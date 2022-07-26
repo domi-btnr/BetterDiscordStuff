@@ -2,7 +2,7 @@
 @import url("https://discord-custom-covers.github.io/usrbg/snippets/modals.css");
 @import url("https://discord-custom-covers.github.io/usrbg/snippets/userPopouts.css");
 /* Settings Icons */
-@import url(https://mwittrien.github.io/BetterDiscordAddons/Themes/_res/SettingsIcons.css);
+@import url("https://aenoo.github.io/Discordicons/src/main.css");
 :root {
     /* Midnightcord */
     --midnightcord-blurple-replace: #61b3de;
