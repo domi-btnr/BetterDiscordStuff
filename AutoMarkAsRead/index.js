@@ -74,7 +74,7 @@ export default class AutoMarkAsRead extends BasePlugin {
 
     patchIncomingMessages() {
         Patcher.after(DiscordModules.Dispatcher, "_dispatch", (_, [{ message, type }]) => {
-            if (type != DiscordModules.DiscordConstants.ActionTypes.MESSAGE_CREATE) return;
+            if (type != "MESSAGE_CREATE") return;
 
             const markAsReadGuilds = BdApi.getData("AutoMarkAsRead", "markAsReadGuilds") ?? [];
             const markAsReadChannels = BdApi.getData("AutoMarkAsRead", "markAsReadChannels") ?? [];
