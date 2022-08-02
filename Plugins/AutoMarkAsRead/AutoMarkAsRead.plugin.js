@@ -1,6 +1,6 @@
 /**
  * @name AutoMarkAsRead
- * @version 1.1.0
+ * @version 1.1.1
  * @description Automatically marks Channels or Guilds as read when you receive a message
  * @author HypedDomi
  * @invite gp2ExK5vc7
@@ -35,7 +35,7 @@
 const config = {
 	"info": {
 		"name": "AutoMarkAsRead",
-		"version": "1.1.0",
+		"version": "1.1.1",
 		"description": "Automatically marks Channels or Guilds as read when you receive a message",
 		"authors": [{
 			"name": "HypedDomi",
@@ -49,10 +49,10 @@ const config = {
 		"github_raw": "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/AutoMarkAsRead/AutoMarkAsRead.plugin.js"
 	},
 	"changelog": [{
-		"type": "added",
-		"title": "Folder Support",
+		"type": "fixed",
+		"title": "Fixed",
 		"items": [
-			"You can now mark all guilds in a folder"
+			"Plugin works again"
 		]
 	}],
 	"build": {
@@ -396,7 +396,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					message,
 					type
 				}]) => {
-					if (type != external_PluginApi_namespaceObject.DiscordModules.DiscordConstants.ActionTypes.MESSAGE_CREATE) return;
+					if ("MESSAGE_CREATE" != type) return;
 					const markAsReadGuilds = BdApi.getData("AutoMarkAsRead", "markAsReadGuilds") ?? [];
 					const markAsReadChannels = BdApi.getData("AutoMarkAsRead", "markAsReadChannels") ?? [];
 					if (markAsReadGuilds.includes(message.guild_id) || markAsReadChannels.includes(message.channel_id)) AckUtils.ack(`${message.channel_id}`);
