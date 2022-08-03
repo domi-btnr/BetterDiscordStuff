@@ -2,7 +2,7 @@
  * @name BetterInvites
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 1.6.1
+ * @version 1.6.2
  * @description Shows some useful information in the invitation
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterInvites
@@ -24,7 +24,7 @@ const config = {
                 discord_id: "354191516979429376",
             },
         ],
-        version: "1.6.1",
+        version: "1.6.2",
         description:
             "Shows some useful information in the invitation",
         github:
@@ -34,14 +34,9 @@ const config = {
     },
     changelog: [
         {
-            title: "What's new",
-            type: "added",
-            items: ["Added Option to change Discords Splash to the Guild Banner"],
-        },
-        {
             title: "Small Bugfix",
             type: "fixed",
-            items: ["Fixed wrong order"],
+            items: ["Fixed Big Join Button and some CSS"],
         }
     ],
     defaultConfig: [
@@ -166,7 +161,11 @@ module.exports = !global.ZeresPluginLibrary
             }
             onStart() {
                 this.patchInvite();
-                PluginUtilities.addStyle(this.getName(), ".content-1r-J1r { flex-wrap: wrap; }");
+                PluginUtilities.addStyle(this.getName(),`
+                .wrapper-1HIH0j .header-3anOjb { margin-bottom: 6px; }
+                .${config.info.name}-banner { margin-bottom: 6px; }
+                .wrapper-1HIH0j .content-1r-J1r { flex-wrap: wrap; gap: 0; }
+                `);
             }
 
             patchInvite() {
@@ -233,8 +232,8 @@ module.exports = !global.ZeresPluginLibrary
                     }
 
                     if (this.settings.bigJoinButton) {
-                        const joinButton = contentDiv.props.children[3];
-                        contentDiv.props.children.splice(3, 1);
+                        const joinButton = contentDiv.props.children[1];
+                        contentDiv.props.children.splice(1, 1);
                         joinButton.props.style = {
                             width: "100%",
                             margin: "3% 0 0 0"
