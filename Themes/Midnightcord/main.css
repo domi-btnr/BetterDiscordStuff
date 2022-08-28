@@ -64,7 +64,7 @@ html:root {
 }
 
 /* UpdateCheck */
-#app-mount .app-2CXKsg::before {
+#app-mount .app-3xd6d0::before {
     content: "Your version of Midnightcord is outdated. Please download the newest version from GitHub";
     display: var(--version1, block);
     background-color: #4a90e2;
@@ -77,6 +77,11 @@ html:root {
 }
 
 /* --------------- Home --------------- */
+/* Tooltip */
+.tooltip-14MtrL {
+    background-color: #0c0e13 !important;
+}
+
 /* Home Icon Background */
 .wrapper-3kah-n.selected-1Drb7Z .childWrapper-1j_1ub,
 .wrapper-3kah-n:hover .childWrapper-1j_1ub {
@@ -759,14 +764,17 @@ html:root {
 }
 
 /* Context Menu */
+.theme-dark .menu-1QACrS {
+    background-color: #0c0e13;
+}
 .colorDefault-CDqZdO {
     color: var(--midnightcord-almost-white);
 }
 .colorDefault-CDqZdO.focused-3qFvc8 {
-    background-color: var(--background-modifier-selected);
+    background-color: rgba(255, 255, 255, 0.04);
 }
 .colorDefault-CDqZdO:active:not(.hideInteraction-2jPGL_) {
-    background-color: var(--background-modifier-active);
+    background-color: rgba(255, 255, 255, 0.03);
 }
 #guild-header-popout-premium-subscribe {
     color: var(--midnightcord-nitro-pink);
@@ -815,11 +823,11 @@ html:root {
 
 /* Watch stream popout */
 .theme-dark .body-2WIpo7 {
-    background: var(--background-tertiary);
+    background: #0c0e13;
 }
 .theme-dark .previewContainer-35LFgt,
 .applicationStreamingPreviewSize-17Trrk {
-    background-color: var(--background-accent);
+    background-color: rgb(20, 23, 31);
 }
 
 /* Channel Hover */
