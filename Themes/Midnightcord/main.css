@@ -3,7 +3,8 @@
 @import url("https://discord-custom-covers.github.io/usrbg/snippets/userPopouts.css");
 
 /* Settings Icons */
-@import url("https://aenoo.github.io/Discordicons/src/main.css");
+/* @import url("https://aenoo.github.io/Discordicons/src/main.css"); */
+@import url(https://mwittrien.github.io/BetterDiscordAddons/Themes/_res/SettingsIcons.css);
 
 :root {
     /* Midnightcord */
