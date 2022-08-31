@@ -6,7 +6,10 @@
 /* @import url("https://aenoo.github.io/Discordicons/src/main.css"); */
 @import url(https://mwittrien.github.io/BetterDiscordAddons/Themes/_res/SettingsIcons.css);
 
-:root {
+/* Profile Banner Skins by Disease#3749 */
+@import url(https://maendisease.github.io/BetterDiscordStuff/css/ProfileBannerSkins.css);
+
+.theme-dark, .theme-light, :root {
     /* Midnightcord */
     --midnightcord-blurple-replace: #61b3de;
     --midnightcord-blurple-mention: rgb(97, 179, 222, 0.075);
@@ -42,9 +45,11 @@
     --scrollbar-auto-thumb: var(--background-accent);
     --scrollbar-auto-track: transparent;
     --scrollbar-thin-thumb: transparent;
+
     /* Settings Icons */
     --settingsiconssize: 18px;
     --settingsiconsgap: 14px;
+
     /* BetterDiscord */
     --bd-blue: var(--color-brand);
     --blurple: var(--color-brand);
@@ -951,7 +956,7 @@ html:root {
     border: 1px solid;
     border-radius: 11px;
 }
-.roleCircle-1EgnFN {
+.roleCircle-3K9O3d {
     margin-left: 0;
 }
 .addButton-1_dZYu.role-2TIOKu {
