@@ -33,14 +33,14 @@
     --channeltextarea-background: var(--background-accent);
     --radio-group-dot-foreground: var(--midnightcord-blurple-replace);
     --text-link: rgb(129, 216, 208);
-    --text-normal: var(--midnightcord-almost-white);
+    /* --text-normal: var(--midnightcord-almost-white); */
     --text-muted: rgb(182, 182, 182);
     --header-secondary: rgb(201, 201, 201);
     --channels-default: rgb(159, 159, 159);
     --offline-color: rgb(60, 60, 60);
     --interactive-normal: rgb(200, 200, 200);
     --interactive-hover: var(--midnightcord-blurple-replace);
-    --interactive-active: white;
+    /* --interactive-active: white; */
     --interactive-muted: #30343d;
     --scrollbar-auto-thumb: var(--background-accent);
     --scrollbar-auto-track: transparent;
