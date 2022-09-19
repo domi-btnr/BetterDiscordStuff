@@ -400,6 +400,9 @@ html:root {
 .mainCard-3KBsBI, .container-2qVG6q:hover {
     background-color: var(--background-secondary);
 }
+.container-2qVG6q:hover {
+    border: solid 1px var(--midnightcord-blurple-replace);
+}
 
 /* --------------- Userpopout/modal --------------- */
 /* Mutuals */
