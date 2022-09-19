@@ -1,11 +1,3 @@
-/* USRBG */
-@import url("https://discord-custom-covers.github.io/usrbg/snippets/modals.css");
-@import url("https://discord-custom-covers.github.io/usrbg/snippets/userPopouts.css");
-
-/* Settings Icons */
-/* @import url("https://aenoo.github.io/Discordicons/src/main.css"); */
-@import url(https://mwittrien.github.io/BetterDiscordAddons/Themes/_res/SettingsIcons.css);
-
 /* Profile Banner Skins by Disease#3749 */
 @import url(https://maendisease.github.io/BetterDiscordStuff/css/ProfileBannerSkins.css);
 
@@ -33,14 +25,12 @@
     --channeltextarea-background: var(--background-accent);
     --radio-group-dot-foreground: var(--midnightcord-blurple-replace);
     --text-link: rgb(129, 216, 208);
-    /* --text-normal: var(--midnightcord-almost-white); */
     --text-muted: rgb(182, 182, 182);
     --header-secondary: rgb(201, 201, 201);
     --channels-default: rgb(159, 159, 159);
     --offline-color: rgb(60, 60, 60);
     --interactive-normal: rgb(200, 200, 200);
     --interactive-hover: var(--midnightcord-blurple-replace);
-    /* --interactive-active: white; */
     --interactive-muted: #30343d;
     --scrollbar-auto-thumb: var(--background-accent);
     --scrollbar-auto-track: transparent;
@@ -61,7 +51,7 @@ html:root {
 }
 
 /* Info Settings */
-.info-1sUqUG::before {
+.info-3pQQBb::before {
     content: "Midnightcord Theme";
     font-size: 12px;
     line-height: 16px;
@@ -70,7 +60,7 @@ html:root {
 }
 
 /* UpdateCheck */
-#app-mount .app-3xd6d0::before {
+#app-mount::before {
     content: "Your version of Midnightcord is outdated. Please download the newest version from GitHub";
     display: var(--version1, block);
     background-color: #4a90e2;
@@ -163,54 +153,14 @@ html:root {
 }
 
 /* Create a Server */
-.theme-light .root-g14mjS {
-    background: rgb(20, 23, 31) !important;
+.theme-light .footerSeparator-VzAYwb {
+    -webkit-box-shadow: inset 0 1px 0 var(--background-primary);
+    box-shadow: inset 0 1px 0 var(--background-primary);
 }
-.theme-light .footer-31IekZ {
-    background: #0c0e13 !important;
-}
-.theme-light .base-21yXnu {
-    color: #fff;
-}
-.theme-light .lookBlank-21BCro,
-.theme-light .lookLink-15mFoz.colorPrimary-2AuQVo {
-    color: #fff;
-    text-decoration-color: #fff;
-}
-.theme-light .lookBlank-21BCro:hover,
-.theme-light .lookLink-15mFoz.colorPrimary-2AuQVo:hover {
-    text-decoration: underline;
-}
-.theme-light .inputDefault-3FGxgL {
-    background-color: rgb(24, 28, 37);
-    font-weight: 400;
-}
-.container-36u7Lw .base-21yXnu,
-.colorHeaderSecondary-g5teka,
-.container-x8Y1ix .colorStandard-21JIj7,
-.container-36u7Lw .button-f2h6uQ,
-.inputDefault-3FGxgL {
-    color: var(--midnightcord-almost-white) !important;
-}
-.container-x8Y1ix {
-    border-color: transparent !important;
-    background-color: rgb(24, 28, 37);
-}
-.uploadIcon-2wV7s_ .iconContainer-GFfNaA svg circle {
-    fill: var(--midnightcord-blurple-replace) !important;
-}
-.container-36u7Lw .anchor-1MIwyf {
-    color: var(--midnightcord-blurple-replace) !important;
-}
-
-/* Join a Server */
-.input-m1-Y7Q {
-    border-radius: 8px;
-    background-color: rgb(24, 28, 37) !important;
-}
-.sampleLink-5BWNy9 {
-    color: var(--midnightcord-almost-white);
-}
+.theme-light .defaultColor-HXu-5n { color: var(--midnightcord-almost-white); }
+.theme-light .defaultColor-24IHKz { color: var(--midnightcord-almost-white); }
+.theme-light .contents-3ca1mk { color: var(--midnightcord-almost-white); }
+.sampleLink-5BWNy9 { color: var(--midnightcord-almost-white); }
 
 /* Explore Public Server */
 .pageWrapper-2PwDoS {
@@ -220,15 +170,8 @@ html:root {
 .categoryPill-1zjNrr.selected-bLcqYK {
     background-color: var(--midnightcord-blurple-replace) !important;
 }
-.searchPage-3tt6dh .search-25t1e9 .searchBox-31Zv9h:focus,
-.searchPage-3tt6dh .search-25t1e9 .searchBox-31Zv9h:focus-within {
-    border-color: var(--midnightcord-blurple-replace) !important;
-}
-.search-25t1e9 .searchBox-31Zv9h .searchBoxInput-3h4etz {
-    color: var(--background-accent) !important;
-}
-.searchPage-3tt6dh .search-25t1e9 .searchBox-31Zv9h .searchBoxInput-3h4etz {
-    color: var(--midnightcord-almost-white) !important;
+.search-25t1e9 .searchBox-31Zv9h, .theme-dark .searchBox-pyIJJj {
+    background-color: var(--background-secondary);
 }
 .guildList-QjZKeK {
     grid-gap: 0 !important;
@@ -381,6 +324,14 @@ html:root {
     background-color: var(--background-secondary-alt);
 }
 
+/* Reactions Window */
+.theme-dark .container-KM8BU6, .theme-dark .reactors-1VXca7 {
+    background: var(--background-primary);
+}
+.theme-dark .scroller-2GkvCq {
+    background: var(--background-secondary);
+}
+
 /* Invalid Invite Mention Button */
 .container-2sjPya .lookFilled-yCfaCM.colorBrand-I6CyqQ {
     background-color: var(--midnightcord-blurple-replace);
@@ -440,6 +391,14 @@ html:root {
 .keybindShortcut-3zF1P9 span {
     box-shadow: inset 0 -4px 0 var(--background-floating) !important;
     background-color: var(--background-accent) !important;
+}
+
+/* Forums */
+.theme-dark .container-3wLKDe {
+    background-color: var(--background-primary);
+}
+.mainCard-3KBsBI, .container-2qVG6q:hover {
+    background-color: var(--background-secondary);
 }
 
 /* --------------- Userpopout/modal --------------- */
@@ -909,16 +868,11 @@ html:root {
 }
 
 /* Input */
-.input-2g-os5,
-.inputDefault-3FGxgL {
+.inputWrapper-1YNMmM > input {
     background-color: var(--background-secondary);
     border-radius: 8px !important;
     border: 1px solid transparent !important;
-}
-.input-2g-os5.focused-1AtTHC,
-.input-2g-os5:focus,
-.input-2g-os5:hover {
-    border-color: var(--midnightcord-blurple-replace) !important;
+    color: var(--midnightcord-almost-white) !important;
 }
 
 /* Invited to join Server */
@@ -965,6 +919,9 @@ html:root {
 .addButtonIcon-3HZ_2f {
     width: 10px;
     height: 10px;
+}
+.roleRemoveIcon-387wKV {
+    margin-left: -7px;
 }
 
 /* Jump to Message by _david_#0218 */
