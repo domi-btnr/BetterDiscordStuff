@@ -76,7 +76,7 @@ module.exports = !global.ZeresPluginLibrary
         start() {
             this.load();
         }
-        stop() { }
+        stop() {}
     }
     : (([Plugin, Library]) => {
         const { Patcher, DiscordModules } = Library;
@@ -87,8 +87,8 @@ module.exports = !global.ZeresPluginLibrary
 
             patchMessage() {
                 Patcher.before(DiscordModules.MessageActions, "sendMessage", (_, [, msg]) => {
-                    const regexAGlobal = new RegExp("(?<!\\d)\\d{1,2}:\\d{2}(?!\\d)(am|pm)?", 'gi');
-                    const regexA = new RegExp("((?<!\\d)\\d{1,2}:\\d{2}(?!\\d))(am|pm)?", 'i');
+                    const regexAGlobal = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
+                    const regexA = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
                     if (msg.content.search(regexAGlobal) !== -1) msg.content = msg.content.replace(regexAGlobal, x => {
                         let [, time, mode] = x.match(regexA);
                         let [hours, minutes] = time.split(':').map(e => parseInt(e));
