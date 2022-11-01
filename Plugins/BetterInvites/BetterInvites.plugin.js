@@ -167,9 +167,9 @@ module.exports = !global.ZeresPluginLibrary
             }
 
             patchInvite() {
-                Patcher.after(MessageAccesories.BB.prototype,"renderCodedLinks", (_, args, [res]) => {
+                Patcher.after(MessageAccesories.BB.prototype,"renderCodedLinks", (_, args, res) => {
                     if (!res) return;
-                    Patcher.after(res, "type", (_,args, res) => {
+                    Patcher.after(res[0], "type", (_,args, res) => {
                       if (!res.props.children.type) return;
                       Patcher.after(res.props.children , "type", (_, [props], component) => {
                         const { invite } = props;
