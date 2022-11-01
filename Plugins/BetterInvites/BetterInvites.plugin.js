@@ -2,7 +2,7 @@
  * @name BetterInvites
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 1.6.2
+ * @version 1.6.3
  * @description Shows some useful information in the invitation
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterInvites
@@ -24,7 +24,7 @@ const config = {
                 discord_id: "354191516979429376",
             },
         ],
-        version: "1.6.2",
+        version: "1.6.3",
         description:
             "Shows some useful information in the invitation",
         github:
@@ -148,11 +148,9 @@ module.exports = !global.ZeresPluginLibrary
         stop() { }
     }
     : (([Plugin, Library]) => {
-        const { Patcher, DiscordModules, PluginUtilities } = Library;
-        const { React } = DiscordModules;
-        const Invite = BdApi.findModule(m => m.default?.displayName === "GuildInvite");
-        const TooltipContainer = BdApi.findModuleByProps('TooltipContainer').TooltipContainer;
-        class BetterInvites extends Plugin {
+        const { Patcher, DiscordModules, DiscordModules: { React, Tooltip }, PluginUtilities , WebpackModules} = Library;
+        const MessageAccesories = WebpackModules.getModule(m => Object.values(m)?.some(m => m?.prototype?.renderEmbeds));        
+           class BetterInvites extends Plugin {
             constructor() {
                 super();
                 this.getSettingsPanel = () => {
@@ -169,104 +167,116 @@ module.exports = !global.ZeresPluginLibrary
             }
 
             patchInvite() {
-                Patcher.after(Invite, "default", (_, [props], component) => {
-                    const { invite } = props;
-                    if (!invite) return;
-                    const { guild, inviter } = invite;
-
-                    let expireTooltip = "";
-                    if (invite.expires_at != null) {
-                        const inviteExpireDays = Math.floor((new Date(invite.expires_at) - Date.now()) / 1000 / 60 / 60 / 24);
-                        const inviteExpireHours = Math.floor((new Date(invite.expires_at) - Date.now()) / 1000 / 60 / 60);
-                        const inviteExpireMinutes = Math.floor((new Date(invite.expires_at) - Date.now()) / 1000 / 60);
-
-                        if (inviteExpireDays > 0) {
-                            inviteExpireDays === 1 ? expireTooltip = `${inviteExpireDays} day` : expireTooltip = `${inviteExpireDays} days`;
-                        } else if (inviteExpireHours > 0) {
-                            inviteExpireHours === 1 ? expireTooltip = `${inviteExpireHours} hour` : expireTooltip = `${inviteExpireHours} hours`;
-                        } else {
-                            inviteExpireMinutes === 1 ? expireTooltip = `${inviteExpireMinutes} minute` : expireTooltip = `${inviteExpireMinutes} minutes`;
+                Patcher.after(MessageAccesories.BB.prototype,"renderCodedLinks", (_, args, res) => {
+                    if (!res) return;
+                    Patcher.after(res[0], "type", (_,args, res) => {
+                      if (!res.props.children.type) return;
+                      Patcher.after(res.props.children , "type", (_, [props], component) => {
+                        const { invite } = props;
+                        if (!invite) return;
+                        const { guild, inviter } = invite;
+    
+                        let expireTooltip = "";
+                        if (invite.expires_at != null) {
+                            const inviteExpireDays = Math.floor((new Date(invite.expires_at) - Date.now()) / 1000 / 60 / 60 / 24);
+                            const inviteExpireHours = Math.floor((new Date(invite.expires_at) - Date.now()) / 1000 / 60 / 60);
+                            const inviteExpireMinutes = Math.floor((new Date(invite.expires_at) - Date.now()) / 1000 / 60);
+    
+                            if (inviteExpireDays > 0) {
+                                inviteExpireDays === 1 ? expireTooltip = `${inviteExpireDays} day` : expireTooltip = `${inviteExpireDays} days`;
+                            } else if (inviteExpireHours > 0) {
+                                inviteExpireHours === 1 ? expireTooltip = `${inviteExpireHours} hour` : expireTooltip = `${inviteExpireHours} hours`;
+                            } else {
+                                inviteExpireMinutes === 1 ? expireTooltip = `${inviteExpireMinutes} minute` : expireTooltip = `${inviteExpireMinutes} minutes`;
+                            }
                         }
-                    }
-
-                    const boostLevel = component.props.children[2].props.children[0].props.guild?.premiumTier;
-                    component.props.children[2].props.children.splice(2, 0,
-                        this.settings.showBoost || this.settings.showInviter || this.settings.showVerification || this.settings.showNSFW || this.settings.showExpire ?
-                            React.createElement("div", { className: `${config.info.name}-iconWrapper`, style: { display: "grid", grid: "auto / auto auto", direction: "rtl", "grid-gap": "3px" } },
-                                // Boost
-                                this.settings.showBoost && boostLevel > 0 ?
-                                    React.createElement(TooltipContainer, { text: `Boost Level ${boostLevel}` },
-                                        React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: "https://discord.com/assets/4a2618502278029ce88adeea179ed435.svg" }))
-                                    : null,
-                                // Inviter
-                                this.settings.showInviter && inviter ?
-                                    React.createElement(TooltipContainer, { text: `Invited by: ${inviter?.username}#${inviter?.discriminator}` },
-                                        React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, onClick: () => { DiscordNative.clipboard.copy(inviter?.id); window.BdApi.showToast("Copied ID", { type: "info", icon: true, timeout: 4000 }) }, src: `https://cdn.discordapp.com/avatars/${inviter?.id}/${inviter?.avatar}.png?size=1024`, onError: (e) => { e.target.src = "https://cdn.discordapp.com/embed/avatars/0.png"; } }))
-                                    : null,
-                                // Verification
-                                this.settings.showVerification && guild?.verification_level > 0 ?
-                                    React.createElement(TooltipContainer, { text: `Verification Level ${guild?.verification_level}` },
-                                        React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: "https://discord.com/assets/e62b930d873735bbede7ae1785d13233.svg" }))
-                                    : null,
-                                // NSFW
-                                this.settings.showNSFW && guild?.nsfw_level > 0 ?
-                                    React.createElement(TooltipContainer, { text: `NSFW Level ${guild?.nsfw_level}` },
-                                        React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: "https://discord.com/assets/ece853d6c1c1cd81f762db6c26fade40.svg" }))
-                                    : null,
-                                // Invite Expiration
-                                this.settings.showExpire && invite.expires_at != null ?
-                                    React.createElement(TooltipContainer, { text: `Expires in: ${expireTooltip}` },
-                                        React.createElement("img", { style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: "https://discord.com/assets/630f5938948131784285d97d57a3e8a0.svg" }))
-                                    : null,
-                            ) : null
-                    );
-
-                    const contentDiv = component.props.children[2];
-
-                    if (this.settings.showDescription && guild?.description) {
-                        contentDiv.props.children.push(
-                            React.createElement("div", { className: `${config.info.name}-guildDescription`, style: { marginTop: "1%" } },
-                                React.createElement("div", { className: "markup-eYLPri" }, guild.description)
-                            )
+    
+                        const boostLevel = component.props.children[2].props.children[0].props.guild?.premiumTier;
+                        component.props.children[2].props.children.splice(2, 0,
+                            this.settings.showBoost || this.settings.showInviter || this.settings.showVerification || this.settings.showNSFW || this.settings.showExpire ?
+                                React.createElement("div", { className: `${config.info.name}-iconWrapper`, style: { display: "grid", grid: "auto / auto auto", direction: "rtl", "grid-gap": "3px" } },
+                                    // Boost
+                                    this.settings.showBoost && boostLevel > 0 ?
+                                        React.createElement(Tooltip, { text: `Boost Level ${boostLevel}` },
+                                        (props) => React.createElement("img", { ...props, style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: "https://discord.com/assets/4a2618502278029ce88adeea179ed435.svg" }))
+                                        : null,
+                                    // Inviter
+                                    this.settings.showInviter && inviter ?
+                                        React.createElement(Tooltip, { text: `Invited by: ${inviter?.username}#${inviter?.discriminator}` },
+                                        (props) => React.createElement("img", { ...props, style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, onClick: () => { DiscordNative.clipboard.copy(inviter?.id); window.BdApi.showToast("Copied ID", { type: "info", icon: true, timeout: 4000 }) }, src: `https://cdn.discordapp.com/avatars/${inviter?.id}/${inviter?.avatar}.png?size=1024`, onError: (e) => { e.target.src = "https://cdn.discordapp.com/embed/avatars/0.png"; } }))
+                                        : null,
+                                    // Verification
+                                    this.settings.showVerification && guild?.verification_level > 0 ?
+                                        React.createElement(Tooltip, { text: `Verification Level ${guild?.verification_level}` },
+                                        (props) => React.createElement("img", { ...props, style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: "https://discord.com/assets/e62b930d873735bbede7ae1785d13233.svg" }))
+                                        : null,
+                                    // NSFW
+                                    this.settings.showNSFW && guild?.nsfw_level > 0 ?
+                                    React.createElement(
+                                        Tooltip,
+                                        { text: `NSFW Level ${guild?.nsfw_level}` },
+                                        (props) =>
+                                        React.createElement("img", { ...props, style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: "https://discord.com/assets/ece853d6c1c1cd81f762db6c26fade40.svg" })
+                                      )
+                                        : null,                                         
+                                            
+                                    // Invite Expiration
+                                    this.settings.showExpire && invite.expires_at != null ?
+                                        React.createElement(Tooltip, { text: `Expires in: ${expireTooltip}` },
+                                        (props) => React.createElement("img", { ...props, style: { height: "28px", borderRadius: "5px", objectFit: "contain" }, src: "https://discord.com/assets/630f5938948131784285d97d57a3e8a0.svg" }))
+                                        : null,
+                                ) : null
                         );
-                    }
-
-                    if (this.settings.bigJoinButton) {
-                        const joinButton = contentDiv.props.children[1];
-                        contentDiv.props.children.splice(1, 1);
-                        joinButton.props.style = {
-                            width: "100%",
-                            margin: "3% 0 0 0"
-                        };
-                        contentDiv.props.children.push(joinButton);
-                    }
-
-
-                    if (!this.settings.showBanner && guild.features.includes("INVITE_SPLASH")) {
-                        component.props.children.splice(0, 1);
-                    } else if (this.settings.showBanner && guild?.banner) {
-                        if (this.settings.bannerType === 1 && this.settings.showServerBannerForSplash) {
-                            if (guild.features.includes("INVITE_SPLASH")) component.props.children.splice(0, 1);
-                            component.props.children.splice(0, 0, React.createElement("div", {
-                                className: `${config.info.name}-banner`,
-                                style: { position: "relative", borderRadius: "4px 4px 0 0", height: "64px", margin: "-16px -16px 16px", overflow: "hidden" }
-                            },
-                                React.createElement("img", {
-                                    style: { display: "block", width: "100%", height: "100%", objectFit: "cover" },
-                                    src: `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.gif?size=1024`,
-                                    onError: (e) => { e.target.onError = null, e.target.src = `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024` }
-                                })));
-                        } else if (this.settings.bannerType === 0) {
-                            component.props.children.splice(2, 0, React.createElement("img", {
-                                className: `${config.info.name}-banner`,
-                                src: `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.gif?size=1024`,
-                                style: { width: "100%", height: "auto", maxHeight: "100px", borderRadius: "5px", objectFit: "cover" },
-                                onError: (e) => { e.target.onError = null, e.target.src = `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024` }
-                            }));
-                            if (guild.features.includes("INVITE_SPLASH")) component.props.children.splice(0, 1);
+    
+                        const contentDiv = component.props.children[2];
+    
+                        if (this.settings.showDescription && guild?.description) {
+                            contentDiv.props.children.push(
+                                React.createElement("div", { className: `${config.info.name}-guildDescription`, style: { marginTop: "1%" } },
+                                    React.createElement("div", { className: "markup-eYLPri" }, guild.description)
+                                )
+                            );
                         }
-                    }
-                });
+    
+                        if (this.settings.bigJoinButton) {
+                            const joinButton = contentDiv.props.children[1];
+                            contentDiv.props.children.splice(1, 1);
+                            joinButton.props.style = {
+                                width: "100%",
+                                margin: "3% 0 0 0"
+                            };
+                            contentDiv.props.children.push(joinButton);
+                        }
+    
+    
+                        if (!this.settings.showBanner && guild.features.includes("INVITE_SPLASH")) {
+                            component.props.children.splice(0, 1);
+                        } else if (this.settings.showBanner && guild?.banner) {
+                            if (this.settings.bannerType === 1 && this.settings.showServerBannerForSplash) {
+                                if (guild.features.includes("INVITE_SPLASH")) component.props.children.splice(0, 1);
+                                component.props.children.splice(0, 0, React.createElement("div", {
+                                    className: `${config.info.name}-banner`,
+                                    style: { position: "relative", borderRadius: "4px 4px 0 0", height: "64px", margin: "-16px -16px 16px", overflow: "hidden" }
+                                },
+                                    React.createElement("img", {
+                                        style: { display: "block", width: "100%", height: "100%", objectFit: "cover" },
+                                        src: `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.gif?size=1024`,
+                                        onError: (e) => { e.target.onError = null, e.target.src = `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024` }
+                                    })));
+                            } else if (this.settings.bannerType === 0) {
+                                component.props.children.splice(2, 0, React.createElement("img", {
+                                    className: `${config.info.name}-banner`,
+                                    src: `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.gif?size=1024`,
+                                    style: { width: "100%", height: "auto", maxHeight: "100px", borderRadius: "5px", objectFit: "cover" },
+                                    onError: (e) => { e.target.onError = null, e.target.src = `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024` }
+                                }));
+                                if (guild.features.includes("INVITE_SPLASH")) component.props.children.splice(0, 1);
+                            }
+                        }
+                    })
+                    })
+                  })
+              
             }
 
             onStop() {
