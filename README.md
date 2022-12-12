@@ -3,9 +3,6 @@
 </div>
 <h1 align="center">
     BetterDiscordStuff
-    <a href="https://www.codefactor.io/repository/github/hypeddomi/betterdiscordstuff">
-        <img src="https://www.codefactor.io/repository/github/hypeddomi/betterdiscordstuff/badge" alt="CodeFactor" />
-    </a>
 </h1>
 <p align="center">Here you can find my plugins and themes. Don't expect anything good</p>
 
