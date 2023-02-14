@@ -84,6 +84,12 @@ html:root {
     background-color: var(--midnightcord-blurple-replace);
 }
 
+/* Discords Custom Themes */
+.theme-dark.custom-theme-background .childWrapper-1j_1ub,
+.theme-dark.custom-theme-background .expandedFolderBackground-1kSAf6 {
+    background: none;
+}
+
 /* Quick Switcher */
 .quickswitcher-pKcM9U .input-3r5zZY {
     background-color: var(--background-primary);
@@ -309,7 +315,7 @@ html:root {
 .footer-VCsJQY {
     background: var(--background-secondary) !important;
 }
-.uploadModal-2ie9O_ .footer-VCsJQY .lookFilled-yCfaCM.colorBrand-I6CyqQ {
+.uploadModal-2ie9O_ .footer-VCsJQY .lookFilled-yCfaCM.colorBrand-2M3O3N {
     background-color: var(--midnightcord-blurple-replace);
 }
 
@@ -333,10 +339,10 @@ html:root {
 }
 
 /* Invalid Invite Mention Button */
-.container-2sjPya .lookFilled-yCfaCM.colorBrand-I6CyqQ {
+.container-2sjPya .lookFilled-yCfaCM.colorBrand-2M3O3N {
     background-color: var(--midnightcord-blurple-replace);
 }
-.container-2sjPya .lookFilled-yCfaCM.colorBrand-I6CyqQ:hover {
+.container-2sjPya .lookFilled-yCfaCM.colorBrand-2M3O3N:hover {
     background-color: rgba(97, 179, 222, 0.7);
 }
 
@@ -646,30 +652,44 @@ html:root {
 
 /* --------------- More --------------- */
 /* Buttons */
-.lookFilled-yCfaCM.colorBrand-I6CyqQ,
-.lookFilled-yCfaCM.colorBrandNew-2-gGsS {
+
+/* Blue Button */
+.lookFilled-1H2Jvj.colorBrand-2M3O3N {
     background-color: var(--midnightcord-blurple-replace);
 }
-.lookFilled-yCfaCM.colorBrand-I6CyqQ:hover,
-.lookFilled-yCfaCM.colorBrandNew-2-gGsS:hover {
+.lookFilled-1H2Jvj.colorBrand-2M3O3N:active {
+    background-color: rgba(97, 179, 222, 0.5);
+}
+.lookFilled-1H2Jvj.colorBrand-2M3O3N:hover {
     background-color: rgba(97, 179, 222, 0.7);
 }
-.lookFilled-yCfaCM.colorBrand-I6CyqQ:disabled,
-.lookFilled-yCfaCM.colorBrandNew-2-gGsS:disabled {
+.lookFilled-yCfaCM.colorBrand-2M3O3N:disabled {
     background-color: var(--midnightcord-blurple-replace);
 }
-.lookFilled-yCfaCM.colorRed-rQXKgM {
+
+/* Danger Button Filled */
+.lookFilled-1H2Jvj.colorRed-2VFhM4 {
     background-color: var(--midnightcord-bright-red);
 }
-.lookFilled-yCfaCM.colorRed-rQXKgM:hover {
+.lookFilled-1H2Jvj.colorRed-2VFhM4:active {
+    background-color: rgba(227, 60, 23, 0.5);
+}
+.lookFilled-1H2Jvj.colorRed-2VFhM4:hover {
     background-color: rgba(227, 60, 23, 0.7);
 }
-.lookOutlined-3yKVGo.colorRed-rQXKgM {
+
+/* Danger Button Outlined */
+.lookOutlined-3RTC7c.colorRed-2VFhM4 {
     color: var(--midnightcord-bright-red);
     border-color: var(--midnightcord-bright-red);
 }
-.lookOutlined-3yKVGo.colorRed-rQXKgM:active {
+.lookOutlined-3RTC7c.colorRed-2VFhM4:active {
     background-color: rgba(227, 60, 23, 0.1);
+    border-color: var(--midnightcord-bright-red);
+}
+.lookOutlined-3RTC7c.colorRed-2VFhM4:hover {
+    background-color: var(--midnightcord-bright-red);
+    border-color: var(--midnightcord-bright-red);
 }
 .lookLink-15mFoz.colorRed-rQXKgM {
     color: var(--midnightcord-bright-red);
@@ -777,7 +797,7 @@ html:root {
     background: var(--background-secondary) !important;
 }
 .selectorButtonSelected-3cQUnj,
-.root-g14mjS .lookFilled-yCfaCM.colorBrand-I6CyqQ {
+.root-g14mjS .lookFilled-yCfaCM.colorBrand-2M3O3N {
     background-color: var(--midnightcord-blurple-replace);
 }
 .selectorButton-3fWZ0_:not(.selectorButtonPremiumRequired-IZXhgV):hover {
