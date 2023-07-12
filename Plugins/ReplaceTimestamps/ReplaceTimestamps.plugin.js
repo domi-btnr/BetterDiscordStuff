@@ -91,7 +91,7 @@ module.exports = !global.ZeresPluginLibrary
                     const regexA = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?(t|T|d|D|f|F|R)?/i;
                     if (msg.content.search(regexAGlobal) !== -1) msg.content = msg.content.replace(regexAGlobal, x => {
                         let [, time, mode, format] = x.match(regexA);
-                        this.format = format;
+                        format = format ?? "t";
                         let [hours, minutes] = time.split(':').map(e => parseInt(e));
                         if (mode && mode.toLowerCase() === 'pm' && hours < 12 && hours !== 0) {
                             hours += 12;
@@ -103,16 +103,16 @@ module.exports = !global.ZeresPluginLibrary
                             minutes = (minutes % 60);
                             time = `${hours}:${minutes}`;
                         }
-                        return this.getUnixTimestamp(time);
+                        return this.getUnixTimestamp(time, format);
                     });
                 });
             }
 
-            getUnixTimestamp(time) {
+            getUnixTimestamp(time, format) {
                 const date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '').replace(/\d?\d:\d\d/, time);
                 const then = Math.round((new Date(date)).getTime() / 1000);
                 if (isNaN(then)) return time;
-                return `<t:${then}:${this.format ? this.format : "t"}>`;
+                return `<t:${then}:${format}>`;
             }
 
             onStop() {
