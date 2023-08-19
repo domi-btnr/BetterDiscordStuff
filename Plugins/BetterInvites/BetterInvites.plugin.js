@@ -148,7 +148,7 @@ module.exports = !global.ZeresPluginLibrary
         stop() { }
     }
     : (([Plugin, Library]) => {
-        const { Patcher, DiscordModules, DiscordModules: { React }, PluginUtilities , WebpackModules} = Library; // React using ZeresPluginLibrary is 'undefined'
+        const { Patcher, DiscordModules, DiscordModules: { React }, PluginUtilities , WebpackModules} = Library; // Tooltip using ZeresPluginLibrary is 'undefined'
         const Tooltip = BdApi.Components.Tooltip;
         const MessageAccesories = WebpackModules.getModule(m => Object.values(m)?.some(m => m?.prototype?.renderEmbeds));        
            class BetterInvites extends Plugin {
