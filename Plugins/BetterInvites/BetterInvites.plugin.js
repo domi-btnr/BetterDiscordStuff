@@ -2,7 +2,7 @@
  * @name BetterInvites
  * @author HypedDomi#1711
  * @authorId 354191516979429376
- * @version 1.6.3
+ * @version 1.6.4
  * @description Shows some useful information in the invitation
  * @invite gp2ExK5vc7
  * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterInvites
@@ -24,7 +24,7 @@ const config = {
                 discord_id: "354191516979429376",
             },
         ],
-        version: "1.6.3",
+        version: "1.6.4",
         description:
             "Shows some useful information in the invitation",
         github:
@@ -34,9 +34,9 @@ const config = {
     },
     changelog: [
         {
-            title: "Small Bugfix",
+            title: "Fixed Crashing",
             type: "fixed",
-            items: ["Fixed Big Join Button and some CSS"],
+            items: ["Thanks to imafrogowo for fixing the crashing issue"],
         }
     ],
     defaultConfig: [
@@ -148,7 +148,8 @@ module.exports = !global.ZeresPluginLibrary
         stop() { }
     }
     : (([Plugin, Library]) => {
-        const { Patcher, DiscordModules, DiscordModules: { React, Tooltip }, PluginUtilities , WebpackModules} = Library;
+        const { Patcher, DiscordModules, DiscordModules: { React }, PluginUtilities , WebpackModules} = Library;
+        const Tooltip = BdApi.Components.Tooltip;
         const MessageAccesories = WebpackModules.getModule(m => Object.values(m)?.some(m => m?.prototype?.renderEmbeds));        
            class BetterInvites extends Plugin {
             constructor() {
