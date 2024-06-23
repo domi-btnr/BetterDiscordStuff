@@ -1,10 +1,9 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/ReplaceTimestamps/images/banner.png" />
+    <img src="https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/Plugins/ReplaceTimestamps/images/banner.png" />
 </div>
 <h1 align="center">
     ReplaceTimestamps
 </h1>
-<p align="center">BetterDiscord Port of <a href="https://github.com/SpoonMcForky/replace-timestamps-pc">SpoonMcForky's replace-timestamps-pc</a> plugin</p>
 
 <div align="center">
     <a href="https://discord.gg/gp2ExK5vc7">
@@ -17,8 +16,11 @@
 
 ---
 
+## Preview
+![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/Plugins/ReplaceTimestamps/images/Preview.png)
+
 ## 📥 Installation
 
-1. Download the file [here](https://hypeddomi.github.io/download/?plugin=ReplaceTimestamps)
+1. Download the file from [here](https://betterdiscord.app/plugin/ReplaceTimestamps)
 2. Save or move the file into your plugins folder
 3. Enable the plugin in the settings
