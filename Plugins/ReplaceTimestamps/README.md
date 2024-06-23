@@ -1,10 +1,8 @@
 <div align="center">
     <img src="https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/Plugins/ReplaceTimestamps/images/banner.png" />
+    <h1>ReplaceTimestamps</h1>
+    <p>Replaces plaintext times and dates into Discord's timestamps</p>
 </div>
-<h1 align="center">
-    ReplaceTimestamps
-</h1>
-
 <div align="center">
     <a href="https://discord.gg/gp2ExK5vc7">
         <img align="center" alt="Discord" src="https://img.shields.io/discord/838690163160514601?color=E54B4B&label=Support&logo=discord&logoColor=white&style=for-the-badge">
