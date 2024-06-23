@@ -1,20 +1,16 @@
 /**
  * @name ReplaceTimestamps
- * @author hypeddomi
+ * @author domi.btnr
  * @authorId 354191516979429376
- * @version 1.2.0
+ * @version 1.2.1
  * @description Replaces plaintext 24 hour timestamps into Discord's timestamps
  * @invite gp2ExK5vc7
- * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/ReplaceTimestamps
- * @updateUrl https://betterdiscord.app/gh-redirect/?id=699
+ * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/main/Plugins/ReplaceTimestamps
  * @donate https://paypal.me/domibtnr
  */
 
 const BD = new BdApi("ReplaceTimestamps");
-const { Filters, getModule } = BD.Webpack;
-
-const MessageActionsFilter = Filters.byProps("jumpToMessage", "_sendMessage");
-const MessageActions = getModule(m => MessageActionsFilter(m));
+const MessageActions = BD.Webpack.getByKeys("sendMessage");
 
 const getUnixTimestamp = (time, format = "t") => {
     const date = new Date().toISOString().replace(/T/, " ").replace(/\..+/, "").replace(/\d?\d:\d\d/, time);
@@ -23,7 +19,7 @@ const getUnixTimestamp = (time, format = "t") => {
     return `<t:${then}:${format}>`;
 }
 
-module.exports = meta => ({
+module.exports = _ => ({
     start() {
         BD.Patcher.before(MessageActions, "sendMessage", (_, [, msg]) => {
             const regexAGlobal = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?(t|T|d|D|f|F|R)?/gi;
