@@ -1,23 +1,18 @@
 {
-  "name": "betterdiscordstuff",
-  "version": "1.0.0",
-  "description": "Just my Plugins for BetterDiscord",
-  "main": "index.js",
   "scripts": {
-    "dev": "npx bdbuilder --plugin='Plugin' --build --config=bdbuilder.dev.config.json",
-    "prod": "npx bdbuilder --plugin='Plugin' --build --config=bdbuilder.prod.config.json"
+    "build": "node scripts/build.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HypedDomi/BetterDiscordStuff.git"
-  },
-  "author": "HypedDomi",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/HypedDomi/BetterDiscordStuff/issues"
-  },
-  "homepage": "https://github.com/HypedDomi/BetterDiscordStuff",
   "devDependencies": {
-    "@hypeddomi/bdbuilder": "^1.2.24"
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@types/betterdiscord": "github:zerthox/betterdiscord-types",
+    "@types/react": "^18.3.3",
+    "@types/redux": "^3.6.0",
+    "cssom": "^0.5.0",
+    "esbuild": "^0.21.5",
+    "js-beautify": "^1.15.1",
+    "rollup": "^4.18.0",
+    "rollup-plugin-esbuild": "^6.1.1",
+    "sass": "^1.77.6"
   }
 }
