@@ -28,11 +28,14 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 16.x
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
 
       - name: Detect changed files
         id: files
@@ -41,7 +44,6 @@ jobs:
 
       - name: Build plugins
         run: npm run build -- --plugins ${{ github.event.inputs.plugin }} ${{ steps.files.outputs.all }}
-          
 
       - name: Stage build
         uses: actions/upload-artifact@v2
