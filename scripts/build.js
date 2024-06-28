@@ -29,7 +29,7 @@ const argv = process.argv.slice(2).reduce((args, arg, index, array) => {
 
 if (!argv.plugins || argv.plugins.filter(e => !NO_PLUGIN_FOLDERS.includes(e)).length === 0) {
     console.error("No Plugins provided!");
-    process.exit(1);
+    process.exit(0);
 }
 
 function makeMeta(manifest) {

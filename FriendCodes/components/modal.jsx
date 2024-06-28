@@ -1,20 +1,19 @@
-import { useState, useEffect } from "react";
-import { WebpackModules } from "@zlibrary";
-import { ModalContent, ModalFooter, ModalHeader, ModalRoot, ModalSize } from "@discord/modal";
-import { Button, Flex } from "@discord/components";
-import { copy } from "@discord/native";
+import { Webpack } from "@api";
+import React from "react";
 import styles from "./style.scss";
 
-const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = WebpackModules.getByProps("createFriendInvite");
-const { Heading } = WebpackModules.getByProps("Heading") ?? { Heading: () => null };
-const Markdown = WebpackModules.getByProps("parseTopic");
+const { DiscordNative: { clipboard: { copy } } } = Webpack.getByKeys("DiscordNative");
+const { Button, Heading, ModalContent, ModalFooter, ModalHeader, ModalRoot, ModalSize } = Webpack.getByKeys("ModalContent");
+const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = Webpack.getByKeys("createFriendInvite");
+const Flex = Webpack.getByStrings(".HORIZONTAL", ".START");
+const Markdown = Webpack.getByKeys("parseTopic");
 
 // Copy Button from Strencher
 // https://github.com/Strencher/BetterDiscordStuff/blob/development/ShowSessions/components/list.tsx#L25-L44
 function CopyButton({ copyText, copiedText, onClick }) {
-    const [copied, setCopied] = useState(false);
+    const [copied, setCopied] = React.useState(false);
 
-    const handleButtonClick = (e) => {
+    const handleButtonClick = e => {
         setCopied(true);
         setTimeout(() => setCopied(false), 1000);
         onClick(e);
@@ -58,9 +57,9 @@ function InviteCard(props) {
 }
 
 export default function Modal(props) {
-    const [invites, setInvites] = useState([]);
-    const [loading, setLoading] = useState(false);
-    useEffect(() => {
+    const [invites, setInvites] = React.useState([]);
+    const [loading, setLoading] = React.useState(false);
+    React.useEffect(() => {
         setLoading(true);
         getAllFriendInvites().then(invites => setInvites(invites)).then(() => setLoading(false));
     }, []);
@@ -75,7 +74,7 @@ export default function Modal(props) {
                         invites.length > 0 ?
                             invites.map(invite => <InviteCard key={invite.code} invite={invite} />) :
                             <div className={styles.noInvites}>
-                                <img src="https://discord.com/assets/b36c705f790dad253981f1893085015a.svg" />
+                                <img src="https://discord.com/assets/b36c705f790dad253981f1893085015a.svg" draggable={false} />
                                 <Heading level="3" variant="heading-lg/small">You don't have any friend codes yet</Heading>
                             </div>
                 }

@@ -1,49 +1,10 @@
 {
-	"info": {
-		"name": "FriendCodes",
-		"version": "1.0.0",
-		"description": "Generate FriendCodes to easily add friends",
-		"authors": [
-			{
-				"name": "HypedDomi",
-				"discord_id": "354191516979429376",
-				"github_username": "HypedDomi"
-			}
-		],
-		"invite": "gp2ExK5vc7",
-		"donate": "https://paypal.me/dominik1711",
-		"website": "https://bd.bambus.me/",
-		"github": "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/FriendCodes",
-		"github_raw": "https://raw.githubusercontent.com/HypedDomi/BetterDiscordStuff/main/Plugins/FriendCodes/FriendCodes.plugin.js"
-	},
-	"changelog": [
-		{
-			"type": "added",
-			"title": "YEAH",
-			"items": [
-				"The plugin exists"
-			]
-		}
-	],
-	"build": {
-		"zlibrary": true,
-		"copy": true,
-		"production": false,
-		"alias": {},
-		"release": {
-			"source": true,
-			"readme": false,
-			"public": true,
-			"previews": [
-				{
-					"name": "Friends Page",
-					"src": "images/Tabbar.png"
-				},
-				{
-					"name": "",
-					"src": "images/Modal.png"
-				}
-			]
-		}
-	}
+	"name": "FriendCodes",
+	"version": "1.0.1",
+	"description": "Generate FriendCodes to easily add friends",
+	"author": "domi.btnr",
+	"authorId": "354191516979429376",
+	"invite": "gp2ExK5vc7",
+	"donate": "https://paypal.me/domibtnr",
+	"source": "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/FriendCodes"
 }
