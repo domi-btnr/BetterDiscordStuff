@@ -27,9 +27,8 @@
 - ### [BetterInvites](https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/BetterInvites "BetterInvites")
     > Shows some useful information in the invitation
 
-- ### [ReplaceTimestamps](https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/ReplaceTimestamps "ReplaceTimestamps")
-    > Replaces plaintext 24 hour timestamps into Discord's timestamps
+- ### [FriendCodes](https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/FriendCodes "FriendCodes")
+    > Generate FriendCodes to easily add friends
 
-## [Themes](https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Themes)
-- ### [Midnightcord](https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Themes/Midnightcord "Midnightcord")
-    > A simple midnight theme
+- ### [ReplaceTimestamps](https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/ReplaceTimestamps "ReplaceTimestamps")
+    > Replaces plaintext times and dates into Discord's timestamps
