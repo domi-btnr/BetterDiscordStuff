@@ -212,8 +212,14 @@ const buildPlugin = (pluginFolder, makeFolder) => {
     
                     fs.mkdirSync(folder);
                 }
-    
-                const outfile = path.resolve(process.cwd(), "builds", `${manifest.name}.plugin.js`);
+
+                if (makeFolder) {
+                    const folder = path.resolve(process.cwd(), "builds", manifest.name);
+                    if (!fs.existsSync(folder)) fs.mkdirSync(folder);
+                    if (fs.existsSync(path.resolve(manifest.name, "README.md")))
+                        fs.copyFileSync(path.resolve(manifest.name, "README.md"), path.resolve(folder, "README.md"));
+                }
+                const outfile = makeFolder ? path.resolve(process.cwd(), "builds", manifest.name, `${manifest.name}.plugin.js`) : path.resolve(process.cwd(), "builds", `${manifest.name}.plugin.js`);
     
                 fs.writeFileSync(outfile, contents, "utf8");
     
@@ -234,14 +240,6 @@ const buildPlugin = (pluginFolder, makeFolder) => {
             } break;
         }
     });
-
-    if (makeFolder) {
-        const folder = path.resolve(process.cwd(), "builds", path.basename(pluginFolder));
-        if (!fs.existsSync(folder)) fs.mkdirSync(folder);
-        fs.copyFileSync(path.resolve(folder, "..", `${path.basename(pluginFolder)}.plugin.js`), path.resolve(folder, `${path.basename(pluginFolder)}.plugin.js`));
-        if (fs.existsSync(path.resolve(pluginFolder, "README.md")))
-            fs.copyFileSync(path.resolve(pluginFolder, "README.md"), path.resolve(folder, "README.md"));
-    }
 }
 
 argv.plugins
