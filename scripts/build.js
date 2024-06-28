@@ -21,7 +21,6 @@ const argv = process.argv.slice(2).reduce((args, arg, index, array) => {
             }
             value = [...value];
         }
-        if (!value || !value.length) return;
         args[key] = value;
     }
     return args;
@@ -98,7 +97,7 @@ function toCamelCase(str) {
     return out;
 }
 
-const buildPlugin = pluginFolder => {
+const buildPlugin = (pluginFolder, makeFolder) => {
     pluginFolder = path.resolve(process.cwd(), pluginFolder);
     if (!fs.existsSync(pluginFolder)) {
         console.error(`Can't find plugin folder "${path.basename(pluginFolder)}"`);
@@ -235,6 +234,16 @@ const buildPlugin = pluginFolder => {
             } break;
         }
     });
+
+    if (makeFolder) {
+        const folder = path.resolve(process.cwd(), "builds", path.basename(pluginFolder));
+        if (!fs.existsSync(folder)) fs.mkdirSync(folder);
+        fs.copyFileSync(path.resolve(folder, "..", `${path.basename(pluginFolder)}.plugin.js`), path.resolve(folder, `${path.basename(pluginFolder)}.plugin.js`));
+        if (fs.existsSync(path.resolve(pluginFolder, "README.md")))
+            fs.copyFileSync(path.resolve(pluginFolder, "README.md"), path.resolve(folder, "README.md"));
+    }
 }
 
-argv.plugins.filter(e => !NO_PLUGIN_FOLDERS.includes(e)).forEach(buildPlugin);
+argv.plugins
+    .filter(e => !NO_PLUGIN_FOLDERS.includes(e))
+    .forEach(e => buildPlugin(e, argv.publish));

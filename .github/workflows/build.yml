@@ -39,17 +39,18 @@ jobs:
 
       - name: Detect changed files
         id: files
+        if: "github.event_name == 'push'"
         uses: jitterbit/get-changed-files@v1
         continue-on-error: true
 
       - name: Build plugins
-        run: npm run build -- --plugins ${{ github.event.inputs.plugin }} ${{ steps.files.outputs.all }}
+        run: npm run build -- --publish --plugins ${{ github.event.inputs.plugin }} ${{ steps.files.outputs.all }}
 
       - name: Stage build
         uses: actions/upload-artifact@v2
         with:
           name: build-artifact
-          path: .
+          path: builds
           retention-days: 1
 
   publish:
