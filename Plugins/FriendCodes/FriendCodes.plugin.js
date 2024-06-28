@@ -6,7 +6,7 @@
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
- * @source https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/FriendCodes
+ * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/main/Plugins/FriendCodes
  */
 
 'use strict';
@@ -20,7 +20,7 @@ const manifest = {
     "authorId": "354191516979429376",
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/HypedDomi/BetterDiscordStuff/tree/main/Plugins/FriendCodes"
+    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/main/Plugins/FriendCodes"
 };
 /*@end */
 
