@@ -7,39 +7,28 @@ const { js: jsBeautify } = require("js-beautify");
 const { default: esBuild } = require("rollup-plugin-esbuild");
 const { default: json } = require("@rollup/plugin-json");
 
-const defaults = Object.entries({
-    watch: false
-});
+const NO_PLUGIN_FOLDERS = [".github", "scripts"];
 
-const argv = Object.fromEntries(defaults.concat(
-    process.argv.slice(2).reduce((args, arg) => {
-        if (arg.indexOf("-") !== 0 && args.length > 0) {
-            arg.includes(",") && (arg = arg.split(","));
-            args[args.length - 1][1] = arg;
-        } else {
-            while (arg.indexOf("-") === 0) arg = arg.slice(1);
-            args.push([arg, true]);
+const argv = process.argv.slice(2).reduce((args, arg, index, array) => {
+    if (arg.startsWith("--")) {
+        let key = arg.slice(2);
+        let value = true;
+        if (key === "plugins") {
+            value = new Set();
+            for (let i = index + 1; i < array.length; i++) {
+                if (array[i].startsWith("--")) break;
+                value.add(array[i].split("/")[0]);
+            }
+            value = [...value];
         }
+        if (!value || !value.length) return;
+        args[key] = value;
+    }
+    return args;
+}, {});
 
-        return args;
-    }, [])
-));
-
-if (!("input" in argv)) {
-    console.error("No input provided!");
-    process.exit(1);
-}
-
-const input = path.resolve(process.cwd(), argv.input);
-const manifestPath = path.resolve(input, "package.json");
-
-if (!fs.existsSync(input)) {
-    console.error("Can't find input folder. Are you sure it exists?");
-    process.exit(1);
-}
-
-if (!fs.existsSync(manifestPath)) {
-    console.error("Can't find a package.json file in your project. Please create one.");
+if (!argv.plugins || argv.plugins.filter(e => !NO_PLUGIN_FOLDERS.includes(e)).length === 0) {
+    console.error("No Plugins provided!");
     process.exit(1);
 }
 
@@ -109,127 +98,143 @@ function toCamelCase(str) {
     return out;
 }
 
-const watcher = watch({
-    input: path.resolve(input, fs.readdirSync(input).find(e => e.indexOf("index") === 0)),
-    watch: {
-        skipWrite: true
-    },
-    output: {
-        format: "cjs",
-        exports: "auto"
-    },
-    external: require("node:module").builtinModules,
-    plugins: [
-        json(),
-        nodeResolve({
-            extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".scss"]
-        }),
-        esBuild({
-            target: "esNext",
-            jsx: "transform"
-        }),
-        virtual({
-            "react": "export default BdApi.React",
-            "react-dom": "export default BdApi.ReactDOM",
-            "@styles": styleLoader,
-            get "@manifest"() { return "export default " + fs.readFileSync(manifestPath, "utf8"); },
-            "@api":
-                "import manifest from \"@manifest\";" +
-                "export const {Net, Data, Patcher, ReactUtils, Utils, Webpack, UI, ContextMenu, DOM} = new BdApi(manifest.name);",
-        }),
-        {
-
-            name: "StyleSheet Loader",
-            async load(id) {
-                const ext = path.extname(id);
-
-                if (ext !== ".css" && ext !== ".scss") return null;
-
-                let content; {
-                    if (ext === ".scss") {
-                        content = (await require("sass").compileAsync(id)).css;
-                    } else {
-                        content = await fs.promises.readFile(id, "utf8");
-                    }
-                };
-
-                const names = cssom.parse(content).cssRules.reduce((classNames, rule) => {
-                    const matches = matchAll({
-                        regex: /((?:\.|#)[\w-]+)/g,
-                        input: rule.selectorText,
-                        flat: true
-                    });
-
-                    Object.assign(classNames,
-                        Object.fromEntries(matches.map(m => (m = m.slice(1), [toCamelCase(m), m])))
-                    );
-
-                    return classNames;
-                }, {});
-
-                return "import Styles from \"@styles\";" +
-                    `Styles.sheets.push("/* ${id.split(path.sep).pop()} */",` +
-                    `\`${content.replaceAll("`", "\\`")}\`);` +
-                    "export default " + JSON.stringify(names, null, 4);
-            }
-        },
-        {
-            name: "Code Regions",
-            transform(code, id) {
-                id = path.basename(id);
-
-                return `/* @module ${id} */\n${code}\n/*@end */`;
-            }
-        }
-    ],
-
-})
-
-watcher.on("event", async event => {
-    switch (event.code) {
-        case "BUNDLE_START": {
-            if (argv.watch) console.clear();
-            console.time(`Build in`);
-        } break;
-
-        case "BUNDLE_END": {
-            const manifest = JSON.parse(await fs.promises.readFile(manifestPath, "utf8"));
-            const bundle = event.result;
-
-            let { output: [{ code }] } = await bundle.generate({ format: "cjs", exports: "auto" });
-
-            code = code.replace(/var (\w+) =/, "const $1 =");
-            code = code.replaceAll("/* @__PURE__ */ ", "");
-            code = jsBeautify(code, {});
-
-            const contents = makeMeta(manifest) + code;
-
-            $ensureBuildsDir: {
-                const folder = path.resolve(process.cwd(), "builds");
-
-                if (fs.existsSync(folder)) break $ensureBuildsDir;
-
-                fs.mkdirSync(folder);
-            }
-
-            const outfile = path.resolve(process.cwd(), "builds", `${manifest.name}.plugin.js`);
-
-            fs.writeFileSync(outfile, contents, "utf8");
-
-            if ("install" in argv) {
-                const bdFolder = path.resolve(process.env.APPDATA, "BetterDiscord", "plugins", `${manifest.name}.plugin.js`);
-                fs.writeFileSync(bdFolder, contents, "utf8");
-            }
-
-            console.timeEnd(`Build in`);
-
-            event.result.close();
-            if (!argv.watch) watcher.close();
-        } break;
-
-        case "ERROR": {
-            console.error(event.error);
-            if (!argv.watch) watcher.close();
-        } break;
+const buildPlugin = pluginFolder => {
+    pluginFolder = path.resolve(process.cwd(), pluginFolder);
+    if (!fs.existsSync(pluginFolder)) {
+        console.error(`Can't find plugin folder "${path.basename(pluginFolder)}"`);
+        process.exit(1);
     }
-});
+
+    const manifestPath = path.resolve(pluginFolder, "package.json");
+    if (!fs.existsSync(manifestPath)) {
+        console.error(`Can't find a package.json file in "${pluginFolder}"`);
+        process.exit(1);
+    }
+
+    const watcher = watch({
+        input: path.resolve(pluginFolder, fs.readdirSync(pluginFolder).find(e => e.indexOf("index") === 0)),
+        watch: {
+            skipWrite: true
+        },
+        output: {
+            format: "cjs",
+            exports: "auto"
+        },
+        external: require("node:module").builtinModules,
+        plugins: [
+            json(),
+            nodeResolve({
+                extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".scss"]
+            }),
+            esBuild({
+                target: "esNext",
+                jsx: "transform"
+            }),
+            virtual({
+                "react": "export default BdApi.React",
+                "react-dom": "export default BdApi.ReactDOM",
+                "@styles": styleLoader,
+                get "@manifest"() { return "export default " + fs.readFileSync(manifestPath, "utf8"); },
+                "@api":
+                    "import manifest from \"@manifest\";" +
+                    "export const {Net, Data, Patcher, ReactUtils, Utils, Webpack, UI, ContextMenu, DOM} = new BdApi(manifest.name);",
+            }),
+            {
+    
+                name: "StyleSheet Loader",
+                async load(id) {
+                    const ext = path.extname(id);
+    
+                    if (ext !== ".css" && ext !== ".scss") return null;
+    
+                    let content; {
+                        if (ext === ".scss") {
+                            content = (await require("sass").compileAsync(id)).css;
+                        } else {
+                            content = await fs.promises.readFile(id, "utf8");
+                        }
+                    };
+    
+                    const names = cssom.parse(content).cssRules.reduce((classNames, rule) => {
+                        const matches = matchAll({
+                            regex: /((?:\.|#)[\w-]+)/g,
+                            input: rule.selectorText,
+                            flat: true
+                        });
+    
+                        Object.assign(classNames,
+                            Object.fromEntries(matches.map(m => (m = m.slice(1), [toCamelCase(m), m])))
+                        );
+    
+                        return classNames;
+                    }, {});
+    
+                    return "import Styles from \"@styles\";" +
+                        `Styles.sheets.push("/* ${id.split(path.sep).pop()} */",` +
+                        `\`${content.replaceAll("`", "\\`")}\`);` +
+                        "export default " + JSON.stringify(names, null, 4);
+                }
+            },
+            {
+                name: "Code Regions",
+                transform(code, id) {
+                    id = path.basename(id);
+    
+                    return `/* @module ${id} */\n${code}\n/*@end */`;
+                }
+            }
+        ],
+    
+    })
+    
+    watcher.on("event", async event => {
+        switch (event.code) {
+            case "BUNDLE_START": {
+                if (argv.watch) console.clear();
+                console.time(`Build ${path.basename(pluginFolder)} in`);
+            } break;
+    
+            case "BUNDLE_END": {
+                const manifest = JSON.parse(await fs.promises.readFile(manifestPath, "utf8"));
+                const bundle = event.result;
+    
+                let { output: [{ code }] } = await bundle.generate({ format: "cjs", exports: "auto" });
+    
+                code = code.replace(/var (\w+) =/, "const $1 =");
+                code = code.replaceAll("/* @__PURE__ */ ", "");
+                code = jsBeautify(code, {});
+    
+                const contents = makeMeta(manifest) + code;
+    
+                $ensureBuildsDir: {
+                    const folder = path.resolve(process.cwd(), "builds");
+    
+                    if (fs.existsSync(folder)) break $ensureBuildsDir;
+    
+                    fs.mkdirSync(folder);
+                }
+    
+                const outfile = path.resolve(process.cwd(), "builds", `${manifest.name}.plugin.js`);
+    
+                fs.writeFileSync(outfile, contents, "utf8");
+    
+                if ("install" in argv) {
+                    const bdFolder = path.resolve(process.env.APPDATA, "BetterDiscord", "plugins", `${manifest.name}.plugin.js`);
+                    fs.writeFileSync(bdFolder, contents, "utf8");
+                }
+    
+                console.timeEnd(`Build ${path.basename(pluginFolder)} in`);
+    
+                event.result.close();
+                if (!argv.watch) watcher.close();
+            } break;
+    
+            case "ERROR": {
+                console.error(event.error);
+                if (!argv.watch) watcher.close();
+            } break;
+        }
+    });
+}
+
+argv.plugins.filter(e => !NO_PLUGIN_FOLDERS.includes(e)).forEach(buildPlugin);

@@ -34,26 +34,14 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Setup env
-        run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_NPM_TOKEN }}" >> .npmrc
-          echo '@hypeddomi:registry=https://npm.pkg.github.com' >> .npmrc
-
-      - name: Install latest BDBuilder version
-        run: |
-          npm i -D @hypeddomi/bdbuilder@latest
-
       - name: Detect changed files
         id: files
         uses: jitterbit/get-changed-files@v1
         continue-on-error: true
 
       - name: Build plugins
-        run: >-
-          .github/workflows/run-bdbuilder
-          "--trigger=${{ github.event_name }}"
-          "--plugin=${{ github.event.inputs.plugin }}"
-          ${{ steps.files.outputs.all }}
+        run: npm run build -- --plugins ${{ github.event.inputs.plugin }} ${{ steps.files.outputs.all }}
+          
 
       - name: Stage build
         uses: actions/upload-artifact@v2
