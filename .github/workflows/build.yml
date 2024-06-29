@@ -41,10 +41,15 @@ jobs:
         continue-on-error: true
 
       - name: Build plugins
-        run: npm run build -- --publish --plugins ${{ github.event.inputs.plugin }} ${{ steps.files.outputs.all }}
-      
+        run: >-
+          npm run build --
+          --publish
+          --plugins ${{ github.event.inputs.plugin }}
+          ${{ steps.files.outputs.all }}
+          && if [ ! -d builds ]; then echo "noBuildFolder=true" >> $GITHUB_ENV; fi
+
       - name: Cancel Job when no Artifact
-        if: "${{ ! -d builds}}"
+        if: "env.noBuildFolder == 'true'"
         uses: andymckay/cancel-action@0.4
 
       - name: Stage build
