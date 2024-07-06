@@ -303,6 +303,7 @@ class FriendCodes {
     }
     stop() {
         Patcher.unpatchAll();
+        Styles.unload();
     }
     showChangelog() {
         if (Settings.lastVersion === manifest.version) return;
@@ -350,10 +351,6 @@ class FriendCodes {
                 )
             );
         });
-    }
-    onStop() {
-        Patcher.unpatchAll();
-        Styles.unload();
     }
 }
 
