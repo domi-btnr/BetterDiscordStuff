@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/Plugins/BetterInvites/images/banner.png" />
+    <img src="https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/BetterInvites/images/banner.png" />
 </div>
 <h1 align="center">
     BetterInvites
@@ -18,7 +18,7 @@
 ---
 
 ## Preview
-![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/Plugins/BetterInvites/images/Preview.png)
+![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/BetterInvites/images/Preview.png)
 
 ## 📥 Installation
 

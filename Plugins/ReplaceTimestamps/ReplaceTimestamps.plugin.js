@@ -37,15 +37,18 @@ var manifest = {
 
 /* @module @api */
 const {
-    Net,
-    Data,
-    Patcher,
-    ReactUtils,
-    Utils,
-    Webpack,
-    UI,
+    Components,
     ContextMenu,
-    DOM
+    Data,
+    DOM,
+    Net,
+    Patcher,
+    Plugins,
+    ReactUtils,
+    Themes,
+    UI,
+    Utils,
+    Webpack
 } = new BdApi(manifest.name);
 /*@end */
 
@@ -120,6 +123,7 @@ var SettingsItems = [{
 
 /* @module settings.jsx */
 const {
+    FormDivider,
     FormText,
     FormTitle,
     Select
@@ -127,7 +131,9 @@ const {
 
 function Dropdown(props) {
     return React.createElement("div", {
-        className: "settings-item"
+        style: {
+            marginBottom: "20px"
+        }
     }, React.createElement(
         FormTitle, {
             tag: "h3",
@@ -153,7 +159,11 @@ function Dropdown(props) {
             select: (v) => Settings.set(props.id, v),
             isSelected: (v) => Settings.get(props.id, props.value) === v
         }
-    ));
+    ), React.createElement(FormDivider, {
+        style: {
+            marginTop: "20px"
+        }
+    }));
 }
 
 function renderSettings(items) {
