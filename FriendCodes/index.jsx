@@ -16,6 +16,7 @@ export default class FriendCodes {
     }
     stop() {
         Patcher.unpatchAll();
+        Styles.unload();
     }
 
     showChangelog() {
@@ -68,10 +69,5 @@ export default class FriendCodes {
                 </TabBar.Item>
             );
         });
-    }
-
-    onStop() {
-        Patcher.unpatchAll();
-        Styles.unload();
     }
 }
