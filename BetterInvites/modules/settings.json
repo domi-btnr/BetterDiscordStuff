@@ -1,0 +1,61 @@
+[
+    {
+        "type": "dropdown",
+        "name": "Banner Type",
+        "note": "Select what Banner to use",
+        "id": "bannerType",
+        "options": [
+            {
+                "label": "BetterInvites",
+                "value": "BetterInvites"
+            },
+            {
+                "label": "Discord Invite Splash",
+                "value": "discordInviteSplash"
+            }
+        ],
+        "value": "BetterInvites"
+    },
+    {
+        "type": "switch",
+        "name": "Show Guild Description",
+        "note": "Wheter to show the Guild description in the Invite",
+        "id": "showGuildDescription",
+        "value": true
+    },
+    {
+        "type": "switch",
+        "name": "Show Boost Level",
+        "note": "Whether to show the Boost Level in the Invite",
+        "id": "showBoostLevel",
+        "value": true
+    },
+    {
+        "type": "switch",
+        "name": "Show Inviter",
+        "note": "Whether to show the Inviter in the Invite",
+        "id": "showInviter",
+        "value": true
+    },
+    {
+        "type": "switch",
+        "name": "Show Verification Level",
+        "note": "Whether to show the Verification Level in the Invite",
+        "id": "showVerificationLevel",
+        "value": true
+    },
+    {
+        "type": "switch",
+        "name": "Show NSFW",
+        "note": "Whether to show if the Guild is marked as NSFW",
+        "id": "showNSFW",
+        "value": true
+    },
+    {
+        "type": "switch",
+        "name": "Show Invite Expiration",
+        "note": "Whether to when the Invite expires",
+        "id": "showInviteExpiry",
+        "value": true
+    }
+]
