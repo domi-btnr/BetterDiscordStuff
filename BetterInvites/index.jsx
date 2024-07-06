@@ -7,7 +7,7 @@ import SettingsPanel from "./components/settings";
 import Settings from "./modules/settings";
 import "./changelog.scss";
 
-export default class FriendCodes {
+export default class BetterInvites {
     start() {
         this.showChangelog();
         this.patchInvite();
