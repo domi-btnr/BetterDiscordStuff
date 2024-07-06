@@ -6,13 +6,18 @@
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
- * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/main/Plugins/FriendCodes
+ * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes
+ * @changelogDate 2024-07-06
  */
 
 'use strict';
 
+/* @module react */
+const React = BdApi.React;
+/*@end */
+
 /* @module @manifest */
-const manifest = {
+var manifest = {
     "name": "FriendCodes",
     "version": "1.0.1",
     "description": "Generate FriendCodes to easily add friends",
@@ -20,7 +25,13 @@ const manifest = {
     "authorId": "354191516979429376",
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/main/Plugins/FriendCodes"
+    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes",
+    "changelog": [{
+        "title": "Added",
+        "type": "added",
+        "items": ["Added Changelog"]
+    }],
+    "changelogDate": "2024-07-06"
 };
 /*@end */
 
@@ -36,10 +47,6 @@ const {
     ContextMenu,
     DOM
 } = new BdApi(manifest.name);
-/*@end */
-
-/* @module react */
-var React = BdApi.React;
 /*@end */
 
 /* @module @styles */
@@ -215,7 +222,7 @@ function Modal(props) {
         color: Button.Colors.GREEN,
         look: Button.Looks.OUTLINED,
         onClick: () => createFriendInvite().then((invite) => setInvites([...invites, invite]))
-    }, "Create Friend Codes"), React.createElement(Flex, {
+    }, "Create Friend Code"), React.createElement(Flex, {
         justify: Flex.Justify.START
     }, React.createElement(Button, {
         color: Button.Colors.RED,
@@ -229,14 +236,99 @@ function Modal(props) {
 
 /*@end */
 
+/* @module changelog.scss */
+Styles.sheets.push("/* changelog.scss */", `.Changelog-Title-Wrapper {
+  font-size: 20px;
+  font-weight: 600;
+  font-family: var(--font-display);
+  color: var(--header-primary);
+  line-height: 1.2;
+}
+.Changelog-Title-Wrapper div {
+  font-size: 12px;
+  font-weight: 400;
+  font-family: var(--font-primary);
+  color: var(--primary-300);
+  line-height: 1.3333333333;
+}
+
+.Changelog-Banner {
+  width: 405px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.Changelog-Item {
+  color: #c4c9ce;
+}
+.Changelog-Item .Changelog-Header {
+  display: flex;
+  text-transform: uppercase;
+  font-weight: 700;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.Changelog-Item .Changelog-Header.added {
+  color: #45BA6A;
+}
+.Changelog-Item .Changelog-Header.fixed {
+  color: #EC4245;
+}
+.Changelog-Item .Changelog-Header.improved {
+  color: #5865F2;
+}
+.Changelog-Item .Changelog-Header::after {
+  content: "";
+  flex-grow: 1;
+  height: 1px;
+  margin-left: 7px;
+  background: currentColor;
+}
+.Changelog-Item span {
+  display: list-item;
+  list-style: inside;
+  margin-left: 5px;
+}
+.Changelog-Item span::marker {
+  color: var(--background-accent);
+}`); /*@end */
+
 /* @module index.jsx */
+const Settings = Data.load("SETTINGS") || {};
 class FriendCodes {
     start() {
+        this.showChangelog();
         this.patchFriendsTabBar();
         Styles.load();
     }
     stop() {
         Patcher.unpatchAll();
+    }
+    showChangelog() {
+        if (Settings.lastVersion === manifest.version) return;
+        const i18n = Webpack.getByKeys("getLocale");
+        const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        });
+        const title = React.createElement("div", {
+            className: "Changelog-Title-Wrapper"
+        }, React.createElement("h1", null, "What's New - ", manifest.name), React.createElement("div", null, formatter.format(new Date(manifest.changelogDate)), " - v", manifest.version));
+        const items = manifest.changelog.map((item) => React.createElement("div", {
+            className: "Changelog-Item"
+        }, React.createElement("h4", {
+            className: `Changelog-Header ${item.type}`
+        }, item.type), item.items.map((item2) => React.createElement("span", null, item2))));
+        "changelogImage" in manifest && items.unshift(
+            React.createElement("img", {
+                className: "Changelog-Banner",
+                src: manifest.changelogImage
+            })
+        );
+        Settings.lastVersion = manifest.version;
+        Data.save("SETTINGS", Settings);
+        UI.alert(title, items);
     }
     patchFriendsTabBar() {
         const TabBar = Webpack.getModule((x) => x.Item && x.Header, {
