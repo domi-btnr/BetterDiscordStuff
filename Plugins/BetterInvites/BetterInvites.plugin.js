@@ -294,7 +294,7 @@ Styles.sheets.push("/* changelog.scss */", `.Changelog-Title-Wrapper {
 }`); /*@end */
 
 /* @module index.jsx */
-class FriendCodes {
+class BetterInvites {
     start() {
         this.showChangelog();
         this.patchInvite();
@@ -484,4 +484,4 @@ class FriendCodes {
 
 /*@end */
 
-module.exports = FriendCodes;
+module.exports = BetterInvites;
