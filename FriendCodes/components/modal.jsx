@@ -1,5 +1,6 @@
-import { Webpack } from "@api";
 import React from "react";
+import { Webpack } from "@api";
+
 import styles from "./style.scss";
 
 const { DiscordNative: { clipboard: { copy } } } = Webpack.getByKeys("DiscordNative");
@@ -82,7 +83,7 @@ export default function Modal(props) {
             <ModalFooter>
                 <Flex justify={Flex.Justify.BETWEEN}>
                     <Flex justify={Flex.Justify.START}>
-                        <Button color={Button.Colors.GREEN} look={Button.Looks.OUTLINED} onClick={() => createFriendInvite().then(invite => setInvites([...invites, invite]))}>Create Friend Codes</Button>
+                        <Button color={Button.Colors.GREEN} look={Button.Looks.OUTLINED} onClick={() => createFriendInvite().then(invite => setInvites([...invites, invite]))}>Create Friend Code</Button>
                         <Flex justify={Flex.Justify.START}>
                             <Button color={Button.Colors.RED} look={Button.Looks.LINK} disabled={!invites.length} onClick={() => revokeFriendInvites().then(setInvites([]))}>Revoke all Friend Codes</Button>
                         </Flex>
