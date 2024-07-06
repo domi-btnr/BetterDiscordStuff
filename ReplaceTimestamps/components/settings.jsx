@@ -4,11 +4,11 @@ import { Webpack } from "@api";
 import Settings from "../modules/settings";
 import SettingsItems from "../modules/settings.json";
 
-const { FormText, FormTitle, Select } = Webpack.getByKeys("Select");
+const { FormDivider, FormText, FormTitle, Select } = Webpack.getByKeys("Select");
 
 function Dropdown(props) {
     return (
-        <div className="settings-item">
+        <div style={{ marginBottom: "20px" }}>
             <FormTitle
                 tag="h3"
                 style={{ margin: "0px", color: "var(--header-primary)" }}
@@ -17,12 +17,12 @@ function Dropdown(props) {
             </FormTitle>
             {
                 props.note &&
-                    <FormText
-                        type={FormText.Types.DESCRIPTION}
-                        style={{ marginBottom: "5px" }}
-                    >
-                        {props.note}
-                    </FormText>
+                <FormText
+                    type={FormText.Types.DESCRIPTION}
+                    style={{ marginBottom: "5px" }}
+                >
+                    {props.note}
+                </FormText>
             }
             <Select
                 closeOnSelect={true}
@@ -31,6 +31,7 @@ function Dropdown(props) {
                 select={v => Settings.set(props.id, v)}
                 isSelected={v => Settings.get(props.id, props.value) === v}
             />
+            <FormDivider style={{ marginTop: "20px" }} />
         </div>
     );
 }
