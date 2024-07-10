@@ -305,7 +305,7 @@ class BetterInvites {
         Styles.unload();
     }
     showChangelog() {
-        if (!manifest.changelog.length || Settings.lastVersion === manifest.version) return;
+        if (!manifest.changelog.length || Settings.get("lastVersion") === manifest.version) return;
         const i18n = Webpack.getByKeys("getLocale");
         const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
             month: "long",
@@ -326,8 +326,7 @@ class BetterInvites {
                 src: manifest.changelogImage
             })
         );
-        Settings.lastVersion = manifest.version;
-        Data.save("SETTINGS", Settings);
+        Settings.set("lastVersion", manifest.version);
         UI.alert(title, items);
     }
     patchInvite() {

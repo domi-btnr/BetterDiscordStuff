@@ -1,13 +1,13 @@
 /**
  * @name FriendCodes
- * @version 1.0.1
+ * @version 1.0.2
  * @description Generate FriendCodes to easily add friends
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes
- * @changelogDate 2024-07-06
+ * @changelogDate 2024-07-10
  */
 
 'use strict';
@@ -19,7 +19,7 @@ const React = BdApi.React;
 /* @module @manifest */
 var manifest = {
     "name": "FriendCodes",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Generate FriendCodes to easily add friends",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -27,25 +27,28 @@ var manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes",
     "changelog": [{
-        "title": "Added",
-        "type": "added",
-        "items": ["Added Changelog"]
+        "title": "Fixed",
+        "type": "fixed",
+        "items": ["Only show the Friend Codes Tab in the Friendlist"]
     }],
-    "changelogDate": "2024-07-06"
+    "changelogDate": "2024-07-10"
 };
 /*@end */
 
 /* @module @api */
 const {
-    Net,
-    Data,
-    Patcher,
-    ReactUtils,
-    Utils,
-    Webpack,
-    UI,
+    Components,
     ContextMenu,
-    DOM
+    Data,
+    DOM,
+    Net,
+    Patcher,
+    Plugins,
+    ReactUtils,
+    Themes,
+    UI,
+    Utils,
+    Webpack
 } = new BdApi(manifest.name);
 /*@end */
 
@@ -335,10 +338,14 @@ class FriendCodes {
         const TabBar = Webpack.getModule((x) => x.Item && x.Header, {
             searchExports: true
         });
+        const availableTabs = Webpack.getByKeys("ALL", "BLOCKED", "ONLINE", {
+            searchExports: true
+        });
         const {
             openModal
         } = Webpack.getModule((x) => x.openModal);
         Patcher.after(TabBar.prototype, "render", (_, __, ret) => {
+            if (!(ret._owner.memoizedProps?.selectedItem in availableTabs)) return;
             ret.props.children.push(
                 React.createElement(
                     TabBar.Item, {
