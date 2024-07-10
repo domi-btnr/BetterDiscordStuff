@@ -25,7 +25,7 @@ export default class ReplaceTimestamps {
     showChangelog() {
         if (
             !manifest.changelog.length ||
-            Settings.lastVersion === manifest.version
+            Settings.get("lastVersion") === manifest.version
         ) return;
 
         const i18n = Webpack.getByKeys("getLocale");
@@ -55,8 +55,7 @@ export default class ReplaceTimestamps {
             <img className="Changelog-Banner" src={manifest.changelogImage} />
         );
 
-        Settings.lastVersion = manifest.version;
-        Data.save("SETTINGS", Settings);
+        Settings.set("lastVersion", manifest.version);
 
         UI.alert(title, items);
     }
