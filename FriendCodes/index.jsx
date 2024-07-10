@@ -57,9 +57,11 @@ export default class FriendCodes {
 
     patchFriendsTabBar() {
         const TabBar = Webpack.getModule(x => x.Item && x.Header, { searchExports: true });
+        const availableTabs = Webpack.getByKeys("ALL", "BLOCKED", "ONLINE", { searchExports: true })
         const { openModal } = Webpack.getModule(x => x.openModal);
 
         Patcher.after(TabBar.prototype, "render", (_, __, ret) => {
+            if (!(ret._owner.memoizedProps?.selectedItem in availableTabs)) return;
             ret.props.children.push(
                 <TabBar.Item
                     selectedItem={0}

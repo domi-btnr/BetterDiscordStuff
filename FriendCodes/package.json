@@ -1,6 +1,6 @@
 {
 	"name": "FriendCodes",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Generate FriendCodes to easily add friends",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -9,10 +9,10 @@
 	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes",
 	"changelog": [
 		{
-			"title": "Added",
-			"type": "added",
-			"items": ["Added Changelog"]
+			"title": "Fixed",
+			"type": "fixed",
+			"items": ["Only show the Friend Codes Tab in the Friendlist"]
 		}
 	],
-	"changelogDate": "2024-07-06"
+	"changelogDate": "2024-07-10"
 }

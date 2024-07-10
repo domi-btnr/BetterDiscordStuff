@@ -1,6 +1,7 @@
 const { watch } = require("rollup");
 const path = require("path");
 const fs = require("fs");
+const os = require("os");
 const nodeResolve = require("@rollup/plugin-node-resolve");
 const cssom = require("cssom");
 const { js: jsBeautify } = require("js-beautify");
@@ -224,8 +225,19 @@ const buildPlugin = (pluginFolder, makeFolder) => {
                 fs.writeFileSync(outfile, contents, "utf8");
     
                 if ("install" in argv) {
-                    const bdFolder = path.resolve(process.env.APPDATA, "BetterDiscord", "plugins", `${manifest.name}.plugin.js`);
-                    fs.writeFileSync(bdFolder, contents, "utf8");
+                    let bdFolder;
+                    switch (os.platform()) {
+                        case "win32": {
+                            bdFolder = path.resolve(process.env.APPDATA, "BetterDiscord");
+                        } break;
+                        case "darwin": {
+                            bdFolder = path.resolve(process.env.HOME, "Library", "Application Support", "BetterDiscord");
+                        } break;
+                        default: {
+                            bdFolder = path.resolve(process.env.HOME, ".config", "BetterDiscord");
+                        } break;
+                    }
+                    fs.writeFileSync(path.join(bdFolder, "plugins", `${manifest.name}.plugin.js`), contents, "utf8");
                 }
     
                 console.timeEnd(`Build ${path.basename(pluginFolder)} in`);
