@@ -1,13 +1,13 @@
 /**
  * @name ReplaceTimestamps
- * @version 1.3.0
+ * @version 1.3.1
  * @description Replaces plaintext times and dates into Discord's timestamps
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps
- * @changelogDate 2024-07-06
+ * @changelogDate 2024-07-13
  */
 
 'use strict';
@@ -23,15 +23,35 @@ const React = BdApi.React;
 /* @module @manifest */
 var manifest = {
     "name": "ReplaceTimestamps",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "description": "Replaces plaintext times and dates into Discord's timestamps",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps",
-    "changelog": [],
-    "changelogDate": "2024-07-06"
+    "changelog": [{
+            "title": "New Feature",
+            "type": "added",
+            "items": [
+                "Support for relative Times. Use \"in 5m\" or \"2h ago\""
+            ]
+        },
+        {
+            "title": "Valid Units",
+            "type": "improved",
+            "items": [
+                "\"s\" for seconds",
+                "\"m\" for minutes",
+                "\"h\" for hours",
+                "\"d\" for days",
+                "\"w\" for weeks",
+                "\"mo\" for months",
+                "\"y\" for years"
+            ]
+        }
+    ],
+    "changelogDate": "2024-07-13"
 };
 /*@end */
 
@@ -225,6 +245,53 @@ const getUnixTimestamp = (str, format) => {
     if (isNaN(then)) return str;
     return `<t:${then}${format ? `:${format}` : ""}>`;
 };
+const getRelativeTime = (str) => {
+    console.log(str);
+    const timeMatch = str.match(exports.relativeRegexMatch);
+    if (!timeMatch) return str;
+    const now = new Date();
+    let future = false;
+    let value, unit;
+    if (timeMatch[1] && timeMatch[2]) {
+        value = parseInt(timeMatch[1]);
+        unit = timeMatch[2];
+        future = true;
+    } else if (timeMatch[3] && timeMatch[4]) {
+        value = parseInt(timeMatch[3]);
+        unit = timeMatch[4];
+        future = false;
+    }
+    if (isNaN(value)) return str;
+    const adjustDate = (date, value2, unit2, future2) => {
+        switch (unit2.toLowerCase()) {
+            case "s":
+                date.setSeconds(date.getSeconds() + (future2 ? value2 : -value2));
+                break;
+            case "m":
+                date.setMinutes(date.getMinutes() + (future2 ? value2 : -value2));
+                break;
+            case "h":
+                date.setHours(date.getHours() + (future2 ? value2 : -value2));
+                break;
+            case "d":
+                date.setDate(date.getDate() + (future2 ? value2 : -value2));
+                break;
+            case "w":
+                date.setDate(date.getDate() + (future2 ? value2 * 7 : -value2 * 7));
+                break;
+            case "mo":
+                date.setMonth(date.getMonth() + (future2 ? value2 : -value2));
+                break;
+            case "y":
+                date.setFullYear(date.getFullYear() + (future2 ? value2 : -value2));
+                break;
+        }
+        return date;
+    };
+    const adjustedDate = adjustDate(now, value, unit, future);
+    const then = Math.round(adjustedDate.getTime() / 1e3);
+    return `<t:${then}:R>`;
+};
 
 /*@end */
 
@@ -288,6 +355,7 @@ Styles.sheets.push("/* changelog.scss */", `.Changelog-Title-Wrapper {
 /* @module index.jsx */
 exports.timeRegexMatch = void 0;
 exports.dateRegexMatch = void 0;
+exports.relativeRegexMatch = void 0;
 class ReplaceTimestamps {
     start() {
         this.showChangelog();
@@ -313,7 +381,7 @@ class ReplaceTimestamps {
             className: "Changelog-Item"
         }, React.createElement("h4", {
             className: `Changelog-Header ${item.type}`
-        }, item.type), item.items.map((item2) => React.createElement("span", null, item2))));
+        }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
         "changelogImage" in manifest && items.unshift(
             React.createElement("img", {
                 className: "Changelog-Banner",
@@ -327,14 +395,14 @@ class ReplaceTimestamps {
         const MessageActions = Webpack.getByKeys("sendMessage");
         Patcher.before(MessageActions, "sendMessage", (_, [, msg]) => {
             const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
-            const timeMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
-            exports.timeRegexMatch = timeMatch;
+            exports.timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
             const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy").replace(/[.\/]/g, "[./]").replace("dd", "(\\d{2})").replace("MM", "(\\d{2})").replace("yyyy", "(\\d{4})");
             const dateRegex = new RegExp(`${dateFormat}`, "gi");
-            const dateMatch = new RegExp(`${dateFormat}`, "i");
-            exports.dateRegexMatch = dateMatch;
+            exports.dateRegexMatch = new RegExp(`${dateFormat}`, "i");
             const TimeDateRegex = new RegExp(`(${timeRegex.source})\\s+${dateRegex.source}`, "gi");
             const DateRegexTime = new RegExp(`${dateRegex.source}\\s+(${timeRegex.source})`, "gi");
+            const relativeRegex = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/gi;
+            exports.relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
             if (msg.content.search(TimeDateRegex) !== -1) {
                 msg.content = msg.content.replace(TimeDateRegex, (x) => getUnixTimestamp(x));
             }
@@ -346,6 +414,9 @@ class ReplaceTimestamps {
             }
             if (msg.content.search(dateRegex) !== -1) {
                 msg.content = msg.content.replace(dateRegex, (x) => getUnixTimestamp(x, "d"));
+            }
+            if (msg.content.search(relativeRegex) !== -1) {
+                msg.content = msg.content.replace(relativeRegex, (x) => getRelativeTime(x));
             }
         });
     }

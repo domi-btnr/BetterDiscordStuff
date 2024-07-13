@@ -319,7 +319,7 @@ class BetterInvites {
             className: "Changelog-Item"
         }, React.createElement("h4", {
             className: `Changelog-Header ${item.type}`
-        }, item.type), item.items.map((item2) => React.createElement("span", null, item2))));
+        }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
         "changelogImage" in manifest && items.unshift(
             React.createElement("img", {
                 className: "Changelog-Banner",
