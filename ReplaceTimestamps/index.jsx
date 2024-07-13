@@ -5,10 +5,10 @@ import Styles from "@styles";
 
 import SettingsPanel from "./components/settings";
 import Settings from "./modules/settings";
-import { getUnixTimestamp } from "./modules/utils";
+import { getRelativeTime, getUnixTimestamp } from "./modules/utils";
 import "./changelog.scss";
 
-export let timeRegexMatch, dateRegexMatch;
+export let timeRegexMatch, dateRegexMatch, relativeRegexMatch;
 
 export default class ReplaceTimestamps {
     start() {
@@ -44,7 +44,7 @@ export default class ReplaceTimestamps {
 
         const items = manifest.changelog.map(item => (
             <div className="Changelog-Item">
-                <h4 className={`Changelog-Header ${item.type}`}>{item.type}</h4>
+                <h4 className={`Changelog-Header ${item.type}`}>{item.title}</h4>
                 {item.items.map(item => (
                     <span>{item}</span>
                 ))}
@@ -65,16 +65,17 @@ export default class ReplaceTimestamps {
 
         Patcher.before(MessageActions, "sendMessage", (_, [, msg]) => {
             const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
-            const timeMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
-            timeRegexMatch = timeMatch;
+            timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
 
             const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy").replace(/[.\/]/g, "[./]").replace("dd", "(\\d{2})").replace("MM", "(\\d{2})").replace("yyyy", "(\\d{4})");
             const dateRegex = new RegExp(`${dateFormat}`, "gi");
-            const dateMatch = new RegExp(`${dateFormat}`, "i");
-            dateRegexMatch = dateMatch;
+            dateRegexMatch = new RegExp(`${dateFormat}`, "i");
 
             const TimeDateRegex = new RegExp(`(${timeRegex.source})\\s+${dateRegex.source}`, "gi");
             const DateRegexTime = new RegExp(`${dateRegex.source}\\s+(${timeRegex.source})`, "gi");
+
+            const relativeRegex = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/gi;
+            relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
 
             if (msg.content.search(TimeDateRegex) !== -1) {
                 msg.content = msg.content.replace(TimeDateRegex, x => getUnixTimestamp(x));
@@ -87,6 +88,9 @@ export default class ReplaceTimestamps {
             }
             if (msg.content.search(dateRegex) !== -1) {
                 msg.content = msg.content.replace(dateRegex, x => getUnixTimestamp(x, "d"));
+            }
+            if (msg.content.search(relativeRegex) !== -1) {
+                msg.content = msg.content.replace(relativeRegex, x => getRelativeTime(x));
             }
         });
     }

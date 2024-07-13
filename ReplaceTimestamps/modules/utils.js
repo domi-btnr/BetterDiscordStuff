@@ -1,5 +1,5 @@
 import Settings from "./settings.js";
-import { timeRegexMatch, dateRegexMatch } from "../index.jsx";
+import { timeRegexMatch, dateRegexMatch, relativeRegexMatch } from "../index.jsx";
 
 export const getUnixTimestamp = (str, format) => {
     const timeMatch = str.match(timeRegexMatch);
@@ -41,4 +41,58 @@ export const getUnixTimestamp = (str, format) => {
     const then = Math.round(time.getTime() / 1000);
     if (isNaN(then)) return str;
     return `<t:${then}${format ? `:${format}` : ""}>`;
+};
+
+export const getRelativeTime = str => {
+    console.log(str);
+    const timeMatch = str.match(relativeRegexMatch);
+    if (!timeMatch) return str;
+
+    const now = new Date();
+    let future = false;
+    let value, unit;
+
+    if (timeMatch[1] && timeMatch[2]) {
+        value = parseInt(timeMatch[1]);
+        unit = timeMatch[2];
+        future = true;
+    } else if (timeMatch[3] && timeMatch[4]) {
+        value = parseInt(timeMatch[3]);
+        unit = timeMatch[4];
+        future = false;
+    }
+
+    if (isNaN(value)) return str;
+
+    const adjustDate = (date, value, unit, future) => {
+        switch (unit.toLowerCase()) {
+            case "s":
+                date.setSeconds(date.getSeconds() + (future ? value : -value));
+                break;
+            case "m":
+                date.setMinutes(date.getMinutes() + (future ? value : -value));
+                break;
+            case "h":
+                date.setHours(date.getHours() + (future ? value : -value));
+                break;
+            case "d":
+                date.setDate(date.getDate() + (future ? value : -value));
+                break;
+            case "w":
+                date.setDate(date.getDate() + (future ? value * 7 : -value * 7));
+                break;
+            case "mo":
+                date.setMonth(date.getMonth() + (future ? value : -value));
+                break;
+            case "y":
+                date.setFullYear(date.getFullYear() + (future ? value : -value));
+                break;
+        }
+        return date;
+    };
+
+    const adjustedDate = adjustDate(now, value, unit, future);
+    const then = Math.round(adjustedDate.getTime() / 1000);
+
+    return `<t:${then}:R>`;
 };
