@@ -40,7 +40,7 @@ export default class BetterInvites {
 
         const items = manifest.changelog.map(item => (
             <div className="Changelog-Item">
-                <h4 className={`Changelog-Header ${item.type}`}>{item.type}</h4>
+                <h4 className={`Changelog-Header ${item.type}`}>{item.title}</h4>
                 {item.items.map(item => (
                     <span>{item}</span>
                 ))}
