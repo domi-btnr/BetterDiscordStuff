@@ -1,0 +1,16 @@
+[
+    {
+        "type": "switch",
+        "name": "Show Prefix",
+        "note": "Whether to show the Mod Name as a prefix on the badge",
+        "id": "showPrefix",
+        "value": true
+    },
+    {
+        "type": "switch",
+        "name": "Show Custom Badges",
+        "note": "Whether you want to see custom badges or not",
+        "id": "showCustomBadges",
+        "value": true
+    }
+]
