@@ -18,7 +18,9 @@ const argv = process.argv.slice(2).reduce((args, arg, index, array) => {
             value = new Set();
             for (let i = index + 1; i < array.length; i++) {
                 if (array[i].startsWith("--")) break;
-                value.add(array[i].split("/")[0]);
+                const folder = array[i].split("/")[0];
+                if (!fs.statSync(folder).isDirectory()) continue;
+                value.add(folder);
             }
             value = [...value];
         }

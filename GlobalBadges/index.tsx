@@ -75,9 +75,7 @@ export default class GlobalBadges {
             const user = React.useContext(UserContext);
             if (!user) return;
             res.props.children.push(
-                <Badges
-                    userId={user.id}
-                />
+                <Badges userId={user.id} />
             );
         });
     }
