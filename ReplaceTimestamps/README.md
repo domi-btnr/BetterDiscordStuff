@@ -1,5 +1,4 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/ReplaceTimestamps/images/banner.png" />
     <h1>ReplaceTimestamps</h1>
     <p>Replaces plaintext times and dates into Discord's timestamps</p>
 </div>

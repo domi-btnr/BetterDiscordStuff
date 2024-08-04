@@ -1,7 +1,7 @@
-<h1 align="center">
-    FriendCodes
-</h1>
-<p align="center">Generate FriendCodes to easily add friends</p>
+<div align="center">
+    <h1>FriendCodes</h1>
+    <p>Generate FriendCodes to easily add friends</p>
+</div>
 
 <div align="center">
     <a href="https://discord.gg/gp2ExK5vc7">
