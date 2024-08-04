@@ -19,7 +19,6 @@
 
 ---
 
-## [Plugins](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/Plugins)
 - ### [BetterInvites](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/BetterInvites "BetterInvites")
     > Shows some useful information in the invitation
 
