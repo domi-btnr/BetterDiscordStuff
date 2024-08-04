@@ -1,24 +1,42 @@
-name: Bug Report
-description: Create an Bug report for my Plugins or Themes
-labels: [bug]
+name: Bug report
+description: Report a bug in one of my plugins
+title: "[Bug]: "
+labels:
+  - bug
 body:
-  - type: textarea
-    id: bug-description
+  - type: dropdown
+    id: plugin
     attributes:
-      label: Describe the bug
-      description: Where does this bug occur, when does it occur, etc.
-      placeholder: The bug happens sometimes when I do ..., causing this to not work. I think it happens because of ..., I hope that can help!
+      label: Plugin
+      description: Which plugin is this bug report about?
+      options:
+        - BetterInvites
+        - FriendCodes
+        - GlobalBadges
+        - ReplaceTimestamps
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: >-
+        Please describe the bug in detail. If possible, include screenshots or
+        videos to help illustrate the issue.
     validations:
       required: true
   - type: textarea
-    id: steps-to-reproduce
+    id: error-logs
     attributes:
-      label: How can I recreate this bug
-      description: Give me a list of steps in order to recreate the bug.
-      placeholder: |
-        1. Do ...
-        2. Then ...
-        3. Do this ..., ... and then ...
-        4. Observe "the bug"
-    validations:
-      required: false
+      label: Stacktrace
+      description: >-
+        If there is an error message in your console, please copy and paste
+        the stacktrace here
+      render:
+  - type: checkboxes
+    id: checked-for-existing-issues
+    attributes:
+      label: Confirmation
+      options:
+        - label: I am using the latest version of the plugin
+          required: true
+        - label: This issue has not already been reported
+          required: true
