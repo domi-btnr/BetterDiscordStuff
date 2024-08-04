@@ -1,10 +1,6 @@
-<div align="center">
-    <img src="assets/banner.png" />
-</div>
 <h1 align="center">
     BetterDiscordStuff
 </h1>
-<p align="center">Here you can find my plugins and themes. Don't expect anything good</p>
 
 <div align="center">
     <a href="https://betterdiscord.app/developer/HypedDomi">
@@ -24,11 +20,14 @@
 ---
 
 ## [Plugins](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/Plugins)
-- ### [BetterInvites](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/Plugins/BetterInvites "BetterInvites")
+- ### [BetterInvites](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/BetterInvites "BetterInvites")
     > Shows some useful information in the invitation
 
-- ### [FriendCodes](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/Plugins/FriendCodes "FriendCodes")
+- ### [FriendCodes](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/FriendCodes "FriendCodes")
     > Generate FriendCodes to easily add friends
 
-- ### [ReplaceTimestamps](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/Plugins/ReplaceTimestamps "ReplaceTimestamps")
+- ### [GlobalBadges](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/GlobalBadges "GlobalBadges")
+    > Adds global badges from other client mods
+
+- ### [ReplaceTimestamps](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/ReplaceTimestamps "ReplaceTimestamps")
     > Replaces plaintext times and dates into Discord's timestamps

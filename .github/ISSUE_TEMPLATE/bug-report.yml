@@ -2,14 +2,6 @@ name: Bug Report
 description: Create an Bug report for my Plugins or Themes
 labels: [bug]
 body:
-  - type: input
-    id: discord
-    attributes:
-      label: Discord Account
-      description: Who on Discord is making this request? Not required.
-      placeholder: Wumpus#0000
-    validations:
-      required: false
   - type: textarea
     id: bug-description
     attributes:
