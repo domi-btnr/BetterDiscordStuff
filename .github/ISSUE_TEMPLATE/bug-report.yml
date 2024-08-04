@@ -14,6 +14,9 @@ body:
         - FriendCodes
         - GlobalBadges
         - ReplaceTimestamps
+    validations:
+      required: true
+
   - type: textarea
     id: description
     attributes:
@@ -23,16 +26,18 @@ body:
         videos to help illustrate the issue.
     validations:
       required: true
+
   - type: textarea
-    id: error-logs
+    id: stacktrace
     attributes:
       label: Stacktrace
       description: >-
         If there is an error message in your console, please copy and paste
         the stacktrace here
-      render:
+      render: code
+
   - type: checkboxes
-    id: checked-for-existing-issues
+    id: confirmation
     attributes:
       label: Confirmation
       options:
