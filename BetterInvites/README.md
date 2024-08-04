@@ -1,10 +1,8 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/BetterInvites/images/banner.png" />
+    <h1>BetterInvites</h1>
+    <p>Shows some useful information in the invitation</p>
 </div>
-<h1 align="center">
-    BetterInvites
-</h1>
-<p align="center">Shows some useful information in the invitation</p>
+
 
 <div align="center">
     <a href="https://discord.gg/gp2ExK5vc7">
