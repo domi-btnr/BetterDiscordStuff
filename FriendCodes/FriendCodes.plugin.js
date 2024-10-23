@@ -1,13 +1,13 @@
 /**
  * @name FriendCodes
- * @version 1.0.2
+ * @version 1.1.0
  * @description Generate FriendCodes to easily add friends
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes
- * @changelogDate 2024-07-10
+ * @changelogDate 2024-10-23
  */
 
 'use strict';
@@ -19,7 +19,7 @@ const React = BdApi.React;
 /* @module @manifest */
 var manifest = {
     "name": "FriendCodes",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "description": "Generate FriendCodes to easily add friends",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -27,11 +27,11 @@ var manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes",
     "changelog": [{
-        "title": "Fixed",
-        "type": "fixed",
-        "items": ["Only show the Friend Codes Tab in the Friendlist"]
+        "title": "New Spot for FriendCodes",
+        "type": "improved",
+        "items": ["Moved the FriendCodes Section to the \"Add Friends\" Panel"]
     }],
-    "changelogDate": "2024-07-10"
+    "changelogDate": "2024-10-23"
 };
 /*@end */
 
@@ -67,83 +67,58 @@ var Styles = {
 /*@end */
 
 /* @module style.scss */
-Styles.sheets.push("/* style.scss */", `.item {
-  color: #fff;
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
-  background: var(--background-secondary);
-}
-.item code {
-  background: var(--background-tertiary);
-  padding: 2px;
-}
-.item div {
-  margin: 2px;
+Styles.sheets.push("/* style.scss */", `.card {
+  padding: 20px;
+  margin-bottom: var(--custom-margin-margin-small);
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  border-color: var(--background-tertiary);
+  background-color: var(--background-secondary);
 }
 
-.buttonContainer {
+.cardTitle span {
+  color: var(--header-secondary);
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.panelHeader {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  color: var(--header-secondary);
+  text-transform: uppercase;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.panelText {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-}
-.buttonContainer .buttonContainerInner {
-  display: block;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  padding: 10px;
-}
-.buttonContainer .buttonContainerInner button {
-  width: 80px;
-}
-
-.noInvites img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-.noInvites h2 {
-  margin-top: 25px;
-  text-align: center;
-  font-weight: 500;
-  font-size: large;
 }`);
 var styles = {
-    "item": "item",
-    "buttonContainer": "buttonContainer",
-    "buttonContainerInner": "buttonContainerInner",
-    "noInvites": "noInvites"
+    "card": "card",
+    "cardTitle": "cardTitle",
+    "panelHeader": "panelHeader",
+    "panelText": "panelText"
 };
 /*@end */
 
-/* @module modal.jsx */
-const {
-    DiscordNative: {
-        clipboard: {
-            copy
-        }
-    }
-} = Webpack.getByKeys("DiscordNative");
-const {
-    Button,
-    Heading,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalRoot,
-    ModalSize
-} = Webpack.getByKeys("ModalContent");
-const {
-    createFriendInvite,
-    getAllFriendInvites,
-    revokeFriendInvites
-} = Webpack.getByKeys("createFriendInvite");
+/* @module shared.js */
+const DiscordCompononents = Webpack.getByKeys("Button", "FormTitle");
 const Flex = Webpack.getByStrings(".HORIZONTAL", ".START");
-const Markdown = Webpack.getByKeys("parseTopic");
+
+/*@end */
+
+/* @module copyButton.jsx */
+const {
+    Button: Button$1
+} = DiscordCompononents;
 
 function CopyButton({
     copyText,
@@ -157,84 +132,131 @@ function CopyButton({
         onClick(e);
     };
     return React.createElement(
-        Button, {
+        Button$1, {
             onClick: handleButtonClick,
-            color: copied ? Button.Colors.GREEN : Button.Colors.BRAND,
-            size: Button.Sizes.SMALL,
-            look: Button.Looks.FILLED
+            color: copied ? Button$1.Colors.GREEN : Button$1.Colors.BRAND,
+            size: Button$1.Sizes.SMALL,
+            look: Button$1.Looks.FILLED
         },
         copied ? copiedText : copyText
     );
 }
 
-function InviteCard(props) {
+/*@end */
+
+/* @module codeCard.jsx */
+const {
+    FormTitle: FormTitle$1
+} = DiscordCompononents;
+const Parser = Webpack.getByKeys("parseTopic");
+const {
+    DiscordNative: {
+        clipboard
+    }
+} = Webpack.getByKeys("DiscordNative");
+
+function FriendCodeCard({
+    invite
+}) {
     return React.createElement("div", {
-        className: styles.item
+        className: styles.card
+    }, React.createElement(Flex, {
+        justify: Flex.Justify.START
     }, React.createElement("div", {
-        className: styles.code
-    }, React.createElement("span", null, React.createElement("b", null, "Code:"), " ", Markdown.parse(`\`${props.invite.code}\``))), React.createElement("div", {
-        className: styles.uses
-    }, React.createElement("span", null, React.createElement("b", null, "Uses:"), " ", props.invite.uses, "/", props.invite.max_uses)), React.createElement("div", {
-        className: styles.expiresAt
-    }, React.createElement("span", null, React.createElement("b", null, "Expires in:"), " ", Markdown.parse(`<t:${Math.floor(Date.parse(props.invite.expires_at).toString().slice(0, -3))}:R>`))), React.createElement("div", {
-        className: styles.buttonContainer
-    }, React.createElement("div", {
-        className: styles.buttonContainerInner
+        className: styles.cardTitle
+    }, React.createElement(FormTitle$1, {
+        tag: "h4",
+        style: {
+            textTransform: "none"
+        }
+    }, invite.code), React.createElement("span", null, "Expires ", Parser.parse(`<t:${new Date(invite.expires_at).getTime() / 1e3}:R>`), " \u2022 ", invite.uses, "/", invite.max_uses, " uses")), React.createElement(Flex, {
+        justify: Flex.Justify.END
     }, React.createElement(
         CopyButton, {
-            copiedText: "Copied!",
             copyText: "Copy",
-            onClick: () => copy(`https://discord.gg/${props.invite.code}`)
+            copiedText: "Copied!",
+            onClick: () => clipboard.copy(`https://discord.gg/${invite.code}`)
         }
     ))));
 }
 
-function Modal(props) {
+/*@end */
+
+/* @module panel.jsx */
+const {
+    Button,
+    FormTitle,
+    Text
+} = DiscordCompononents;
+const FormStyles = Webpack.getByKeys("header", "title", "emptyState");
+const {
+    createFriendInvite,
+    getAllFriendInvites,
+    revokeFriendInvites
+} = Webpack.getByKeys("createFriendInvite");
+
+function FriendCodesPanel() {
     const [invites, setInvites] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     React.useEffect(() => {
         setLoading(true);
-        getAllFriendInvites().then((invites2) => setInvites(invites2)).then(() => setLoading(false));
+        getAllFriendInvites().then(setInvites).then(() => setLoading(false));
     }, []);
-    return React.createElement(ModalRoot, {
-        ...props,
-        size: ModalSize.MEDIUM
-    }, React.createElement(ModalHeader, {
-        separator: false
-    }, React.createElement(Heading, {
-        level: "2",
-        variant: "heading-lg/medium"
-    }, "Friend Codes")), React.createElement(ModalContent, null, loading ? React.createElement("div", {
-        className: styles.loading
-    }) : invites.length > 0 ? invites.map((invite) => React.createElement(InviteCard, {
+    return React.createElement("header", {
+        className: FormStyles.header
+    }, React.createElement(
+        FormTitle, {
+            tag: "h2",
+            className: FormStyles.title
+        },
+        "Your Friend Codes"
+    ), React.createElement(
+        Flex, {
+            style: {
+                marginBottom: "16px"
+            },
+            justify: Flex.Justify.BETWEEN
+        },
+        React.createElement("h2", {
+            className: styles.panelHeader
+        }, `Friend Codes - ${invites.length}`),
+        React.createElement(Flex, {
+            justify: Flex.Justify.END
+        }, React.createElement(
+            Button, {
+                color: Button.Colors.GREEN,
+                look: Button.Looks.FILLED,
+                onClick: () => createFriendInvite().then((invite) => setInvites([...invites, invite]))
+            },
+            "Create Friend Code"
+        ), React.createElement(
+            Button, {
+                style: {
+                    marginLeft: "8px"
+                },
+                color: Button.Colors.RED,
+                look: Button.Looks.OUTLINED,
+                disabled: !invites.length,
+                onClick: () => revokeFriendInvites().then(setInvites([]))
+            },
+            "Revoke all Friend Codes"
+        ))
+    ), loading ? React.createElement(
+        Text, {
+            variant: "heading-md/semibold",
+            className: styles.panelText
+        },
+        "Loading..."
+    ) : invites.length === 0 ? React.createElement(
+        Text, {
+            variant: "heading-md/semibold",
+            className: styles.panelText
+        },
+        "You don't have any friend codes yet"
+    ) : React.createElement("div", null, invites.map((invite) => React.createElement(FriendCodeCard, {
         key: invite.code,
         invite
-    })) : React.createElement("div", {
-        className: styles.noInvites
-    }, React.createElement("img", {
-        src: "https://discord.com/assets/b36c705f790dad253981f1893085015a.svg",
-        draggable: false
-    }), React.createElement(Heading, {
-        level: "3",
-        variant: "heading-lg/small"
-    }, "You don't have any friend codes yet"))), React.createElement(ModalFooter, null, React.createElement(Flex, {
-        justify: Flex.Justify.BETWEEN
-    }, React.createElement(Flex, {
-        justify: Flex.Justify.START
-    }, React.createElement(Button, {
-        color: Button.Colors.GREEN,
-        look: Button.Looks.OUTLINED,
-        onClick: () => createFriendInvite().then((invite) => setInvites([...invites, invite]))
-    }, "Create Friend Code"), React.createElement(Flex, {
-        justify: Flex.Justify.START
-    }, React.createElement(Button, {
-        color: Button.Colors.RED,
-        look: Button.Looks.LINK,
-        disabled: !invites.length,
-        onClick: () => revokeFriendInvites().then(setInvites([]))
-    }, "Revoke all Friend Codes"))), React.createElement(Button, {
-        onClick: props.onClose
-    }, "Okay"))));
+    }))));
 }
 
 /*@end */
@@ -301,7 +323,7 @@ const Settings = Data.load("SETTINGS") || {};
 class FriendCodes {
     start() {
         this.showChangelog();
-        this.patchFriendsTabBar();
+        this.patchAddFriendsPanel();
         Styles.load();
     }
     stop() {
@@ -334,29 +356,10 @@ class FriendCodes {
         Data.save("SETTINGS", Settings);
         UI.alert(title, items);
     }
-    patchFriendsTabBar() {
-        const TabBar = Webpack.getModule((x) => x.Item && x.Header, {
-            searchExports: true
-        });
-        const availableTabs = Webpack.getByKeys("ALL", "BLOCKED", "ONLINE", {
-            searchExports: true
-        });
-        const {
-            openModal
-        } = Webpack.getModule((x) => x.openModal);
-        Patcher.after(TabBar.prototype, "render", (_, __, ret) => {
-            if (!(ret._owner.memoizedProps?.selectedItem in availableTabs)) return;
-            ret.props.children.push(
-                React.createElement(
-                    TabBar.Item, {
-                        selectedItem: 0,
-                        onClick: () => openModal((props) => React.createElement(Modal, {
-                            ...props
-                        }))
-                    },
-                    "Friend Codes"
-                )
-            );
+    patchAddFriendsPanel() {
+        const [Module, Key] = Webpack.getWithKey(Webpack.Filters.byStrings(".Fragment", ".emptyState", ".ADD_FRIEND"));
+        Patcher.after(Module, Key, (_, __, res) => {
+            res.props.children.splice(1, 0, React.createElement(FriendCodesPanel, null));
         });
     }
 }
