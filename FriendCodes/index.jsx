@@ -3,7 +3,7 @@ import { Data, Patcher, Webpack, UI } from "@api";
 import manifest from "@manifest";
 import Styles from "@styles";
 
-import Modal from "./components/modal.jsx";
+import FriendCodesPanel from "./components/panel.jsx";
 import "./changelog.scss";
 
 const Settings = Data.load("SETTINGS") || {};
@@ -11,7 +11,7 @@ const Settings = Data.load("SETTINGS") || {};
 export default class FriendCodes {
     start() {
         this.showChangelog();
-        this.patchFriendsTabBar();
+        this.patchAddFriendsPanel();
         Styles.load();
     }
     stop() {
@@ -55,21 +55,11 @@ export default class FriendCodes {
         UI.alert(title, items);
     }
 
-    patchFriendsTabBar() {
-        const TabBar = Webpack.getModule(x => x.Item && x.Header, { searchExports: true });
-        const availableTabs = Webpack.getByKeys("ALL", "BLOCKED", "ONLINE", { searchExports: true })
-        const { openModal } = Webpack.getModule(x => x.openModal);
+    patchAddFriendsPanel() {
+        const  [Module, Key] = Webpack.getWithKey(Webpack.Filters.byStrings(".Fragment", ".emptyState", ".ADD_FRIEND"));
 
-        Patcher.after(TabBar.prototype, "render", (_, __, ret) => {
-            if (!(ret._owner.memoizedProps?.selectedItem in availableTabs)) return;
-            ret.props.children.push(
-                <TabBar.Item
-                    selectedItem={0}
-                    onClick={() => openModal(props => <Modal {...props} />)}
-                >
-                    Friend Codes
-                </TabBar.Item>
-            );
+        Patcher.after(Module, Key, (_, __, res) => {
+            res.props.children.splice(1, 0, <FriendCodesPanel />);
         });
     }
 }

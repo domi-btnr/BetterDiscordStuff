@@ -16,8 +16,7 @@
 
 ## Previews
 
-![image](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/FriendCodes/images/Tabbar.png)
-![image](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/FriendCodes/images/Modal.png)
+![image](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/FriendCodes/images/image.png)
 
 ## 📥 Installation
 
