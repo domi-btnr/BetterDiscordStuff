@@ -1,0 +1,16 @@
+.errorBoundary {
+    align-items: center;
+    background: #473c41;
+    border: 2px solid #f04747;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 10px;
+    color: #fff;
+    font-size: 16px;
+
+    .errorText {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+}

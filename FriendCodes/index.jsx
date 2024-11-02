@@ -3,6 +3,7 @@ import { Data, Patcher, Webpack, UI } from "@api";
 import manifest from "@manifest";
 import Styles from "@styles";
 
+import ErrorBoundary from "../common/errorBoundary.jsx";
 import FriendCodesPanel from "./components/panel.jsx";
 import "./changelog.scss";
 
@@ -56,10 +57,14 @@ export default class FriendCodes {
     }
 
     patchAddFriendsPanel() {
-        const  [Module, Key] = Webpack.getWithKey(Webpack.Filters.byStrings(".Fragment", ".emptyState", ".ADD_FRIEND"));
+        const [Module, Key] = Webpack.getWithKey(Webpack.Filters.byStrings(".Fragment", ".emptyState", ".ADD_FRIEND"));
 
         Patcher.after(Module, Key, (_, __, res) => {
-            res.props.children.splice(1, 0, <FriendCodesPanel />);
+            res.props.children.splice(1, 0, (
+                <ErrorBoundary key="FriendCodesPanel" id="FriendCodesPanel">
+                    <FriendCodesPanel />
+                </ErrorBoundary>
+            ));
         });
     }
 }
