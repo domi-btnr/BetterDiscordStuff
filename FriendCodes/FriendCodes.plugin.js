@@ -1,13 +1,13 @@
 /**
  * @name FriendCodes
- * @version 1.1.0
+ * @version 1.1.1
  * @description Generate FriendCodes to easily add friends
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes
- * @changelogDate 2024-10-23
+ * @changelogDate 2024-11-02
  */
 
 'use strict';
@@ -19,7 +19,7 @@ const React = BdApi.React;
 /* @module @manifest */
 var manifest = {
     "name": "FriendCodes",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Generate FriendCodes to easily add friends",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -31,7 +31,7 @@ var manifest = {
         "type": "improved",
         "items": ["Moved the FriendCodes Section to the \"Add Friends\" Panel"]
     }],
-    "changelogDate": "2024-10-23"
+    "changelogDate": "2024-11-02"
 };
 /*@end */
 
@@ -64,6 +64,67 @@ var Styles = {
         DOM.removeStyle();
     }
 };
+/*@end */
+
+/* @module errorBoundary.scss */
+Styles.sheets.push("/* errorBoundary.scss */", `.errorBoundary {
+  align-items: center;
+  background: #473c41;
+  border: 2px solid #f04747;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 10px;
+  color: #fff;
+  font-size: 16px;
+}
+.errorBoundary .errorText {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}`); /*@end */
+
+/* @module errorBoundary.jsx */
+const ErrorIcon = (props) => React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    viewBox: "0 0 24 24",
+    fill: "#ddd",
+    width: "24",
+    height: "24",
+    ...props
+}, React.createElement("path", {
+    d: "M0 0h24v24H0z",
+    fill: "none"
+}), React.createElement("path", {
+    d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+}));
+class ErrorBoundary extends React.Component {
+    state = {
+        hasError: false,
+        error: null,
+        info: null
+    };
+    componentDidCatch(error, info) {
+        this.setState({
+            error,
+            info,
+            hasError: true
+        });
+        console.error(`[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
+`, error);
+    }
+    render() {
+        if (this.state.hasError) {
+            return this.props.mini ? React.createElement(ErrorIcon, {
+                fill: "#f04747"
+            }) : React.createElement("div", {
+                className: "errorBoundary"
+            }, React.createElement("div", {
+                className: "errorText"
+            }, React.createElement("span", null, "An error has occured while rendering ", this.props.id, "."), React.createElement("span", null, "Open console (", React.createElement("code", null, "CTRL + SHIFT + i / CMD + SHIFT + i"), ') - Select the "Console" tab and screenshot the big red error.')));
+        } else return this.props.children;
+    }
+}
+
 /*@end */
 
 /* @module style.scss */
@@ -188,7 +249,7 @@ const {
     FormTitle,
     Text
 } = DiscordCompononents;
-const FormStyles = Webpack.getByKeys("header", "title", "emptyState");
+const FormStyles = Webpack.getAllByKeys("header", "title", "emptyState")?.filter((m) => !m.timestamp)?.[0];
 const {
     createFriendInvite,
     getAllFriendInvites,
@@ -359,7 +420,10 @@ class FriendCodes {
     patchAddFriendsPanel() {
         const [Module, Key] = Webpack.getWithKey(Webpack.Filters.byStrings(".Fragment", ".emptyState", ".ADD_FRIEND"));
         Patcher.after(Module, Key, (_, __, res) => {
-            res.props.children.splice(1, 0, React.createElement(FriendCodesPanel, null));
+            res.props.children.splice(1, 0, React.createElement(ErrorBoundary, {
+                key: "FriendCodesPanel",
+                id: "FriendCodesPanel"
+            }, React.createElement(FriendCodesPanel, null)));
         });
     }
 }
