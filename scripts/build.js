@@ -10,7 +10,7 @@ const nodeResolve = require("@rollup/plugin-node-resolve");
 const cssom = require("cssom");
 const { js: jsBeautify } = require("js-beautify");
 
-const NO_PLUGIN_FOLDERS = [".github", "scripts", "Themes"];
+const NO_PLUGIN_FOLDERS = [".github", "common", "scripts"];
 
 const argv = process.argv.slice(2).reduce((args, arg, index, array) => {
     if (arg.startsWith("--")) {

@@ -1,6 +1,6 @@
 {
 	"name": "FriendCodes",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Generate FriendCodes to easily add friends",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -14,5 +14,5 @@
 			"items": ["Moved the FriendCodes Section to the \"Add Friends\" Panel"]
 		}
 	],
-	"changelogDate": "2024-10-23"
+	"changelogDate": "2024-11-02"
 }
