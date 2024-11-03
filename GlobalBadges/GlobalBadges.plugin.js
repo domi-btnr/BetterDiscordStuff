@@ -1,13 +1,13 @@
 /**
  * @name GlobalBadges
- * @version 1.0.0
+ * @version 1.0.1
  * @description Adds global badges from other client mods
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges
- * @changelogDate 2024-07-17
+ * @changelogDate 2024-11-03
  */
 
 'use strict';
@@ -19,15 +19,21 @@ const React = BdApi.React;
 /* @module @manifest */
 var manifest = {
     "name": "GlobalBadges",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Adds global badges from other client mods",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges",
-    "changelog": [],
-    "changelogDate": "2024-07-17"
+    "changelog": [{
+        "title": "Fixed",
+        "type": "fixed",
+        "items": [
+            "Plugin works again"
+        ]
+    }],
+    "changelogDate": "2024-11-03"
 };
 /*@end */
 
@@ -355,7 +361,7 @@ class GlobalBadges {
     patchBadges() {
         const UserContext = React.createContext(null);
         const [ProfileInfoRow, KEY_PIR] = Webpack.getWithKey(Webpack.Filters.byStrings("user", "profileType"));
-        const [BadgeList, Key_BL] = Webpack.getWithKey(Webpack.Filters.byStrings(".PROFILE_USER_BADGES"));
+        const [BadgeList, Key_BL] = Webpack.getWithKey(Webpack.Filters.byStrings("badges", "badgeClassName"));
         Patcher.after(ProfileInfoRow, KEY_PIR, (_, [props], res) => {
             return React.createElement(UserContext.Provider, {
                 value: props["user"]
