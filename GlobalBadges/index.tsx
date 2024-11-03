@@ -61,7 +61,7 @@ export default class GlobalBadges {
     patchBadges() {
         const UserContext = React.createContext(null);
         const [ProfileInfoRow, KEY_PIR] = Webpack.getWithKey(Webpack.Filters.byStrings("user", "profileType"));
-        const [BadgeList, Key_BL] = Webpack.getWithKey(Webpack.Filters.byStrings(".PROFILE_USER_BADGES"));
+        const [BadgeList, Key_BL] = Webpack.getWithKey(Webpack.Filters.byStrings("badges", "badgeClassName"));
         
         Patcher.after(ProfileInfoRow, KEY_PIR, (_, [props], res) => {
             return (
