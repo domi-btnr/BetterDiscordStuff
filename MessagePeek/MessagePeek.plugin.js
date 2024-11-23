@@ -111,6 +111,7 @@ function MessagePeek$1({
     const attachmentCount = lastMessage.attachments.length;
     const content = lastMessage.content || lastMessage.embeds?.[0]?.rawDescription || lastMessage.stickerItems.length && "Sticker" || attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`;
     if (!content) return null;
+    const charLimit = Settings.get("tooltipCharacterLimit", 256);
     return React.createElement(
         "div", {
             className: ChannelWrapperStyles.subText,
@@ -118,16 +119,19 @@ function MessagePeek$1({
                 marginBottom: "2px"
             }
         },
-        React.createElement(Components.Tooltip, {
-            text: content.length > 256 ? Parser.parse(content.slice(0, 256).trim()) : Parser.parse(content)
-        }, (props) => React.createElement(
-            "div", {
-                ...props,
-                className: ChannelStyles.subtext
+        React.createElement(
+            Components.Tooltip, {
+                text: content.length > charLimit ? Parser.parse(content.slice(0, charLimit).trim() + "\u2026") : Parser.parse(content)
             },
-            Settings.get("showAuthor", true) && `${lastMessage.author["globalName"] || lastMessage.author["username"]}: `,
-            Parser.parseInlineReply(content)
-        ))
+            (props) => React.createElement(
+                "div", {
+                    ...props,
+                    className: ChannelStyles.subtext
+                },
+                Settings.get("showAuthor", true) && `${lastMessage.author["globalName"] || lastMessage.author["username"]}: `,
+                Parser.parseInlineReply(content)
+            )
+        )
     );
 }
 
@@ -171,6 +175,23 @@ var SettingsItems = [{
         ],
         stickToMarkers: false,
         defaultValue: 10
+    },
+    {
+        type: "slider",
+        name: "Tooltip Character Limit",
+        note: "The maximum number of characters to show in the tooltip",
+        id: "tooltipCharacterLimit",
+        minValue: 64,
+        maxValue: 1024,
+        markers: [
+            64,
+            128,
+            256,
+            512,
+            1024
+        ],
+        stickToMarkers: true,
+        defaultValue: 256
     }
 ];
 /*@end */
@@ -272,7 +293,11 @@ function Slider(props) {
             },
             onValueRender: (v) => Math.round(v)
         }
-    ));
+    ), React.createElement(FormDivider, {
+        style: {
+            marginTop: "20px"
+        }
+    }));
 }
 
 function renderSettings(items) {
@@ -362,9 +387,10 @@ Styles.sheets.push("/* changelog.scss */", `.Changelog-Title-Wrapper {
 }`); /*@end */
 
 /* @module index.jsx */
-const preload = Webpack.getByKeys("preload").preload;
 class MessagePeek {
     start() {
+        if (Settings.get("preloadLimit", 10) > 30)
+            Settings.set("preloadLimit", 10);
         this.showChangelog();
         this.patchDMs();
         Styles.load();
@@ -420,7 +446,9 @@ class MessagePeek {
                 })
             );
         });
-        Webpack.getStore("ChannelStore").getSortedPrivateChannels().slice(0, Settings.get("preloadLimit", 10)).forEach((channel) => preload("@me", channel.id));
+        Webpack.getStore("ChannelStore").getSortedPrivateChannels().filter(
+            (channel) => channel.lastMessageId && !Webpack.getStore("MessageStore").getMessages(channel.id)?.last()
+        ).slice(0, Settings.get("preloadLimit", 10)).forEach((channel) => Webpack.getByKeys("preload")?.preload("@me", channel.id));
         const ChannelWrapperElement = document.querySelector(`h2 + .${ChannelClasses.channel}`);
         if (ChannelWrapperElement) {
             const ChannelWrapperInstance = ReactUtils.getOwnerInstance(ChannelWrapperElement);
