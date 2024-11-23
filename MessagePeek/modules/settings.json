@@ -30,5 +30,16 @@
         "markers": [0, 5, 10, 20, 30],
         "stickToMarkers": false,
         "defaultValue": 10
+    },
+    {
+        "type": "slider",
+        "name": "Tooltip Character Limit",
+        "note": "The maximum number of characters to show in the tooltip",
+        "id": "tooltipCharacterLimit",
+        "minValue": 64,
+        "maxValue": 1024,
+        "markers": [64, 128, 256, 512, 1024],
+        "stickToMarkers": true,
+        "defaultValue": 256
     }
 ]

@@ -84,6 +84,7 @@ function Slider(props) {
                 }}
                 onValueRender={v => Math.round(v)}
             />
+            <FormDivider style={{ marginTop: "20px" }} />
         </div>
     );
 }

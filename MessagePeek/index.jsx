@@ -8,10 +8,11 @@ import SettingsPanel from "./components/settings";
 import Settings from "./modules/settings";
 import "./changelog.scss";
 
-const preload = Webpack.getByKeys("preload").preload;
-
 export default class MessagePeek {
     start() {
+        if (Settings.get("preloadLimit", 10) > 30)
+            Settings.set("preloadLimit", 10);
+
         this.showChangelog();
         this.patchDMs();
         Styles.load();
@@ -86,12 +87,19 @@ export default class MessagePeek {
             )
         });
 
-        // Preloads makes an API request for each Channel
-        // Thats why I limit it
+        // Preload makes an API request
+        // It's not a good idea to preload every DM
+        // That's why I check if the DM Channel has a message and if it's not already loaded
+        // I also limit the amount of DMs to preload to a maximum of 30. Default is 10
         Webpack.getStore("ChannelStore")
             .getSortedPrivateChannels()
+            .filter(channel => 
+                channel.lastMessageId &&
+                !Webpack.getStore("MessageStore")
+                    .getMessages(channel.id)?.last()
+            )
             .slice(0, Settings.get("preloadLimit", 10))
-            .forEach(channel => preload("@me", channel.id));
+            .forEach(channel => Webpack.getByKeys("preload")?.preload("@me", channel.id));
 
         const ChannelWrapperElement = document.querySelector(`h2 + .${ChannelClasses.channel}`);
         if (ChannelWrapperElement) {

@@ -24,12 +24,19 @@ export default function MessagePeek({ channelId }) {
         attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`;
     if (!content) return null;
 
+    const charLimit = Settings.get("tooltipCharacterLimit", 256);
+
     return (
         <div
             className={ChannelWrapperStyles.subText}
             style={{ marginBottom: "2px" }}
         >
-            <Components.Tooltip text={content.length > 256 ? Parser.parse(content.slice(0, 256).trim()) : Parser.parse(content)}>
+            <Components.Tooltip text={
+                content.length > charLimit ? 
+                    Parser.parse(content.slice(0, charLimit).trim() + "…")
+                    : Parser.parse(content)
+                }
+            >
                 {props => (
                     <div
                         {...props}
