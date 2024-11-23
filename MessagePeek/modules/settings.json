@@ -1,0 +1,9 @@
+[
+    {
+        "type": "switch",
+        "name": "Show in DMs",
+        "note": "",
+        "id": "showInDMs",
+        "value": true
+    }
+]
