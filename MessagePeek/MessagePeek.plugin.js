@@ -154,6 +154,23 @@ var SettingsItems = [{
         note: "Whether to show the name of the Author or not",
         id: "showAuthor",
         value: true
+    },
+    {
+        type: "slider",
+        name: "Preload Limit",
+        note: "How many DM channels to preload. This makes an API request for each channel, so be careful with this setting",
+        id: "preloadLimit",
+        minValue: 0,
+        maxValue: 30,
+        markers: [
+            0,
+            5,
+            10,
+            20,
+            30
+        ],
+        stickToMarkers: false,
+        defaultValue: 10
     }
 ];
 /*@end */
@@ -164,7 +181,8 @@ const {
     FormSwitch,
     FormText,
     FormTitle,
-    Select
+    Select,
+    Slider: Slider_
 } = Webpack.getByKeys("Select");
 
 function Dropdown(props) {
@@ -218,6 +236,45 @@ function Switch(props) {
     );
 }
 
+function Slider(props) {
+    const value = useStateFromStores([Settings], () => Settings.get(props.id, props.defaultValue));
+    return React.createElement("div", {
+        style: {
+            marginBottom: "20px"
+        }
+    }, React.createElement(
+        FormTitle, {
+            tag: "h3",
+            style: {
+                margin: "0px",
+                color: "var(--header-primary)"
+            }
+        },
+        props.name
+    ), props.note && React.createElement(
+        FormText, {
+            type: FormText.Types.DESCRIPTION,
+            style: {
+                marginBottom: "5px"
+            }
+        },
+        props.note
+    ), React.createElement(
+        Slider_, {
+            ...props,
+            initialValue: value,
+            defaultValue: props.defaultValue,
+            minValue: props.minValue,
+            maxValue: props.maxValue,
+            handleSize: 10,
+            onValueChange: (v) => {
+                Settings.set(props.id, Math.round(v));
+            },
+            onValueRender: (v) => Math.round(v)
+        }
+    ));
+}
+
 function renderSettings(items) {
     return items.map((item) => {
         switch (item.type) {
@@ -227,6 +284,10 @@ function renderSettings(items) {
                 });
             case "switch":
                 return React.createElement(Switch, {
+                    ...item
+                });
+            case "slider":
+                return React.createElement(Slider, {
                     ...item
                 });
             default:
@@ -359,7 +420,7 @@ class MessagePeek {
                 })
             );
         });
-        Webpack.getStore("ChannelStore").getSortedPrivateChannels().forEach((channel) => preload("@me", channel.id));
+        Webpack.getStore("ChannelStore").getSortedPrivateChannels().slice(0, Settings.get("preloadLimit", 10)).forEach((channel) => preload("@me", channel.id));
         const ChannelWrapperElement = document.querySelector(`h2 + .${ChannelClasses.channel}`);
         if (ChannelWrapperElement) {
             const ChannelWrapperInstance = ReactUtils.getOwnerInstance(ChannelWrapperElement);
