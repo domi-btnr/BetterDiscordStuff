@@ -3,8 +3,8 @@ import { Webpack } from "@api";
 
 import Settings from "../modules/settings";
 import SettingsItems from "../modules/settings.json";
+import { useStateFromStores } from "../modules/shared";
 
-const useStateFromStores = Webpack.getByStrings("useStateFromStores", { searchExports: true });
 const { FormDivider, FormSwitch, FormText, FormTitle, Select } = Webpack.getByKeys("Select");
 
 function Dropdown(props) {

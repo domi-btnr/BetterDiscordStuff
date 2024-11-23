@@ -1,9 +1,10 @@
 import React from "react";
 import { Components, Webpack } from "@api";
 
+import { useStateFromStores } from "../modules/shared";
+import Settings from "../modules/settings";
 import "./styles.scss";
 
-const useStateFromStores = Webpack.getByStrings("useStateFromStores", { searchExports: true });
 const MessageStore = Webpack.getStore("MessageStore");
 const ChannelWrapperStyles = Webpack.getByKeys("muted", "subText");
 const ChannelStyles = Webpack.getByKeys("closeButton", "subtext");
@@ -11,8 +12,10 @@ const Parser = Webpack.getByKeys("parseTopic");
 
 export default function MessagePeek({ channelId }) {
     if (!channelId) return null;
+
     const lastMessage = useStateFromStores([MessageStore], () => MessageStore.getMessages(channelId)?.last());
     if (!lastMessage) return null;
+
     const attachmentCount = lastMessage.attachments.length;
     const content =
         lastMessage.content ||
@@ -32,7 +35,7 @@ export default function MessagePeek({ channelId }) {
                         {...props}
                         className={ChannelStyles.subtext}
                     >
-                        {`${lastMessage.author["globalName"] || lastMessage.author["username"]}: `}
+                        {Settings.get("showAuthor", true) && `${lastMessage.author["globalName"] || lastMessage.author["username"]}: `}
                         {Parser.parseInlineReply(content)}
                     </div>
                 )}

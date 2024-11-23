@@ -5,5 +5,19 @@
         "note": "",
         "id": "showInDMs",
         "value": true
+    },
+    {
+        "type": "switch",
+        "name": "Show in Guilds",
+        "note": "",
+        "id": "showInGuilds",
+        "value": true
+    },
+    {
+        "type": "switch",
+        "name": "Show Author",
+        "note": "Whether to show the name of the Author or not",
+        "id": "showAuthor",
+        "value": true
     }
 ]

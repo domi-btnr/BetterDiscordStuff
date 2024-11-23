@@ -8,6 +8,8 @@ import SettingsPanel from "./components/settings";
 import Settings from "./modules/settings";
 import "./changelog.scss";
 
+const preload = Webpack.getByKeys("preload").preload;
+
 export default class MessagePeek {
     start() {
         this.showChangelog();
@@ -62,9 +64,9 @@ export default class MessagePeek {
         const ChannelContext = React.createContext(null);
         const [ChannelWrapper, Key_CW] = Webpack.getWithKey(Webpack.Filters.byStrings("isGDMFacepileEnabled"));
         const [NameWrapper, Key_NW] = Webpack.getWithKey(x => x.toString().includes(".nameAndDecorators") && !x.toString().includes("FocusRing"));
+        const ChannelClasses = Webpack.getByKeys("channel", "decorator");
 
         Patcher.after(ChannelWrapper, Key_CW, (_, __, res) => {
-            console.log("showInDMs", Settings.get("showInDMs"));
             if (!Settings.get("showInDMs", true)) return;
             Patcher.after(res, "type", (_, [props], res) => {
                 return (
@@ -83,6 +85,17 @@ export default class MessagePeek {
                 <Peek channelId={channel.id} />
             )
         });
+
+        Webpack.getStore("ChannelStore")
+            .getSortedPrivateChannels()
+            .forEach(channel => preload("@me", channel.id));
+
+        const ChannelWrapperElement = document.querySelector(`h2 + .${ChannelClasses.channel}`);
+        if (ChannelWrapperElement) {
+            const ChannelWrapperInstance = ReactUtils.getOwnerInstance(ChannelWrapperElement);
+            if (ChannelWrapperInstance) ChannelWrapperInstance.forceUpdate();
+        }
+
     }
 
     getSettingsPanel() {
