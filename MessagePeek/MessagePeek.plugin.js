@@ -62,50 +62,10 @@ var Styles = {
 };
 /*@end */
 
-/* @module styles.scss */
-Styles.sheets.push("/* styles.scss */", `a[href^="/channels/@me"] [class^=layout] {
-  min-height: 42px;
-  max-height: 50px;
-  height: unset;
-}`); /*@end */
-
-/* @module messagePeek.jsx */
-const useStateFromStores$1 = Webpack.getByStrings("useStateFromStores", {
+/* @module shared.js */
+const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
     searchExports: true
 });
-const MessageStore = Webpack.getStore("MessageStore");
-const ChannelWrapperStyles = Webpack.getByKeys("muted", "subText");
-const ChannelStyles = Webpack.getByKeys("closeButton", "subtext");
-const Parser = Webpack.getByKeys("parseTopic");
-
-function MessagePeek$1({
-    channelId
-}) {
-    if (!channelId) return null;
-    const lastMessage = useStateFromStores$1([MessageStore], () => MessageStore.getMessages(channelId)?.last());
-    if (!lastMessage) return null;
-    const attachmentCount = lastMessage.attachments.length;
-    const content = lastMessage.content || lastMessage.embeds?.[0]?.rawDescription || lastMessage.stickerItems.length && "Sticker" || attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`;
-    if (!content) return null;
-    return React.createElement(
-        "div", {
-            className: ChannelWrapperStyles.subText,
-            style: {
-                marginBottom: "2px"
-            }
-        },
-        React.createElement(Components.Tooltip, {
-            text: content.length > 256 ? Parser.parse(content.slice(0, 256).trim()) : Parser.parse(content)
-        }, (props) => React.createElement(
-            "div", {
-                ...props,
-                className: ChannelStyles.subtext
-            },
-            `${lastMessage.author["globalName"] || lastMessage.author["username"]}: `,
-            Parser.parseInlineReply(content)
-        ))
-    );
-}
 
 /*@end */
 
@@ -129,20 +89,76 @@ const Settings = new class Settings2 extends Flux.Store {
 
 /*@end */
 
+/* @module styles.scss */
+Styles.sheets.push("/* styles.scss */", `a[href^="/channels/@me"] [class^=layout] {
+  min-height: 42px;
+  max-height: 50px;
+  height: unset;
+}`); /*@end */
+
+/* @module messagePeek.jsx */
+const MessageStore = Webpack.getStore("MessageStore");
+const ChannelWrapperStyles = Webpack.getByKeys("muted", "subText");
+const ChannelStyles = Webpack.getByKeys("closeButton", "subtext");
+const Parser = Webpack.getByKeys("parseTopic");
+
+function MessagePeek$1({
+    channelId
+}) {
+    if (!channelId) return null;
+    const lastMessage = useStateFromStores([MessageStore], () => MessageStore.getMessages(channelId)?.last());
+    if (!lastMessage) return null;
+    const attachmentCount = lastMessage.attachments.length;
+    const content = lastMessage.content || lastMessage.embeds?.[0]?.rawDescription || lastMessage.stickerItems.length && "Sticker" || attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`;
+    if (!content) return null;
+    return React.createElement(
+        "div", {
+            className: ChannelWrapperStyles.subText,
+            style: {
+                marginBottom: "2px"
+            }
+        },
+        React.createElement(Components.Tooltip, {
+            text: content.length > 256 ? Parser.parse(content.slice(0, 256).trim()) : Parser.parse(content)
+        }, (props) => React.createElement(
+            "div", {
+                ...props,
+                className: ChannelStyles.subtext
+            },
+            Settings.get("showAuthor", true) && `${lastMessage.author["globalName"] || lastMessage.author["username"]}: `,
+            Parser.parseInlineReply(content)
+        ))
+    );
+}
+
+/*@end */
+
 /* @module settings.json */
 var SettingsItems = [{
-    type: "switch",
-    name: "Show in DMs",
-    note: "",
-    id: "showInDMs",
-    value: true
-}];
+        type: "switch",
+        name: "Show in DMs",
+        note: "",
+        id: "showInDMs",
+        value: true
+    },
+    {
+        type: "switch",
+        name: "Show in Guilds",
+        note: "",
+        id: "showInGuilds",
+        value: true
+    },
+    {
+        type: "switch",
+        name: "Show Author",
+        note: "Whether to show the name of the Author or not",
+        id: "showAuthor",
+        value: true
+    }
+];
 /*@end */
 
 /* @module settings.jsx */
-const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
-    searchExports: true
-});
 const {
     FormDivider,
     FormSwitch,
@@ -285,6 +301,7 @@ Styles.sheets.push("/* changelog.scss */", `.Changelog-Title-Wrapper {
 }`); /*@end */
 
 /* @module index.jsx */
+const preload = Webpack.getByKeys("preload").preload;
 class MessagePeek {
     start() {
         this.showChangelog();
@@ -324,8 +341,8 @@ class MessagePeek {
         const ChannelContext = React.createContext(null);
         const [ChannelWrapper, Key_CW] = Webpack.getWithKey(Webpack.Filters.byStrings("isGDMFacepileEnabled"));
         const [NameWrapper, Key_NW] = Webpack.getWithKey((x) => x.toString().includes(".nameAndDecorators") && !x.toString().includes("FocusRing"));
+        const ChannelClasses = Webpack.getByKeys("channel", "decorator");
         Patcher.after(ChannelWrapper, Key_CW, (_, __, res) => {
-            console.log("showInDMs", Settings.get("showInDMs"));
             if (!Settings.get("showInDMs", true)) return;
             Patcher.after(res, "type", (_2, [props], res2) => {
                 return React.createElement(ChannelContext.Provider, {
@@ -342,6 +359,12 @@ class MessagePeek {
                 })
             );
         });
+        Webpack.getStore("ChannelStore").getSortedPrivateChannels().forEach((channel) => preload("@me", channel.id));
+        const ChannelWrapperElement = document.querySelector(`h2 + .${ChannelClasses.channel}`);
+        if (ChannelWrapperElement) {
+            const ChannelWrapperInstance = ReactUtils.getOwnerInstance(ChannelWrapperElement);
+            if (ChannelWrapperInstance) ChannelWrapperInstance.forceUpdate();
+        }
     }
     getSettingsPanel() {
         return React.createElement(SettingsPanel, null);

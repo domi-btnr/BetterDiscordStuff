@@ -106,7 +106,7 @@ var SettingsItems = [{
     {
         type: "switch",
         name: "Show Guild Description",
-        note: "Wheter to show the Guild description in the Invite",
+        note: "Whether to show the Guild description in the Invite",
         id: "showGuildDescription",
         value: true
     },
