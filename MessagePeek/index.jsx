@@ -86,8 +86,11 @@ export default class MessagePeek {
             )
         });
 
+        // Preloads makes an API request for each Channel
+        // Thats why I limit it
         Webpack.getStore("ChannelStore")
             .getSortedPrivateChannels()
+            .slice(0, Settings.get("preloadLimit", 10))
             .forEach(channel => preload("@me", channel.id));
 
         const ChannelWrapperElement = document.querySelector(`h2 + .${ChannelClasses.channel}`);

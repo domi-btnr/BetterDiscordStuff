@@ -19,5 +19,16 @@
         "note": "Whether to show the name of the Author or not",
         "id": "showAuthor",
         "value": true
+    },
+    {
+        "type": "slider",
+        "name": "Preload Limit",
+        "note": "How many DM channels to preload. This makes an API request for each channel, so be careful with this setting",
+        "id": "preloadLimit",
+        "minValue": 0,
+        "maxValue": 30,
+        "markers": [0, 5, 10, 20, 30],
+        "stickToMarkers": false,
+        "defaultValue": 10
     }
 ]
