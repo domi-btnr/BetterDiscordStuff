@@ -28,5 +28,8 @@
 - ### [GlobalBadges](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/GlobalBadges "GlobalBadges")
     > Adds global badges from other client mods
 
+- ### [MessagePeek](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/MessagePeek "MessagePeek")
+    > See the last message in a Channel like on mobile
+
 - ### [ReplaceTimestamps](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/ReplaceTimestamps "ReplaceTimestamps")
     > Replaces plaintext times and dates into Discord's timestamps
