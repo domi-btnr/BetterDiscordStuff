@@ -13,10 +13,11 @@
 
 ---
 
-<!-- 
 ## Preview
-![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/MessagePeek/images/Preview.png)
--->
+
+| ![MessagePeek in DMs](./previews/preview_dm.png) | ![MessagePeek in Guild Channel](./previews/preview_guild.png) |
+| ------------------------------------------------ | ------------------------------------------------------------- |
+|                MessagePeek in DMs                |                  MessagePeek in Guild Channel                 |
 
 ## 📥 Installation
 

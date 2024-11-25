@@ -1,13 +1,13 @@
 /**
  * @name MessagePeek
- * @version 0.0.1
+ * @version 1.0.0
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek
- * @changelogDate 2024-11-23
+ * @changelogDate 2024-11-25
  */
 
 'use strict';
@@ -19,7 +19,7 @@ const React = BdApi.React;
 /* @module @manifest */
 var manifest = {
     "name": "MessagePeek",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -27,7 +27,7 @@ var manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
     "changelog": [],
-    "changelogDate": "2024-11-23"
+    "changelogDate": "2024-11-25"
 };
 /*@end */
 
@@ -393,6 +393,7 @@ class MessagePeek {
             Settings.set("preloadLimit", 10);
         this.showChangelog();
         this.patchDMs();
+        this.patchGuildChannel();
         Styles.load();
     }
     stop() {
@@ -454,6 +455,24 @@ class MessagePeek {
             const ChannelWrapperInstance = ReactUtils.getOwnerInstance(ChannelWrapperElement);
             if (ChannelWrapperInstance) ChannelWrapperInstance.forceUpdate();
         }
+    }
+    patchGuildChannel() {
+        const [ChannelWrapper, Key_CW] = Webpack.getWithKey(Webpack.Filters.byStrings("channel", "unread", ".ALL_MESSAGES"));
+        Patcher.after(ChannelWrapper, Key_CW, (_, [{
+            channel
+        }], res) => {
+            if (!Settings.get("showInGuilds", true)) return;
+            const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("name_"), {
+                walkable: ["children", "props"]
+            });
+            if (!nameWrapper) return res;
+            nameWrapper.props.children = [
+                nameWrapper.props.children,
+                React.createElement(MessagePeek$1, {
+                    channelId: channel.id
+                })
+            ];
+        });
     }
     getSettingsPanel() {
         return React.createElement(SettingsPanel, null);
