@@ -18,6 +18,6 @@
 
 ## 📥 Installation
 
-1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/Plugins/GlobalBadges/GlobalBadges.plugin.js)
+1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/GlobalBadges/GlobalBadges.plugin.js)
 2. Save or move the file into your plugins folder
 3. Enable the plugin in the settings
