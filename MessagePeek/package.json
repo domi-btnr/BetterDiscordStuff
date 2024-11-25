@@ -1,6 +1,6 @@
 {
 	"name": "MessagePeek",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"description": "See the last message in a Channel like on mobile",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -8,5 +8,5 @@
 	"donate": "https://paypal.me/domibtnr",
 	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
 	"changelog": [],
-	"changelogDate": "2024-11-23"
+	"changelogDate": "2024-11-25"
 }

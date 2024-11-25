@@ -1,5 +1,5 @@
 import React from "react";
-import { Patcher, ReactUtils, Webpack, UI } from "@api";
+import { Patcher, ReactUtils, Webpack, UI, Utils } from "@api";
 import manifest from "@manifest";
 import Styles from "@styles";
 
@@ -15,6 +15,7 @@ export default class MessagePeek {
 
         this.showChangelog();
         this.patchDMs();
+        this.patchGuildChannel();
         Styles.load();
     }
 
@@ -93,7 +94,7 @@ export default class MessagePeek {
         // I also limit the amount of DMs to preload to a maximum of 30. Default is 10
         Webpack.getStore("ChannelStore")
             .getSortedPrivateChannels()
-            .filter(channel => 
+            .filter(channel =>
                 channel.lastMessageId &&
                 !Webpack.getStore("MessageStore")
                     .getMessages(channel.id)?.last()
@@ -107,6 +108,21 @@ export default class MessagePeek {
             if (ChannelWrapperInstance) ChannelWrapperInstance.forceUpdate();
         }
 
+    }
+
+    patchGuildChannel() {
+        const [ChannelWrapper, Key_CW] = Webpack.getWithKey(Webpack.Filters.byStrings("channel", "unread", ".ALL_MESSAGES"));
+
+        Patcher.after(ChannelWrapper, Key_CW, (_, [{ channel }], res) => {
+            if (!Settings.get("showInGuilds", true)) return;
+            const nameWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("name_"), { walkable: ["children", "props"] });
+            if (!nameWrapper) return res;
+
+            nameWrapper.props.children = [
+                nameWrapper.props.children,
+                <Peek channelId={channel.id} />
+            ];
+        });
     }
 
     getSettingsPanel() {
