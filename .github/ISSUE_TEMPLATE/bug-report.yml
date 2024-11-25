@@ -13,6 +13,7 @@ body:
         - BetterInvites
         - FriendCodes
         - GlobalBadges
+        - MessagePeek
         - ReplaceTimestamps
     validations:
       required: true
