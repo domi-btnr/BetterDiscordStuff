@@ -1,13 +1,13 @@
 /**
  * @name MessagePeek
- * @version 1.0.0
+ * @version 1.0.1
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek
- * @changelogDate 2024-11-25
+ * @changelogDate 2024-12-02
  */
 
 'use strict';
@@ -19,15 +19,19 @@ const React = BdApi.React;
 /* @module @manifest */
 var manifest = {
     "name": "MessagePeek",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
-    "changelog": [],
-    "changelogDate": "2024-11-25"
+    "changelog": [{
+        "title": "Safer Preload",
+        "type": "improved",
+        "items": ["Added delay to Preload API Call"]
+    }],
+    "changelogDate": "2024-12-02"
 };
 /*@end */
 
@@ -447,9 +451,15 @@ class MessagePeek {
                 })
             );
         });
+        const preload = Webpack.getByKeys("preload")?.preload;
         Webpack.getStore("ChannelStore").getSortedPrivateChannels().filter(
             (channel) => channel.lastMessageId && !Webpack.getStore("MessageStore").getMessages(channel.id)?.last()
-        ).slice(0, Settings.get("preloadLimit", 10)).forEach((channel) => Webpack.getByKeys("preload")?.preload("@me", channel.id));
+        ).slice(0, Settings.get("preloadLimit", 10)).reduce((promise, channel, index) => {
+            return promise.then(() => {
+                preload("@me", channel.id);
+                return new Promise((resolve) => setTimeout(resolve, 125 + index * 125));
+            });
+        }, Promise.resolve());
         const ChannelWrapperElement = document.querySelector(`h2 + .${ChannelClasses.channel}`);
         if (ChannelWrapperElement) {
             const ChannelWrapperInstance = ReactUtils.getOwnerInstance(ChannelWrapperElement);
