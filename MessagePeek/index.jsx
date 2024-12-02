@@ -92,6 +92,7 @@ export default class MessagePeek {
         // It's not a good idea to preload every DM
         // That's why I check if the DM Channel has a message and if it's not already loaded
         // I also limit the amount of DMs to preload to a maximum of 30. Default is 10
+        const preload = Webpack.getByKeys("preload")?.preload
         Webpack.getStore("ChannelStore")
             .getSortedPrivateChannels()
             .filter(channel =>
@@ -100,7 +101,12 @@ export default class MessagePeek {
                     .getMessages(channel.id)?.last()
             )
             .slice(0, Settings.get("preloadLimit", 10))
-            .forEach(channel => Webpack.getByKeys("preload")?.preload("@me", channel.id));
+            .reduce((promise, channel, index) => {
+                return promise.then(() => {
+                    preload("@me", channel.id);
+                    return new Promise(resolve => setTimeout(resolve, 125 + index * 125));
+                });
+            }, Promise.resolve());
 
         const ChannelWrapperElement = document.querySelector(`h2 + .${ChannelClasses.channel}`);
         if (ChannelWrapperElement) {
