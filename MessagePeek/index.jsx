@@ -65,6 +65,7 @@ export default class MessagePeek {
     patchDMs() {
         const ChannelContext = React.createContext(null);
         const [ChannelWrapper, Key_CW] = Webpack.getWithKey(Webpack.Filters.byStrings("isGDMFacepileEnabled"));
+        const [ChannelItem, Key_CI] = Webpack.getWithKey(Webpack.Filters.byStrings("as:", ".interactive,"));
         const [NameWrapper, Key_NW] = Webpack.getWithKey(x => x.toString().includes(".nameAndDecorators") && !x.toString().includes("FocusRing"));
         const ChannelClasses = Webpack.getByKeys("channel", "decorator");
 
@@ -79,11 +80,22 @@ export default class MessagePeek {
             });
         });
 
+        Patcher.after(ChannelItem, Key_CI, (_, __, res) => {
+            if (!Settings.get("showTimestamp", true)) return;
+            const channel = React.useContext(ChannelContext);
+            if (!channel) return res;
+
+            const children = res.props.children;
+            children.splice(children.length - 1, 0, <Peek channelId={channel.id} timestampOnly />);
+        });
+
         Patcher.after(NameWrapper, Key_NW, (_, __, res) => {
             const channel = React.useContext(ChannelContext);
             if (!channel) return res;
 
-            res.props.children[1].props.children.push(
+            const nameWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("content_"), { walkable: ["children", "props"] });
+            if (!nameWrapper) return res;
+            nameWrapper.props.children.push(
                 <Peek channelId={channel.id} />
             )
         });
@@ -128,6 +140,12 @@ export default class MessagePeek {
                 nameWrapper.props.children,
                 <Peek channelId={channel.id} />
             ];
+
+            if (!Settings.get("showTimestamp", true)) return
+            const innerWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("linkTop_"), { walkable: ["children", "props"] });
+            if (!innerWrapper) return res;
+            const children = innerWrapper.props.children;
+            children.splice(children.length - 1, 0, <Peek channelId={channel.id} timestampOnly />);
         });
     }
 

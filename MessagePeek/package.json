@@ -1,6 +1,6 @@
 {
 	"name": "MessagePeek",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "See the last message in a Channel like on mobile",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -9,9 +9,9 @@
 	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
 	"changelog": [
 		{
-			"title": "Safer Preload",
-			"type": "improved",
-			"items": ["Added delay to Preload API Call"]
+			"title": "New",
+			"type": "added",
+			"items": ["Show the relative time of the last message next to the channel"]
 		}
 	],
 	"changelogDate": "2024-12-02"

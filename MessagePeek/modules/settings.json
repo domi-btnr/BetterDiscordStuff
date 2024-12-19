@@ -21,6 +21,13 @@
         "value": true
     },
     {
+        "type": "switch",
+        "name": "Show Timestamp",
+        "note": "Whether to show the relative timestamp next to the Channel or not",
+        "id": "showTimestamp",
+        "value": true
+    },
+    {
         "type": "slider",
         "name": "Preload Limit",
         "note": "How many DM channels to preload. This makes an API request for each channel, so be careful with this setting",
