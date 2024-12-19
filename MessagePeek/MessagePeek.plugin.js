@@ -1,6 +1,6 @@
 /**
  * @name MessagePeek
- * @version 1.0.1
+ * @version 1.0.2
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -19,7 +19,7 @@ const React = BdApi.React;
 /* @module @manifest */
 var manifest = {
     "name": "MessagePeek",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -27,9 +27,9 @@ var manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
     "changelog": [{
-        "title": "Safer Preload",
-        "type": "improved",
-        "items": ["Added delay to Preload API Call"]
+        "title": "New",
+        "type": "added",
+        "items": ["Show the relative time of the last message next to the channel"]
     }],
     "changelogDate": "2024-12-02"
 };
@@ -41,6 +41,7 @@ const {
     ContextMenu,
     Data,
     DOM,
+    Logger,
     Net,
     Patcher,
     Plugins,
@@ -105,38 +106,109 @@ const MessageStore = Webpack.getStore("MessageStore");
 const ChannelWrapperStyles = Webpack.getByKeys("muted", "subText");
 const ChannelStyles = Webpack.getByKeys("closeButton", "subtext");
 const Parser = Webpack.getByKeys("parseTopic");
+const i18n = Webpack.getByKeys("getLocale");
 
 function MessagePeek$1({
-    channelId
+    channelId,
+    timestampOnly
 }) {
     if (!channelId) return null;
     const lastMessage = useStateFromStores([MessageStore], () => MessageStore.getMessages(channelId)?.last());
     if (!lastMessage) return null;
-    const attachmentCount = lastMessage.attachments.length;
-    const content = lastMessage.content || lastMessage.embeds?.[0]?.rawDescription || lastMessage.stickerItems.length && "Sticker" || attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`;
-    if (!content) return null;
-    const charLimit = Settings.get("tooltipCharacterLimit", 256);
-    return React.createElement(
-        "div", {
-            className: ChannelWrapperStyles.subText,
-            style: {
-                marginBottom: "2px"
+    if (!timestampOnly) {
+        const attachmentCount = lastMessage.attachments.length;
+        const content = lastMessage.content || lastMessage.embeds?.[0]?.rawDescription || lastMessage.stickerItems.length && "Sticker" || attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`;
+        if (!content) return null;
+        const charLimit = Settings.get("tooltipCharacterLimit", 256);
+        return React.createElement(
+            "div", {
+                className: ChannelWrapperStyles.subText,
+                style: {
+                    marginBottom: "2px"
+                }
+            },
+            React.createElement(
+                Components.Tooltip, {
+                    text: content.length > charLimit ? Parser.parse(content.slice(0, charLimit).trim() + "\u2026") : Parser.parse(content)
+                },
+                (props) => React.createElement(
+                    "div", {
+                        ...props,
+                        className: ChannelStyles.subtext
+                    },
+                    Settings.get("showAuthor", true) && `${lastMessage.author["globalName"] || lastMessage.author["username"]}: `,
+                    Parser.parseInlineReply(content)
+                )
+            )
+        );
+    } else {
+        const now = Date.now();
+        const dateTimeFormatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+        const units = [{
+                unit: "s",
+                ms: 1e3
+            },
+            {
+                unit: "m",
+                ms: 1e3 * 60
+            },
+            {
+                unit: "h",
+                ms: 1e3 * 60 * 60
+            },
+            {
+                unit: "d",
+                ms: 1e3 * 60 * 60 * 24
+            },
+            {
+                unit: "w",
+                ms: 1e3 * 60 * 60 * 24 * 7
+            },
+            {
+                unit: "mo",
+                ms: 1e3 * 60 * 60 * 24 * 30
+            },
+            {
+                unit: "y",
+                ms: 1e3 * 60 * 60 * 24 * 365
             }
-        },
-        React.createElement(
+        ];
+        const diffInMs = lastMessage.timestamp - now;
+        let relativeTime = 0;
+        let unit = "";
+        for (let i = units.length - 1; i >= 0; i--) {
+            const {
+                unit: u,
+                ms
+            } = units[i];
+            if (Math.abs(diffInMs) >= ms) {
+                relativeTime = Math.floor(diffInMs / ms);
+                unit = u;
+                break;
+            }
+        }
+        return React.createElement(
             Components.Tooltip, {
-                text: content.length > charLimit ? Parser.parse(content.slice(0, charLimit).trim() + "\u2026") : Parser.parse(content)
+                text: dateTimeFormatter.format(lastMessage.timestamp)
             },
             (props) => React.createElement(
                 "div", {
                     ...props,
-                    className: ChannelStyles.subtext
+                    style: {
+                        marginRight: "5px",
+                        color: "var(--channels-default)"
+                    }
                 },
-                Settings.get("showAuthor", true) && `${lastMessage.author["globalName"] || lastMessage.author["username"]}: `,
-                Parser.parseInlineReply(content)
+                `${Math.abs(relativeTime)}${unit}`
             )
-        )
-    );
+        );
+    }
 }
 
 /*@end */
@@ -161,6 +233,13 @@ var SettingsItems = [{
         name: "Show Author",
         note: "Whether to show the name of the Author or not",
         id: "showAuthor",
+        value: true
+    },
+    {
+        type: "switch",
+        name: "Show Timestamp",
+        note: "Whether to show the relative timestamp next to the Channel or not",
+        id: "showTimestamp",
         value: true
     },
     {
@@ -432,6 +511,7 @@ class MessagePeek {
     patchDMs() {
         const ChannelContext = React.createContext(null);
         const [ChannelWrapper, Key_CW] = Webpack.getWithKey(Webpack.Filters.byStrings("isGDMFacepileEnabled"));
+        const [ChannelItem, Key_CI] = Webpack.getWithKey(Webpack.Filters.byStrings("as:", ".interactive,"));
         const [NameWrapper, Key_NW] = Webpack.getWithKey((x) => x.toString().includes(".nameAndDecorators") && !x.toString().includes("FocusRing"));
         const ChannelClasses = Webpack.getByKeys("channel", "decorator");
         Patcher.after(ChannelWrapper, Key_CW, (_, __, res) => {
@@ -442,10 +522,24 @@ class MessagePeek {
                 }, res2);
             });
         });
+        Patcher.after(ChannelItem, Key_CI, (_, __, res) => {
+            if (!Settings.get("showTimestamp", true)) return;
+            const channel = React.useContext(ChannelContext);
+            if (!channel) return res;
+            const children = res.props.children;
+            children.splice(children.length - 1, 0, React.createElement(MessagePeek$1, {
+                channelId: channel.id,
+                timestampOnly: true
+            }));
+        });
         Patcher.after(NameWrapper, Key_NW, (_, __, res) => {
             const channel = React.useContext(ChannelContext);
             if (!channel) return res;
-            res.props.children[1].props.children.push(
+            const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("content_"), {
+                walkable: ["children", "props"]
+            });
+            if (!nameWrapper) return res;
+            nameWrapper.props.children.push(
                 React.createElement(MessagePeek$1, {
                     channelId: channel.id
                 })
@@ -482,6 +576,16 @@ class MessagePeek {
                     channelId: channel.id
                 })
             ];
+            if (!Settings.get("showTimestamp", true)) return;
+            const innerWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("linkTop_"), {
+                walkable: ["children", "props"]
+            });
+            if (!innerWrapper) return res;
+            const children = innerWrapper.props.children;
+            children.splice(children.length - 1, 0, React.createElement(MessagePeek$1, {
+                channelId: channel.id,
+                timestampOnly: true
+            }));
         });
     }
     getSettingsPanel() {
