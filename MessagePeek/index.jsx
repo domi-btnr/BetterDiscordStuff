@@ -141,7 +141,7 @@ export default class MessagePeek {
                 <Peek channelId={channel.id} />
             ];
 
-            if (!Settings.get("showTimestamp", true)) return
+            if (!Settings.get("showTimestamp", true)) return;
             const innerWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("linkTop_"), { walkable: ["children", "props"] });
             if (!innerWrapper) return res;
             const children = innerWrapper.props.children;
