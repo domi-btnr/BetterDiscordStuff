@@ -1,13 +1,13 @@
 /**
  * @name MessagePeek
- * @version 1.0.2
+ * @version 1.1.0
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek
- * @changelogDate 2024-12-02
+ * @changelogDate 2024-12-21
  */
 
 'use strict';
@@ -19,7 +19,7 @@ const React = BdApi.React;
 /* @module @manifest */
 var manifest = {
     "name": "MessagePeek",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -31,7 +31,7 @@ var manifest = {
         "type": "added",
         "items": ["Show the relative time of the last message next to the channel"]
     }],
-    "changelogDate": "2024-12-02"
+    "changelogDate": "2024-12-21"
 };
 /*@end */
 
