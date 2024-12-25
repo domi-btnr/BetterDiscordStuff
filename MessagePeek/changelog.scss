@@ -33,6 +33,7 @@
         &.added { color: #45BA6A; }
         &.fixed { color: #EC4245; }
         &.improved { color: #5865F2; }
+        &.changed { color: #F0B232; }
 
         &::after {
             content: "";
