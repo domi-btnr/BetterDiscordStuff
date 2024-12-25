@@ -61,6 +61,7 @@ const {
     ContextMenu,
     Data,
     DOM,
+    Logger,
     Net,
     Patcher,
     Plugins,
@@ -335,6 +336,9 @@ Styles.sheets.push("/* changelog.scss */", `.Changelog-Title-Wrapper {
 }
 .Changelog-Item .Changelog-Header.improved {
   color: #5865F2;
+}
+.Changelog-Item .Changelog-Header.changed {
+  color: #F0B232;
 }
 .Changelog-Item .Changelog-Header::after {
   content: "";

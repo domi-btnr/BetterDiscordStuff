@@ -1,6 +1,6 @@
 /**
  * @name GlobalBadges
- * @version 1.0.1
+ * @version 1.0.2
  * @description Adds global badges from other client mods
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -19,7 +19,7 @@ const React = BdApi.React;
 /* @module @manifest */
 var manifest = {
     "name": "GlobalBadges",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Adds global badges from other client mods",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -27,10 +27,10 @@ var manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges",
     "changelog": [{
-        "title": "Fixed",
-        "type": "fixed",
+        "title": "Changed API URL",
+        "type": "changed",
         "items": [
-            "Plugin works again"
+            "Due to my Heroku Credit being expired, I moved the API to my own Server"
         ]
     }],
     "changelogDate": "2024-11-03"
@@ -43,6 +43,7 @@ const {
     ContextMenu,
     Data,
     DOM,
+    Logger,
     Net,
     Patcher,
     Plugins,
@@ -69,7 +70,7 @@ var Styles = {
 /*@end */
 
 /* @module fetchBadges.ts */
-const API_URL = "https://clientmodbadges-api.herokuapp.com";
+const API_URL = "https://api.domi-btnr.dev/clientmodbadges";
 const cache = new Map();
 const EXPIRES = 1e3 * 60 * 15;
 async function fetchBadges(id) {
@@ -305,6 +306,9 @@ Styles.sheets.push("/* changelog.scss */", `.Changelog-Title-Wrapper {
 }
 .Changelog-Item .Changelog-Header.improved {
   color: #5865F2;
+}
+.Changelog-Item .Changelog-Header.changed {
+  color: #F0B232;
 }
 .Changelog-Item .Changelog-Header::after {
   content: "";
