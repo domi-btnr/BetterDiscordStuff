@@ -7,7 +7,7 @@
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges
- * @changelogDate 2024-11-03
+ * @changelogDate 2024-12-25
  */
 
 'use strict';
@@ -33,8 +33,9 @@ var manifest = {
             "Due to my Heroku Credit being expired, I moved the API to my own Server"
         ]
     }],
-    "changelogDate": "2024-11-03"
+    "changelogDate": "2024-12-25"
 };
+
 /*@end */
 
 /* @module @api */
