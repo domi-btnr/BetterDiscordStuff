@@ -67,7 +67,11 @@ export default class ReplaceTimestamps {
             const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
             timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
 
-            const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy").replace(/[.\/]/g, "[./]").replace("dd", "(\\d{2})").replace("MM", "(\\d{2})").replace("yyyy", "(\\d{4})");
+            const dateFormat = Settings
+                .get("dateFormat", "dd.MM.yyyy")
+                .replace(/[.\/]/g, "[./]").replace("dd", "(\\d{2})")
+                .replace("MM", "(\\d{2})").replace("yyyy", "(\\d{4})");
+
             const dateRegex = new RegExp(`${dateFormat}`, "gi");
             dateRegexMatch = new RegExp(`${dateFormat}`, "i");
 
@@ -77,21 +81,12 @@ export default class ReplaceTimestamps {
             const relativeRegex = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/gi;
             relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
 
-            if (msg.content.search(TimeDateRegex) !== -1) {
-                msg.content = msg.content.replace(TimeDateRegex, x => getUnixTimestamp(x));
-            }
-            if (msg.content.search(DateRegexTime) !== -1) {
-                msg.content = msg.content.replace(DateRegexTime, x => getUnixTimestamp(x));
-            }
-            if (msg.content.search(timeRegex) !== -1) {
-                msg.content = msg.content.replace(timeRegex, x => getUnixTimestamp(x, "t"));
-            }
-            if (msg.content.search(dateRegex) !== -1) {
-                msg.content = msg.content.replace(dateRegex, x => getUnixTimestamp(x, "d"));
-            }
-            if (msg.content.search(relativeRegex) !== -1) {
-                msg.content = msg.content.replace(relativeRegex, x => getRelativeTime(x));
-            }
+            msg.content = msg.content
+                .replace(TimeDateRegex, x => getUnixTimestamp(x))
+                .replace(DateRegexTime, x => getUnixTimestamp(x))
+                .replace(timeRegex, x => getUnixTimestamp(x, "t"))
+                .replace(dateRegex, x => getUnixTimestamp(x, "d"))
+                .replace(relativeRegex, getRelativeTime);
         });
     }
 
