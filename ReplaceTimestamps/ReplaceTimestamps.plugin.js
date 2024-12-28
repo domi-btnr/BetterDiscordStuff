@@ -1,13 +1,13 @@
 /**
  * @name ReplaceTimestamps
- * @version 1.3.1
+ * @version 1.3.2
  * @description Replaces plaintext times and dates into Discord's timestamps
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps
- * @changelogDate 2024-07-13
+ * @changelogDate 2024-12-28
  */
 
 'use strict';
@@ -23,7 +23,7 @@ const React = BdApi.React;
 /* @module @manifest */
 var manifest = {
     "name": "ReplaceTimestamps",
-    "version": "1.3.1",
+    "version": "1.3.2",
     "description": "Replaces plaintext times and dates into Discord's timestamps",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -31,27 +31,13 @@ var manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps",
     "changelog": [{
-            "title": "New Feature",
-            "type": "added",
-            "items": [
-                "Support for relative Times. Use \"in 5m\" or \"2h ago\""
-            ]
-        },
-        {
-            "title": "Valid Units",
-            "type": "improved",
-            "items": [
-                "\"s\" for seconds",
-                "\"m\" for minutes",
-                "\"h\" for hours",
-                "\"d\" for days",
-                "\"w\" for weeks",
-                "\"mo\" for months",
-                "\"y\" for years"
-            ]
-        }
-    ],
-    "changelogDate": "2024-07-13"
+        "title": "Improvement",
+        "type": "improved",
+        "items": [
+            "Code improvements"
+        ]
+    }],
+    "changelogDate": "2024-12-28"
 };
 /*@end */
 
@@ -407,21 +393,7 @@ class ReplaceTimestamps {
             const DateRegexTime = new RegExp(`${dateRegex.source}\\s+(${timeRegex.source})`, "gi");
             const relativeRegex = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/gi;
             exports.relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
-            if (msg.content.search(TimeDateRegex) !== -1) {
-                msg.content = msg.content.replace(TimeDateRegex, (x) => getUnixTimestamp(x));
-            }
-            if (msg.content.search(DateRegexTime) !== -1) {
-                msg.content = msg.content.replace(DateRegexTime, (x) => getUnixTimestamp(x));
-            }
-            if (msg.content.search(timeRegex) !== -1) {
-                msg.content = msg.content.replace(timeRegex, (x) => getUnixTimestamp(x, "t"));
-            }
-            if (msg.content.search(dateRegex) !== -1) {
-                msg.content = msg.content.replace(dateRegex, (x) => getUnixTimestamp(x, "d"));
-            }
-            if (msg.content.search(relativeRegex) !== -1) {
-                msg.content = msg.content.replace(relativeRegex, (x) => getRelativeTime(x));
-            }
+            msg.content = msg.content.replace(TimeDateRegex, (x) => getUnixTimestamp(x)).replace(DateRegexTime, (x) => getUnixTimestamp(x)).replace(timeRegex, (x) => getUnixTimestamp(x, "t")).replace(dateRegex, (x) => getUnixTimestamp(x, "d")).replace(relativeRegex, getRelativeTime);
         });
     }
     getSettingsPanel() {
