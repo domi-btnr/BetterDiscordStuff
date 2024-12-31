@@ -12,11 +12,10 @@
 
 'use strict';
 
-/* @module react */
+// react
 const React = BdApi.React;
-/*@end */
 
-/* @module @manifest */
+// @manifest
 var manifest = {
     "name": "FriendCodes",
     "version": "1.1.1",
@@ -33,9 +32,8 @@ var manifest = {
     }],
     "changelogDate": "2024-11-02"
 };
-/*@end */
 
-/* @module @api */
+// @api
 const {
     Components,
     ContextMenu,
@@ -51,9 +49,8 @@ const {
     Utils,
     Webpack
 } = new BdApi(manifest.name);
-/*@end */
 
-/* @module @styles */
+// @styles
 
 var Styles = {
     sheets: [],
@@ -65,10 +62,96 @@ var Styles = {
         DOM.removeStyle();
     }
 };
-/*@end */
 
-/* @module errorBoundary.scss */
-Styles.sheets.push("/* errorBoundary.scss */", `.errorBoundary {
+// ../common/Changelog/style.scss
+Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
+  font-size: 20px;
+  font-weight: 600;
+  font-family: var(--font-display);
+  color: var(--header-primary);
+  line-height: 1.2;
+}
+.Changelog-Title-Wrapper div {
+  font-size: 12px;
+  font-weight: 400;
+  font-family: var(--font-primary);
+  color: var(--primary-300);
+  line-height: 1.3333333333;
+}
+
+.Changelog-Banner {
+  width: 405px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.Changelog-Item {
+  color: #c4c9ce;
+}
+.Changelog-Item .Changelog-Header {
+  display: flex;
+  text-transform: uppercase;
+  font-weight: 700;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.Changelog-Item .Changelog-Header.added {
+  color: #45BA6A;
+}
+.Changelog-Item .Changelog-Header.changed {
+  color: #F0B232;
+}
+.Changelog-Item .Changelog-Header.fixed {
+  color: #EC4245;
+}
+.Changelog-Item .Changelog-Header.improved {
+  color: #5865F2;
+}
+.Changelog-Item .Changelog-Header::after {
+  content: "";
+  flex-grow: 1;
+  height: 1px;
+  margin-left: 7px;
+  background: currentColor;
+}
+.Changelog-Item span {
+  display: list-item;
+  list-style: inside;
+  margin-left: 5px;
+}
+.Changelog-Item span::marker {
+  color: var(--background-accent);
+}`);
+
+// ../common/Changelog/index.tsx
+function showChangelog(manifest) {
+    if (Data.load("lastVersion") === manifest.version) return;
+    const i18n = Webpack.getByKeys("getLocale");
+    const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+    });
+    const title = React.createElement("div", {
+        className: "Changelog-Title-Wrapper"
+    }, React.createElement("h1", null, "What's New - ", manifest.name), React.createElement("div", null, formatter.format(new Date(manifest.changelogDate)), " - v", manifest.version));
+    const items = manifest.changelog.map((item) => React.createElement("div", {
+        className: "Changelog-Item"
+    }, React.createElement("h4", {
+        className: `Changelog-Header ${item.type}`
+    }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
+    "changelogImage" in manifest && items.unshift(
+        React.createElement("img", {
+            className: "Changelog-Banner",
+            src: manifest.changelogImage
+        })
+    );
+    UI.alert(title, items);
+    Data.save("lastVersion", manifest.version);
+}
+
+// ../common/ErrorBoundary/style.scss
+Styles.sheets.push("/* ../common/ErrorBoundary/style.scss */", `.errorBoundary {
   align-items: center;
   background: #473c41;
   border: 2px solid #f04747;
@@ -82,9 +165,9 @@ Styles.sheets.push("/* errorBoundary.scss */", `.errorBoundary {
   display: flex;
   flex-direction: column;
   gap: 5px;
-}`); /*@end */
+}`);
 
-/* @module errorBoundary.jsx */
+// ../common/ErrorBoundary/index.jsx
 const ErrorIcon = (props) => React.createElement("svg", {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24",
@@ -126,10 +209,8 @@ class ErrorBoundary extends React.Component {
     }
 }
 
-/*@end */
-
-/* @module style.scss */
-Styles.sheets.push("/* style.scss */", `.card {
+// components/style.scss
+Styles.sheets.push("/* components/style.scss */", `.card {
   padding: 20px;
   margin-bottom: var(--custom-margin-margin-small);
   border-width: 1px;
@@ -169,15 +250,12 @@ var styles = {
     "panelHeader": "panelHeader",
     "panelText": "panelText"
 };
-/*@end */
 
-/* @module shared.js */
+// modules/shared.js
 const DiscordCompononents = Webpack.getByKeys("Button", "FormTitle");
 const Flex = Webpack.getByStrings(".HORIZONTAL", ".START");
 
-/*@end */
-
-/* @module copyButton.jsx */
+// components/copyButton.jsx
 const {
     Button: Button$1
 } = DiscordCompononents;
@@ -204,9 +282,7 @@ function CopyButton({
     );
 }
 
-/*@end */
-
-/* @module codeCard.jsx */
+// components/codeCard.jsx
 const {
     FormTitle: FormTitle$1
 } = DiscordCompononents;
@@ -242,9 +318,7 @@ function FriendCodeCard({
     ))));
 }
 
-/*@end */
-
-/* @module panel.jsx */
+// components/panel.jsx
 const {
     Button,
     FormTitle,
@@ -321,105 +395,16 @@ function FriendCodesPanel() {
     }))));
 }
 
-/*@end */
-
-/* @module changelog.scss */
-Styles.sheets.push("/* changelog.scss */", `.Changelog-Title-Wrapper {
-  font-size: 20px;
-  font-weight: 600;
-  font-family: var(--font-display);
-  color: var(--header-primary);
-  line-height: 1.2;
-}
-.Changelog-Title-Wrapper div {
-  font-size: 12px;
-  font-weight: 400;
-  font-family: var(--font-primary);
-  color: var(--primary-300);
-  line-height: 1.3333333333;
-}
-
-.Changelog-Banner {
-  width: 405px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.Changelog-Item {
-  color: #c4c9ce;
-}
-.Changelog-Item .Changelog-Header {
-  display: flex;
-  text-transform: uppercase;
-  font-weight: 700;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.Changelog-Item .Changelog-Header.added {
-  color: #45BA6A;
-}
-.Changelog-Item .Changelog-Header.fixed {
-  color: #EC4245;
-}
-.Changelog-Item .Changelog-Header.improved {
-  color: #5865F2;
-}
-.Changelog-Item .Changelog-Header.changed {
-  color: #F0B232;
-}
-.Changelog-Item .Changelog-Header::after {
-  content: "";
-  flex-grow: 1;
-  height: 1px;
-  margin-left: 7px;
-  background: currentColor;
-}
-.Changelog-Item span {
-  display: list-item;
-  list-style: inside;
-  margin-left: 5px;
-}
-.Changelog-Item span::marker {
-  color: var(--background-accent);
-}`); /*@end */
-
-/* @module index.jsx */
-const Settings = Data.load("SETTINGS") || {};
+// index.jsx
 class FriendCodes {
     start() {
-        this.showChangelog();
+        showChangelog(manifest);
         this.patchAddFriendsPanel();
         Styles.load();
     }
     stop() {
         Patcher.unpatchAll();
         Styles.unload();
-    }
-    showChangelog() {
-        if (Settings.lastVersion === manifest.version) return;
-        const i18n = Webpack.getByKeys("getLocale");
-        const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
-            month: "long",
-            day: "numeric",
-            year: "numeric"
-        });
-        const title = React.createElement("div", {
-            className: "Changelog-Title-Wrapper"
-        }, React.createElement("h1", null, "What's New - ", manifest.name), React.createElement("div", null, formatter.format(new Date(manifest.changelogDate)), " - v", manifest.version));
-        const items = manifest.changelog.map((item) => React.createElement("div", {
-            className: "Changelog-Item"
-        }, React.createElement("h4", {
-            className: `Changelog-Header ${item.type}`
-        }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
-        "changelogImage" in manifest && items.unshift(
-            React.createElement("img", {
-                className: "Changelog-Banner",
-                src: manifest.changelogImage
-            })
-        );
-        Settings.lastVersion = manifest.version;
-        Data.save("SETTINGS", Settings);
-        UI.alert(title, items);
     }
     patchAddFriendsPanel() {
         const [Module, Key] = Webpack.getWithKey(Webpack.Filters.byStrings(".Fragment", ".emptyState", ".ADD_FRIEND"));
@@ -431,7 +416,5 @@ class FriendCodes {
         });
     }
 }
-
-/*@end */
 
 module.exports = FriendCodes;

@@ -12,11 +12,10 @@
 
 'use strict';
 
-/* @module react */
+// react
 const React = BdApi.React;
-/*@end */
 
-/* @module @manifest */
+// @manifest
 var manifest = {
     "name": "MessagePeek",
     "version": "1.1.0",
@@ -33,9 +32,8 @@ var manifest = {
     }],
     "changelogDate": "2024-12-21"
 };
-/*@end */
 
-/* @module @api */
+// @api
 const {
     Components,
     ContextMenu,
@@ -51,9 +49,8 @@ const {
     Utils,
     Webpack
 } = new BdApi(manifest.name);
-/*@end */
 
-/* @module @styles */
+// @styles
 
 var Styles = {
     sheets: [],
@@ -65,16 +62,100 @@ var Styles = {
         DOM.removeStyle();
     }
 };
-/*@end */
 
-/* @module shared.js */
+// ../common/Changelog/style.scss
+Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
+  font-size: 20px;
+  font-weight: 600;
+  font-family: var(--font-display);
+  color: var(--header-primary);
+  line-height: 1.2;
+}
+.Changelog-Title-Wrapper div {
+  font-size: 12px;
+  font-weight: 400;
+  font-family: var(--font-primary);
+  color: var(--primary-300);
+  line-height: 1.3333333333;
+}
+
+.Changelog-Banner {
+  width: 405px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.Changelog-Item {
+  color: #c4c9ce;
+}
+.Changelog-Item .Changelog-Header {
+  display: flex;
+  text-transform: uppercase;
+  font-weight: 700;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.Changelog-Item .Changelog-Header.added {
+  color: #45BA6A;
+}
+.Changelog-Item .Changelog-Header.changed {
+  color: #F0B232;
+}
+.Changelog-Item .Changelog-Header.fixed {
+  color: #EC4245;
+}
+.Changelog-Item .Changelog-Header.improved {
+  color: #5865F2;
+}
+.Changelog-Item .Changelog-Header::after {
+  content: "";
+  flex-grow: 1;
+  height: 1px;
+  margin-left: 7px;
+  background: currentColor;
+}
+.Changelog-Item span {
+  display: list-item;
+  list-style: inside;
+  margin-left: 5px;
+}
+.Changelog-Item span::marker {
+  color: var(--background-accent);
+}`);
+
+// ../common/Changelog/index.tsx
+function showChangelog(manifest) {
+    if (Data.load("lastVersion") === manifest.version) return;
+    const i18n = Webpack.getByKeys("getLocale");
+    const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+    });
+    const title = React.createElement("div", {
+        className: "Changelog-Title-Wrapper"
+    }, React.createElement("h1", null, "What's New - ", manifest.name), React.createElement("div", null, formatter.format(new Date(manifest.changelogDate)), " - v", manifest.version));
+    const items = manifest.changelog.map((item) => React.createElement("div", {
+        className: "Changelog-Item"
+    }, React.createElement("h4", {
+        className: `Changelog-Header ${item.type}`
+    }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
+    "changelogImage" in manifest && items.unshift(
+        React.createElement("img", {
+            className: "Changelog-Banner",
+            src: manifest.changelogImage
+        })
+    );
+    UI.alert(title, items);
+    Data.save("lastVersion", manifest.version);
+}
+
+// modules/shared.js
 const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
     searchExports: true
 });
 
-/*@end */
-
-/* @module settings.js */
+// modules/settings.js
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe");
 const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
@@ -92,16 +173,14 @@ const Settings = new class Settings2 extends Flux.Store {
     }
 }();
 
-/*@end */
-
-/* @module styles.scss */
-Styles.sheets.push("/* styles.scss */", `a[href^="/channels/@me"] [class^=layout] {
+// components/styles.scss
+Styles.sheets.push("/* components/styles.scss */", `a[href^="/channels/@me"] [class^=layout] {
   min-height: 42px;
   max-height: 50px;
   height: unset;
-}`); /*@end */
+}`);
 
-/* @module messagePeek.jsx */
+// components/messagePeek.jsx
 const MessageStore = Webpack.getStore("MessageStore");
 const ChannelWrapperStyles = Webpack.getByKeys("muted", "subText");
 const ChannelStyles = Webpack.getByKeys("closeButton", "subtext");
@@ -211,9 +290,7 @@ function MessagePeek$1({
     }
 }
 
-/*@end */
-
-/* @module settings.json */
+// modules/settings.json
 var SettingsItems = [{
         type: "switch",
         name: "Show in DMs",
@@ -277,9 +354,8 @@ var SettingsItems = [{
         defaultValue: 256
     }
 ];
-/*@end */
 
-/* @module settings.jsx */
+// components/settings.jsx
 const {
     FormDivider,
     FormSwitch,
@@ -410,74 +486,12 @@ function SettingsPanel() {
     }, renderSettings(SettingsItems));
 }
 
-/*@end */
-
-/* @module changelog.scss */
-Styles.sheets.push("/* changelog.scss */", `.Changelog-Title-Wrapper {
-  font-size: 20px;
-  font-weight: 600;
-  font-family: var(--font-display);
-  color: var(--header-primary);
-  line-height: 1.2;
-}
-.Changelog-Title-Wrapper div {
-  font-size: 12px;
-  font-weight: 400;
-  font-family: var(--font-primary);
-  color: var(--primary-300);
-  line-height: 1.3333333333;
-}
-
-.Changelog-Banner {
-  width: 405px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.Changelog-Item {
-  color: #c4c9ce;
-}
-.Changelog-Item .Changelog-Header {
-  display: flex;
-  text-transform: uppercase;
-  font-weight: 700;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.Changelog-Item .Changelog-Header.added {
-  color: #45BA6A;
-}
-.Changelog-Item .Changelog-Header.fixed {
-  color: #EC4245;
-}
-.Changelog-Item .Changelog-Header.improved {
-  color: #5865F2;
-}
-.Changelog-Item .Changelog-Header.changed {
-  color: #F0B232;
-}
-.Changelog-Item .Changelog-Header::after {
-  content: "";
-  flex-grow: 1;
-  height: 1px;
-  margin-left: 7px;
-  background: currentColor;
-}
-.Changelog-Item span {
-  display: list-item;
-  list-style: inside;
-  margin-left: 5px;
-}
-.Changelog-Item span::marker {
-  color: var(--background-accent);
-}`); /*@end */
-
-/* @module index.jsx */
+// index.jsx
 class MessagePeek {
     start() {
         if (Settings.get("preloadLimit", 10) > 30)
             Settings.set("preloadLimit", 10);
-        this.showChangelog();
+        showChangelog(manifest);
         this.patchDMs();
         this.patchGuildChannel();
         Styles.load();
@@ -485,31 +499,6 @@ class MessagePeek {
     stop() {
         Patcher.unpatchAll();
         Styles.unload();
-    }
-    showChangelog() {
-        if (!manifest.changelog.length || Settings.get("lastVersion") === manifest.version) return;
-        const i18n = Webpack.getByKeys("getLocale");
-        const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
-            month: "long",
-            day: "numeric",
-            year: "numeric"
-        });
-        const title = React.createElement("div", {
-            className: "Changelog-Title-Wrapper"
-        }, React.createElement("h1", null, "What's New - ", manifest.name), React.createElement("div", null, formatter.format(new Date(manifest.changelogDate)), " - v", manifest.version));
-        const items = manifest.changelog.map((item) => React.createElement("div", {
-            className: "Changelog-Item"
-        }, React.createElement("h4", {
-            className: `Changelog-Header ${item.type}`
-        }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
-        "changelogImage" in manifest && items.unshift(
-            React.createElement("img", {
-                className: "Changelog-Banner",
-                src: manifest.changelogImage
-            })
-        );
-        Settings.set("lastVersion", manifest.version);
-        UI.alert(title, items);
     }
     patchDMs() {
         const ChannelContext = React.createContext(null);
@@ -595,7 +584,5 @@ class MessagePeek {
         return React.createElement(SettingsPanel, null);
     }
 }
-
-/*@end */
 
 module.exports = MessagePeek;
