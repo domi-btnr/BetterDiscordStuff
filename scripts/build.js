@@ -14,7 +14,7 @@ const { js: jsBeautify } = require("js-beautify");
 
 const NO_PLUGIN_FOLDERS = [".github", "common", "scripts"];
 
-const argv = parseArgs({
+let argv = parseArgs({
     args: process.argv.slice(2),
     allowPositionals: true,
     options: {
@@ -36,7 +36,9 @@ const argv = parseArgs({
             default: false
         }
     }
-}).values;
+});
+argv.values.plugins = [...argv.values.plugins, ...argv.positionals];
+argv = argv.values;
 argv.plugins = [...new Set(
     argv.plugins
         .map(p => path.normalize(p).split(path.sep)[0])
