@@ -1,9 +1,13 @@
 {
     "compilerOptions": {
-        "jsx": "preserve",
-        "target": "ESNext",
-        "module": "ESNext",
         "esModuleInterop": true,
-        "typeRoots": ["./node_modules/@types", "./modules.d.ts"]
+        "jsx": "preserve",
+        "module": "NodeNext",
+        "moduleResolution": "nodenext",
+        "target": "ESNext",
+        "typeRoots": [
+            "./node_modules/@types",
+            "./modules.d.ts"
+        ]
     }
 }

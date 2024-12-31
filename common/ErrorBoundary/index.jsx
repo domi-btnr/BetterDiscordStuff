@@ -1,6 +1,6 @@
 import React from "react";
 
-import "./errorBoundary.scss";
+import "./style.scss";
 
 const ErrorIcon = props => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ddd" width="24" height="24" {...props}>
    <path d="M0 0h24v24H0z" fill="none"/>
