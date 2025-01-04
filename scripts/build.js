@@ -218,7 +218,7 @@ const buildPlugin = (pluginFolder, makeFolder) => {
                     const isRealPath = fs.existsSync(id);
                     const relativePath = isRealPath ? path.relative(pluginFolder, id) : id;
             
-                    return `// ${relativePath}\n${code}\n\n\n`;
+                    return `/* ${relativePath} */\n${code}\n\n\n`;
                 }
             }
         ],
@@ -292,4 +292,4 @@ const buildPlugin = (pluginFolder, makeFolder) => {
 }
 
 argv.plugins
-    .forEach(e => buildPlugin(e, argv.publish));
+    .forEach(p => buildPlugin(p, argv.publish));
