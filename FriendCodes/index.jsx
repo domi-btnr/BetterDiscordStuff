@@ -1,11 +1,12 @@
 import React from "react";
-import { Patcher, Webpack } from "@api";
+import { Commands, Patcher, Webpack } from "@api";
 import manifest from "@manifest";
 import Styles from "@styles";
 
 import showChangelog from "../common/Changelog";
 import ErrorBoundary from "../common/ErrorBoundary";
 
+import PluginCommands from "./commands";
 import FriendCodesPanel from "./components/panel.jsx";
 
 export default class FriendCodes {
@@ -13,8 +14,12 @@ export default class FriendCodes {
         showChangelog(manifest);
         this.patchAddFriendsPanel();
         Styles.load();
+
+        PluginCommands
+            .forEach(cmd => Commands.register(cmd));
     }
     stop() {
+        Commands.unregisterAll();
         Patcher.unpatchAll();
         Styles.unload();
     }

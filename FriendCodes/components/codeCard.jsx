@@ -3,9 +3,9 @@ import { Webpack } from "@api";
 
 import styles from "./style.scss";
 import CopyButton from "./copyButton";
-import { DiscordCompononents, Flex } from "../modules/shared";
+import { DiscordComponents, Flex } from "../modules/shared";
 
-const { FormTitle } = DiscordCompononents;
+const { FormTitle } = DiscordComponents;
 const Parser = Webpack.getByKeys("parseTopic");
 const { DiscordNative: { clipboard } } = Webpack.getByKeys("DiscordNative");
 
