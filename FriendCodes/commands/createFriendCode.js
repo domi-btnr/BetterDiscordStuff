@@ -1,7 +1,7 @@
 import { Commands, Webpack } from "@api";
 import { InviteModule } from "../modules/shared";
 
-// const { Types, Types: { OptionTypes } } = Commands;
+const { Types: { OptionTypes } } = Commands;
 const { createFriendInvite } = InviteModule;
 
 const { sendMessage } = Webpack.getByKeys("sendMessage");
@@ -12,8 +12,7 @@ export default {
     description: "Create a friend code",
     options: [
         {
-            type: 5,
-            // type: OptionTypes.BOOLEAN,
+            type: OptionTypes.BOOLEAN,
             name: "ephemeral",
             description: "Whether the message should be only visible to you or for everyone",
             required: false
