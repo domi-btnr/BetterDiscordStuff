@@ -1,24 +1,24 @@
 /**
  * @name BetterInvites
- * @version 1.6.5
+ * @version 1.6.6
  * @description Shows some useful information in the invitation
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/BetterInvites
- * @changelogDate 2024-07-06
+ * @changelogDate 2025-01-30
  */
 
 'use strict';
 
-// react
+/* react */
 const React = BdApi.React;
 
-// @manifest
+/* @manifest */
 var manifest = {
     "name": "BetterInvites",
-    "version": "1.6.5",
+    "version": "1.6.6",
     "description": "Shows some useful information in the invitation",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -28,13 +28,14 @@ var manifest = {
     "changelog": [{
         "title": "Fixed",
         "type": "fixed",
-        "items": ["The Plugin finally works again"]
+        "items": ["Plugin fixed for the latest Discord update"]
     }],
-    "changelogDate": "2024-07-06"
+    "changelogDate": "2025-01-30"
 };
 
-// @api
+/* @api */
 const {
+    Commands,
     Components,
     ContextMenu,
     Data,
@@ -50,7 +51,7 @@ const {
     Webpack
 } = new BdApi(manifest.name);
 
-// @styles
+/* @styles */
 
 var Styles = {
     sheets: [],
@@ -63,7 +64,7 @@ var Styles = {
     }
 };
 
-// ../common/Changelog/style.scss
+/* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
   font-size: 20px;
   font-weight: 600;
@@ -123,7 +124,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   color: var(--background-accent);
 }`);
 
-// ../common/Changelog/index.tsx
+/* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
     const i18n = Webpack.getByKeys("getLocale");
@@ -150,7 +151,7 @@ function showChangelog(manifest) {
     Data.save("lastVersion", manifest.version);
 }
 
-// modules/settings.js
+/* modules/settings.js */
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe");
 const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
@@ -168,7 +169,7 @@ const Settings = new class Settings2 extends Flux.Store {
     }
 }();
 
-// modules/settings.json
+/* modules/settings.json */
 var SettingsItems = [{
         type: "dropdown",
         name: "Banner Type",
@@ -229,41 +230,22 @@ var SettingsItems = [{
     }
 ];
 
-// components/settings.jsx
+/* components/settings.jsx */
+const {
+    SettingItem,
+    SwitchInput
+} = Components;
+const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', {
+    searchExports: true
+});
 const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
     searchExports: true
 });
-const {
-    FormDivider,
-    FormSwitch,
-    FormText,
-    FormTitle,
-    Select
-} = Webpack.getByKeys("Select");
 
-function Dropdown(props) {
-    return React.createElement("div", {
-        style: {
-            marginBottom: "20px"
-        }
+function DropdownItem(props) {
+    return React.createElement(SettingItem, {
+        ...props
     }, React.createElement(
-        FormTitle, {
-            tag: "h3",
-            style: {
-                margin: "0px",
-                color: "var(--header-primary)"
-            }
-        },
-        props.name
-    ), props.note && React.createElement(
-        FormText, {
-            type: FormText.Types.DESCRIPTION,
-            style: {
-                marginBottom: "5px"
-            }
-        },
-        props.note
-    ), React.createElement(
         Select, {
             closeOnSelect: true,
             options: props.options,
@@ -271,24 +253,24 @@ function Dropdown(props) {
             select: (v) => Settings.set(props.id, v),
             isSelected: (v) => Settings.get(props.id, props.value) === v
         }
-    ), React.createElement(FormDivider, {
-        style: {
-            marginTop: "20px"
-        }
-    }));
+    ));
 }
 
-function Switch(props) {
+function SwitchItem(props) {
     const value = useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     return React.createElement(
-        FormSwitch, {
+        SettingItem, {
             ...props,
-            value,
-            children: props.name,
-            onChange: (v) => {
-                Settings.set(props.id, v);
+            inline: true
+        },
+        React.createElement(
+            SwitchInput, {
+                value,
+                onChange: (v) => {
+                    Settings.set(props.id, v);
+                }
             }
-        }
+        )
     );
 }
 
@@ -296,11 +278,11 @@ function renderSettings(items) {
     return items.map((item) => {
         switch (item.type) {
             case "dropdown":
-                return React.createElement(Dropdown, {
+                return React.createElement(DropdownItem, {
                     ...item
                 });
             case "switch":
-                return React.createElement(Switch, {
+                return React.createElement(SwitchItem, {
                     ...item
                 });
             default:
@@ -315,7 +297,7 @@ function SettingsPanel() {
     }, renderSettings(SettingsItems));
 }
 
-// index.jsx
+/* index.jsx */
 class BetterInvites {
     start() {
         showChangelog(manifest);

@@ -1,24 +1,24 @@
 /**
  * @name MessagePeek
- * @version 1.1.0
+ * @version 1.1.1
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek
- * @changelogDate 2024-12-21
+ * @changelogDate 2025-01-30
  */
 
 'use strict';
 
-// react
+/* react */
 const React = BdApi.React;
 
-// @manifest
+/* @manifest */
 var manifest = {
     "name": "MessagePeek",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -26,15 +26,16 @@ var manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
     "changelog": [{
-        "title": "New",
-        "type": "added",
-        "items": ["Show the relative time of the last message next to the channel"]
+        "title": "Fixed",
+        "type": "fixed",
+        "items": ["Plugin fixed for the latest Discord update"]
     }],
-    "changelogDate": "2024-12-21"
+    "changelogDate": "2025-01-30"
 };
 
-// @api
+/* @api */
 const {
+    Commands,
     Components,
     ContextMenu,
     Data,
@@ -50,7 +51,7 @@ const {
     Webpack
 } = new BdApi(manifest.name);
 
-// @styles
+/* @styles */
 
 var Styles = {
     sheets: [],
@@ -63,7 +64,7 @@ var Styles = {
     }
 };
 
-// ../common/Changelog/style.scss
+/* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
   font-size: 20px;
   font-weight: 600;
@@ -123,7 +124,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   color: var(--background-accent);
 }`);
 
-// ../common/Changelog/index.tsx
+/* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
     const i18n = Webpack.getByKeys("getLocale");
@@ -150,12 +151,12 @@ function showChangelog(manifest) {
     Data.save("lastVersion", manifest.version);
 }
 
-// modules/shared.js
+/* modules/shared.js */
 const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
     searchExports: true
 });
 
-// modules/settings.js
+/* modules/settings.js */
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe");
 const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
@@ -173,14 +174,14 @@ const Settings = new class Settings2 extends Flux.Store {
     }
 }();
 
-// components/styles.scss
+/* components/styles.scss */
 Styles.sheets.push("/* components/styles.scss */", `a[href^="/channels/@me"] [class^=layout] {
   min-height: 42px;
   max-height: 50px;
   height: unset;
 }`);
 
-// components/messagePeek.jsx
+/* components/messagePeek.jsx */
 const MessageStore = Webpack.getStore("MessageStore");
 const ChannelWrapperStyles = Webpack.getByKeys("muted", "subText");
 const ChannelStyles = Webpack.getByKeys("closeButton", "subtext");
@@ -290,7 +291,7 @@ function MessagePeek$1({
     }
 }
 
-// modules/settings.json
+/* modules/settings.json */
 var SettingsItems = [{
         type: "switch",
         name: "Show in DMs",
@@ -355,39 +356,22 @@ var SettingsItems = [{
     }
 ];
 
-// components/settings.jsx
+/* components/settings.jsx */
 const {
-    FormDivider,
-    FormSwitch,
-    FormText,
-    FormTitle,
-    Select,
-    Slider: Slider_
-} = Webpack.getByKeys("Select");
+    SettingItem,
+    SwitchInput
+} = Components;
+const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', {
+    searchExports: true
+});
+const Slider = Webpack.getByStrings('"markDash".concat(', {
+    searchExports: true
+});
 
-function Dropdown(props) {
-    return React.createElement("div", {
-        style: {
-            marginBottom: "20px"
-        }
+function DropdownItem(props) {
+    return React.createElement(SettingItem, {
+        ...props
     }, React.createElement(
-        FormTitle, {
-            tag: "h3",
-            style: {
-                margin: "0px",
-                color: "var(--header-primary)"
-            }
-        },
-        props.name
-    ), props.note && React.createElement(
-        FormText, {
-            type: FormText.Types.DESCRIPTION,
-            style: {
-                marginBottom: "5px"
-            }
-        },
-        props.note
-    ), React.createElement(
         Select, {
             closeOnSelect: true,
             options: props.options,
@@ -395,83 +379,63 @@ function Dropdown(props) {
             select: (v) => Settings.set(props.id, v),
             isSelected: (v) => Settings.get(props.id, props.value) === v
         }
-    ), React.createElement(FormDivider, {
-        style: {
-            marginTop: "20px"
-        }
-    }));
+    ));
 }
 
-function Switch(props) {
+function SwitchItem(props) {
     const value = useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     return React.createElement(
-        FormSwitch, {
+        SettingItem, {
             ...props,
-            value,
-            children: props.name,
-            onChange: (v) => {
-                Settings.set(props.id, v);
+            inline: true
+        },
+        React.createElement(
+            SwitchInput, {
+                value,
+                onChange: (v) => {
+                    Settings.set(props.id, v);
+                }
             }
-        }
+        )
     );
 }
 
-function Slider(props) {
-    const value = useStateFromStores([Settings], () => Settings.get(props.id, props.defaultValue));
-    return React.createElement("div", {
-        style: {
-            marginBottom: "20px"
-        }
-    }, React.createElement(
-        FormTitle, {
-            tag: "h3",
-            style: {
-                margin: "0px",
-                color: "var(--header-primary)"
-            }
+function SliderItem(props) {
+    const value = useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return React.createElement(
+        SettingItem, {
+            ...props
         },
-        props.name
-    ), props.note && React.createElement(
-        FormText, {
-            type: FormText.Types.DESCRIPTION,
-            style: {
-                marginBottom: "5px"
+        React.createElement(
+            Slider, {
+                ...props,
+                initialValue: value,
+                defaultValue: props.defaultValue,
+                minValue: props.minValue,
+                maxValue: props.maxValue,
+                handleSize: 10,
+                onValueChange: (v) => {
+                    Settings.set(props.id, Math.round(v));
+                },
+                onValueRender: (v) => Math.round(v)
             }
-        },
-        props.note
-    ), React.createElement(
-        Slider_, {
-            ...props,
-            initialValue: value,
-            defaultValue: props.defaultValue,
-            minValue: props.minValue,
-            maxValue: props.maxValue,
-            handleSize: 10,
-            onValueChange: (v) => {
-                Settings.set(props.id, Math.round(v));
-            },
-            onValueRender: (v) => Math.round(v)
-        }
-    ), React.createElement(FormDivider, {
-        style: {
-            marginTop: "20px"
-        }
-    }));
+        )
+    );
 }
 
 function renderSettings(items) {
     return items.map((item) => {
         switch (item.type) {
             case "dropdown":
-                return React.createElement(Dropdown, {
+                return React.createElement(DropdownItem, {
                     ...item
                 });
             case "switch":
-                return React.createElement(Switch, {
+                return React.createElement(SwitchItem, {
                     ...item
                 });
             case "slider":
-                return React.createElement(Slider, {
+                return React.createElement(SliderItem, {
                     ...item
                 });
             default:
@@ -486,7 +450,7 @@ function SettingsPanel() {
     }, renderSettings(SettingsItems));
 }
 
-// index.jsx
+/* index.jsx */
 class MessagePeek {
     start() {
         if (Settings.get("preloadLimit", 10) > 30)

@@ -1,13 +1,13 @@
 /**
  * @name ReplaceTimestamps
- * @version 1.3.2
+ * @version 1.3.3
  * @description Replaces plaintext times and dates into Discord's timestamps
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps
- * @changelogDate 2024-12-28
+ * @changelogDate 2025-01-30
  */
 
 'use strict';
@@ -16,13 +16,13 @@ Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
-// react
+/* react */
 const React = BdApi.React;
 
-// @manifest
+/* @manifest */
 var manifest = {
     "name": "ReplaceTimestamps",
-    "version": "1.3.2",
+    "version": "1.3.3",
     "description": "Replaces plaintext times and dates into Discord's timestamps",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -30,17 +30,18 @@ var manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps",
     "changelog": [{
-        "title": "Improvement",
-        "type": "improved",
+        "title": "Fixed",
+        "type": "fixed",
         "items": [
-            "Code improvements"
+            "Plugin fixed for the latest Discord update"
         ]
     }],
-    "changelogDate": "2024-12-28"
+    "changelogDate": "2025-01-30"
 };
 
-// @api
+/* @api */
 const {
+    Commands,
     Components,
     ContextMenu,
     Data,
@@ -56,7 +57,7 @@ const {
     Webpack
 } = new BdApi(manifest.name);
 
-// @styles
+/* @styles */
 
 var Styles = {
     sheets: [],
@@ -69,7 +70,7 @@ var Styles = {
     }
 };
 
-// ../common/Changelog/style.scss
+/* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
   font-size: 20px;
   font-weight: 600;
@@ -129,7 +130,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   color: var(--background-accent);
 }`);
 
-// ../common/Changelog/index.tsx
+/* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
     const i18n = Webpack.getByKeys("getLocale");
@@ -156,7 +157,7 @@ function showChangelog(manifest) {
     Data.save("lastVersion", manifest.version);
 }
 
-// modules/settings.js
+/* modules/settings.js */
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe");
 const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
@@ -174,7 +175,7 @@ const Settings = new class Settings2 extends Flux.Store {
     }
 }();
 
-// modules/settings.json
+/* modules/settings.json */
 var SettingsItems = [{
     type: "dropdown",
     name: "Date Format",
@@ -208,37 +209,18 @@ var SettingsItems = [{
     value: "dd.MM.yyyy"
 }];
 
-// components/settings.jsx
+/* components/settings.jsx */
 const {
-    FormDivider,
-    FormText,
-    FormTitle,
-    Select
-} = Webpack.getByKeys("Select");
+    SettingItem
+} = Components;
+const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', {
+    searchExports: true
+});
 
-function Dropdown(props) {
-    return React.createElement("div", {
-        style: {
-            marginBottom: "20px"
-        }
+function DropdownItem(props) {
+    return React.createElement(SettingItem, {
+        ...props
     }, React.createElement(
-        FormTitle, {
-            tag: "h3",
-            style: {
-                margin: "0px",
-                color: "var(--header-primary)"
-            }
-        },
-        props.name
-    ), props.note && React.createElement(
-        FormText, {
-            type: FormText.Types.DESCRIPTION,
-            style: {
-                marginBottom: "5px"
-            }
-        },
-        props.note
-    ), React.createElement(
         Select, {
             closeOnSelect: true,
             options: props.options,
@@ -246,18 +228,14 @@ function Dropdown(props) {
             select: (v) => Settings.set(props.id, v),
             isSelected: (v) => Settings.get(props.id, props.value) === v
         }
-    ), React.createElement(FormDivider, {
-        style: {
-            marginTop: "20px"
-        }
-    }));
+    ));
 }
 
 function renderSettings(items) {
     return items.map((item) => {
         switch (item.type) {
             case "dropdown":
-                return React.createElement(Dropdown, {
+                return React.createElement(DropdownItem, {
                     ...item
                 });
             default:
@@ -272,7 +250,7 @@ function SettingsPanel() {
     }, renderSettings(SettingsItems));
 }
 
-// modules/utils.js
+/* modules/utils.js */
 const getUnixTimestamp = (str, format) => {
     const timeMatch = str.match(exports.timeRegexMatch);
     const dateMatch = str.match(exports.dateRegexMatch);
@@ -358,7 +336,7 @@ const getRelativeTime = (str) => {
     return `<t:${then}:R>`;
 };
 
-// index.jsx
+/* index.jsx */
 exports.timeRegexMatch = void 0;
 exports.dateRegexMatch = void 0;
 exports.relativeRegexMatch = void 0;
