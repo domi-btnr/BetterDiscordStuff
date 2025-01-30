@@ -1,24 +1,24 @@
 /**
  * @name FriendCodes
- * @version 1.1.1
+ * @version 1.2.0
  * @description Generate FriendCodes to easily add friends
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes
- * @changelogDate 2024-11-02
+ * @changelogDate 2025-01-30
  */
 
 'use strict';
 
-// react
+/* react */
 const React = BdApi.React;
 
-// @manifest
+/* @manifest */
 var manifest = {
     "name": "FriendCodes",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "description": "Generate FriendCodes to easily add friends",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -26,15 +26,16 @@ var manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes",
     "changelog": [{
-        "title": "New Spot for FriendCodes",
-        "type": "improved",
-        "items": ["Moved the FriendCodes Section to the \"Add Friends\" Panel"]
+        "title": "Commands arrived",
+        "type": "added",
+        "items": ["You can now use commands to create and revoke your Friend Codes"]
     }],
-    "changelogDate": "2024-11-02"
+    "changelogDate": "2025-01-30"
 };
 
-// @api
+/* @api */
 const {
+    Commands,
     Components,
     ContextMenu,
     Data,
@@ -50,7 +51,7 @@ const {
     Webpack
 } = new BdApi(manifest.name);
 
-// @styles
+/* @styles */
 
 var Styles = {
     sheets: [],
@@ -63,7 +64,7 @@ var Styles = {
     }
 };
 
-// ../common/Changelog/style.scss
+/* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
   font-size: 20px;
   font-weight: 600;
@@ -123,7 +124,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   color: var(--background-accent);
 }`);
 
-// ../common/Changelog/index.tsx
+/* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
     const i18n = Webpack.getByKeys("getLocale");
@@ -150,7 +151,7 @@ function showChangelog(manifest) {
     Data.save("lastVersion", manifest.version);
 }
 
-// ../common/ErrorBoundary/style.scss
+/* ../common/ErrorBoundary/style.scss */
 Styles.sheets.push("/* ../common/ErrorBoundary/style.scss */", `.errorBoundary {
   align-items: center;
   background: #473c41;
@@ -167,7 +168,7 @@ Styles.sheets.push("/* ../common/ErrorBoundary/style.scss */", `.errorBoundary {
   gap: 5px;
 }`);
 
-// ../common/ErrorBoundary/index.jsx
+/* ../common/ErrorBoundary/index.jsx */
 const ErrorIcon = (props) => React.createElement("svg", {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24",
@@ -209,7 +210,78 @@ class ErrorBoundary extends React.Component {
     }
 }
 
-// components/style.scss
+/* modules/shared.js */
+const DiscordComponents = Webpack.getMangled(/ConfirmModal:\(\)=>.{1,3}.ConfirmModal/, {
+    FormTitle: (x) => x.toString?.().includes('["defaultMargin".concat', '="h5"')
+});
+const InviteModule = Webpack.getByKeys("createFriendInvite");
+
+/* commands/createFriendCode.js */
+const {
+    Types: {
+        OptionTypes
+    }
+} = Commands;
+const {
+    createFriendInvite: createFriendInvite$1
+} = InviteModule;
+const {
+    sendMessage
+} = Webpack.getByKeys("sendMessage");
+var createFriendCode = {
+    id: "FC-Create",
+    name: "create-friend-code",
+    description: "Create a friend code",
+    options: [{
+        type: OptionTypes.BOOLEAN,
+        name: "ephemeral",
+        description: "Whether the message should be only visible to you or for everyone",
+        required: false
+    }],
+    execute: async (props, {
+        channel
+    }) => {
+        const invite = await createFriendInvite$1();
+        const msg = `
+            Max Uses: ${invite.max_uses}
+            Expires: <t:${new Date(invite.expires_at).getTime() / 1e3}:R>
+            https://discord.gg/${invite.code}
+        `.replace(/^\s+/gm, "");
+        if (props.find((o) => o.name === "ephemeral")?.value ?? true)
+            return {
+                content: msg
+            };
+        else sendMessage(channel.id, {
+            content: msg
+        });
+    }
+};
+
+/* commands/revokeAllFriendCodes.js */
+const {
+    getAllFriendInvites: getAllFriendInvites$1,
+    revokeFriendInvites: revokeFriendInvites$1
+} = InviteModule;
+var revokeAllFriendCodes = {
+    id: "FC-RevokeAll",
+    name: "revoke-all-friend-codes",
+    description: "Revoke all Friend Codes",
+    execute: async () => {
+        const invites = await getAllFriendInvites$1();
+        await revokeFriendInvites$1();
+        return {
+            content: `Revoked ${invites.length} Friend Code${invites.length == 1 ? "" : "s"}`
+        };
+    }
+};
+
+/* commands/index.js */
+const PluginCommands = [
+    createFriendCode,
+    revokeAllFriendCodes
+];
+
+/* components/style.scss */
 Styles.sheets.push("/* components/style.scss */", `.card {
   padding: 20px;
   margin-bottom: var(--custom-margin-margin-small);
@@ -251,14 +323,10 @@ var styles = {
     "panelText": "panelText"
 };
 
-// modules/shared.js
-const DiscordCompononents = Webpack.getByKeys("Button", "FormTitle");
-const Flex = Webpack.getByStrings(".HORIZONTAL", ".START");
-
-// components/copyButton.jsx
+/* components/copyButton.jsx */
 const {
     Button: Button$1
-} = DiscordCompononents;
+} = Components;
 
 function CopyButton({
     copyText,
@@ -282,24 +350,25 @@ function CopyButton({
     );
 }
 
-// components/codeCard.jsx
+/* components/codeCard.jsx */
+const {
+    Flex: Flex$1
+} = Components;
 const {
     FormTitle: FormTitle$1
-} = DiscordCompononents;
-const Parser = Webpack.getByKeys("parseTopic");
+} = DiscordComponents;
 const {
-    DiscordNative: {
-        clipboard
-    }
-} = Webpack.getByKeys("DiscordNative");
+    clipboard
+} = DiscordNative;
+const Parser = Webpack.getByKeys("parseTopic");
 
 function FriendCodeCard({
     invite
 }) {
     return React.createElement("div", {
         className: styles.card
-    }, React.createElement(Flex, {
-        justify: Flex.Justify.START
+    }, React.createElement(Flex$1, {
+        justify: Flex$1.Justify.START
     }, React.createElement("div", {
         className: styles.cardTitle
     }, React.createElement(FormTitle$1, {
@@ -307,8 +376,8 @@ function FriendCodeCard({
         style: {
             textTransform: "none"
         }
-    }, invite.code), React.createElement("span", null, "Expires ", Parser.parse(`<t:${new Date(invite.expires_at).getTime() / 1e3}:R>`), " \u2022 ", invite.uses, "/", invite.max_uses, " uses")), React.createElement(Flex, {
-        justify: Flex.Justify.END
+    }, invite.code), React.createElement("span", null, "Expires ", Parser.parse(`<t:${new Date(invite.expires_at).getTime() / 1e3}:R>`), " \u2022 ", invite.uses, "/", invite.max_uses, " uses")), React.createElement(Flex$1, {
+        justify: Flex$1.Justify.END
     }, React.createElement(
         CopyButton, {
             copyText: "Copy",
@@ -318,18 +387,21 @@ function FriendCodeCard({
     ))));
 }
 
-// components/panel.jsx
+/* components/panel.jsx */
 const {
     Button,
-    FormTitle,
+    Flex,
     Text
-} = DiscordCompononents;
+} = Components;
+const {
+    FormTitle
+} = DiscordComponents;
 const FormStyles = Webpack.getAllByKeys("header", "title", "emptyState")?.filter((m) => !m.timestamp)?.[0];
 const {
     createFriendInvite,
     getAllFriendInvites,
     revokeFriendInvites
-} = Webpack.getByKeys("createFriendInvite");
+} = InviteModule;
 
 function FriendCodesPanel() {
     const [invites, setInvites] = React.useState([]);
@@ -395,14 +467,16 @@ function FriendCodesPanel() {
     }))));
 }
 
-// index.jsx
+/* index.jsx */
 class FriendCodes {
     start() {
         showChangelog(manifest);
         this.patchAddFriendsPanel();
         Styles.load();
+        PluginCommands.forEach((cmd) => Commands.register(cmd));
     }
     stop() {
+        Commands.unregisterAll();
         Patcher.unpatchAll();
         Styles.unload();
     }
