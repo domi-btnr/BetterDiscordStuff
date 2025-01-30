@@ -1,13 +1,14 @@
 import React from "react";
-import { Webpack } from "@api";
+import { Components, Webpack } from "@api";
 
 import styles from "./style.scss";
 import FriendCodeCard from "./codeCard";
-import { DiscordCompononents, Flex } from "../modules/shared";
+import { DiscordComponents, InviteModule } from "../modules/shared";
 
-const { Button, FormTitle, Text } = DiscordCompononents;
+const { Button, Flex, Text } = Components;
+const { FormTitle } = DiscordComponents;
 const FormStyles = Webpack.getAllByKeys("header", "title", "emptyState")?.filter(m => !m.timestamp)?.[0];
-const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = Webpack.getByKeys("createFriendInvite");
+const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = InviteModule;
 
 export default function FriendCodesPanel() {
     const [invites, setInvites] = React.useState([]);
