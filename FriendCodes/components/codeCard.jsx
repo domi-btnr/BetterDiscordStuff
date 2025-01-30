@@ -1,13 +1,14 @@
 import React from "react";
-import { Webpack } from "@api";
+import { Components, Webpack } from "@api";
 
 import styles from "./style.scss";
 import CopyButton from "./copyButton";
-import { DiscordComponents, Flex } from "../modules/shared";
+import { DiscordComponents } from "../modules/shared";
 
-const { FormTitle } = DiscordComponents;
+const { Flex } = Components;
+const { FormTitle } = DiscordComponents
+const { clipboard } = DiscordNative;
 const Parser = Webpack.getByKeys("parseTopic");
-const { DiscordNative: { clipboard } } = Webpack.getByKeys("DiscordNative");
 
 export default function FriendCodeCard({ invite }) {
     return (

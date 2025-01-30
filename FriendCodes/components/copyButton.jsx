@@ -1,8 +1,7 @@
 import React from "react";
+import { Components } from "@api";
 
-import { DiscordComponents } from "../modules/shared";
-
-const { Button } = DiscordComponents;
+const { Button } = Components;
 
 // Copy Button from Strencher
 // https://github.com/Strencher/BetterDiscordStuff/blob/development/ShowSessions/components/list.tsx#L25-L44
