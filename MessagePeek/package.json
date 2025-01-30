@@ -1,6 +1,6 @@
 {
 	"name": "MessagePeek",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "See the last message in a Channel like on mobile",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -9,10 +9,10 @@
 	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
 	"changelog": [
 		{
-			"title": "New",
-			"type": "added",
-			"items": ["Show the relative time of the last message next to the channel"]
+			"title": "Fixed",
+			"type": "fixed",
+			"items": ["Plugin fixed for the latest Discord update"]
 		}
 	],
-	"changelogDate": "2024-12-21"
+	"changelogDate": "2025-01-30"
 }

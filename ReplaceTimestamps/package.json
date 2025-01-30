@@ -1,6 +1,6 @@
 {
 	"name": "ReplaceTimestamps",
-	"version": "1.3.2",
+	"version": "1.3.3",
 	"description": "Replaces plaintext times and dates into Discord's timestamps",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -9,12 +9,12 @@
 	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps",
 	"changelog": [
 		{
-			"title": "Improvement",
-			"type": "improved",
+			"title": "Fixed",
+			"type": "fixed",
 			"items": [
-				"Code improvements"
+				"Plugin fixed for the latest Discord update"
 			]
 		}
 	],
-	"changelogDate": "2024-12-28"
+	"changelogDate": "2025-01-30"
 }
