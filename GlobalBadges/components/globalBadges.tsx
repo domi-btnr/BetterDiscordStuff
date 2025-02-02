@@ -36,10 +36,10 @@ export default function GlobalBadges(props: { userId: string }) {
                             {...props}
                             src={badge.badge}
                             style={{
-                                width: "22px",
-                                height: "22px",
-                                margin: "0 2px",
-                                transform: badge.badge.includes("Replugged") ? "scale(0.9)" : null
+                                width: "20px",
+                                height: "20px",
+                                margin: "0 -1px",
+                                transform: badge.badge.includes("Replugged") ? "scale(0.85)" : "scale(0.9)"
                             }}
                         />
                     

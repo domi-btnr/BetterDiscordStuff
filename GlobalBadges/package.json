@@ -1,6 +1,6 @@
 {
 	"name": "GlobalBadges",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Adds global badges from other client mods",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -9,6 +9,13 @@
 	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges",
 	"changelog": [
 		{
+			"title": "Fixed",
+			"type": "fixed",
+			"items": [
+				"Plugin fixed for the latest Discord update"
+			]
+		},
+		{
 			"title": "Changed API URL",
 			"type": "changed",
 			"items": [
@@ -16,5 +23,5 @@
 			]
 		}
 	],
-	"changelogDate": "2024-12-25"
+	"changelogDate": "2025-02-02"
 }
