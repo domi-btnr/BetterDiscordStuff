@@ -1,24 +1,24 @@
 /**
  * @name GlobalBadges
- * @version 1.0.2
+ * @version 1.0.3
  * @description Adds global badges from other client mods
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges
- * @changelogDate 2024-12-25
+ * @changelogDate 2025-02-02
  */
 
 'use strict';
 
-// react
+/* react */
 const React = BdApi.React;
 
-// @manifest
+/* @manifest */
 var manifest = {
     "name": "GlobalBadges",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Adds global badges from other client mods",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -26,17 +26,26 @@ var manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges",
     "changelog": [{
-        "title": "Changed API URL",
-        "type": "changed",
-        "items": [
-            "Due to my Heroku Credit being expired, I moved the API to my own Server"
-        ]
-    }],
-    "changelogDate": "2024-12-25"
+            "title": "Fixed",
+            "type": "fixed",
+            "items": [
+                "Plugin fixed for the latest Discord update"
+            ]
+        },
+        {
+            "title": "Changed API URL",
+            "type": "changed",
+            "items": [
+                "Due to my Heroku Credit being expired, I moved the API to my own Server"
+            ]
+        }
+    ],
+    "changelogDate": "2025-02-02"
 };
 
-// @api
+/* @api */
 const {
+    Commands,
     Components,
     ContextMenu,
     Data,
@@ -52,7 +61,7 @@ const {
     Webpack
 } = new BdApi(manifest.name);
 
-// @styles
+/* @styles */
 
 var Styles = {
     sheets: [],
@@ -65,7 +74,7 @@ var Styles = {
     }
 };
 
-// ../common/Changelog/style.scss
+/* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
   font-size: 20px;
   font-weight: 600;
@@ -125,7 +134,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   color: var(--background-accent);
 }`);
 
-// ../common/Changelog/index.tsx
+/* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
     const i18n = Webpack.getByKeys("getLocale");
@@ -152,7 +161,7 @@ function showChangelog(manifest) {
     Data.save("lastVersion", manifest.version);
 }
 
-// modules/fetchBadges.ts
+/* modules/fetchBadges.ts */
 const API_URL = "https://api.domi-btnr.dev/clientmodbadges";
 const cache = new Map();
 const EXPIRES = 1e3 * 60 * 15;
@@ -171,7 +180,7 @@ async function fetchBadges(id) {
     }
 }
 
-// modules/settings.js
+/* modules/settings.js */
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe");
 const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
@@ -189,7 +198,7 @@ const Settings = new class Settings2 extends Flux.Store {
     }
 }();
 
-// components/globalBadges.tsx
+/* components/globalBadges.tsx */
 function GlobalBadges$1(props) {
     const {
         userId
@@ -224,10 +233,10 @@ function GlobalBadges$1(props) {
                         ...props2,
                         src: badge.badge,
                         style: {
-                            width: "22px",
-                            height: "22px",
-                            margin: "0 2px",
-                            transform: badge.badge.includes("Replugged") ? "scale(0.9)" : null
+                            width: "20px",
+                            height: "20px",
+                            margin: "0 -1px",
+                            transform: badge.badge.includes("Replugged") ? "scale(0.85)" : "scale(0.9)"
                         }
                     }
                 ))
@@ -237,7 +246,7 @@ function GlobalBadges$1(props) {
     return React.createElement(React.Fragment, null, globalBadges);
 }
 
-// modules/settings.json
+/* modules/settings.json */
 var SettingsItems = [{
         type: "switch",
         name: "Show Prefix",
@@ -254,78 +263,38 @@ var SettingsItems = [{
     }
 ];
 
-// components/settings.jsx
+/* components/settings.jsx */
+const {
+    SettingItem,
+    SwitchInput
+} = Components;
 const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
     searchExports: true
 });
-const {
-    FormDivider,
-    FormSwitch,
-    FormText,
-    FormTitle,
-    Select
-} = Webpack.getByKeys("Select");
 
-function Dropdown(props) {
-    return React.createElement("div", {
-        style: {
-            marginBottom: "20px"
-        }
-    }, React.createElement(
-        FormTitle, {
-            tag: "h3",
-            style: {
-                margin: "0px",
-                color: "var(--header-primary)"
-            }
-        },
-        props.name
-    ), props.note && React.createElement(
-        FormText, {
-            type: FormText.Types.DESCRIPTION,
-            style: {
-                marginBottom: "5px"
-            }
-        },
-        props.note
-    ), React.createElement(
-        Select, {
-            closeOnSelect: true,
-            options: props.options,
-            serialize: (v) => String(v),
-            select: (v) => Settings.set(props.id, v),
-            isSelected: (v) => Settings.get(props.id, props.value) === v
-        }
-    ), React.createElement(FormDivider, {
-        style: {
-            marginTop: "20px"
-        }
-    }));
-}
-
-function Switch(props) {
+function SwitchItem(props) {
     const value = useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     return React.createElement(
-        FormSwitch, {
+        SettingItem, {
             ...props,
-            value,
-            children: props.name,
-            onChange: (v) => {
-                Settings.set(props.id, v);
+            inline: true
+        },
+        React.createElement(
+            SwitchInput, {
+                value,
+                onChange: (v) => {
+                    Settings.set(props.id, v);
+                }
             }
-        }
+        )
     );
 }
 
 function renderSettings(items) {
     return items.map((item) => {
         switch (item.type) {
-            case "dropdown":
-                return React.createElement(Dropdown, {
-                    ...item
-                });
             case "switch":
-                return React.createElement(Switch, {
+                return React.createElement(SwitchItem, {
                     ...item
                 });
             default:
@@ -340,7 +309,7 @@ function SettingsPanel() {
     }, renderSettings(SettingsItems));
 }
 
-// index.tsx
+/* index.tsx */
 class GlobalBadges {
     start() {
         showChangelog(manifest);
@@ -354,7 +323,7 @@ class GlobalBadges {
     patchBadges() {
         const UserContext = React.createContext(null);
         const [ProfileInfoRow, KEY_PIR] = Webpack.getWithKey(Webpack.Filters.byStrings("user", "profileType"));
-        const [BadgeList, Key_BL] = Webpack.getWithKey(Webpack.Filters.byStrings("badges", "badgeClassName"));
+        const [BadgeList, Key_BL] = Webpack.getWithKey(Webpack.Filters.byStrings("badges", "badgeClassName", ".BADGE"));
         Patcher.after(ProfileInfoRow, KEY_PIR, (_, [props], res) => {
             return React.createElement(UserContext.Provider, {
                 value: props["user"]
@@ -363,7 +332,7 @@ class GlobalBadges {
         Patcher.after(BadgeList, Key_BL, (_, __, res) => {
             const user = React.useContext(UserContext);
             if (!user) return;
-            res.props.children.push(
+            res.props.children.unshift(
                 React.createElement(GlobalBadges$1, {
                     userId: user.id
                 })
