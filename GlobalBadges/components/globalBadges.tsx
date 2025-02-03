@@ -1,8 +1,8 @@
-import React from "react"
-import { Components } from "@api"
+import { Components } from "@api";
+import React from "react";
 
-import { API_URL, fetchBadges } from "../modules/fetchBadges"
-import Settings from "../modules/settings"
+import { API_URL, fetchBadges } from "../modules/fetchBadges";
+import Settings from "../modules/settings";
 import { BadgeCache } from "../types/index";
 
 export default function GlobalBadges(props: { userId: string }) {
@@ -14,7 +14,7 @@ export default function GlobalBadges(props: { userId: string }) {
     }, []);
 
     if (!badges || !Object.keys(badges).length) return null;
-    const globalBadges: JSX.Element[] = []
+    const globalBadges: JSX.Element[] = [];
 
     Object.keys(badges).forEach(mod => {
         badges[mod].forEach(badge => {
@@ -42,7 +42,7 @@ export default function GlobalBadges(props: { userId: string }) {
                                 transform: badge.badge.includes("Replugged") ? "scale(0.85)" : "scale(0.9)"
                             }}
                         />
-                    
+
                     )}
                 </Components.Tooltip>
             );
@@ -53,5 +53,5 @@ export default function GlobalBadges(props: { userId: string }) {
         <React.Fragment>
             {globalBadges}
         </React.Fragment>
-    )
+    );
 }

@@ -11,4 +11,4 @@ export default {
         await revokeFriendInvites();
         return { content: `Revoked ${invites.length} Friend Code${invites.length == 1 ? "" : "s"}` };
     }
-}
+};

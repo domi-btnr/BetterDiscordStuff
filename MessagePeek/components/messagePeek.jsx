@@ -1,9 +1,10 @@
-import React from "react";
-import { Components, Webpack } from "@api";
-
-import { useStateFromStores } from "../modules/shared";
-import Settings from "../modules/settings";
 import "./styles.scss";
+
+import { Components, Webpack } from "@api";
+import React from "react";
+
+import Settings from "../modules/settings";
+import { useStateFromStores } from "../modules/shared";
 
 const MessageStore = Webpack.getStore("MessageStore");
 const ChannelWrapperStyles = Webpack.getByKeys("muted", "subText");
@@ -91,7 +92,7 @@ export default function MessagePeek({ channelId, timestampOnly }) {
                         {...props}
                         style={{
                             marginRight: "5px",
-                            color: "var(--channels-default)" 
+                            color: "var(--channels-default)"
                         }}
                     >
                         {`${Math.abs(relativeTime)}${unit}`}

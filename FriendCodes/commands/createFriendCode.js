@@ -1,4 +1,5 @@
 import { Commands, Webpack } from "@api";
+
 import { InviteModule } from "../modules/shared";
 
 const { Types: { OptionTypes } } = Commands;
@@ -29,4 +30,4 @@ export default {
             return { content: msg };
         else sendMessage(channel.id, { content: msg });
     }
-}
+};

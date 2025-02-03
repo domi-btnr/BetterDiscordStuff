@@ -1,5 +1,5 @@
+import { dateRegexMatch, relativeRegexMatch, timeRegexMatch } from "../index.jsx";
 import Settings from "./settings.js";
-import { timeRegexMatch, dateRegexMatch, relativeRegexMatch } from "../index.jsx";
 
 export const getUnixTimestamp = (str, format) => {
     const timeMatch = str.match(timeRegexMatch);
@@ -15,9 +15,9 @@ export const getUnixTimestamp = (str, format) => {
 
     let date = new Date();
     if (dateMatch) {
-        let day = parseInt(dateMatch[dayIndex + 1]);
-        let month = parseInt(dateMatch[monthIndex + 1]);
-        let year = parseInt(dateMatch[yearIndex + 1]);
+        const day = parseInt(dateMatch[dayIndex + 1]);
+        const month = parseInt(dateMatch[monthIndex + 1]);
+        const year = parseInt(dateMatch[yearIndex + 1]);
         date = new Date(year, month - 1, day);
     }
 

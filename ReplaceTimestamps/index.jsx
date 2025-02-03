@@ -1,10 +1,9 @@
-import React from "react";
 import { Patcher, Webpack } from "@api";
 import manifest from "@manifest";
 import Styles from "@styles";
+import React from "react";
 
 import showChangelog from "../common/Changelog";
-
 import SettingsPanel from "./components/settings";
 import Settings from "./modules/settings";
 import { getRelativeTime, getUnixTimestamp } from "./modules/utils";
@@ -32,7 +31,7 @@ export default class ReplaceTimestamps {
 
             const dateFormat = Settings
                 .get("dateFormat", "dd.MM.yyyy")
-                .replace(/[.\/]/g, "[./]").replace("dd", "(\\d{2})")
+                .replace(/[.]/g, "[./]").replace("dd", "(\\d{2})")
                 .replace("MM", "(\\d{2})").replace("yyyy", "(\\d{4})");
 
             const dateRegex = new RegExp(`${dateFormat}`, "gi");

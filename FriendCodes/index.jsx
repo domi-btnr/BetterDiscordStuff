@@ -1,11 +1,10 @@
-import React from "react";
 import { Commands, Patcher, Webpack } from "@api";
 import manifest from "@manifest";
 import Styles from "@styles";
+import React from "react";
 
 import showChangelog from "../common/Changelog";
 import ErrorBoundary from "../common/ErrorBoundary";
-
 import PluginCommands from "./commands";
 import FriendCodesPanel from "./components/panel.jsx";
 

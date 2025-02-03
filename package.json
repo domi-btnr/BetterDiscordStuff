@@ -1,14 +1,25 @@
 {
   "scripts": {
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.19.0",
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.3.1",
     "@types/betterdiscord": "github:zerthox/betterdiscord-types",
+    "@types/node": "^22.13.0",
     "@types/react": "^19.0.2",
+    "@typescript-eslint/parser": "^8.22.0",
     "cssom": "^0.5.0",
+    "eslint": "^9.19.0",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "globals": "^15.14.0",
     "js-beautify": "^1.15.1",
     "rollup": "^4.29.1",
     "rollup-plugin-esbuild": "^6.1.1",

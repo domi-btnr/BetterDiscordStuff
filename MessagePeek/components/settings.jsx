@@ -1,13 +1,13 @@
-import React from "react";
 import { Components, Webpack } from "@api";
+import React from "react";
 
 import Settings from "../modules/settings";
 import SettingsItems from "../modules/settings.json";
 import { useStateFromStores } from "../modules/shared";
 
 const { SettingItem, SwitchInput } = Components;
-const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', { searchExports: true })
-const Slider = Webpack.getByStrings('"markDash".concat(', { searchExports: true });
+const Select = Webpack.getByStrings(".selectPositionTop]:\"top\"===", { searchExports: true });
+const Slider = Webpack.getByStrings("\"markDash\".concat(", { searchExports: true });
 
 function DropdownItem(props) {
     return (

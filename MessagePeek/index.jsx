@@ -1,10 +1,9 @@
-import React from "react";
-import { Patcher, ReactUtils, Webpack, Utils } from "@api";
+import { Patcher, ReactUtils, Utils, Webpack } from "@api";
 import manifest from "@manifest";
 import Styles from "@styles";
+import React from "react";
 
 import showChangelog from "../common/Changelog";
-
 import Peek from "./components/messagePeek";
 import SettingsPanel from "./components/settings";
 import Settings from "./modules/settings";
@@ -60,14 +59,14 @@ export default class MessagePeek {
             if (!nameWrapper) return res;
             nameWrapper.props.children.push(
                 <Peek channelId={channel.id} />
-            )
+            );
         });
 
         // Preload makes an API request
         // It's not a good idea to preload every DM
         // That's why I check if the DM Channel has a message and if it's not already loaded
         // I also limit the amount of DMs to preload to a maximum of 30. Default is 10
-        const preload = Webpack.getByKeys("preload")?.preload
+        const preload = Webpack.getByKeys("preload")?.preload;
         Webpack.getStore("ChannelStore")
             .getSortedPrivateChannels()
             .filter(channel =>

@@ -1,10 +1,9 @@
-import React from "react";
-import { Components, Patcher, Webpack } from "@api";
+import { Components, Patcher, UI, Webpack } from "@api";
 import manifest from "@manifest";
 import Styles from "@styles";
+import React from "react";
 
 import showChangelog from "../common/Changelog";
-
 import SettingsPanel from "./components/settings";
 import Settings from "./modules/settings";
 
@@ -65,7 +64,7 @@ export default class BetterInvites {
                                         onError={e => { e.target.src = "https://cdn.discordapp.com/embed/avatars/0.png"; }}
                                         onClick={() => {
                                             DiscordNative.clipboard.copy(inviter.id);
-                                            BdApi.showToast("Copied ID", { type: "info", icon: true, timeout: 4000 })
+                                            UI.showToast("Copied ID", { type: "info", icon: true, timeout: 4000 });
                                         }}
                                     />
                                 )}
@@ -115,7 +114,7 @@ export default class BetterInvites {
                             src={`https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.gif?size=1024`}
                             onError={e => {
                                 e.target.onError = null;
-                                e.target.src = `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024`
+                                e.target.src = `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.png?size=1024`;
                             }}
                         />
                     </div>

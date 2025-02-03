@@ -66,7 +66,7 @@ function makeMeta(manifest) {
             typeof manifest[key] === "string"
                 ? str + ` * @${key} ${manifest[key]}\n`
                 : str
-            , "/**\n") + " */\n\n";
+        , "/**\n") + " */\n\n";
 }
 
 const styleLoader = `
@@ -83,7 +83,9 @@ export default {
 }`;
 
 const matchAll = ({ regex, input, parent = false, flat = false }) => {
-    let matches, output = [], lastIndex = 0;
+    const output = [];
+    let matches, lastIndex = 0;
+    // eslint-disable-next-line no-cond-assign
     while (matches = regex.exec(input.slice(lastIndex))) {
         if (!regex.global) lastIndex += matches.index + matches[0].length;
         if (parent) output.push(matches);
@@ -94,7 +96,7 @@ const matchAll = ({ regex, input, parent = false, flat = false }) => {
         }
     }
     return output;
-}
+};
 
 const virtual = files => ({
     name: "Virtual Files",
@@ -139,7 +141,7 @@ const buildPlugin = (pluginFolder, makeFolder) => {
     const manifest = require(manifestPath);
     if (manifest.dependencies || manifest.devDependencies) {
         console.log(`Installing dependencies for ${pluginFolder}...`);
-        execSync('npm install', { cwd: pluginFolder, stdio: 'inherit' });
+        execSync("npm install", { cwd: pluginFolder, stdio: "inherit" });
     }
 
     const watcher = watch({
@@ -203,7 +205,7 @@ const buildPlugin = (pluginFolder, makeFolder) => {
 
                     const filePath = path.normalize(
                         path.relative(pluginFolder, id)
-                        .replaceAll("\\", "\\\\")
+                            .replaceAll("\\", "\\\\")
                     );
 
                     return "import Styles from \"@styles\";" +
@@ -217,12 +219,12 @@ const buildPlugin = (pluginFolder, makeFolder) => {
                 transform(code, id) {
                     const isRealPath = fs.existsSync(id);
                     const relativePath = isRealPath ? path.relative(pluginFolder, id) : id;
-            
+
                     return `/* ${relativePath} */\n${code}\n\n\n`;
                 }
             }
         ],
-    })
+    });
 
     watcher.on("event", async event => {
         switch (event.code) {
@@ -289,7 +291,7 @@ const buildPlugin = (pluginFolder, makeFolder) => {
             } break;
         }
     });
-}
+};
 
 argv.plugins
     .forEach(p => buildPlugin(p, argv.publish));

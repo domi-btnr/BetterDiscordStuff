@@ -1,12 +1,12 @@
-import React from "react";
 import { Components, Webpack } from "@api";
+import React from "react";
 
-import styles from "./style.scss";
-import CopyButton from "./copyButton";
 import { DiscordComponents } from "../modules/shared";
+import CopyButton from "./copyButton";
+import styles from "./style.scss";
 
 const { Flex } = Components;
-const { FormTitle } = DiscordComponents
+const { FormTitle } = DiscordComponents;
 const { clipboard } = DiscordNative;
 const Parser = Webpack.getByKeys("parseTopic");
 
@@ -31,5 +31,5 @@ export default function FriendCodeCard({ invite }) {
                 </Flex>
             </Flex>
         </div>
-    )
-} 
+    );
+}

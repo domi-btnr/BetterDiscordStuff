@@ -1,11 +1,11 @@
-import React from "react";
 import { Components, Webpack } from "@api";
+import React from "react";
 
 import Settings from "../modules/settings";
 import SettingsItems from "../modules/settings.json";
 
 const { SettingItem } = Components;
-const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', { searchExports: true })
+const Select = Webpack.getByStrings(".selectPositionTop]:\"top\"===", { searchExports: true });
 
 function DropdownItem(props) {
     return (

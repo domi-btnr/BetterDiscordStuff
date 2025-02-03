@@ -1,10 +1,9 @@
-import React from "react";
 import { Patcher, Webpack } from "@api";
 import manifest from "@manifest";
 import Styles from "@styles";
+import React from "react";
 
 import showChangelog from "../common/Changelog";
-
 import Badges from "./components/globalBadges";
 import SettingsPanel from "./components/settings";
 

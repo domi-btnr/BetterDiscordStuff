@@ -1,5 +1,5 @@
-import React from "react";
 import { Components, Webpack } from "@api";
+import React from "react";
 
 import Settings from "../modules/settings";
 import SettingsItems from "../modules/settings.json";

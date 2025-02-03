@@ -1,9 +1,9 @@
-import React from "react";
 import { Components, Webpack } from "@api";
+import React from "react";
 
-import styles from "./style.scss";
-import FriendCodeCard from "./codeCard";
 import { DiscordComponents, InviteModule } from "../modules/shared";
+import FriendCodeCard from "./codeCard";
+import styles from "./style.scss";
 
 const { Button, Flex, Text } = Components;
 const { FormTitle } = DiscordComponents;
@@ -77,5 +77,5 @@ export default function FriendCodesPanel() {
                         </div>
             }
         </header>
-    )
+    );
 }
