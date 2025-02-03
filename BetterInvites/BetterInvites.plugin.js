@@ -12,11 +12,8 @@
 
 'use strict';
 
-/* react */
-const React = BdApi.React;
-
 /* @manifest */
-var manifest = {
+const manifest = {
     "name": "BetterInvites",
     "version": "1.6.6",
     "description": "Shows some useful information in the invitation",
@@ -63,6 +60,9 @@ var Styles = {
         DOM.removeStyle();
     }
 };
+
+/* react */
+var React = BdApi.React;
 
 /* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
@@ -363,7 +363,7 @@ class BetterInvites {
                             },
                             onClick: () => {
                                 DiscordNative.clipboard.copy(inviter.id);
-                                BdApi.showToast("Copied ID", {
+                                UI.showToast("Copied ID", {
                                     type: "info",
                                     icon: true,
                                     timeout: 4e3

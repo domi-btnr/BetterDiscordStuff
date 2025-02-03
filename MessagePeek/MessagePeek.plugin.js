@@ -12,11 +12,8 @@
 
 'use strict';
 
-/* react */
-const React = BdApi.React;
-
 /* @manifest */
-var manifest = {
+const manifest = {
     "name": "MessagePeek",
     "version": "1.1.1",
     "description": "See the last message in a Channel like on mobile",
@@ -63,6 +60,9 @@ var Styles = {
         DOM.removeStyle();
     }
 };
+
+/* react */
+var React = BdApi.React;
 
 /* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
@@ -151,10 +151,12 @@ function showChangelog(manifest) {
     Data.save("lastVersion", manifest.version);
 }
 
-/* modules/shared.js */
-const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
-    searchExports: true
-});
+/* components/styles.scss */
+Styles.sheets.push("/* components/styles.scss */", `a[href^="/channels/@me"] [class^=layout] {
+  min-height: 42px;
+  max-height: 50px;
+  height: unset;
+}`);
 
 /* modules/settings.js */
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe");
@@ -174,12 +176,10 @@ const Settings = new class Settings2 extends Flux.Store {
     }
 }();
 
-/* components/styles.scss */
-Styles.sheets.push("/* components/styles.scss */", `a[href^="/channels/@me"] [class^=layout] {
-  min-height: 42px;
-  max-height: 50px;
-  height: unset;
-}`);
+/* modules/shared.js */
+const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
+    searchExports: true
+});
 
 /* components/messagePeek.jsx */
 const MessageStore = Webpack.getStore("MessageStore");

@@ -12,11 +12,8 @@
 
 'use strict';
 
-/* react */
-const React = BdApi.React;
-
 /* @manifest */
-var manifest = {
+const manifest = {
     "name": "GlobalBadges",
     "version": "1.0.3",
     "description": "Adds global badges from other client mods",
@@ -73,6 +70,9 @@ var Styles = {
         DOM.removeStyle();
     }
 };
+
+/* react */
+var React = BdApi.React;
 
 /* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {

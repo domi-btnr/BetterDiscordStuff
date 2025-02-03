@@ -16,11 +16,8 @@ Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
-/* react */
-const React = BdApi.React;
-
 /* @manifest */
-var manifest = {
+const manifest = {
     "name": "ReplaceTimestamps",
     "version": "1.3.3",
     "description": "Replaces plaintext times and dates into Discord's timestamps",
@@ -69,6 +66,9 @@ var Styles = {
         DOM.removeStyle();
     }
 };
+
+/* react */
+var React = BdApi.React;
 
 /* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
@@ -263,9 +263,9 @@ const getUnixTimestamp = (str, format) => {
     });
     let date = new Date();
     if (dateMatch) {
-        let day = parseInt(dateMatch[dayIndex + 1]);
-        let month = parseInt(dateMatch[monthIndex + 1]);
-        let year = parseInt(dateMatch[yearIndex + 1]);
+        const day = parseInt(dateMatch[dayIndex + 1]);
+        const month = parseInt(dateMatch[monthIndex + 1]);
+        const year = parseInt(dateMatch[yearIndex + 1]);
         date = new Date(year, month - 1, day);
     }
     let time = date;
@@ -355,7 +355,7 @@ class ReplaceTimestamps {
         Patcher.before(MessageActions, "sendMessage", (_, [, msg]) => {
             const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
             exports.timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
-            const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy").replace(/[.\/]/g, "[./]").replace("dd", "(\\d{2})").replace("MM", "(\\d{2})").replace("yyyy", "(\\d{4})");
+            const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy").replace(/[.]/g, "[./]").replace("dd", "(\\d{2})").replace("MM", "(\\d{2})").replace("yyyy", "(\\d{4})");
             const dateRegex = new RegExp(`${dateFormat}`, "gi");
             exports.dateRegexMatch = new RegExp(`${dateFormat}`, "i");
             const TimeDateRegex = new RegExp(`(${timeRegex.source})\\s+${dateRegex.source}`, "gi");

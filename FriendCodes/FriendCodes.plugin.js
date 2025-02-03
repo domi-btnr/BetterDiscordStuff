@@ -12,11 +12,8 @@
 
 'use strict';
 
-/* react */
-const React = BdApi.React;
-
 /* @manifest */
-var manifest = {
+const manifest = {
     "name": "FriendCodes",
     "version": "1.2.0",
     "description": "Generate FriendCodes to easily add friends",
@@ -63,6 +60,9 @@ var Styles = {
         DOM.removeStyle();
     }
 };
+
+/* react */
+var React = BdApi.React;
 
 /* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
@@ -281,6 +281,33 @@ const PluginCommands = [
     revokeAllFriendCodes
 ];
 
+/* components/copyButton.jsx */
+const {
+    Button: Button$1
+} = Components;
+
+function CopyButton({
+    copyText,
+    copiedText,
+    onClick
+}) {
+    const [copied, setCopied] = React.useState(false);
+    const handleButtonClick = (e) => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1e3);
+        onClick(e);
+    };
+    return React.createElement(
+        Button$1, {
+            onClick: handleButtonClick,
+            color: copied ? Button$1.Colors.GREEN : Button$1.Colors.BRAND,
+            size: Button$1.Sizes.SMALL,
+            look: Button$1.Looks.FILLED
+        },
+        copied ? copiedText : copyText
+    );
+}
+
 /* components/style.scss */
 Styles.sheets.push("/* components/style.scss */", `.card {
   padding: 20px;
@@ -322,33 +349,6 @@ var styles = {
     "panelHeader": "panelHeader",
     "panelText": "panelText"
 };
-
-/* components/copyButton.jsx */
-const {
-    Button: Button$1
-} = Components;
-
-function CopyButton({
-    copyText,
-    copiedText,
-    onClick
-}) {
-    const [copied, setCopied] = React.useState(false);
-    const handleButtonClick = (e) => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1e3);
-        onClick(e);
-    };
-    return React.createElement(
-        Button$1, {
-            onClick: handleButtonClick,
-            color: copied ? Button$1.Colors.GREEN : Button$1.Colors.BRAND,
-            size: Button$1.Sizes.SMALL,
-            look: Button$1.Looks.FILLED
-        },
-        copied ? copiedText : copyText
-    );
-}
 
 /* components/codeCard.jsx */
 const {
