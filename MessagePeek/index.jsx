@@ -28,7 +28,7 @@ export default class MessagePeek {
         const ChannelContext = React.createContext(null);
         const [ChannelWrapper, Key_CW] = Webpack.getWithKey(Webpack.Filters.byStrings("isGDMFacepileEnabled"));
         const [ChannelItem, Key_CI] = Webpack.getWithKey(Webpack.Filters.byStrings("as:", ".interactive,"));
-        const [NameWrapper, Key_NW] = Webpack.getWithKey(x => x.toString().includes(".nameAndDecorators") && !x.toString().includes("FocusRing"));
+        const NameWrapper = Webpack.getMangled(Webpack.Filters.byStrings("nameAndDecorators"), { Z: Webpack.Filters.byStrings("nameAndDecorators") });
         const ChannelClasses = Webpack.getByKeys("channel", "decorator");
 
         Patcher.after(ChannelWrapper, Key_CW, (_, __, res) => {
@@ -51,7 +51,7 @@ export default class MessagePeek {
             children.splice(children.length - 1, 0, <Peek channelId={channel.id} timestampOnly />);
         });
 
-        Patcher.after(NameWrapper, Key_NW, (_, __, res) => {
+        Patcher.after(NameWrapper, "Z", (_, __, res) => {
             const channel = React.useContext(ChannelContext);
             if (!channel) return res;
 

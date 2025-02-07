@@ -28,6 +28,7 @@ export default function MessagePeek({ channelId, timestampOnly }) {
         if (!content) return null;
 
         const charLimit = Settings.get("tooltipCharacterLimit", 256);
+        const authorName = lastMessage.author.email && Settings.get("showYourselfAsYou", true) ? "You" : lastMessage.author["globalName"] || lastMessage.author["username"];
 
         return (
             <div
@@ -45,7 +46,7 @@ export default function MessagePeek({ channelId, timestampOnly }) {
                             {...props}
                             className={ChannelStyles.subtext}
                         >
-                            {Settings.get("showAuthor", true) && `${lastMessage.author["globalName"] || lastMessage.author["username"]}: `}
+                            {Settings.get("showAuthor", true) && `${authorName}: `}
                             {Parser.parseInlineReply(content)}
                         </div>
                     )}
