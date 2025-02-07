@@ -1,13 +1,13 @@
 /**
  * @name MessagePeek
- * @version 1.1.1
+ * @version 1.2.0
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek
- * @changelogDate 2025-01-30
+ * @changelogDate 2025-02-07
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "MessagePeek",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,11 +23,17 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
     "changelog": [{
-        "title": "Fixed",
-        "type": "fixed",
-        "items": ["Plugin fixed for the latest Discord update"]
-    }],
-    "changelogDate": "2025-01-30"
+            "title": "New Setting",
+            "type": "added",
+            "items": ["Added the option to change the author name to \"You\""]
+        },
+        {
+            "title": "Fixed",
+            "type": "fixed",
+            "items": ["DMs work again"]
+        }
+    ],
+    "changelogDate": "2025-02-07"
 };
 
 /* @api */
@@ -200,6 +206,7 @@ function MessagePeek$1({
         const content = lastMessage.content || lastMessage.embeds?.[0]?.rawDescription || lastMessage.stickerItems.length && "Sticker" || attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`;
         if (!content) return null;
         const charLimit = Settings.get("tooltipCharacterLimit", 256);
+        const authorName = lastMessage.author.email && Settings.get("showYourselfAsYou", true) ? "You" : lastMessage.author["globalName"] || lastMessage.author["username"];
         return React.createElement(
             "div", {
                 className: ChannelWrapperStyles.subText,
@@ -216,7 +223,7 @@ function MessagePeek$1({
                         ...props,
                         className: ChannelStyles.subtext
                     },
-                    Settings.get("showAuthor", true) && `${lastMessage.author["globalName"] || lastMessage.author["username"]}: `,
+                    Settings.get("showAuthor", true) && `${authorName}: `,
                     Parser.parseInlineReply(content)
                 )
             )
@@ -311,6 +318,13 @@ var SettingsItems = [{
         name: "Show Author",
         note: "Whether to show the name of the Author or not",
         id: "showAuthor",
+        value: true
+    },
+    {
+        type: "switch",
+        name: "Show as \"You\"",
+        note: "Whether to show your name or \"You\"",
+        id: "showYourselfAsYou",
         value: true
     },
     {
@@ -468,7 +482,9 @@ class MessagePeek {
         const ChannelContext = React.createContext(null);
         const [ChannelWrapper, Key_CW] = Webpack.getWithKey(Webpack.Filters.byStrings("isGDMFacepileEnabled"));
         const [ChannelItem, Key_CI] = Webpack.getWithKey(Webpack.Filters.byStrings("as:", ".interactive,"));
-        const [NameWrapper, Key_NW] = Webpack.getWithKey((x) => x.toString().includes(".nameAndDecorators") && !x.toString().includes("FocusRing"));
+        const NameWrapper = Webpack.getMangled(Webpack.Filters.byStrings("nameAndDecorators"), {
+            Z: Webpack.Filters.byStrings("nameAndDecorators")
+        });
         const ChannelClasses = Webpack.getByKeys("channel", "decorator");
         Patcher.after(ChannelWrapper, Key_CW, (_, __, res) => {
             if (!Settings.get("showInDMs", true)) return;
@@ -488,7 +504,7 @@ class MessagePeek {
                 timestampOnly: true
             }));
         });
-        Patcher.after(NameWrapper, Key_NW, (_, __, res) => {
+        Patcher.after(NameWrapper, "Z", (_, __, res) => {
             const channel = React.useContext(ChannelContext);
             if (!channel) return res;
             const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("content_"), {
