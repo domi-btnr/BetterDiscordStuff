@@ -197,7 +197,7 @@ function findGroupById(res, id) {
 /* index.tsx */
 let unpatchContextMenu;
 const EMBED_SUPPRESSED = 1 << 2;
-class ReplaceTimestamps {
+class UnsuppressEmbeds {
     start() {
         showChangelog(manifest);
         this.patchMessageContextMenu();
@@ -265,4 +265,4 @@ class ReplaceTimestamps {
     }
 }
 
-module.exports = ReplaceTimestamps;
+module.exports = UnsuppressEmbeds;
