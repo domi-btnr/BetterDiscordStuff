@@ -33,3 +33,6 @@
 
 - ### [ReplaceTimestamps](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/ReplaceTimestamps "ReplaceTimestamps")
     > Replaces plaintext times and dates into Discord's timestamps
+
+- ### [UnsupressEmbeds](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/UnsupressEmbeds "UnsupressEmbeds")
+    > Allows you to unsuppress embeds in messages

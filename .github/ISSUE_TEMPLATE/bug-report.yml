@@ -15,6 +15,7 @@ body:
         - GlobalBadges
         - MessagePeek
         - ReplaceTimestamps
+        - UnsuppressEmbeds
     validations:
       required: true
 
