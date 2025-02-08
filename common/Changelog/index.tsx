@@ -10,6 +10,7 @@ interface I18n {
 
 export default function showChangelog(manifest: Manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
+    if (!manifest.changelog.length) return;
 
     const i18n: I18n = Webpack.getByKeys("getLocale");
     const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
