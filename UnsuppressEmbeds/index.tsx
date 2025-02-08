@@ -10,7 +10,7 @@ import { findGroupById } from "./modules/utils";
 let unpatchContextMenu: () => void;
 const EMBED_SUPPRESSED = 1 << 2;
 
-export default class ReplaceTimestamps {
+export default class UnsuppressEmbeds {
     start() {
         showChangelog(manifest);
         this.patchMessageContextMenu();
