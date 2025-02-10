@@ -34,5 +34,8 @@
 - ### [ReplaceTimestamps](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/ReplaceTimestamps "ReplaceTimestamps")
     > Replaces plaintext times and dates into Discord's timestamps
 
+- ### [ShowSpectators](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/ShowSpectators "ShowSpectators")
+    > Shows you who's spectating your stream under the screenshare panel
+
 - ### [UnsupressEmbeds](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/UnsupressEmbeds "UnsupressEmbeds")
     > Allows you to unsuppress embeds in messages
