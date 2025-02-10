@@ -1,13 +1,13 @@
 /**
  * @name ShowSpectators
- * @version 1.0.0
+ * @version 1.0.1
  * @description Shows you who's spectating your stream under the screenshare panel
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators
- * @changelogDate 
+ * @changelogDate 2025-02-10
  */
 
 'use strict';
@@ -15,15 +15,19 @@
 /* @manifest */
 const manifest = {
     "name": "ShowSpectators",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Shows you who's spectating your stream under the screenshare panel",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators",
-    "changelog": [],
-    "changelogDate": ""
+    "changelog": [{
+        "title": "Fixed Crashing",
+        "type": "fixed",
+        "items": ["Fixed crashing Discord when a Game Activity was detected"]
+    }],
+    "changelogDate": "2025-02-10"
 };
 
 /* @api */
@@ -246,6 +250,7 @@ const Clickable = Webpack.getByStrings("this.context?this.renderNonInteractive()
     searchExports: true
 });
 const intl = Webpack.getByKeys("intl");
+const RelationshipStore = Webpack.getStore("RelationshipStore");
 const UserProfileActions = Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal");
 const UserStore = Webpack.getStore("UserStore");
 const UserSummaryItem = Webpack.getByStrings("defaultRenderUser", "showDefaultAvatarsForNullUsers");
@@ -257,6 +262,7 @@ const Strings = {
     SPECTATORS: "BR7Tnp",
     NUM_USERS: "3uHFUV"
 };
+const getDisplayName = (user) => RelationshipStore.getNickname(user.id) || user.globalName || user.username;
 
 function SpectatorsTooltip({
     spectatorIds,
@@ -265,6 +271,7 @@ function SpectatorsTooltip({
 }) {
     if (!spectatorIds && !guildId) {
         const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
+        if (!activeStream) return null;
         spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
         guildId = activeStream.guildId;
     }
@@ -297,7 +304,7 @@ function SpectatorsTooltip({
                 height: 16,
                 width: 16
             }
-        }), user.username)),
+        }), getDisplayName(user))),
         !!unknownSpectators && React.createElement(Flex, {
             style: {
                 alignContent: "center"
@@ -310,6 +317,7 @@ function SpectatorsTooltip({
 
 function SpectatorsPanel() {
     const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
+    if (!activeStream) return null;
     let unknownSpectators = 0;
     const spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
     const spectators = spectatorIds.map((id) => UserStore.getUser(id)).filter((user) => Boolean(user) || unknownSpectators++);
@@ -332,7 +340,7 @@ function SpectatorsPanel() {
             max: 12,
             showDefaultAvatarsForNullUsers: true,
             renderUser: (user) => React.createElement(Tooltip, {
-                text: user.username
+                text: getDisplayName(user)
             }, (props) => React.createElement(
                 Clickable, {
                     ...props,
@@ -397,7 +405,7 @@ class ShowSpectators {
     patchPanel() {
         const StreamPanel = Webpack.getBySource("SharingPrivacyPopout");
         Patcher.after(StreamPanel, "j", (_, __, res) => {
-            if (!Settings.get("showPanel", true)) return;
+            if (!Settings.get("showPanel", true)) return null;
             res.props.children = [
                 res.props.children,
                 React.createElement(SpectatorsPanel, null)
