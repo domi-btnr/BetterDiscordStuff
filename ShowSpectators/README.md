@@ -13,6 +13,10 @@
 
 ---
 
+<div align="center">
+    <p>This is a port of <a href="https://github.com/fres621">fres621</a> <a href="https://github.com/fres621/vencord-whos-watching">Who's watching</a> plugin</p>
+</div>
+
 ## Preview
 ![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/ShowSpectators/images/Preview.png)
 

@@ -40,7 +40,7 @@ export default class ShowSpectators {
         const StreamPanel = Webpack.getBySource("SharingPrivacyPopout");
 
         Patcher.after(StreamPanel, "j", (_, __, res) => {
-            if (!Settings.get("showPanel", true)) return;
+            if (!Settings.get("showPanel", true)) return null;
             res.props.children = [
                 res.props.children,
                 <SpectatorsPanel />

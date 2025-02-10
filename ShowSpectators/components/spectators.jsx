@@ -10,6 +10,7 @@ const ApplicationStreamingStore = Webpack.getStore("ApplicationStreamingStore");
 const AvatarStyles = Webpack.getByKeys("moreUsers", "emptyUser", "avatarContainer", "clickableAvatar");
 const Clickable = Webpack.getByStrings("this.context?this.renderNonInteractive():", { searchExports: true });
 const intl = Webpack.getByKeys("intl");
+const RelationshipStore = Webpack.getStore("RelationshipStore");
 const UserProfileActions = Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal");
 const UserStore = Webpack.getStore("UserStore");
 const UserSummaryItem = Webpack.getByStrings("defaultRenderUser", "showDefaultAvatarsForNullUsers");
@@ -23,9 +24,12 @@ const Strings = {
     NUM_USERS: "3uHFUV"
 };
 
+const getDisplayName = user => RelationshipStore.getNickname(user.id) || user.globalName || user.username;
+
 export function SpectatorsTooltip({ spectatorIds, guildId, noTitle }) {
     if (!spectatorIds && !guildId) {
         const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
+        if (!activeStream) return null;
 
         spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
         guildId = activeStream.guildId;
@@ -47,7 +51,7 @@ export function SpectatorsTooltip({ spectatorIds, guildId, noTitle }) {
                     spectators.map(user => (
                         <Flex style={{ alignContent: "center", gap: 6 }}>
                             <img src={user.getAvatarURL(guildId)} style={{ borderRadius: 8, height: 16, width: 16 }} />
-                            {user.username}
+                            {getDisplayName(user)}
                         </Flex>
                     ))
                 }
@@ -64,6 +68,7 @@ export function SpectatorsTooltip({ spectatorIds, guildId, noTitle }) {
 
 export function SpectatorsPanel() {
     const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
+    if (!activeStream) return null;
 
     let unknownSpectators = 0;
     const spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
@@ -91,7 +96,7 @@ export function SpectatorsPanel() {
                         max={12}
                         showDefaultAvatarsForNullUsers
                         renderUser={user => (
-                            <Tooltip text={user.username}>
+                            <Tooltip text={getDisplayName(user)}>
                                 {props => (
                                     <Clickable
                                         {...props}
