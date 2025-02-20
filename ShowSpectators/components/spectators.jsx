@@ -9,7 +9,10 @@ const { Flex, Text, Tooltip } = Components;
 const ApplicationStreamingStore = Webpack.getStore("ApplicationStreamingStore");
 const AvatarStyles = Webpack.getByKeys("moreUsers", "emptyUser", "avatarContainer", "clickableAvatar");
 const Clickable = Webpack.getByStrings("this.context?this.renderNonInteractive():", { searchExports: true });
-const intl = Webpack.getByKeys("intl");
+const intl = Webpack.getMangled("defaultLocale:\"en-US\"", {
+    intl: Webpack.Filters.byKeys("format"),
+    t: Webpack.Filters.byKeys("BR7Tnp")
+});
 const RelationshipStore = Webpack.getStore("RelationshipStore");
 const UserProfileActions = Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal");
 const UserStore = Webpack.getStore("UserStore");

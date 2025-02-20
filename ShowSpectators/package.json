@@ -1,6 +1,6 @@
 {
 	"name": "ShowSpectators",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Shows you who's spectating your stream under the screenshare panel",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -8,9 +8,9 @@
 	"donate": "https://paypal.me/domibtnr",
 	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators",
 	"changelog": [{
-		"title": "Fixed Crashing",
+		"title": "Fixed Localisation",
 		"type": "fixed",
-		"items": ["Fixed crashing Discord when a Game Activity was detected"]
+		"items": ["Localisation works again"]
 	}],
-	"changelogDate": "2025-02-10"
+	"changelogDate": "2025-02-21"
 }
