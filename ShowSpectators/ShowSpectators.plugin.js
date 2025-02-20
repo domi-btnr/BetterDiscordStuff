@@ -1,13 +1,13 @@
 /**
  * @name ShowSpectators
- * @version 1.0.1
+ * @version 1.0.2
  * @description Shows you who's spectating your stream under the screenshare panel
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators
- * @changelogDate 2025-02-10
+ * @changelogDate 2025-02-21
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "ShowSpectators",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Shows you who's spectating your stream under the screenshare panel",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,11 +23,11 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators",
     "changelog": [{
-        "title": "Fixed Crashing",
+        "title": "Fixed Localisation",
         "type": "fixed",
-        "items": ["Fixed crashing Discord when a Game Activity was detected"]
+        "items": ["Localisation works again"]
     }],
-    "changelogDate": "2025-02-10"
+    "changelogDate": "2025-02-21"
 };
 
 /* @api */
@@ -249,7 +249,10 @@ const AvatarStyles = Webpack.getByKeys("moreUsers", "emptyUser", "avatarContaine
 const Clickable = Webpack.getByStrings("this.context?this.renderNonInteractive():", {
     searchExports: true
 });
-const intl = Webpack.getByKeys("intl");
+const intl = Webpack.getMangled('defaultLocale:"en-US"', {
+    intl: Webpack.Filters.byKeys("format"),
+    t: Webpack.Filters.byKeys("BR7Tnp")
+});
 const RelationshipStore = Webpack.getStore("RelationshipStore");
 const UserProfileActions = Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal");
 const UserStore = Webpack.getStore("UserStore");
