@@ -37,9 +37,9 @@ export default class ShowSpectators {
     }
 
     patchPanel() {
-        const StreamPanel = Webpack.getBySource("SharingPrivacyPopout");
+        const [StreamPanel, Key] = Webpack.getWithKey(Webpack.Filters.byStrings("type:\"SharingPrivacyPopout\""));
 
-        Patcher.after(StreamPanel, "j", (_, __, res) => {
+        Patcher.after(StreamPanel, Key, (_, __, res) => {
             if (!Settings.get("showPanel", true)) return null;
             res.props.children = [
                 res.props.children,
