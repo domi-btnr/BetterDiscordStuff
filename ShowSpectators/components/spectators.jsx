@@ -11,7 +11,7 @@ const AvatarStyles = Webpack.getByKeys("moreUsers", "emptyUser", "avatarContaine
 const Clickable = Webpack.getByStrings("this.context?this.renderNonInteractive():", { searchExports: true });
 const intl = Webpack.getMangled("defaultLocale:\"en-US\"", {
     intl: Webpack.Filters.byKeys("format"),
-    t: Webpack.Filters.byKeys("BR7Tnp")
+    t: o => o.getOwnPropertyDescriptor
 });
 const RelationshipStore = Webpack.getStore("RelationshipStore");
 const UserProfileActions = Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal");
