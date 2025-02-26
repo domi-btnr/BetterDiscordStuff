@@ -13,42 +13,49 @@ export let timeRegexMatch, dateRegexMatch, relativeRegexMatch;
 export default class ReplaceTimestamps {
     start() {
         showChangelog(manifest);
-        this.patchSendMessage();
+        this.patchMessageActions();
         Styles.load();
     }
-
     stop() {
         Patcher.unpatchAll();
         Styles.unload();
     }
 
-    patchSendMessage() {
-        const MessageActions = Webpack.getByKeys("sendMessage");
+    patchMessageActions() {
+        const MessageActions = Webpack.getByKeys("sendMessage", "editMessage");
+
+        const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
+        timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
+
+        const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy")
+            .replace(/[./]/g, "[./]")
+            .replace("dd", "(\\d{2})")
+            .replace("MM", "(\\d{2})")
+            .replace("yyyy", "(\\d{4})");
+
+        const dateRegex = new RegExp(`${dateFormat}`, "gi");
+        dateRegexMatch = new RegExp(`${dateFormat}`, "i");
+
+        const TimeDateRegex = new RegExp(`(${timeRegex.source})\\s+${dateRegex.source}`, "gi");
+        const DateRegexTime = new RegExp(`${dateRegex.source}\\s+(${timeRegex.source})`, "gi");
+
+        const relativeRegex = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/gi;
+        relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
+
+        const processMessageContent = content => content
+            .replace(TimeDateRegex, x => getUnixTimestamp(x))
+            .replace(DateRegexTime, x => getUnixTimestamp(x))
+            .replace(timeRegex, x => getUnixTimestamp(x, "t"))
+            .replace(dateRegex, x => getUnixTimestamp(x, "d"))
+            .replace(relativeRegex, getRelativeTime);
 
         Patcher.before(MessageActions, "sendMessage", (_, [, msg]) => {
-            const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
-            timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
+            msg.content = processMessageContent(msg.content);
+        });
 
-            const dateFormat = Settings
-                .get("dateFormat", "dd.MM.yyyy")
-                .replace(/[.]/g, "[./]").replace("dd", "(\\d{2})")
-                .replace("MM", "(\\d{2})").replace("yyyy", "(\\d{4})");
-
-            const dateRegex = new RegExp(`${dateFormat}`, "gi");
-            dateRegexMatch = new RegExp(`${dateFormat}`, "i");
-
-            const TimeDateRegex = new RegExp(`(${timeRegex.source})\\s+${dateRegex.source}`, "gi");
-            const DateRegexTime = new RegExp(`${dateRegex.source}\\s+(${timeRegex.source})`, "gi");
-
-            const relativeRegex = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/gi;
-            relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
-
-            msg.content = msg.content
-                .replace(TimeDateRegex, x => getUnixTimestamp(x))
-                .replace(DateRegexTime, x => getUnixTimestamp(x))
-                .replace(timeRegex, x => getUnixTimestamp(x, "t"))
-                .replace(dateRegex, x => getUnixTimestamp(x, "d"))
-                .replace(relativeRegex, getRelativeTime);
+        Patcher.before(MessageActions, "editMessage", (_, [, , msg]) => {
+            if (!Settings.get("applyToEdits", true)) return;
+            msg.content = processMessageContent(msg.content);
         });
     }
 
