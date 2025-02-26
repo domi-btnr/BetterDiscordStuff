@@ -1,20 +1,18 @@
 {
 	"name": "ReplaceTimestamps",
-	"version": "1.3.3",
-	"description": "Replaces plaintext times and dates into Discord's timestamps",
-	"author": "domi.btnr",
-	"authorId": "354191516979429376",
-	"invite": "gp2ExK5vc7",
-	"donate": "https://paypal.me/domibtnr",
-	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps",
-	"changelog": [
-		{
-			"title": "Fixed",
-			"type": "fixed",
-			"items": [
-				"Plugin fixed for the latest Discord update"
-			]
-		}
-	],
-	"changelogDate": "2025-01-30"
+    "version": "1.4.0",
+    "description": "Replaces plaintext times and dates into Discord's timestamps",
+    "author": "domi.btnr",
+    "authorId": "354191516979429376",
+    "invite": "gp2ExK5vc7",
+    "donate": "https://paypal.me/domibtnr",
+    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps",
+    "changelog": [{
+        "title": "Added",
+        "type": "added",
+        "items": [
+            "You now have the ability to Replace Timestamps when editing messages."
+        ]
+    }],
+    "changelogDate": "2025-02-26"
 }
