@@ -25,35 +25,36 @@ export default class ReplaceTimestamps {
         const MessageActions = Webpack.getByKeys("sendMessage", "editMessage");
 
         const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
-        exports.timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
+        timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
 
         const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy")
-            .replace(/[.\/]/g, "[./]")
+            .replace(/[./]/g, "[./]")
             .replace("dd", "(\\d{2})")
             .replace("MM", "(\\d{2})")
             .replace("yyyy", "(\\d{4})");
 
         const dateRegex = new RegExp(`${dateFormat}`, "gi");
-        exports.dateRegexMatch = new RegExp(`${dateFormat}`, "i");
+        dateRegexMatch = new RegExp(`${dateFormat}`, "i");
 
         const TimeDateRegex = new RegExp(`(${timeRegex.source})\\s+${dateRegex.source}`, "gi");
         const DateRegexTime = new RegExp(`${dateRegex.source}\\s+(${timeRegex.source})`, "gi");
 
         const relativeRegex = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/gi;
-        exports.relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
-        
+        relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
+
         const processMessageContent = content => content
             .replace(TimeDateRegex, x => getUnixTimestamp(x))
             .replace(DateRegexTime, x => getUnixTimestamp(x))
             .replace(timeRegex, x => getUnixTimestamp(x, "t"))
             .replace(dateRegex, x => getUnixTimestamp(x, "d"))
             .replace(relativeRegex, getRelativeTime);
-        
+
         Patcher.before(MessageActions, "sendMessage", (_, [, msg]) => {
             msg.content = processMessageContent(msg.content);
         });
-        
-        Patcher.before(MessageActions, "editMessage", (_, [channelId, messageId, msg]) => {
+
+        Patcher.before(MessageActions, "editMessage", (_, [, , msg]) => {
+            if (!Settings.get("applyToEdits", true)) return;
             msg.content = processMessageContent(msg.content);
         });
     }

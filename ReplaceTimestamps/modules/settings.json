@@ -31,5 +31,12 @@
             }
         ],
         "value": "dd.MM.yyyy"
+    },
+    {
+        "type": "switch",
+        "name": "Apply to Message Edits",
+        "note": "Whether to also convert timestamps when editing messages",
+        "id": "applyToEdits",
+        "value": true
     }
 ]

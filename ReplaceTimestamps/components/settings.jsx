@@ -4,8 +4,9 @@ import React from "react";
 import Settings from "../modules/settings";
 import SettingsItems from "../modules/settings.json";
 
-const { SettingItem } = Components;
+const { SettingItem, SwitchInput } = Components;
 const Select = Webpack.getByStrings(".selectPositionTop]:\"top\"===", { searchExports: true });
+const useStateFromStores = Webpack.getByStrings("useStateFromStores", { searchExports: true });
 
 function DropdownItem(props) {
     return (
@@ -21,11 +22,30 @@ function DropdownItem(props) {
     );
 }
 
+function SwitchItem(props) {
+    const value = useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return (
+        <SettingItem
+            {...props}
+            inline={true}
+        >
+            <SwitchInput
+                value={value}
+                onChange={v => {
+                    Settings.set(props.id, v);
+                }}
+            />
+        </SettingItem>
+    );
+}
+
 function renderSettings(items) {
     return items.map(item => {
         switch (item.type) {
             case "dropdown":
                 return <DropdownItem {...item} />;
+            case "switch":
+                return <SwitchItem {...item} />;
             default:
                 return null;
         }
