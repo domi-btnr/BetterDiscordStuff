@@ -1,13 +1,13 @@
 /**
  * @name ReplaceTimestamps
- * @version 1.3.3
+ * @version 1.4.0
  * @description Replaces plaintext times and dates into Discord's timestamps
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps
- * @changelogDate 2025-01-30
+ * @changelogDate 2025-02-26
  */
 
 'use strict';
@@ -19,7 +19,7 @@ Object.defineProperty(exports, '__esModule', {
 /* @manifest */
 const manifest = {
     "name": "ReplaceTimestamps",
-    "version": "1.3.3",
+    "version": "1.4.0",
     "description": "Replaces plaintext times and dates into Discord's timestamps",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -27,13 +27,13 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps",
     "changelog": [{
-        "title": "Fixed",
-        "type": "fixed",
+        "title": "Added",
+        "type": "added",
         "items": [
-            "Plugin fixed for the latest Discord update"
+            "You now have the ability to Replace Timestamps when editing messages (Thanks to DaddyBoard)"
         ]
     }],
-    "changelogDate": "2025-01-30"
+    "changelogDate": "2025-02-26"
 };
 
 /* @api */
@@ -133,6 +133,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
+    if (!manifest.changelog.length) return;
     const i18n = Webpack.getByKeys("getLocale");
     const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
         month: "long",
@@ -177,43 +178,55 @@ const Settings = new class Settings2 extends Flux.Store {
 
 /* modules/settings.json */
 var SettingsItems = [{
-    type: "dropdown",
-    name: "Date Format",
-    note: "Select the date format for converting dates to timestamps",
-    id: "dateFormat",
-    options: [{
-            label: "dd.MM.yyyy",
-            value: "dd.MM.yyyy"
-        },
-        {
-            label: "dd/MM/yyyy",
-            value: "dd/MM/yyyy"
-        },
-        {
-            label: "MM.dd.yyyy",
-            value: "MM.dd.yyyy"
-        },
-        {
-            label: "MM/dd/yyyy",
-            value: "MM/dd/yyyy"
-        },
-        {
-            label: "yyyy.MM.dd",
-            value: "yyyy.MM.dd"
-        },
-        {
-            label: "yyyy/MM/dd",
-            value: "yyyy/MM/dd"
-        }
-    ],
-    value: "dd.MM.yyyy"
-}];
+        type: "dropdown",
+        name: "Date Format",
+        note: "Select the date format for converting dates to timestamps",
+        id: "dateFormat",
+        options: [{
+                label: "dd.MM.yyyy",
+                value: "dd.MM.yyyy"
+            },
+            {
+                label: "dd/MM/yyyy",
+                value: "dd/MM/yyyy"
+            },
+            {
+                label: "MM.dd.yyyy",
+                value: "MM.dd.yyyy"
+            },
+            {
+                label: "MM/dd/yyyy",
+                value: "MM/dd/yyyy"
+            },
+            {
+                label: "yyyy.MM.dd",
+                value: "yyyy.MM.dd"
+            },
+            {
+                label: "yyyy/MM/dd",
+                value: "yyyy/MM/dd"
+            }
+        ],
+        value: "dd.MM.yyyy"
+    },
+    {
+        type: "switch",
+        name: "Apply to Message Edits",
+        note: "Whether to also convert timestamps when editing messages",
+        id: "applyToEdits",
+        value: true
+    }
+];
 
 /* components/settings.jsx */
 const {
-    SettingItem
+    SettingItem,
+    SwitchInput
 } = Components;
 const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', {
+    searchExports: true
+});
+const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
     searchExports: true
 });
 
@@ -231,11 +244,33 @@ function DropdownItem(props) {
     ));
 }
 
+function SwitchItem(props) {
+    const value = useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return React.createElement(
+        SettingItem, {
+            ...props,
+            inline: true
+        },
+        React.createElement(
+            SwitchInput, {
+                value,
+                onChange: (v) => {
+                    Settings.set(props.id, v);
+                }
+            }
+        )
+    );
+}
+
 function renderSettings(items) {
     return items.map((item) => {
         switch (item.type) {
             case "dropdown":
                 return React.createElement(DropdownItem, {
+                    ...item
+                });
+            case "switch":
+                return React.createElement(SwitchItem, {
                     ...item
                 });
             default:
@@ -343,26 +378,31 @@ exports.relativeRegexMatch = void 0;
 class ReplaceTimestamps {
     start() {
         showChangelog(manifest);
-        this.patchSendMessage();
+        this.patchMessageActions();
         Styles.load();
     }
     stop() {
         Patcher.unpatchAll();
         Styles.unload();
     }
-    patchSendMessage() {
-        const MessageActions = Webpack.getByKeys("sendMessage");
+    patchMessageActions() {
+        const MessageActions = Webpack.getByKeys("sendMessage", "editMessage");
+        const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
+        exports.timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
+        const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy").replace(/[./]/g, "[./]").replace("dd", "(\\d{2})").replace("MM", "(\\d{2})").replace("yyyy", "(\\d{4})");
+        const dateRegex = new RegExp(`${dateFormat}`, "gi");
+        exports.dateRegexMatch = new RegExp(`${dateFormat}`, "i");
+        const TimeDateRegex = new RegExp(`(${timeRegex.source})\\s+${dateRegex.source}`, "gi");
+        const DateRegexTime = new RegExp(`${dateRegex.source}\\s+(${timeRegex.source})`, "gi");
+        const relativeRegex = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/gi;
+        exports.relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
+        const processMessageContent = (content) => content.replace(TimeDateRegex, (x) => getUnixTimestamp(x)).replace(DateRegexTime, (x) => getUnixTimestamp(x)).replace(timeRegex, (x) => getUnixTimestamp(x, "t")).replace(dateRegex, (x) => getUnixTimestamp(x, "d")).replace(relativeRegex, getRelativeTime);
         Patcher.before(MessageActions, "sendMessage", (_, [, msg]) => {
-            const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
-            exports.timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
-            const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy").replace(/[.]/g, "[./]").replace("dd", "(\\d{2})").replace("MM", "(\\d{2})").replace("yyyy", "(\\d{4})");
-            const dateRegex = new RegExp(`${dateFormat}`, "gi");
-            exports.dateRegexMatch = new RegExp(`${dateFormat}`, "i");
-            const TimeDateRegex = new RegExp(`(${timeRegex.source})\\s+${dateRegex.source}`, "gi");
-            const DateRegexTime = new RegExp(`${dateRegex.source}\\s+(${timeRegex.source})`, "gi");
-            const relativeRegex = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/gi;
-            exports.relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
-            msg.content = msg.content.replace(TimeDateRegex, (x) => getUnixTimestamp(x)).replace(DateRegexTime, (x) => getUnixTimestamp(x)).replace(timeRegex, (x) => getUnixTimestamp(x, "t")).replace(dateRegex, (x) => getUnixTimestamp(x, "d")).replace(relativeRegex, getRelativeTime);
+            msg.content = processMessageContent(msg.content);
+        });
+        Patcher.before(MessageActions, "editMessage", (_, [, , msg]) => {
+            if (!Settings.get("applyToEdits", true)) return;
+            msg.content = processMessageContent(msg.content);
         });
     }
     getSettingsPanel() {
