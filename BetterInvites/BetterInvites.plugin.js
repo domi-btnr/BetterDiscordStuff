@@ -1,13 +1,13 @@
 /**
  * @name BetterInvites
- * @version 1.6.6
+ * @version 1.6.7
  * @description Shows some useful information in the invitation
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/BetterInvites
- * @changelogDate 2025-01-30
+ * @changelogDate 2025-04-06
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "BetterInvites",
-    "version": "1.6.6",
+    "version": "1.6.7",
     "description": "Shows some useful information in the invitation",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -27,7 +27,7 @@ const manifest = {
         "type": "fixed",
         "items": ["Plugin fixed for the latest Discord update"]
     }],
-    "changelogDate": "2025-01-30"
+    "changelogDate": "2025-04-06"
 };
 
 /* @api */
@@ -127,6 +127,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
+    if (!manifest.changelog.length) return;
     const i18n = Webpack.getByKeys("getLocale");
     const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
         month: "long",
@@ -309,7 +310,7 @@ class BetterInvites {
         Styles.unload();
     }
     patchInvite() {
-        const [Invite, Key] = Webpack.getWithKey(Webpack.Filters.byStrings("invite", "author", "guild", ".premium_subscription_count"));
+        const [Invite, Key] = Webpack.getWithKey(Webpack.Filters.byStrings(".INVITE_EMBED", ".IS_GUEST_INVITE"));
         const Styles2 = Webpack.getByKeys("markup");
         Patcher.after(Invite, Key, (_, [props], res) => {
             const guild = res.props.children[0].props.guild;
@@ -403,7 +404,7 @@ class BetterInvites {
                     })))
                 );
                 res.props.children[2].props.children[0].props.style = {
-                    "width": "325px"
+                    "max-width": "80%"
                 };
             }
             if (Settings.get("showGuildDescription", true) && guild.description) {
