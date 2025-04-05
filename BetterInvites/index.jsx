@@ -19,7 +19,7 @@ export default class BetterInvites {
     }
 
     patchInvite() {
-        const [Invite, Key] = Webpack.getWithKey(Webpack.Filters.byStrings("invite", "author", "guild", ".premium_subscription_count"));
+        const [Invite, Key] = Webpack.getWithKey(Webpack.Filters.byStrings(".INVITE_EMBED", ".IS_GUEST_INVITE"));
         const Styles = Webpack.getByKeys("markup");
 
         Patcher.after(Invite, Key, (_, [props], res) => {
@@ -87,8 +87,8 @@ export default class BetterInvites {
                         )}
                     </div>
                 );
-                // Move Join Button in next Row
-                res.props.children[2].props.children[0].props.style = { "width": "325px" };
+                // Show Image Wrapper next to the Invite Info Header
+                res.props.children[2].props.children[0].props.style = { "max-width": "80%" };
             }
 
             if (Settings.get("showGuildDescription", true) && guild.description) {
