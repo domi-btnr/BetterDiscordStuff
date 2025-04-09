@@ -11,6 +11,7 @@
  */
 
 'use strict';
+/* Test */
 
 /* @manifest */
 const manifest = {
