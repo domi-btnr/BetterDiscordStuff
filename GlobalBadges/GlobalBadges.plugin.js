@@ -326,7 +326,7 @@ class GlobalBadges {
         Patcher.after(BadgeList, Key_BL, (_, [{
             displayProfile
         }], res) => {
-            if (!displayProfile.userId) return;
+            if (!displayProfile?.userId) return;
             res.props.children.unshift(
                 React.createElement(GlobalBadges$1, {
                     userId: displayProfile.userId
