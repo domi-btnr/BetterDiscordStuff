@@ -1,6 +1,6 @@
 {
 	"name": "GlobalBadges",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Adds global badges from other client mods",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -23,5 +23,5 @@
 			]
 		}
 	],
-	"changelogDate": "2025-02-02"
+	"changelogDate": "2025-04-27"
 }
