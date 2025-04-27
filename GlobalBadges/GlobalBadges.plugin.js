@@ -1,13 +1,13 @@
 /**
  * @name GlobalBadges
- * @version 1.0.3
+ * @version 1.0.4
  * @description Adds global badges from other client mods
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges
- * @changelogDate 2025-02-02
+ * @changelogDate 2025-04-27
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "GlobalBadges",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Adds global badges from other client mods",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -37,7 +37,7 @@ const manifest = {
             ]
         }
     ],
-    "changelogDate": "2025-02-02"
+    "changelogDate": "2025-04-27"
 };
 
 /* @api */
@@ -137,6 +137,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
+    if (!manifest.changelog.length) return;
     const i18n = Webpack.getByKeys("getLocale");
     const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
         month: "long",
@@ -321,20 +322,14 @@ class GlobalBadges {
         Styles.unload();
     }
     patchBadges() {
-        const UserContext = React.createContext(null);
-        const [ProfileInfoRow, KEY_PIR] = Webpack.getWithKey(Webpack.Filters.byStrings("user", "profileType"));
         const [BadgeList, Key_BL] = Webpack.getWithKey(Webpack.Filters.byStrings("badges", "badgeClassName", ".BADGE"));
-        Patcher.after(ProfileInfoRow, KEY_PIR, (_, [props], res) => {
-            return React.createElement(UserContext.Provider, {
-                value: props["user"]
-            }, res);
-        });
-        Patcher.after(BadgeList, Key_BL, (_, __, res) => {
-            const user = React.useContext(UserContext);
-            if (!user) return;
+        Patcher.after(BadgeList, Key_BL, (_, [{
+            displayProfile
+        }], res) => {
+            if (!displayProfile.userId) return;
             res.props.children.unshift(
                 React.createElement(GlobalBadges$1, {
-                    userId: user.id
+                    userId: displayProfile.userId
                 })
             );
         });
