@@ -29,15 +29,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
 
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
       - name: Detect changed files
-        id: files
+        id: changed-files
         if: "github.event_name == 'push'"
-        uses: jitterbit/get-changed-files@v1
+        uses: tj-actions/changed-files@v46.0.5
         continue-on-error: true
 
       - name: Build plugins
@@ -45,7 +45,7 @@ jobs:
           npm run build --
           --publish
           --plugins ${{ github.event.inputs.plugin }}
-          ${{ steps.files.outputs.all }}
+          ${{ steps.changed-files.outputs.all_changed_files }}
           && if [ ! -d builds ]; then echo "noBuildFolder=true" >> $GITHUB_ENV; fi
 
       - name: Cancel Job when no Artifact
