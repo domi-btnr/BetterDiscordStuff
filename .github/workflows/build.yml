@@ -50,7 +50,7 @@ jobs:
 
       - name: Cancel Job when no Artifact
         if: "env.noBuildFolder == 'true'"
-        uses: andymckay/cancel-action@0.4
+        uses: andymckay/cancel-action@0.5
 
       - name: Stage build
         uses: actions/upload-artifact@v4
@@ -69,22 +69,18 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
 
       - name: Apply build
         uses: actions/download-artifact@v4
         with:
           name: build-artifact
 
-      - name: Commit
+      - name: Commit Changes
         run: |
           git config advice.addIgnoredFile false
           git add --no-all ./**
           git config --local user.email "actions@github.com"
           git config --local user.name "PluginBuilder"
-          git commit -m "Publish build" || true
-
-      - name: Push
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ github.token }}
-          branch: main
+          git commit -m "Publish build"
+          git push
