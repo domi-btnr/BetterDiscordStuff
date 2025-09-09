@@ -1,6 +1,6 @@
 {
 	"name": "BetterInvites",
-	"version": "1.6.7",
+	"version": "1.6.8",
 	"description": "Shows some useful information in the invitation",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -11,8 +11,8 @@
 		{
 			"title": "Fixed",
 			"type": "fixed",
-			"items": ["Plugin fixed for the latest Discord update"]
+			"items": ["Settings work again"]
 		}
 	],
-	"changelogDate": "2025-04-06"
+	"changelogDate": "2025-09-09"
 }
