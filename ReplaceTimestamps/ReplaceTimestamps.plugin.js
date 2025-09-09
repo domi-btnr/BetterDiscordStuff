@@ -1,13 +1,13 @@
 /**
  * @name ReplaceTimestamps
- * @version 1.4.0
+ * @version 1.4.1
  * @description Replaces plaintext times and dates into Discord's timestamps
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps
- * @changelogDate 2025-02-26
+ * @changelogDate 2025-09-09
  */
 
 'use strict';
@@ -19,7 +19,7 @@ Object.defineProperty(exports, '__esModule', {
 /* @manifest */
 const manifest = {
     "name": "ReplaceTimestamps",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "description": "Replaces plaintext times and dates into Discord's timestamps",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -27,13 +27,13 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps",
     "changelog": [{
-        "title": "Added",
-        "type": "added",
+        "title": "Fixed",
+        "type": "fixed",
         "items": [
-            "You now have the ability to Replace Timestamps when editing messages (Thanks to DaddyBoard)"
+            "Settings work again"
         ]
     }],
-    "changelogDate": "2025-02-26"
+    "changelogDate": "2025-09-09"
 };
 
 /* @api */
@@ -223,7 +223,7 @@ const {
     SettingItem,
     SwitchInput
 } = Components;
-const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', {
+const Select = Webpack.getByStrings('="bottom",', ".select,", '"Escape"===', {
     searchExports: true
 });
 const useStateFromStores = Webpack.getByStrings("useStateFromStores", {

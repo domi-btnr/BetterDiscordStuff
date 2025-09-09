@@ -1,13 +1,13 @@
 /**
  * @name BetterInvites
- * @version 1.6.7
+ * @version 1.6.8
  * @description Shows some useful information in the invitation
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/BetterInvites
- * @changelogDate 2025-04-06
+ * @changelogDate 2025-09-09
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "BetterInvites",
-    "version": "1.6.7",
+    "version": "1.6.8",
     "description": "Shows some useful information in the invitation",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -25,9 +25,9 @@ const manifest = {
     "changelog": [{
         "title": "Fixed",
         "type": "fixed",
-        "items": ["Plugin fixed for the latest Discord update"]
+        "items": ["Settings work again"]
     }],
-    "changelogDate": "2025-04-06"
+    "changelogDate": "2025-09-09"
 };
 
 /* @api */
@@ -236,7 +236,7 @@ const {
     SettingItem,
     SwitchInput
 } = Components;
-const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', {
+const Select = Webpack.getByStrings('="bottom",', ".select,", '"Escape"===', {
     searchExports: true
 });
 const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
