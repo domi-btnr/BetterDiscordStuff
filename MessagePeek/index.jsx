@@ -26,12 +26,12 @@ export default class MessagePeek {
 
     patchDMs() {
         const ChannelContext = React.createContext(null);
-        const [ChannelWrapper, Key_CW] = Webpack.getWithKey(Webpack.Filters.byStrings("isGDMFacepileEnabled"));
+        const ChannelWrapper = Webpack.getBySource("isFacepileEnabled", "isMultiUserDM", "isMobile");
         const [ChannelItem, Key_CI] = Webpack.getWithKey(Webpack.Filters.byStrings("as:", ".interactive,"));
-        const NameWrapper = Webpack.getMangled(Webpack.Filters.byStrings("nameAndDecorators"), { Z: Webpack.Filters.byStrings("nameAndDecorators") });
+        const NameWrapper = Webpack.getBySource("AvatarWithText").Z;
         const ChannelClasses = Webpack.getByKeys("channel", "decorator");
 
-        Patcher.after(ChannelWrapper, Key_CW, (_, __, res) => {
+        Patcher.after(ChannelWrapper, "ZP", (_, __, res) => {
             if (!Settings.get("showInDMs", true)) return;
             Patcher.after(res, "type", (_, [props], res) => {
                 return (
@@ -51,7 +51,7 @@ export default class MessagePeek {
             children.splice(children.length - 1, 0, <Peek channelId={channel.id} timestampOnly />);
         });
 
-        Patcher.after(NameWrapper, "Z", (_, __, res) => {
+        Patcher.after(NameWrapper, "render", (_, __, res) => {
             const channel = React.useContext(ChannelContext);
             if (!channel) return res;
 
