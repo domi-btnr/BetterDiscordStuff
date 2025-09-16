@@ -10,7 +10,6 @@ body:
       label: Plugin
       description: Which plugin is this bug report about?
       options:
-        - BetterInvites
         - FriendCodes
         - GlobalBadges
         - MessagePeek

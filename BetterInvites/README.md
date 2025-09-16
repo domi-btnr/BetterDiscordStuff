@@ -1,7 +1,10 @@
 > [!IMPORTANT]  
-> This Plugin has been archived due to Discord updating the Invite with all the nessecary Info
+> This Plugin has been archived due to Discord updating the Invite with all the necessary Info
 > 
 > That means that this Plugin will be **no longer updated**
+
+<details>
+<summary>Open archived README</summary>
 
 <div align="center">
     <h1>BetterInvites</h1>
@@ -28,3 +31,5 @@
 1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/BetterInvites/BetterInvites.plugin.js)
 2. Save or move the file into your plugins folder
 3. Enable the plugin in the settings
+
+</details>

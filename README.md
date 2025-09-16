@@ -19,9 +19,6 @@
 
 ---
 
-- ### [BetterInvites](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/BetterInvites "BetterInvites")
-    > Shows some useful information in the invitation
-
 - ### [FriendCodes](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/FriendCodes "FriendCodes")
     > Generate FriendCodes to easily add friends
 
