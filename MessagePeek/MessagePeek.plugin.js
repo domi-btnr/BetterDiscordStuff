@@ -1,13 +1,13 @@
 /**
  * @name MessagePeek
- * @version 1.2.0
+ * @version 1.2.1
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek
- * @changelogDate 2025-02-07
+ * @changelogDate 2025-09-16
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "MessagePeek",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,17 +23,11 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
     "changelog": [{
-            "title": "New Setting",
-            "type": "added",
-            "items": ["Added the option to change the author name to \"You\""]
-        },
-        {
-            "title": "Fixed",
-            "type": "fixed",
-            "items": ["DMs work again"]
-        }
-    ],
-    "changelogDate": "2025-02-07"
+        "title": "Fixed",
+        "type": "fixed",
+        "items": ["DMs work again"]
+    }],
+    "changelogDate": "2025-09-16"
 };
 
 /* @api */
@@ -133,6 +127,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
+    if (!manifest.changelog.length) return;
     const i18n = Webpack.getByKeys("getLocale");
     const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
         month: "long",
@@ -289,6 +284,7 @@ function MessagePeek$1({
                     ...props,
                     style: {
                         marginRight: "5px",
+                        alignContent: "center",
                         color: "var(--channels-default)"
                     }
                 },
@@ -480,13 +476,11 @@ class MessagePeek {
     }
     patchDMs() {
         const ChannelContext = React.createContext(null);
-        const [ChannelWrapper, Key_CW] = Webpack.getWithKey(Webpack.Filters.byStrings("isGDMFacepileEnabled"));
+        const ChannelWrapper = Webpack.getBySource("isFacepileEnabled", "isMultiUserDM", "isMobile");
         const [ChannelItem, Key_CI] = Webpack.getWithKey(Webpack.Filters.byStrings("as:", ".interactive,"));
-        const NameWrapper = Webpack.getMangled(Webpack.Filters.byStrings("nameAndDecorators"), {
-            Z: Webpack.Filters.byStrings("nameAndDecorators")
-        });
+        const NameWrapper = Webpack.getBySource("AvatarWithText").Z;
         const ChannelClasses = Webpack.getByKeys("channel", "decorator");
-        Patcher.after(ChannelWrapper, Key_CW, (_, __, res) => {
+        Patcher.after(ChannelWrapper, "ZP", (_, __, res) => {
             if (!Settings.get("showInDMs", true)) return;
             Patcher.after(res, "type", (_2, [props], res2) => {
                 return React.createElement(ChannelContext.Provider, {
@@ -504,7 +498,7 @@ class MessagePeek {
                 timestampOnly: true
             }));
         });
-        Patcher.after(NameWrapper, "Z", (_, __, res) => {
+        Patcher.after(NameWrapper, "render", (_, __, res) => {
             const channel = React.useContext(ChannelContext);
             if (!channel) return res;
             const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("content_"), {
