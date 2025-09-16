@@ -1,7 +1,7 @@
 .spectators-panel {
-    padding-top: 8px;
-    margin-top: 8px;
-    border-top: 1px solid var(--background-modifier-accent);
+    padding: 8px;
+    align-items: center;
+    border-bottom: 1px solid var(--border-subtle);
     .spectators {
         margin-top: 4px;
         padding-bottom: 4px;

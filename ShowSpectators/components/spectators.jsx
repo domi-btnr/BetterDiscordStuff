@@ -3,24 +3,22 @@ import "./style.scss";
 import { Components, Webpack } from "@api";
 import React from "react";
 
+import Settings from "../modules/settings";
 import { useStateFromStores } from "../modules/shared";
 
 const { Flex, Text, Tooltip } = Components;
 const ApplicationStreamingStore = Webpack.getStore("ApplicationStreamingStore");
 const AvatarStyles = Webpack.getByKeys("moreUsers", "emptyUser", "avatarContainer", "clickableAvatar");
 const Clickable = Webpack.getByStrings("this.context?this.renderNonInteractive():", { searchExports: true });
-const intl = Webpack.getMangled("defaultLocale:\"en-US\"", {
-    intl: Webpack.Filters.byKeys("format"),
-    t: o => o.getOwnPropertyDescriptor
-});
 const RelationshipStore = Webpack.getStore("RelationshipStore");
 const UserProfileActions = Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal");
 const UserStore = Webpack.getStore("UserStore");
 const UserSummaryItem = Webpack.getByStrings("defaultRenderUser", "showDefaultAvatarsForNullUsers");
 
+const LanguageModule = Webpack.getModule(m => m.intl);
 const getLocalizedString = (key, values) => {
-    if (!values) return intl?.intl.string(intl.t[key]);
-    return intl?.intl.format(intl.t[key], values);
+    if (!values) return LanguageModule?.intl.formatToPlainString(LanguageModule.t[key]);
+    return LanguageModule?.intl.format(LanguageModule.t[key], values);
 };
 const Strings = {
     SPECTATORS: "BR7Tnp",
@@ -71,7 +69,7 @@ export function SpectatorsTooltip({ spectatorIds, guildId, noTitle }) {
 
 export function SpectatorsPanel() {
     const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
-    if (!activeStream) return null;
+    if (!activeStream || !Settings.get("showPanel", true)) return null;
 
     let unknownSpectators = 0;
     const spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);

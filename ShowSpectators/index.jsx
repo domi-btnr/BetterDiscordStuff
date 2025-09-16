@@ -1,4 +1,4 @@
-import { Components, Patcher, Webpack } from "@api";
+import { Components, Patcher, Utils, Webpack } from "@api";
 import manifest from "@manifest";
 import Styles from "@styles";
 import React from "react";
@@ -6,7 +6,6 @@ import React from "react";
 import showChangelog from "../common/Changelog";
 import SettingsPanel from "./components/settings";
 import { SpectatorsPanel, SpectatorsTooltip } from "./components/spectators";
-import Settings from "./modules/settings";
 
 export default class ShowSpectators {
     start() {
@@ -26,25 +25,36 @@ export default class ShowSpectators {
 
         Patcher.after(StreamIcon, "Z", (_, __, res) => {
             const children = res.props.children;
-            res.props.children = [(
+            res.props.children = [
                 <Components.Tooltip
                     text={<SpectatorsTooltip />}
                 >
                     {props => children.map(child => React.cloneElement(child, props))}
                 </Components.Tooltip>
-            )];
+            ];
         });
     }
 
     patchPanel() {
-        const [StreamPanel, Key] = Webpack.getWithKey(Webpack.Filters.byStrings("type:\"SharingPrivacyPopout\""));
+        const StreamPanel = Webpack.getModule((_, __, id) => id === "906732");
 
-        Patcher.after(StreamPanel, Key, (_, __, res) => {
-            if (!Settings.get("showPanel", true)) return null;
-            res.props.children = [
-                res.props.children,
-                <SpectatorsPanel />
-            ];
+        Patcher.after(StreamPanel, "Gt", (args, props, res) => {
+            if (!res.props.value.every(v => v === "rtc panel")) return;
+            const voiceSection = Utils.findInTree(res, e => e?.props?.canGoLive, { walkable: ["children", "props"] });
+            if (!voiceSection) return;
+            const unpatch = Patcher.after(voiceSection.type.prototype, "render", (_, __, res) => {
+                unpatch();
+                if (!res) return;
+                const original = res.props.children();
+                res.props.children = () => {
+                    return (
+                        <>
+                            <SpectatorsPanel />
+                            {original}
+                        </>
+                    );
+                };
+            });
         });
     }
 
