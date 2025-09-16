@@ -1,6 +1,6 @@
 {
 	"name": "MessagePeek",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"description": "See the last message in a Channel like on mobile",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -9,15 +9,10 @@
 	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
 	"changelog": [
 		{
-			"title": "New Setting",
-			"type": "added",
-			"items": ["Added the option to change the author name to \"You\""]
-		},
-		{
 			"title": "Fixed",
 			"type": "fixed",
 			"items": ["DMs work again"]
 		}
 	],
-	"changelogDate": "2025-02-07"
+	"changelogDate": "2025-09-16"
 }

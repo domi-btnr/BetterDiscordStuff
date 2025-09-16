@@ -93,6 +93,7 @@ export default function MessagePeek({ channelId, timestampOnly }) {
                         {...props}
                         style={{
                             marginRight: "5px",
+                            alignContent: "center",
                             color: "var(--channels-default)"
                         }}
                     >
