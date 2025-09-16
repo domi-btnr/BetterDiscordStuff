@@ -1,6 +1,7 @@
-> [!INFO]  
+> [!IMPORTANT]  
 > This Plugin has been archived due to Discord updating the Invite with all the nessecary Info
-> That means that this Plugin will be no longer updated
+> 
+> That means that this Plugin will be **no longer updated**
 
 <div align="center">
     <h1>BetterInvites</h1>
