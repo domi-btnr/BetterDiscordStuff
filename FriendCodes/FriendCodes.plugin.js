@@ -1,13 +1,13 @@
 /**
  * @name FriendCodes
- * @version 1.2.0
+ * @version 1.2.1
  * @description Generate FriendCodes to easily add friends
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes
- * @changelogDate 2025-01-30
+ * @changelogDate 2025-09-16
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "FriendCodes",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Generate FriendCodes to easily add friends",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,11 +23,11 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes",
     "changelog": [{
-        "title": "Commands arrived",
-        "type": "added",
-        "items": ["You can now use commands to create and revoke your Friend Codes"]
+        "title": "Fixed",
+        "type": "fixed",
+        "items": ["Updated the Plugin for the latest Discord Changes"]
     }],
-    "changelogDate": "2025-01-30"
+    "changelogDate": "2025-09-16"
 };
 
 /* @api */
@@ -127,6 +127,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
+    if (!manifest.changelog.length) return;
     const i18n = Webpack.getByKeys("getLocale");
     const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
         month: "long",
@@ -253,6 +254,8 @@ var createFriendCode = {
             };
         else sendMessage(channel.id, {
             content: msg
+        }, void 0, {
+            location: "chat_input"
         });
     }
 };
@@ -396,7 +399,7 @@ const {
 const {
     FormTitle
 } = DiscordComponents;
-const FormStyles = Webpack.getAllByKeys("header", "title", "emptyState")?.filter((m) => !m.timestamp)?.[0];
+const FormStyles = Webpack.getModule((_, __, id) => id === "979493");
 const {
     createFriendInvite,
     getAllFriendInvites,
@@ -449,7 +452,12 @@ function FriendCodesPanel() {
             },
             "Revoke all Friend Codes"
         ))
-    ), loading ? React.createElement(
+    ), React.createElement("div", {
+        style: {
+            maxHeight: "40vh",
+            overflowY: "auto"
+        }
+    }, loading ? React.createElement(
         Text, {
             variant: "heading-md/semibold",
             className: styles.panelText
@@ -464,7 +472,7 @@ function FriendCodesPanel() {
     ) : React.createElement("div", null, invites.map((invite) => React.createElement(FriendCodeCard, {
         key: invite.code,
         invite
-    }))));
+    })))));
 }
 
 /* index.jsx */
@@ -481,8 +489,8 @@ class FriendCodes {
         Styles.unload();
     }
     patchAddFriendsPanel() {
-        const [Module, Key] = Webpack.getWithKey(Webpack.Filters.byStrings(".Fragment", ".emptyState", ".ADD_FRIEND"));
-        Patcher.after(Module, Key, (_, __, res) => {
+        const AddFriendsPage = Webpack.getModule((_, __, id) => id === "666286");
+        Patcher.after(AddFriendsPage, "Z", (_, __, res) => {
             res.props.children.splice(1, 0, React.createElement(ErrorBoundary, {
                 key: "FriendCodesPanel",
                 id: "FriendCodesPanel"
