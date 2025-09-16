@@ -28,6 +28,6 @@ export default {
         `.replace(/^\s+/gm, "");
         if (props.find(o => o.name === "ephemeral")?.value ?? true)
             return { content: msg };
-        else sendMessage(channel.id, { content: msg });
+        else sendMessage(channel.id, { content: msg }, undefined, { location: "chat_input" });
     }
 };

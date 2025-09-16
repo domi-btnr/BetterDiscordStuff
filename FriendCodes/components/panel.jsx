@@ -7,7 +7,7 @@ import styles from "./style.scss";
 
 const { Button, Flex, Text } = Components;
 const { FormTitle } = DiscordComponents;
-const FormStyles = Webpack.getAllByKeys("header", "title", "emptyState")?.filter(m => !m.timestamp)?.[0];
+const FormStyles = Webpack.getModule((_, __, id) => id === "979493");
 const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = InviteModule;
 
 export default function FriendCodesPanel() {
@@ -55,27 +55,29 @@ export default function FriendCodesPanel() {
                 </Flex>
             </Flex>
 
-            {
-                loading ?
-                    <Text
-                        variant="heading-md/semibold"
-                        className={styles.panelText}
-                    >
-                        Loading...
-                    </Text> :
-                    invites.length === 0 ?
+            <div style={{ maxHeight: "40vh", overflowY: "auto" }}>
+                {
+                    loading ?
                         <Text
                             variant="heading-md/semibold"
                             className={styles.panelText}
                         >
-                            You don't have any friend codes yet
+                            Loading...
                         </Text> :
-                        <div>
-                            {invites.map(invite => (
-                                <FriendCodeCard key={invite.code} invite={invite} />
-                            ))}
-                        </div>
-            }
+                        invites.length === 0 ?
+                            <Text
+                                variant="heading-md/semibold"
+                                className={styles.panelText}
+                            >
+                                You don't have any friend codes yet
+                            </Text> :
+                            <div>
+                                {invites.map(invite => (
+                                    <FriendCodeCard key={invite.code} invite={invite} />
+                                ))}
+                            </div>
+                }
+            </div>
         </header>
     );
 }

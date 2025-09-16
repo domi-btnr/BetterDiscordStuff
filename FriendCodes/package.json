@@ -1,6 +1,6 @@
 {
 	"name": "FriendCodes",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"description": "Generate FriendCodes to easily add friends",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -9,10 +9,10 @@
 	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes",
 	"changelog": [
 		{
-			"title": "Commands arrived",
-			"type": "added",
-			"items": ["You can now use commands to create and revoke your Friend Codes"]
+			"title": "Fixed",
+			"type": "fixed",
+			"items": ["Updated the Plugin for the latest Discord Changes"]
 		}
 	],
-	"changelogDate": "2025-01-30"
+	"changelogDate": "2025-09-16"
 }

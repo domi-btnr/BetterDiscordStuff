@@ -24,9 +24,9 @@ export default class FriendCodes {
     }
 
     patchAddFriendsPanel() {
-        const [Module, Key] = Webpack.getWithKey(Webpack.Filters.byStrings(".Fragment", ".emptyState", ".ADD_FRIEND"));
+        const AddFriendsPage = Webpack.getModule((_, __, id) => id === "666286");
 
-        Patcher.after(Module, Key, (_, __, res) => {
+        Patcher.after(AddFriendsPage, "Z", (_, __, res) => {
             res.props.children.splice(1, 0, (
                 <ErrorBoundary key="FriendCodesPanel" id="FriendCodesPanel">
                     <FriendCodesPanel />
