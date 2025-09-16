@@ -1,13 +1,13 @@
 /**
  * @name ShowSpectators
- * @version 1.0.2
+ * @version 1.0.3
  * @description Shows you who's spectating your stream under the screenshare panel
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators
- * @changelogDate 2025-02-21
+ * @changelogDate 2025-09-17
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "ShowSpectators",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Shows you who's spectating your stream under the screenshare panel",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,11 +23,14 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators",
     "changelog": [{
-        "title": "Fixed Localisation",
+        "title": "It works again!",
         "type": "fixed",
-        "items": ["Localisation works again"]
+        "items": [
+            "The Panel shows up again",
+            "Localisation works again"
+        ]
     }],
-    "changelogDate": "2025-02-21"
+    "changelogDate": "2025-09-17"
 };
 
 /* @api */
@@ -229,9 +232,9 @@ function SettingsPanel() {
 
 /* components/style.scss */
 Styles.sheets.push("/* components/style.scss */", `.spectators-panel {
-  padding-top: 8px;
-  margin-top: 8px;
-  border-top: 1px solid var(--background-modifier-accent);
+  padding: 8px;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
 }
 .spectators-panel .spectators {
   margin-top: 4px;
@@ -249,17 +252,14 @@ const AvatarStyles = Webpack.getByKeys("moreUsers", "emptyUser", "avatarContaine
 const Clickable = Webpack.getByStrings("this.context?this.renderNonInteractive():", {
     searchExports: true
 });
-const intl = Webpack.getMangled('defaultLocale:"en-US"', {
-    intl: Webpack.Filters.byKeys("format"),
-    t: (o) => o.getOwnPropertyDescriptor
-});
 const RelationshipStore = Webpack.getStore("RelationshipStore");
 const UserProfileActions = Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal");
 const UserStore = Webpack.getStore("UserStore");
 const UserSummaryItem = Webpack.getByStrings("defaultRenderUser", "showDefaultAvatarsForNullUsers");
+const LanguageModule = Webpack.getModule((m) => m.intl);
 const getLocalizedString = (key, values) => {
-    if (!values) return intl?.intl.string(intl.t[key]);
-    return intl?.intl.format(intl.t[key], values);
+    if (!values) return LanguageModule?.intl.formatToPlainString(LanguageModule.t[key]);
+    return LanguageModule?.intl.format(LanguageModule.t[key], values);
 };
 const Strings = {
     SPECTATORS: "BR7Tnp",
@@ -320,7 +320,7 @@ function SpectatorsTooltip({
 
 function SpectatorsPanel() {
     const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
-    if (!activeStream) return null;
+    if (!activeStream || !Settings.get("showPanel", true)) return null;
     let unknownSpectators = 0;
     const spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
     const spectators = spectatorIds.map((id) => UserStore.getUser(id)).filter((user) => Boolean(user) || unknownSpectators++);
@@ -397,22 +397,32 @@ class ShowSpectators {
         const StreamIcon = Webpack.getBySource(".STATUS_SCREENSHARE");
         Patcher.after(StreamIcon, "Z", (_, __, res) => {
             const children = res.props.children;
-            res.props.children = [React.createElement(
-                Components.Tooltip, {
-                    text: React.createElement(SpectatorsTooltip, null)
-                },
-                (props) => children.map((child) => React.cloneElement(child, props))
-            )];
+            res.props.children = [
+                React.createElement(
+                    Components.Tooltip, {
+                        text: React.createElement(SpectatorsTooltip, null)
+                    },
+                    (props) => children.map((child) => React.cloneElement(child, props))
+                )
+            ];
         });
     }
     patchPanel() {
-        const [StreamPanel, Key] = Webpack.getWithKey(Webpack.Filters.byStrings('type:"SharingPrivacyPopout"'));
-        Patcher.after(StreamPanel, Key, (_, __, res) => {
-            if (!Settings.get("showPanel", true)) return null;
-            res.props.children = [
-                res.props.children,
-                React.createElement(SpectatorsPanel, null)
-            ];
+        const StreamPanel = Webpack.getModule((_, __, id) => id === "906732");
+        Patcher.after(StreamPanel, "Gt", (args, props, res) => {
+            if (!res.props.value.every((v) => v === "rtc panel")) return;
+            const voiceSection = Utils.findInTree(res, (e) => e?.props?.canGoLive, {
+                walkable: ["children", "props"]
+            });
+            if (!voiceSection) return;
+            const unpatch = Patcher.after(voiceSection.type.prototype, "render", (_, __, res2) => {
+                unpatch();
+                if (!res2) return;
+                const original = res2.props.children();
+                res2.props.children = () => {
+                    return React.createElement(React.Fragment, null, React.createElement(SpectatorsPanel, null), original);
+                };
+            });
         });
     }
     getSettingsPanel() {
