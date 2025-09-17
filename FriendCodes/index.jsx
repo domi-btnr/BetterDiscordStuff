@@ -24,7 +24,7 @@ export default class FriendCodes {
     }
 
     patchAddFriendsPanel() {
-        const AddFriendsPage = Webpack.getModule((_, __, id) => id === "666286");
+        const AddFriendsPage = Webpack.getModule((_, __, id) => id == 666286);
 
         Patcher.after(AddFriendsPage, "Z", (_, __, res) => {
             res.props.children.splice(1, 0, (

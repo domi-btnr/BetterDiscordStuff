@@ -7,7 +7,7 @@ import styles from "./style.scss";
 
 const { Button, Flex, Text } = Components;
 const { FormTitle } = DiscordComponents;
-const FormStyles = Webpack.getModule((_, __, id) => id === "979493");
+const FormStyles = Webpack.getModule((_, __, id) => id == 979493);
 const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = InviteModule;
 
 export default function FriendCodesPanel() {
