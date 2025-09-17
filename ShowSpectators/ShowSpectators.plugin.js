@@ -408,15 +408,15 @@ class ShowSpectators {
         });
     }
     patchPanel() {
-        const StreamPanel = Webpack.getModule((_, __, id) => id === "906732");
-        Patcher.after(StreamPanel, "Gt", (args, props, res) => {
+        const StreamPanel = Webpack.getModule((_, __, id) => id == 906732);
+        const unpatch = Patcher.after(StreamPanel, "Gt", (_, __, res) => {
             if (!res.props.value.every((v) => v === "rtc panel")) return;
             const voiceSection = Utils.findInTree(res, (e) => e?.props?.canGoLive, {
                 walkable: ["children", "props"]
             });
             if (!voiceSection) return;
-            const unpatch = Patcher.after(voiceSection.type.prototype, "render", (_, __, res2) => {
-                unpatch();
+            unpatch();
+            Patcher.after(voiceSection.type.prototype, "render", (_2, __2, res2) => {
                 if (!res2) return;
                 const original = res2.props.children();
                 res2.props.children = () => {

@@ -399,7 +399,7 @@ const {
 const {
     FormTitle
 } = DiscordComponents;
-const FormStyles = Webpack.getModule((_, __, id) => id === "979493");
+const FormStyles = Webpack.getModule((_, __, id) => id == 979493);
 const {
     createFriendInvite,
     getAllFriendInvites,
@@ -489,7 +489,7 @@ class FriendCodes {
         Styles.unload();
     }
     patchAddFriendsPanel() {
-        const AddFriendsPage = Webpack.getModule((_, __, id) => id === "666286");
+        const AddFriendsPage = Webpack.getModule((_, __, id) => id == 666286);
         Patcher.after(AddFriendsPage, "Z", (_, __, res) => {
             res.props.children.splice(1, 0, React.createElement(ErrorBoundary, {
                 key: "FriendCodesPanel",
