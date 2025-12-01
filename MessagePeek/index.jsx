@@ -26,7 +26,7 @@ export default class MessagePeek {
 
     patchDMs() {
         const ChannelContext = React.createContext(null);
-        const ChannelWrapper = Webpack.getBySource("isFacepileEnabled", "isMultiUserDM", "isMobile");
+        const ChannelWrapper = Webpack.getBySource("activities", "isMultiUserDM", "isMobile");
         const [ChannelItem, Key_CI] = Webpack.getWithKey(Webpack.Filters.byStrings("as:", ".interactive,"));
         const NameWrapper = Webpack.getBySource("AvatarWithText").Z;
         const ChannelClasses = Webpack.getByKeys("channel", "decorator");
@@ -66,7 +66,7 @@ export default class MessagePeek {
         // It's not a good idea to preload every DM
         // That's why I check if the DM Channel has a message and if it's not already loaded
         // I also limit the amount of DMs to preload to a maximum of 30. Default is 10
-        const preload = Webpack.getByKeys("preload")?.preload;
+        const preload = Webpack.getByKeys("preload", "fetchChannel")?.preload;
         Webpack.getStore("ChannelStore")
             .getSortedPrivateChannels()
             .filter(channel =>

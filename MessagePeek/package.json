@@ -1,6 +1,6 @@
 {
 	"name": "MessagePeek",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"description": "See the last message in a Channel like on mobile",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -14,5 +14,5 @@
 			"items": ["DMs work again"]
 		}
 	],
-	"changelogDate": "2025-09-16"
+	"changelogDate": "2025-12-01"
 }
