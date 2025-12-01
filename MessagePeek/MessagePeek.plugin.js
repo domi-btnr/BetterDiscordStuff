@@ -1,13 +1,13 @@
 /**
  * @name MessagePeek
- * @version 1.2.1
+ * @version 1.2.2
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek
- * @changelogDate 2025-09-16
+ * @changelogDate 2025-12-01
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "MessagePeek",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -27,7 +27,7 @@ const manifest = {
         "type": "fixed",
         "items": ["DMs work again"]
     }],
-    "changelogDate": "2025-09-16"
+    "changelogDate": "2025-12-01"
 };
 
 /* @api */
@@ -476,7 +476,7 @@ class MessagePeek {
     }
     patchDMs() {
         const ChannelContext = React.createContext(null);
-        const ChannelWrapper = Webpack.getBySource("isFacepileEnabled", "isMultiUserDM", "isMobile");
+        const ChannelWrapper = Webpack.getBySource("activities", "isMultiUserDM", "isMobile");
         const [ChannelItem, Key_CI] = Webpack.getWithKey(Webpack.Filters.byStrings("as:", ".interactive,"));
         const NameWrapper = Webpack.getBySource("AvatarWithText").Z;
         const ChannelClasses = Webpack.getByKeys("channel", "decorator");
@@ -511,7 +511,7 @@ class MessagePeek {
                 })
             );
         });
-        const preload = Webpack.getByKeys("preload")?.preload;
+        const preload = Webpack.getByKeys("preload", "fetchChannel")?.preload;
         Webpack.getStore("ChannelStore").getSortedPrivateChannels().filter(
             (channel) => channel.lastMessageId && !Webpack.getStore("MessageStore").getMessages(channel.id)?.last()
         ).slice(0, Settings.get("preloadLimit", 10)).reduce((promise, channel, index) => {
