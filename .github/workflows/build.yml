@@ -78,9 +78,10 @@ jobs:
 
       - name: Commit Changes
         run: |
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
           git config advice.addIgnoredFile false
           git add --no-all ./**
           git config --local user.email "actions@github.com"
           git config --local user.name "PluginBuilder"
-          git commit -m "Publish build"
+          git commit -F <(printf "%s" "$COMMIT_MSG")
           git push
