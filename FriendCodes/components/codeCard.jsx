@@ -1,12 +1,11 @@
 import { Components, Webpack } from "@api";
 import React from "react";
 
-import { DiscordComponents } from "../modules/shared";
+import { TextVariantStyles } from "../modules/shared";
 import CopyButton from "./copyButton";
 import styles from "./style.scss";
 
-const { Flex } = Components;
-const { FormTitle } = DiscordComponents;
+const { Flex, Text } = Components;
 const { clipboard } = DiscordNative;
 const Parser = Webpack.getByKeys("parseTopic");
 
@@ -15,9 +14,14 @@ export default function FriendCodeCard({ invite }) {
         <div className={styles.card}>
             <Flex justify={Flex.Justify.START}>
                 <div className={styles.cardTitle}>
-                    <FormTitle tag="h4" style={{ textTransform: "none" }}>
+                    <Text
+                        tag="h4"
+                        size={Text.Sizes.SIZE_16}
+                        variant="heading-md/semibold"
+                        className={TextVariantStyles["heading-md/semibold"]}
+                    >
                         {invite.code}
-                    </FormTitle>
+                    </Text>
                     <span>
                         Expires {Parser.parse(`<t:${new Date(invite.expires_at).getTime() / 1000}:R>`)} • {invite.uses}/{invite.max_uses} uses
                     </span>

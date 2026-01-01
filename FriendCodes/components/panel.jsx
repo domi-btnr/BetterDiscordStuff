@@ -1,13 +1,12 @@
 import { Components, Webpack } from "@api";
 import React from "react";
 
-import { DiscordComponents, InviteModule } from "../modules/shared";
+import { InviteModule, TextVariantStyles } from "../modules/shared";
 import FriendCodeCard from "./codeCard";
 import styles from "./style.scss";
 
 const { Button, Flex, Text } = Components;
-const { FormTitle } = DiscordComponents;
-const FormStyles = Webpack.getModule((_, __, id) => id == 979493);
+const FormStyles = Webpack.getById("462408");
 const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = InviteModule;
 
 export default function FriendCodesPanel() {
@@ -23,12 +22,14 @@ export default function FriendCodesPanel() {
 
     return (
         <header className={FormStyles.header}>
-            <FormTitle
+            <Text
                 tag="h2"
-                className={FormStyles.title}
+                size={Text.Sizes.SIZE_20}
+                variant="heading-lg/semibold"
+                className={TextVariantStyles["heading-lg/semibold"]}
             >
                 Your Friend Codes
-            </FormTitle>
+            </Text>
 
             <Flex
                 style={{ marginBottom: "16px" }}
