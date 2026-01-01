@@ -1,13 +1,13 @@
 /**
  * @name FriendCodes
- * @version 1.2.1
+ * @version 1.2.2
  * @description Generate FriendCodes to easily add friends
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes
- * @changelogDate 2025-09-16
+ * @changelogDate 2026-01-01
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "FriendCodes",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "Generate FriendCodes to easily add friends",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -27,7 +27,7 @@ const manifest = {
         "type": "fixed",
         "items": ["Updated the Plugin for the latest Discord Changes"]
     }],
-    "changelogDate": "2025-09-16"
+    "changelogDate": "2026-01-01"
 };
 
 /* @api */
@@ -212,10 +212,8 @@ class ErrorBoundary extends React.Component {
 }
 
 /* modules/shared.js */
-const DiscordComponents = Webpack.getMangled(/ConfirmModal:\(\)=>.{1,3}.ConfirmModal/, {
-    FormTitle: (x) => x.toString?.().includes('["defaultMargin".concat', '="h5"')
-});
 const InviteModule = Webpack.getByKeys("createFriendInvite");
+const TextVariantStyles = Webpack.getByKeys("heading-lg/semibold");
 
 /* commands/createFriendCode.js */
 const {
@@ -318,12 +316,12 @@ Styles.sheets.push("/* components/style.scss */", `.card {
   border-width: 1px;
   border-style: solid;
   border-radius: 5px;
-  border-color: var(--background-tertiary);
-  background-color: var(--background-secondary);
+  border-color: var(--border-subtle);
+  background-color: var(--background-base-lower);
 }
 
 .cardTitle span {
-  color: var(--header-secondary);
+  color: var(--text-default);
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 400;
@@ -332,7 +330,7 @@ Styles.sheets.push("/* components/style.scss */", `.card {
 .panelHeader {
   margin-top: 16px;
   margin-bottom: 8px;
-  color: var(--header-secondary);
+  color: var(--text-default);
   text-transform: uppercase;
   font-size: 12px;
   line-height: 16px;
@@ -355,11 +353,9 @@ var styles = {
 
 /* components/codeCard.jsx */
 const {
-    Flex: Flex$1
+    Flex: Flex$1,
+    Text: Text$1
 } = Components;
-const {
-    FormTitle: FormTitle$1
-} = DiscordComponents;
 const {
     clipboard
 } = DiscordNative;
@@ -374,12 +370,15 @@ function FriendCodeCard({
         justify: Flex$1.Justify.START
     }, React.createElement("div", {
         className: styles.cardTitle
-    }, React.createElement(FormTitle$1, {
-        tag: "h4",
-        style: {
-            textTransform: "none"
-        }
-    }, invite.code), React.createElement("span", null, "Expires ", Parser.parse(`<t:${new Date(invite.expires_at).getTime() / 1e3}:R>`), " \u2022 ", invite.uses, "/", invite.max_uses, " uses")), React.createElement(Flex$1, {
+    }, React.createElement(
+        Text$1, {
+            tag: "h4",
+            size: Text$1.Sizes.SIZE_16,
+            variant: "heading-md/semibold",
+            className: TextVariantStyles["heading-md/semibold"]
+        },
+        invite.code
+    ), React.createElement("span", null, "Expires ", Parser.parse(`<t:${new Date(invite.expires_at).getTime() / 1e3}:R>`), " \u2022 ", invite.uses, "/", invite.max_uses, " uses")), React.createElement(Flex$1, {
         justify: Flex$1.Justify.END
     }, React.createElement(
         CopyButton, {
@@ -396,10 +395,7 @@ const {
     Flex,
     Text
 } = Components;
-const {
-    FormTitle
-} = DiscordComponents;
-const FormStyles = Webpack.getModule((_, __, id) => id == 979493);
+const FormStyles = Webpack.getById("462408");
 const {
     createFriendInvite,
     getAllFriendInvites,
@@ -416,9 +412,11 @@ function FriendCodesPanel() {
     return React.createElement("header", {
         className: FormStyles.header
     }, React.createElement(
-        FormTitle, {
+        Text, {
             tag: "h2",
-            className: FormStyles.title
+            size: Text.Sizes.SIZE_20,
+            variant: "heading-lg/semibold",
+            className: TextVariantStyles["heading-lg/semibold"]
         },
         "Your Friend Codes"
     ), React.createElement(
