@@ -55,7 +55,7 @@ export default class MessagePeek {
             const channel = React.useContext(ChannelContext);
             if (!channel) return res;
 
-            const nameWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("content_"), { walkable: ["children", "props"] });
+            const nameWrapper = Utils.findInTree(res, e => e?.props?.className?.endsWith("-content"), { walkable: ["children", "props"] });
             if (!nameWrapper) return res;
             nameWrapper.props.children.push(
                 <Peek channelId={channel.id} />
@@ -95,7 +95,7 @@ export default class MessagePeek {
 
         Patcher.after(ChannelWrapper, Key_CW, (_, [{ channel }], res) => {
             if (!Settings.get("showInGuilds", true)) return;
-            const nameWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("name_"), { walkable: ["children", "props"] });
+            const nameWrapper = Utils.findInTree(res, e => e?.props?.className?.endsWith("-name"), { walkable: ["children", "props"] });
             if (!nameWrapper) return res;
 
             nameWrapper.props.children = [
@@ -104,7 +104,7 @@ export default class MessagePeek {
             ];
 
             if (!Settings.get("showTimestamp", true)) return;
-            const innerWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("linkTop_"), { walkable: ["children", "props"] });
+            const innerWrapper = Utils.findInTree(res, e => e?.props?.className?.endsWith("-linkTop"), { walkable: ["children", "props"] });
             if (!innerWrapper) return res;
             const children = innerWrapper.props.children;
             children.splice(children.length - 1, 0, <Peek channelId={channel.id} timestampOnly />);
