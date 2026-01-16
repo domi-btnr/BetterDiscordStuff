@@ -1,13 +1,13 @@
 /**
  * @name MessagePeek
- * @version 1.2.2
+ * @version 1.2.3
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek
- * @changelogDate 2025-12-01
+ * @changelogDate 2026-01-16
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "MessagePeek",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -25,9 +25,9 @@ const manifest = {
     "changelog": [{
         "title": "Fixed",
         "type": "fixed",
-        "items": ["DMs work again"]
+        "items": ["Plugin works again"]
     }],
-    "changelogDate": "2025-12-01"
+    "changelogDate": "2026-01-16"
 };
 
 /* @api */
@@ -501,7 +501,7 @@ class MessagePeek {
         Patcher.after(NameWrapper, "render", (_, __, res) => {
             const channel = React.useContext(ChannelContext);
             if (!channel) return res;
-            const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("content_"), {
+            const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.endsWith("-content"), {
                 walkable: ["children", "props"]
             });
             if (!nameWrapper) return res;
@@ -532,7 +532,7 @@ class MessagePeek {
             channel
         }], res) => {
             if (!Settings.get("showInGuilds", true)) return;
-            const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("name_"), {
+            const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.endsWith("-name"), {
                 walkable: ["children", "props"]
             });
             if (!nameWrapper) return res;
@@ -543,7 +543,7 @@ class MessagePeek {
                 })
             ];
             if (!Settings.get("showTimestamp", true)) return;
-            const innerWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("linkTop_"), {
+            const innerWrapper = Utils.findInTree(res, (e) => e?.props?.className?.endsWith("-linkTop"), {
                 walkable: ["children", "props"]
             });
             if (!innerWrapper) return res;
