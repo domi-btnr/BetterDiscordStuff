@@ -1,6 +1,6 @@
 {
 	"name": "MessagePeek",
-	"version": "1.2.3",
+	"version": "1.2.4",
 	"description": "See the last message in a Channel like on mobile",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -11,8 +11,8 @@
 		{
 			"title": "Fixed",
 			"type": "fixed",
-			"items": ["Plugin works again"]
+			"items": ["Updated the Plugin for the latest Discord Changes"]
 		}
 	],
-	"changelogDate": "2026-01-16"
+	"changelogDate": "2026-01-25"
 }
