@@ -24,9 +24,9 @@ export default class FriendCodes {
     }
 
     patchAddFriendsPanel() {
-        const AddFriendsPage = Webpack.getModule((_, __, id) => id == 666286);
+        const AddFriendsPage = Webpack.getBySource(".Heading", "heading-lg/semibold", ".w5uwoI");
 
-        Patcher.after(AddFriendsPage, "Z", (_, __, res) => {
+        Patcher.after(AddFriendsPage, "A", (_, __, res) => {
             res.props.children.splice(1, 0, (
                 <ErrorBoundary key="FriendCodesPanel" id="FriendCodesPanel">
                     <FriendCodesPanel />
