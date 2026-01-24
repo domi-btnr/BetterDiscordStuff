@@ -1,13 +1,13 @@
 /**
  * @name FriendCodes
- * @version 1.2.2
+ * @version 1.2.3
  * @description Generate FriendCodes to easily add friends
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes
- * @changelogDate 2026-01-01
+ * @changelogDate 2026-01-24
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "FriendCodes",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "description": "Generate FriendCodes to easily add friends",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -27,7 +27,7 @@ const manifest = {
         "type": "fixed",
         "items": ["Updated the Plugin for the latest Discord Changes"]
     }],
-    "changelogDate": "2026-01-01"
+    "changelogDate": "2026-01-24"
 };
 
 /* @api */
@@ -395,7 +395,7 @@ const {
     Flex,
     Text
 } = Components;
-const FormStyles = Webpack.getById("462408");
+const FormStyles = Webpack.getById("97276");
 const {
     createFriendInvite,
     getAllFriendInvites,
@@ -487,8 +487,8 @@ class FriendCodes {
         Styles.unload();
     }
     patchAddFriendsPanel() {
-        const AddFriendsPage = Webpack.getModule((_, __, id) => id == 666286);
-        Patcher.after(AddFriendsPage, "Z", (_, __, res) => {
+        const AddFriendsPage = Webpack.getBySource(".Heading", "heading-lg/semibold", ".w5uwoI");
+        Patcher.after(AddFriendsPage, "A", (_, __, res) => {
             res.props.children.splice(1, 0, React.createElement(ErrorBoundary, {
                 key: "FriendCodesPanel",
                 id: "FriendCodesPanel"
