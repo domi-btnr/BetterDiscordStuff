@@ -1,6 +1,6 @@
 import { Data, Webpack } from "@api";
 
-const Dispatcher = Webpack.getByKeys("dispatch", "subscribe");
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", { searchExports: true });
 const Flux = Webpack.getByKeys("Store");
 
 const Settings = new class Settings extends Flux.Store {
