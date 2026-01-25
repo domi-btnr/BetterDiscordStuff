@@ -1,6 +1,6 @@
 {
 	"name": "GlobalBadges",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Adds global badges from other client mods",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -14,14 +14,7 @@
 			"items": [
 				"Plugin fixed for the latest Discord update"
 			]
-		},
-		{
-			"title": "Changed API URL",
-			"type": "changed",
-			"items": [
-				"Due to my Heroku Credit being expired, I moved the API to my own Server"
-			]
 		}
 	],
-	"changelogDate": "2025-04-27"
+	"changelogDate": "2026-01-25"
 }
