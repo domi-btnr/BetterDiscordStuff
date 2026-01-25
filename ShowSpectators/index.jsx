@@ -23,7 +23,7 @@ export default class ShowSpectators {
     patchStreamIcon() {
         const StreamIcon = Webpack.getBySource(".STATUS_SCREENSHARE");
 
-        Patcher.after(StreamIcon, "Z", (_, __, res) => {
+        Patcher.after(StreamIcon, "A", (_, __, res) => {
             const children = res.props.children;
             res.props.children = [
                 <Components.Tooltip
@@ -36,9 +36,9 @@ export default class ShowSpectators {
     }
 
     patchPanel() {
-        const StreamPanel = Webpack.getModule((_, __, id) => id == 906732);
+        const AccountPanelSections = Webpack.getById("688810");
 
-        const unpatch = Patcher.after(StreamPanel, "Gt", (_, __, res) => {
+        const unpatch = Patcher.after(AccountPanelSections, "f5", (_, __, res) => {
             if (!res.props.value.every(v => v === "rtc panel")) return;
             const voiceSection = Utils.findInTree(res, e => e?.props?.canGoLive, { walkable: ["children", "props"] });
             if (!voiceSection) return;

@@ -1,6 +1,6 @@
 {
 	"name": "ShowSpectators",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Shows you who's spectating your stream under the screenshare panel",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -17,5 +17,5 @@
 			]
 		}
 	],
-	"changelogDate": "2025-09-17"
+	"changelogDate": "2026-01-25"
 }

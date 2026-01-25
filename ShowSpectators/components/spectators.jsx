@@ -21,8 +21,8 @@ const getLocalizedString = (key, values) => {
     return LanguageModule?.intl.format(LanguageModule.t[key], values);
 };
 const Strings = {
-    SPECTATORS: "BR7Tnp",
-    NUM_USERS: "3uHFUV"
+    SPECTATORS: "BR7Tno",
+    NUM_USERS: "3uHFUR"
 };
 
 const getDisplayName = user => RelationshipStore.getNickname(user.id) || user.globalName || user.username;
@@ -39,31 +39,34 @@ export function SpectatorsTooltip({ spectatorIds, guildId, noTitle }) {
     const spectators = spectatorIds.map(id => UserStore.getUser(id)).filter(user => Boolean(user) || unknownSpectators++);
 
     return (
-        spectatorIds.length ? (<>
-            {!noTitle && <Text size={Text.Sizes.SIZE_16} style={{ marginBottom: "8px" }}>
-                {getLocalizedString(Strings.SPECTATORS, { numViewers: spectatorIds.length })}
-            </Text>
-            }
-            <Flex
-                direction={Flex.Direction.VERTICAL}
-                style={{ alignItems: "center", gap: 6 }}
-            >
-                {
-                    spectators.map(user => (
-                        <Flex style={{ alignContent: "center", gap: 6 }}>
-                            <img src={user.getAvatarURL(guildId)} style={{ borderRadius: 8, height: 16, width: 16 }} />
-                            {getDisplayName(user)}
+        (<>
+            {!noTitle && (
+                <Text size={Text.Sizes.SIZE_16}>
+                    {getLocalizedString(Strings.SPECTATORS, { numViewers: spectatorIds.length })}
+                </Text>
+            )}
+            {spectators.length > 0 && (
+                <Flex
+                    direction={Flex.Direction.VERTICAL}
+                    style={{ alignItems: "center", gap: 6, marginTop: "8px" }}
+                >
+                    {
+                        spectators.map(user => (
+                            <Flex style={{ alignContent: "center", gap: 6 }}>
+                                <img src={user.getAvatarURL(guildId)} style={{ borderRadius: 8, height: 16, width: 16 }} />
+                                {getDisplayName(user)}
+                            </Flex>
+                        ))
+                    }
+                    {
+                        !!unknownSpectators &&
+                        <Flex style={{ alignContent: "center" }}>
+                            <Text>+{getLocalizedString(Strings.NUM_USERS, { num: unknownSpectators })}</Text>
                         </Flex>
-                    ))
-                }
-                {
-                    !!unknownSpectators &&
-                    <Flex style={{ alignContent: "center" }}>
-                        <Text>+{getLocalizedString(Strings.NUM_USERS, { num: unknownSpectators })}</Text>
-                    </Flex>
-                }
-            </Flex>
-        </>) : "No spectators"
+                    }
+                </Flex>
+            )}
+        </>)
     );
 }
 
@@ -77,11 +80,7 @@ export function SpectatorsPanel() {
     return (
         <div className="spectators-panel">
             <Text size={Text.Sizes.SIZE_16}>
-                {
-                    spectatorIds.length ?
-                        getLocalizedString(Strings.SPECTATORS, { numViewers: spectatorIds.length })
-                        : "No spectators"
-                }
+                {getLocalizedString(Strings.SPECTATORS, { numViewers: spectatorIds.length })}
             </Text>
             {
                 spectatorIds.length ? (
