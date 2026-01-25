@@ -1,13 +1,13 @@
 /**
  * @name ReplaceTimestamps
- * @version 1.4.1
+ * @version 1.4.2
  * @description Replaces plaintext times and dates into Discord's timestamps
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps
- * @changelogDate 2025-09-09
+ * @changelogDate 2026-01-25
  */
 
 'use strict';
@@ -19,7 +19,7 @@ Object.defineProperty(exports, '__esModule', {
 /* @manifest */
 const manifest = {
     "name": "ReplaceTimestamps",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "description": "Replaces plaintext times and dates into Discord's timestamps",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -30,10 +30,10 @@ const manifest = {
         "title": "Fixed",
         "type": "fixed",
         "items": [
-            "Settings work again"
+            "Updated the Plugin for the latest Discord Changes"
         ]
     }],
-    "changelogDate": "2025-09-09"
+    "changelogDate": "2026-01-25"
 };
 
 /* @api */
@@ -159,7 +159,9 @@ function showChangelog(manifest) {
 }
 
 /* modules/settings.js */
-const Dispatcher = Webpack.getByKeys("dispatch", "subscribe");
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
+    searchExports: true
+});
 const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
     constructor() {

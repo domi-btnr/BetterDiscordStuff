@@ -1,13 +1,13 @@
 /**
  * @name MessagePeek
- * @version 1.2.3
+ * @version 1.2.4
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek
- * @changelogDate 2026-01-16
+ * @changelogDate 2026-01-25
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "MessagePeek",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -25,9 +25,9 @@ const manifest = {
     "changelog": [{
         "title": "Fixed",
         "type": "fixed",
-        "items": ["Plugin works again"]
+        "items": ["Updated the Plugin for the latest Discord Changes"]
     }],
-    "changelogDate": "2026-01-16"
+    "changelogDate": "2026-01-25"
 };
 
 /* @api */
@@ -160,7 +160,9 @@ Styles.sheets.push("/* components/styles.scss */", `a[href^="/channels/@me"] [cl
 }`);
 
 /* modules/settings.js */
-const Dispatcher = Webpack.getByKeys("dispatch", "subscribe");
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
+    searchExports: true
+});
 const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
     constructor() {
@@ -477,10 +479,10 @@ class MessagePeek {
     patchDMs() {
         const ChannelContext = React.createContext(null);
         const ChannelWrapper = Webpack.getBySource("activities", "isMultiUserDM", "isMobile");
-        const [ChannelItem, Key_CI] = Webpack.getWithKey(Webpack.Filters.byStrings("as:", ".interactive,"));
-        const NameWrapper = Webpack.getBySource("AvatarWithText").Z;
+        const ChannelItem = Webpack.getById("877526");
+        const NameWrapper = Webpack.getBySource("AvatarWithText").A;
         const ChannelClasses = Webpack.getByKeys("channel", "decorator");
-        Patcher.after(ChannelWrapper, "ZP", (_, __, res) => {
+        Patcher.after(ChannelWrapper, "Ay", (_, __, res) => {
             if (!Settings.get("showInDMs", true)) return;
             Patcher.after(res, "type", (_2, [props], res2) => {
                 return React.createElement(ChannelContext.Provider, {
@@ -488,7 +490,7 @@ class MessagePeek {
                 }, res2);
             });
         });
-        Patcher.after(ChannelItem, Key_CI, (_, __, res) => {
+        Patcher.after(ChannelItem, "H", (_, __, res) => {
             if (!Settings.get("showTimestamp", true)) return;
             const channel = React.useContext(ChannelContext);
             if (!channel) return res;
@@ -501,7 +503,7 @@ class MessagePeek {
         Patcher.after(NameWrapper, "render", (_, __, res) => {
             const channel = React.useContext(ChannelContext);
             if (!channel) return res;
-            const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.endsWith("-content"), {
+            const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("content__"), {
                 walkable: ["children", "props"]
             });
             if (!nameWrapper) return res;
@@ -532,7 +534,7 @@ class MessagePeek {
             channel
         }], res) => {
             if (!Settings.get("showInGuilds", true)) return;
-            const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.endsWith("-name"), {
+            const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("name__"), {
                 walkable: ["children", "props"]
             });
             if (!nameWrapper) return res;
@@ -543,7 +545,7 @@ class MessagePeek {
                 })
             ];
             if (!Settings.get("showTimestamp", true)) return;
-            const innerWrapper = Utils.findInTree(res, (e) => e?.props?.className?.endsWith("-linkTop"), {
+            const innerWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("linkTop"), {
                 walkable: ["children", "props"]
             });
             if (!innerWrapper) return res;

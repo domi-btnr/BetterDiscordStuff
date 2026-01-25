@@ -1,13 +1,13 @@
 /**
  * @name ShowSpectators
- * @version 1.0.3
+ * @version 1.0.4
  * @description Shows you who's spectating your stream under the screenshare panel
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators
- * @changelogDate 2025-09-17
+ * @changelogDate 2026-01-25
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "ShowSpectators",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Shows you who's spectating your stream under the screenshare panel",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -30,7 +30,7 @@ const manifest = {
             "Localisation works again"
         ]
     }],
-    "changelogDate": "2025-09-17"
+    "changelogDate": "2026-01-25"
 };
 
 /* @api */
@@ -156,7 +156,9 @@ function showChangelog(manifest) {
 }
 
 /* modules/settings.js */
-const Dispatcher = Webpack.getByKeys("dispatch", "subscribe");
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
+    searchExports: true
+});
 const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
     constructor() {
@@ -262,8 +264,8 @@ const getLocalizedString = (key, values) => {
     return LanguageModule?.intl.format(LanguageModule.t[key], values);
 };
 const Strings = {
-    SPECTATORS: "BR7Tnp",
-    NUM_USERS: "3uHFUV"
+    SPECTATORS: "BR7Tno",
+    NUM_USERS: "3uHFUR"
 };
 const getDisplayName = (user) => RelationshipStore.getNickname(user.id) || user.globalName || user.username;
 
@@ -280,19 +282,17 @@ function SpectatorsTooltip({
     }
     let unknownSpectators = 0;
     const spectators = spectatorIds.map((id) => UserStore.getUser(id)).filter((user) => Boolean(user) || unknownSpectators++);
-    return spectatorIds.length ? React.createElement(React.Fragment, null, !noTitle && React.createElement(Text, {
-        size: Text.Sizes.SIZE_16,
-        style: {
-            marginBottom: "8px"
-        }
+    return React.createElement(React.Fragment, null, !noTitle && React.createElement(Text, {
+        size: Text.Sizes.SIZE_16
     }, getLocalizedString(Strings.SPECTATORS, {
         numViewers: spectatorIds.length
-    })), React.createElement(
+    })), spectators.length > 0 && React.createElement(
         Flex, {
             direction: Flex.Direction.VERTICAL,
             style: {
                 alignItems: "center",
-                gap: 6
+                gap: 6,
+                marginTop: "8px"
             }
         },
         spectators.map((user) => React.createElement(Flex, {
@@ -315,7 +315,7 @@ function SpectatorsTooltip({
         }, React.createElement(Text, null, "+", getLocalizedString(Strings.NUM_USERS, {
             num: unknownSpectators
         })))
-    )) : "No spectators";
+    ));
 }
 
 function SpectatorsPanel() {
@@ -328,9 +328,9 @@ function SpectatorsPanel() {
         className: "spectators-panel"
     }, React.createElement(Text, {
         size: Text.Sizes.SIZE_16
-    }, spectatorIds.length ? getLocalizedString(Strings.SPECTATORS, {
+    }, getLocalizedString(Strings.SPECTATORS, {
         numViewers: spectatorIds.length
-    }) : "No spectators"), spectatorIds.length ? React.createElement(
+    })), spectatorIds.length ? React.createElement(
         UserSummaryItem, {
             className: "spectators",
             style: {
@@ -395,7 +395,7 @@ class ShowSpectators {
     }
     patchStreamIcon() {
         const StreamIcon = Webpack.getBySource(".STATUS_SCREENSHARE");
-        Patcher.after(StreamIcon, "Z", (_, __, res) => {
+        Patcher.after(StreamIcon, "A", (_, __, res) => {
             const children = res.props.children;
             res.props.children = [
                 React.createElement(
@@ -408,8 +408,8 @@ class ShowSpectators {
         });
     }
     patchPanel() {
-        const StreamPanel = Webpack.getModule((_, __, id) => id == 906732);
-        const unpatch = Patcher.after(StreamPanel, "Gt", (_, __, res) => {
+        const AccountPanelSections = Webpack.getById("688810");
+        const unpatch = Patcher.after(AccountPanelSections, "f5", (_, __, res) => {
             if (!res.props.value.every((v) => v === "rtc panel")) return;
             const voiceSection = Utils.findInTree(res, (e) => e?.props?.canGoLive, {
                 walkable: ["children", "props"]

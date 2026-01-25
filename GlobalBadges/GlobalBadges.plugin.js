@@ -1,13 +1,13 @@
 /**
  * @name GlobalBadges
- * @version 1.0.4
+ * @version 1.0.5
  * @description Adds global badges from other client mods
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges
- * @changelogDate 2025-04-27
+ * @changelogDate 2026-01-25
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "GlobalBadges",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "Adds global badges from other client mods",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,21 +23,13 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges",
     "changelog": [{
-            "title": "Fixed",
-            "type": "fixed",
-            "items": [
-                "Plugin fixed for the latest Discord update"
-            ]
-        },
-        {
-            "title": "Changed API URL",
-            "type": "changed",
-            "items": [
-                "Due to my Heroku Credit being expired, I moved the API to my own Server"
-            ]
-        }
-    ],
-    "changelogDate": "2025-04-27"
+        "title": "Fixed",
+        "type": "fixed",
+        "items": [
+            "Plugin fixed for the latest Discord update"
+        ]
+    }],
+    "changelogDate": "2026-01-25"
 };
 
 /* @api */
@@ -182,7 +174,9 @@ async function fetchBadges(id) {
 }
 
 /* modules/settings.js */
-const Dispatcher = Webpack.getByKeys("dispatch", "subscribe");
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
+    searchExports: true
+});
 const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
     constructor() {
