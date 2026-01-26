@@ -4,19 +4,16 @@ import React from "react";
 import Settings from "../modules/settings";
 import SettingsItems from "../modules/settings.json";
 
-const { SettingItem, SwitchInput } = Components;
-const Select = Webpack.getByStrings("=\"bottom\",", ".select,", "\"Escape\"===", { searchExports: true });
+const { DropdownInput, SettingItem, SwitchInput } = Components;
 const useStateFromStores = Webpack.getByStrings("useStateFromStores", { searchExports: true });
 
 function DropdownItem(props) {
     return (
         <SettingItem {...props}>
-            <Select
-                closeOnSelect={true}
+            <DropdownInput
                 options={props.options}
-                serialize={v => String(v)}
-                select={v => Settings.set(props.id, v)}
-                isSelected={v => Settings.get(props.id, props.value) === v}
+                value={Settings.get(props.id, props.value)}
+                onChange={v => Settings.set(props.id, v)}
             />
         </SettingItem>
     );
