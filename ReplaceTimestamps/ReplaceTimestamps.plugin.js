@@ -1,13 +1,13 @@
 /**
  * @name ReplaceTimestamps
- * @version 1.4.2
+ * @version 1.4.3
  * @description Replaces plaintext times and dates into Discord's timestamps
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps
- * @changelogDate 2026-01-25
+ * @changelogDate 2026-01-26
  */
 
 'use strict';
@@ -19,7 +19,7 @@ Object.defineProperty(exports, '__esModule', {
 /* @manifest */
 const manifest = {
     "name": "ReplaceTimestamps",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "description": "Replaces plaintext times and dates into Discord's timestamps",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -27,13 +27,13 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps",
     "changelog": [{
-        "title": "Fixed",
+        "title": "Fixed Settings",
         "type": "fixed",
         "items": [
-            "Updated the Plugin for the latest Discord Changes"
+            "Settings open again"
         ]
     }],
-    "changelogDate": "2026-01-25"
+    "changelogDate": "2026-01-26"
 };
 
 /* @api */
@@ -222,12 +222,10 @@ var SettingsItems = [{
 
 /* components/settings.jsx */
 const {
+    DropdownInput,
     SettingItem,
     SwitchInput
 } = Components;
-const Select = Webpack.getByStrings('="bottom",', ".select,", '"Escape"===', {
-    searchExports: true
-});
 const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
     searchExports: true
 });
@@ -236,12 +234,10 @@ function DropdownItem(props) {
     return React.createElement(SettingItem, {
         ...props
     }, React.createElement(
-        Select, {
-            closeOnSelect: true,
+        DropdownInput, {
             options: props.options,
-            serialize: (v) => String(v),
-            select: (v) => Settings.set(props.id, v),
-            isSelected: (v) => Settings.get(props.id, props.value) === v
+            value: Settings.get(props.id, props.value),
+            onChange: (v) => Settings.set(props.id, v)
         }
     ));
 }
