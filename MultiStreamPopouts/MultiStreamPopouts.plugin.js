@@ -303,7 +303,7 @@ function PopoutContent({
     };
     const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getStreamForUser(user.id, stream.guildId));
     return React.createElement(IdleDetector, {
-        timeout: 2e5
+        timeout: 2e3
     }, ({
         idle,
         onActive
