@@ -78,7 +78,7 @@ function PopoutContent({ stream }) {
     const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getStreamForUser(user.id, stream.guildId));
 
     return (
-        <IdleDetector timeout={200_000}>
+        <IdleDetector timeout={2_000}>
             {({ idle, onActive }) => (
                 <>
                     <div
