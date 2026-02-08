@@ -1,4 +1,4 @@
-import { Webpack } from "@api";
+import { Hooks, Webpack } from "@api";
 import manifest from "@manifest";
 import React from "react";
 
@@ -6,22 +6,30 @@ import ErrorBoundary from "../../common/ErrorBoundary";
 import { PopoutWindowStore } from "../modules/shared";
 import { generateStreamKey } from "../modules/utils";
 
-const useStateFromStores = Webpack.getByStrings("useStateFromStores", { searchExports: true });
+
+const [
+    IdleDetector,
+    PopoutWindow,
+    StreamEndedScreen,
+    StreamTile,
+    VideoComponent,
+    VoiceChannelHeader,
+    VolumeSlider,
+] = Webpack.getBulk(
+    { filter: Webpack.Filters.byStrings("timeout", ".delay()") },
+    { filter: m => m.render?.toString().includes("Missing guestWindow reference") },
+    { filter: Webpack.Filters.byStrings("stream", ".Kb4Ukp") },
+    { filter: Webpack.Filters.byComponentType(Webpack.Filters.byStrings("enableZoom", "streamKey", "onAllowIdle")) },
+    { filter: Webpack.Filters.byKeys("onContainerResized") },
+    { filter: Webpack.Filters.byStrings("focusedParticipant") },
+    { filter: Webpack.Filters.byStrings("currentVolume", "toggleLocalMute") },
+);
 
 const ApplicationStreamingStore = Webpack.Stores.ApplicationStreamingStore;
 const ChannelStore = Webpack.Stores.ChannelStore;
 const GuildStore = Webpack.Stores.GuildStore;
 const VideoStreamStore = Webpack.Stores.VideoStreamStore;
 const UserStore = Webpack.Stores.UserStore;
-
-const PopoutWindow = Webpack.getModule(m => m.render?.toString().includes("Missing guestWindow reference"));
-const StreamTile = Webpack.getBySource(".memo", "enableZoom", "streamKey").A;
-const VideoComponent = Webpack.getById(540239).A;
-const VoiceChannelHeader = Webpack.getByStrings("focusedParticipant");
-const IdleDetector = Webpack.getByStrings("timeout", ".delay()");
-const StreamEndedScreen = Webpack.getByStrings("stream", ".Kb4Ukp");
-
-const VolumeSlider = Webpack.getByStrings("currentVolume", "toggleLocalMute");
 
 const styles = Object.defineProperties(
     {},
@@ -75,7 +83,7 @@ function PopoutContent({ stream }) {
         userVideo: false,
     };
 
-    const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getStreamForUser(user.id, stream.guildId));
+    const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getStreamForUser(user.id, stream.guildId));
 
     return (
         <IdleDetector timeout={2_000}>
@@ -118,7 +126,7 @@ function PopoutContent({ stream }) {
                                     streamId={participant.streamId}
                                     userId={user.id}
                                     videoComponent={VideoComponent}
-                                    streamKey={participant.stream.streamKey}
+                                    streamKey={participant.id}
                                     idle={idle}
                                 />
                             ) : (

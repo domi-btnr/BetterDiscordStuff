@@ -172,7 +172,7 @@ const buildPlugin = (pluginFolder, makeFolder) => {
                 get "@manifest"() { return "export default " + fs.readFileSync(manifestPath, "utf8"); },
                 "@api":
                     "import manifest from \"@manifest\";" +
-                    "export const { Commands, Components, ContextMenu, Data, DOM, Logger, Net, Patcher, Plugins, ReactUtils, Themes, UI, Utils, Webpack } = new BdApi(manifest.name);",
+                    "export const { Commands, Components, ContextMenu, Data, DOM, Hooks, Logger, Net, Patcher, Plugins, ReactUtils, Themes, UI, Utils, Webpack } = new BdApi(manifest.name);",
             }),
             {
                 name: "StyleSheet Loader",

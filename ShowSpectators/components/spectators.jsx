@@ -1,10 +1,9 @@
 import "./style.scss";
 
-import { Components, Webpack } from "@api";
+import { Components, Hooks, Webpack } from "@api";
 import React from "react";
 
 import Settings from "../modules/settings";
-import { useStateFromStores } from "../modules/shared";
 
 const { Flex, Text, Tooltip } = Components;
 const ApplicationStreamingStore = Webpack.getStore("ApplicationStreamingStore");
@@ -29,7 +28,7 @@ const getDisplayName = user => RelationshipStore.getNickname(user.id) || user.gl
 
 export function SpectatorsTooltip({ spectatorIds, guildId, noTitle }) {
     if (!spectatorIds && !guildId) {
-        const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
+        const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
         if (!activeStream) return null;
 
         spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
@@ -71,7 +70,7 @@ export function SpectatorsTooltip({ spectatorIds, guildId, noTitle }) {
 }
 
 export function SpectatorsPanel() {
-    const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
+    const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
     if (!activeStream || !Settings.get("showPanel", true)) return null;
 
     let unknownSpectators = 0;

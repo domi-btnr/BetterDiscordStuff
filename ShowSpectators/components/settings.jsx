@@ -1,14 +1,13 @@
-import { Components } from "@api";
+import { Components, Hooks } from "@api";
 import React from "react";
 
 import Settings from "../modules/settings";
 import SettingsItems from "../modules/settings.json";
-import { useStateFromStores } from "../modules/shared";
 
 const { SettingItem, SwitchInput } = Components;
 
 function SwitchItem(props) {
-    const value = useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     return (
         <SettingItem
             {...props}

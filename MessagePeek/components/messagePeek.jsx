@@ -1,10 +1,9 @@
 import "./styles.scss";
 
-import { Components, Webpack } from "@api";
+import { Components, Hooks, Webpack } from "@api";
 import React from "react";
 
 import Settings from "../modules/settings";
-import { useStateFromStores } from "../modules/shared";
 
 const MessageStore = Webpack.getStore("MessageStore");
 const ChannelWrapperStyles = Webpack.getByKeys("muted", "subText");
@@ -15,7 +14,7 @@ const i18n = Webpack.getByKeys("getLocale");
 export default function MessagePeek({ channelId, timestampOnly }) {
     if (!channelId) return null;
 
-    const lastMessage = useStateFromStores([MessageStore], () => MessageStore.getMessages(channelId)?.last());
+    const lastMessage = Hooks.useStateFromStores([MessageStore], () => MessageStore.getMessages(channelId)?.last());
     if (!lastMessage) return null;
 
     if (!timestampOnly) {

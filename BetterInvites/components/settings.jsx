@@ -1,4 +1,4 @@
-import { Components, Webpack } from "@api";
+import { Components, Hooks, Webpack } from "@api";
 import React from "react";
 
 import Settings from "../modules/settings";
@@ -6,7 +6,6 @@ import SettingsItems from "../modules/settings.json";
 
 const { SettingItem, SwitchInput } = Components;
 const Select = Webpack.getByStrings("=\"bottom\",", ".select,", "\"Escape\"===", { searchExports: true });
-const useStateFromStores = Webpack.getByStrings("useStateFromStores", { searchExports: true });
 
 function DropdownItem(props) {
     return (
@@ -23,7 +22,7 @@ function DropdownItem(props) {
 }
 
 function SwitchItem(props) {
-    const value = useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     return (
         <SettingItem
             {...props}
