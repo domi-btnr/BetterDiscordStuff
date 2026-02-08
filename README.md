@@ -31,6 +31,9 @@
 - ### [MessagePeek](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/MessagePeek "MessagePeek")
     > See the last message in a Channel like on mobile
 
+- ### [MultiStreamPopouts](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/MultiStreamPopouts "MultiStreamPopouts")
+    > Allows you to open multiple Streams each in their own popout windows
+
 - ### [ReplaceTimestamps](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/ReplaceTimestamps "ReplaceTimestamps")
     > Replaces plaintext times and dates into Discord's timestamps
 
