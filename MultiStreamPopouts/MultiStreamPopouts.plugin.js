@@ -33,6 +33,7 @@ const {
     ContextMenu,
     Data,
     DOM,
+    Hooks,
     Logger,
     Net,
     Patcher,
@@ -208,9 +209,6 @@ class ErrorBoundary extends React.Component {
 }
 
 /* modules/shared.ts */
-Webpack.getByStrings("useStateFromStores", {
-    searchExports: true
-});
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
     searchExports: true
 });
@@ -242,21 +240,34 @@ function generateStreamKey({
 }
 
 /* components/Popout.jsx */
-const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
-    searchExports: true
+const [
+    IdleDetector,
+    PopoutWindow,
+    StreamEndedScreen,
+    StreamTile,
+    VideoComponent,
+    VoiceChannelHeader,
+    VolumeSlider
+] = Webpack.getBulk({
+    filter: Webpack.Filters.byStrings("timeout", ".delay()")
+}, {
+    filter: (m) => m.render?.toString().includes("Missing guestWindow reference")
+}, {
+    filter: Webpack.Filters.byStrings("stream", ".Kb4Ukp")
+}, {
+    filter: Webpack.Filters.byComponentType(Webpack.Filters.byStrings("enableZoom", "streamKey", "onAllowIdle"))
+}, {
+    filter: Webpack.Filters.byKeys("onContainerResized")
+}, {
+    filter: Webpack.Filters.byStrings("focusedParticipant")
+}, {
+    filter: Webpack.Filters.byStrings("currentVolume", "toggleLocalMute")
 });
 const ApplicationStreamingStore = Webpack.Stores.ApplicationStreamingStore;
 const ChannelStore = Webpack.Stores.ChannelStore;
 const GuildStore = Webpack.Stores.GuildStore;
 const VideoStreamStore = Webpack.Stores.VideoStreamStore;
 const UserStore = Webpack.Stores.UserStore;
-const PopoutWindow = Webpack.getModule((m) => m.render?.toString().includes("Missing guestWindow reference"));
-const StreamTile = Webpack.getBySource(".memo", "enableZoom", "streamKey").A;
-const VideoComponent = Webpack.getById(540239).A;
-const VoiceChannelHeader = Webpack.getByStrings("focusedParticipant");
-const IdleDetector = Webpack.getByStrings("timeout", ".delay()");
-const StreamEndedScreen = Webpack.getByStrings("stream", ".Kb4Ukp");
-const VolumeSlider = Webpack.getByStrings("currentVolume", "toggleLocalMute");
 const styles = Object.defineProperties({},
     Object.fromEntries(
         [
@@ -297,11 +308,10 @@ function PopoutContent({
     const user = UserStore.getUser(stream.ownerId);
     const participant = {
         id: generateStreamKey(stream),
-        stream,
         streamId: VideoStreamStore.getStreamId(stream.ownerId, stream.guildId, "stream"),
         userNick: user?.globalName || user?.username
     };
-    const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getStreamForUser(user.id, stream.guildId));
+    const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getStreamForUser(user.id, stream.guildId));
     return React.createElement(IdleDetector, {
         timeout: 2e3
     }, ({
@@ -353,7 +363,7 @@ function PopoutContent({
                 streamId: participant.streamId,
                 userId: user.id,
                 videoComponent: VideoComponent,
-                streamKey: participant.stream.streamKey,
+                streamKey: participant.id,
                 idle
             }
         ) : React.createElement(StreamEndedScreen, {

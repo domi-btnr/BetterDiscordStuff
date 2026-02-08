@@ -37,6 +37,7 @@ const {
     ContextMenu,
     Data,
     DOM,
+    Hooks,
     Logger,
     Net,
     Patcher,
@@ -179,11 +180,6 @@ const Settings = new class Settings2 extends Flux.Store {
     }
 }();
 
-/* modules/shared.js */
-const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
-    searchExports: true
-});
-
 /* components/messagePeek.jsx */
 const MessageStore = Webpack.getStore("MessageStore");
 const ChannelWrapperStyles = Webpack.getByKeys("muted", "subText");
@@ -196,7 +192,7 @@ function MessagePeek$1({
     timestampOnly
 }) {
     if (!channelId) return null;
-    const lastMessage = useStateFromStores([MessageStore], () => MessageStore.getMessages(channelId)?.last());
+    const lastMessage = Hooks.useStateFromStores([MessageStore], () => MessageStore.getMessages(channelId)?.last());
     if (!lastMessage) return null;
     if (!timestampOnly) {
         const attachmentCount = lastMessage.attachments.length;
@@ -395,7 +391,7 @@ function DropdownItem(props) {
 }
 
 function SwitchItem(props) {
-    const value = useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     return React.createElement(
         SettingItem, {
             ...props,
@@ -413,7 +409,7 @@ function SwitchItem(props) {
 }
 
 function SliderItem(props) {
-    const value = useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     return React.createElement(
         SettingItem, {
             ...props

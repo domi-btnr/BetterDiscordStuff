@@ -40,6 +40,7 @@ const {
     ContextMenu,
     Data,
     DOM,
+    Hooks,
     Logger,
     Net,
     Patcher,
@@ -184,11 +185,6 @@ var SettingsItems = [{
     value: true
 }];
 
-/* modules/shared.js */
-const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
-    searchExports: true
-});
-
 /* components/settings.jsx */
 const {
     SettingItem,
@@ -196,7 +192,7 @@ const {
 } = Components;
 
 function SwitchItem(props) {
-    const value = useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     return React.createElement(
         SettingItem, {
             ...props,
@@ -275,7 +271,7 @@ function SpectatorsTooltip({
     noTitle
 }) {
     if (!spectatorIds && !guildId) {
-        const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
+        const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
         if (!activeStream) return null;
         spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
         guildId = activeStream.guildId;
@@ -319,7 +315,7 @@ function SpectatorsTooltip({
 }
 
 function SpectatorsPanel() {
-    const activeStream = useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
+    const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
     if (!activeStream || !Settings.get("showPanel", true)) return null;
     let unknownSpectators = 0;
     const spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);

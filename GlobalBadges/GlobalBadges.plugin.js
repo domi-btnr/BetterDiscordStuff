@@ -39,6 +39,7 @@ const {
     ContextMenu,
     Data,
     DOM,
+    Hooks,
     Logger,
     Net,
     Patcher,
@@ -263,12 +264,9 @@ const {
     SettingItem,
     SwitchInput
 } = Components;
-const useStateFromStores = Webpack.getByStrings("useStateFromStores", {
-    searchExports: true
-});
 
 function SwitchItem(props) {
-    const value = useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     return React.createElement(
         SettingItem, {
             ...props,
