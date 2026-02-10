@@ -1,13 +1,13 @@
 /**
  * @name MultiStreamPopouts
- * @version 0.0.0
+ * @version 1.0.0
  * @description Allows you to open multiple Streams each in their own popout windows
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds
- * @changelogDate 2026-02-07
+ * @changelogDate 2026-02-10
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "MultiStreamPopouts",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "description": "Allows you to open multiple Streams each in their own popout windows",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,7 +23,7 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds",
     "changelog": [],
-    "changelogDate": "2026-02-07"
+    "changelogDate": "2026-02-10"
 };
 
 /* @api */
@@ -209,6 +209,7 @@ class ErrorBoundary extends React.Component {
 }
 
 /* modules/shared.ts */
+const WINDOW_KEY = (streamKey) => `DISCORD_STREAM_POPUP_${streamKey}`;
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
     searchExports: true
 });
@@ -243,6 +244,7 @@ function generateStreamKey({
 const [
     IdleDetector,
     PopoutWindow,
+    StreamContextMenu,
     StreamEndedScreen,
     StreamTile,
     VideoComponent,
@@ -252,6 +254,9 @@ const [
     filter: Webpack.Filters.byStrings("timeout", ".delay()")
 }, {
     filter: (m) => m.render?.toString().includes("Missing guestWindow reference")
+}, {
+    filter: Webpack.Filters.byStrings("StreamContextMenu"),
+    searchExports: true
 }, {
     filter: Webpack.Filters.byStrings("stream", ".Kb4Ukp")
 }, {
@@ -263,6 +268,7 @@ const [
 }, {
     filter: Webpack.Filters.byStrings("currentVolume", "toggleLocalMute")
 });
+const FullScreenButton = Webpack.getById(423562).A;
 const ApplicationStreamingStore = Webpack.Stores.ApplicationStreamingStore;
 const ChannelStore = Webpack.Stores.ChannelStore;
 const GuildStore = Webpack.Stores.GuildStore;
@@ -285,91 +291,136 @@ function Popout({
     stream
 }) {
     React.useInsertionEffect(() => {
-        const window2 = PopoutWindowStore.getWindow(windowKey);
-        const clone = window2.document.adoptNode(document.querySelector("bd-head").cloneNode(true));
-        window2.document.body.appendChild(clone);
+        const window = PopoutWindowStore.getWindow(windowKey);
+        const clone = window.document.adoptNode(document.querySelector("bd-head").cloneNode(true));
+        window.document.body.appendChild(clone);
     }, []);
-    return React.createElement(PopoutWindow, {
-        windowKey,
-        withTitleBar: true,
-        maxOSFrame: true
-    }, React.createElement(ErrorBoundary, {
-        id: manifest.name
-    }, React.createElement(PopoutContent, {
-        stream
-    })));
+    const user = UserStore.getUser(stream.ownerId);
+    const isFullScreen = Hooks.useStateFromStores([PopoutWindowStore], () => PopoutWindowStore.isWindowFullScreen(windowKey));
+    return React.createElement(
+        PopoutWindow, {
+            windowKey,
+            withTitleBar: !isFullScreen,
+            maxOSFrame: true,
+            title: `Stream Popout | ${user?.globalName || user?.username}`
+        },
+        React.createElement(ErrorBoundary, {
+            id: manifest.name
+        }, React.createElement(PopoutContent, {
+            stream
+        }))
+    );
 }
 
 function PopoutContent({
     stream
 }) {
+    const streamKey = generateStreamKey(stream);
+    const popoutWindow = PopoutWindowStore.getWindow(WINDOW_KEY(streamKey));
     const channel = ChannelStore.getChannel(stream.channelId);
     const guild = GuildStore.getGuild(stream.guildId);
     const user = UserStore.getUser(stream.ownerId);
     const participant = {
-        id: generateStreamKey(stream),
         streamId: VideoStreamStore.getStreamId(stream.ownerId, stream.guildId, "stream"),
         userNick: user?.globalName || user?.username
     };
     const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getStreamForUser(user.id, stream.guildId));
-    return React.createElement(IdleDetector, {
-        timeout: 2e3
-    }, ({
-        idle,
-        onActive
-    }) => React.createElement(React.Fragment, null, React.createElement(
+    const isFullScreen = Hooks.useStateFromStores([PopoutWindowStore], () => PopoutWindowStore.isWindowFullScreen(popoutWindow.name));
+    const handleToggleFullscreen = React.useCallback(() => {
+        if (isFullScreen) {
+            popoutWindow.document.exitFullscreen();
+            DiscordNative.window.restore(popoutWindow.name);
+        } else popoutWindow.document.getElementById("app-mount").requestFullscreen();
+    }, [isFullScreen, popoutWindow]);
+    return React.createElement(
         "div", {
-            onMouseMove: onActive,
-            className: [styles.root, idle && styles.idle].filter(Boolean).join(" ")
-        },
-        React.createElement("div", {
-            className: styles.videoControls
-        }, React.createElement("div", {
-            className: styles.gradientTop
-        }), React.createElement("div", {
-            className: styles.topControls
-        }, React.createElement("div", {
-            className: styles.headerWrapper
-        }, React.createElement(
-            VoiceChannelHeader, {
-                channel,
-                guild,
-                inCall: true,
-                isChatOpen: true
-            }
-        ))), React.createElement("div", {
-            className: styles.gradientBottom
-        }), React.createElement("div", {
-            className: styles.bottomControls
-        }, React.createElement("div", {
-            className: [styles.flex, styles.edgeControls, styles.justifyEnd].join(" ")
-        }, React.createElement(
-            VolumeSlider, {
-                context: "stream",
-                userId: user.id,
-                className: styles.rightTrayIcon,
-                sliderClassName: styles.volumeSlider,
-                currentWindow: window
-            }
-        )))),
-        React.createElement("div", {
             style: {
-                height: "80%",
+                height: "100%",
                 width: "100%"
-            }
-        }, activeStream ? React.createElement(
-            StreamTile, {
-                enableZoom: true,
-                streamId: participant.streamId,
-                userId: user.id,
-                videoComponent: VideoComponent,
-                streamKey: participant.id,
-                idle
-            }
-        ) : React.createElement(StreamEndedScreen, {
-            stream
-        }))
-    )));
+            },
+            "data-guild-id": stream.guildId,
+            "data-channel-id": stream.channelId,
+            "data-user-id": stream.ownerId
+        },
+        React.createElement(IdleDetector, {
+            timeout: 2e3
+        }, ({
+            idle,
+            onActive
+        }) => React.createElement(React.Fragment, null, React.createElement(
+            "div", {
+                onMouseMove: onActive,
+                className: [styles.root, idle && styles.idle].filter(Boolean).join(" ")
+            },
+            React.createElement("div", {
+                className: styles.videoControls
+            }, React.createElement("div", {
+                className: styles.gradientTop
+            }), React.createElement("div", {
+                className: styles.topControls
+            }, React.createElement("div", {
+                className: styles.headerWrapper
+            }, React.createElement(
+                VoiceChannelHeader, {
+                    channel,
+                    guild,
+                    inCall: true,
+                    isChatOpen: true
+                }
+            ))), React.createElement("div", {
+                className: styles.gradientBottom
+            }), React.createElement("div", {
+                className: styles.bottomControls
+            }, React.createElement("div", {
+                className: [styles.flex, styles.edgeControls, styles.justifyEnd].join(" ")
+            }, React.createElement(
+                VolumeSlider, {
+                    context: "stream",
+                    userId: user.id,
+                    className: styles.rightTrayIcon,
+                    sliderClassName: styles.volumeSlider,
+                    currentWindow: popoutWindow
+                }
+            ), React.createElement(
+                FullScreenButton, {
+                    className: styles.rightTrayIcon,
+                    enabled: isFullScreen,
+                    guestWindow: popoutWindow,
+                    node: popoutWindow.document.getElementById("app-mount"),
+                    onClick: handleToggleFullscreen
+                }
+            )))),
+            React.createElement(
+                "div", {
+                    style: {
+                        height: idle ? "100%" : "90%",
+                        width: "100%",
+                        transition: "height 150ms ease"
+                    },
+                    onContextMenu: (event) => {
+                        ContextMenu.open(event, (props) => {
+                            return React.createElement(StreamContextMenu, {
+                                ...props,
+                                stream
+                            });
+                        });
+                    }
+                },
+                activeStream ? React.createElement(
+                    StreamTile, {
+                        enableZoom: true,
+                        streamId: participant.streamId,
+                        userId: user.id,
+                        videoComponent: VideoComponent,
+                        streamKey,
+                        idle
+                    }
+                ) : React.createElement(StreamEndedScreen, {
+                    stream
+                })
+            )
+        )))
+    );
 }
 
 /* index.jsx */
@@ -389,7 +440,7 @@ class MultiStreamPopouts {
     eventListener({
         streamKey
     }) {
-        const windowKey = `DISCORD_STREAM_POPUP_${streamKey}`;
+        const windowKey = WINDOW_KEY(streamKey);
         const window = PopoutWindowStore.getWindowOpen(windowKey);
         if (window) PopoutWindowStore.unmountWindow(windowKey);
     }
@@ -398,8 +449,8 @@ class MultiStreamPopouts {
             stream
         }) => {
             const menuGroup = (findGroupById(res, "user-volume") || findGroupById(res, "stream-settings-audio-enable"))?.props?.children;
-            if (!menuGroup) return;
-            const windowKey = `DISCORD_STREAM_POPUP_${generateStreamKey(stream)}`;
+            if (!menuGroup || !Array.isArray(menuGroup)) return;
+            const windowKey = WINDOW_KEY(generateStreamKey(stream));
             menuGroup.push(
                 React.createElement(
                     ContextMenu.Item, {
