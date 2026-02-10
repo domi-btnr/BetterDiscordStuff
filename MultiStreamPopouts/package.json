@@ -1,6 +1,6 @@
 {
 	"name": "MultiStreamPopouts",
-	"version": "0.0.0",
+	"version": "1.0.0",
 	"description": "Allows you to open multiple Streams each in their own popout windows",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -8,5 +8,5 @@
 	"donate": "https://paypal.me/domibtnr",
 	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds",
 	"changelog": [],
-	"changelogDate": "2026-02-07"
+	"changelogDate": "2026-02-10"
 }

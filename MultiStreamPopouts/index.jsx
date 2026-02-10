@@ -5,7 +5,7 @@ import React from "react";
 
 import showChangelog from "../common/Changelog";
 import Popout from "./components/Popout";
-import { Dispatcher, PopoutWindowStore } from "./modules/shared";
+import { Dispatcher, PopoutWindowStore, WINDOW_KEY } from "./modules/shared";
 import { findGroupById, generateStreamKey } from "./modules/utils";
 
 let unpatchContextMenu;
@@ -25,7 +25,7 @@ export default class MultiStreamPopouts {
     }
 
     eventListener({ streamKey }) {
-        const windowKey = `DISCORD_STREAM_POPUP_${streamKey}`;
+        const windowKey = WINDOW_KEY(streamKey);
         const window = PopoutWindowStore.getWindowOpen(windowKey);
         if (window) PopoutWindowStore.unmountWindow(windowKey);
     }
@@ -33,9 +33,9 @@ export default class MultiStreamPopouts {
     patchStreamTileContextMenu() {
         unpatchContextMenu = ContextMenu.patch("stream-context", (res, { stream }) => {
             const menuGroup = (findGroupById(res, "user-volume") || findGroupById(res, "stream-settings-audio-enable"))?.props?.children;
-            if (!menuGroup) return;
+            if (!menuGroup || !Array.isArray(menuGroup)) return;
 
-            const windowKey = `DISCORD_STREAM_POPUP_${generateStreamKey(stream)}`;
+            const windowKey = WINDOW_KEY(generateStreamKey(stream));
 
             menuGroup.push(
                 <ContextMenu.Item
