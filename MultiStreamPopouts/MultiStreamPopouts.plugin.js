@@ -6,7 +6,7 @@
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
- * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds
+ * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MultiStreamPopouts
  * @changelogDate 2026-02-24
  */
 
@@ -21,7 +21,7 @@ const manifest = {
     "authorId": "354191516979429376",
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds",
+    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MultiStreamPopouts",
     "changelog": [],
     "changelogDate": "2026-02-24"
 };
