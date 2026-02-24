@@ -7,7 +7,7 @@
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds
- * @changelogDate 2026-02-10
+ * @changelogDate 2026-02-24
  */
 
 'use strict';
@@ -23,7 +23,7 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds",
     "changelog": [],
-    "changelogDate": "2026-02-10"
+    "changelogDate": "2026-02-24"
 };
 
 /* @api */
@@ -260,7 +260,7 @@ const [
 }, {
     filter: Webpack.Filters.byStrings("stream", ".Kb4Ukp")
 }, {
-    filter: Webpack.Filters.byComponentType(Webpack.Filters.byStrings("enableZoom", "streamKey", "onAllowIdle"))
+    filter: Webpack.Filters.byComponentType(Webpack.Filters.byStrings("videoComponent", "streamKey", 'location:"VideoStream"'))
 }, {
     filter: Webpack.Filters.byKeys("onContainerResized")
 }, {
