@@ -21,7 +21,7 @@ const [
     { filter: m => m.render?.toString().includes("Missing guestWindow reference") },
     { filter: Webpack.Filters.byStrings("StreamContextMenu"), searchExports: true },
     { filter: Webpack.Filters.byStrings("stream", ".Kb4Ukp") },
-    { filter: Webpack.Filters.byComponentType(Webpack.Filters.byStrings("enableZoom", "streamKey", "onAllowIdle")) },
+    { filter: Webpack.Filters.byComponentType(Webpack.Filters.byStrings("videoComponent", "streamKey", "location:\"VideoStream\"")) },
     { filter: Webpack.Filters.byKeys("onContainerResized") },
     { filter: Webpack.Filters.byStrings("focusedParticipant") },
     { filter: Webpack.Filters.byStrings("currentVolume", "toggleLocalMute") },
