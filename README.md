@@ -42,3 +42,5 @@
 
 - ### [UnsupressEmbeds](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/UnsupressEmbeds "UnsupressEmbeds")
     > Allows you to unsuppress embeds in messages
+
+<!-- Test for Zerebos -->
