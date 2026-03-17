@@ -1,13 +1,13 @@
 /**
  * @name FriendCodes
- * @version 1.2.3
+ * @version 1.2.4
  * @description Generate FriendCodes to easily add friends
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes
- * @changelogDate 2026-01-24
+ * @changelogDate 2026-03-17
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "FriendCodes",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "description": "Generate FriendCodes to easily add friends",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,11 +23,11 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes",
     "changelog": [{
-        "title": "Fixed",
-        "type": "fixed",
-        "items": ["Updated the Plugin for the latest Discord Changes"]
+        "title": "Improvements",
+        "type": "improved",
+        "items": ["Updated the filter for FormStyles"]
     }],
-    "changelogDate": "2026-01-24"
+    "changelogDate": "2026-03-17"
 };
 
 /* @api */
@@ -37,6 +37,7 @@ const {
     ContextMenu,
     Data,
     DOM,
+    Hooks,
     Logger,
     Net,
     Patcher,
@@ -395,7 +396,7 @@ const {
     Flex,
     Text
 } = Components;
-const FormStyles = Webpack.getById("97276");
+const FormStyles = Webpack.getModule((m) => m.header && m.title && Object.keys(m).length === 2);
 const {
     createFriendInvite,
     getAllFriendInvites,
