@@ -6,7 +6,7 @@ import FriendCodeCard from "./codeCard";
 import styles from "./style.scss";
 
 const { Button, Flex, Text } = Components;
-const FormStyles = Webpack.getById("97276");
+const FormStyles = Webpack.getModule(m => m.header && m.title && Object.keys(m).length === 2);
 const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = InviteModule;
 
 export default function FriendCodesPanel() {
