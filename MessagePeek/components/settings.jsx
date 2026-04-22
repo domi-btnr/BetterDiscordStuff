@@ -6,7 +6,7 @@ import SettingsItems from "../modules/settings.json";
 
 const { SettingItem, SwitchInput } = Components;
 const Select = Webpack.getByStrings(".selectPositionTop]:\"top\"===", { searchExports: true });
-const Slider = Webpack.getByStrings("\"markDash\".concat(", { searchExports: true });
+const Slider = Webpack.getByStrings("stickToMarkers");
 
 function DropdownItem(props) {
     return (
