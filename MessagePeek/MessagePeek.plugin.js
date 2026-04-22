@@ -1,13 +1,13 @@
 /**
  * @name MessagePeek
- * @version 1.2.4
+ * @version 1.2.5
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek
- * @changelogDate 2026-01-25
+ * @changelogDate 2026-04-22
  */
 
 'use strict';
@@ -15,7 +15,7 @@
 /* @manifest */
 const manifest = {
     "name": "MessagePeek",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,11 +23,11 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
     "changelog": [{
-        "title": "Fixed",
+        "title": "Fixed Settings",
         "type": "fixed",
-        "items": ["Updated the Plugin for the latest Discord Changes"]
+        "items": ["Opening the Plugin Settings no longer causes an error"]
     }],
-    "changelogDate": "2026-01-25"
+    "changelogDate": "2026-04-22"
 };
 
 /* @api */
@@ -372,9 +372,7 @@ const {
 const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', {
     searchExports: true
 });
-const Slider = Webpack.getByStrings('"markDash".concat(', {
-    searchExports: true
-});
+const Slider = Webpack.getByStrings("stickToMarkers");
 
 function DropdownItem(props) {
     return React.createElement(SettingItem, {
