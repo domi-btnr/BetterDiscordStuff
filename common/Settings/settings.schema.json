@@ -1,0 +1,151 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Settings Schema",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "items": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "const": "switch"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "note": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "value": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "name",
+                            "id",
+                            "value"
+                        ],
+                        "additionalProperties": false
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "const": "dropdown"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "note": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "value": {
+                                "type": "string"
+                            },
+                            "options": {
+                                "oneOf": [
+                                    {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "label": {
+                                                    "type": "string"
+                                                },
+                                                "value": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "label",
+                                                "value"
+                                            ],
+                                            "additionalProperties": false
+                                        }
+                                    },
+                                    {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "name",
+                            "id",
+                            "value",
+                            "options"
+                        ],
+                        "additionalProperties": false
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "const": "slider"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "note": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "value": {
+                                "type": "number"
+                            },
+                            "defaultValue": {
+                                "type": "number"
+                            },
+                            "minValue": {
+                                "type": "number"
+                            },
+                            "maxValue": {
+                                "type": "number"
+                            },
+                            "markers": {
+                                "type": "array",
+                                "items": {
+                                    "type": "number"
+                                }
+                            },
+                            "stickToMarkers": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "name",
+                            "id",
+                            "value",
+                            "minValue",
+                            "maxValue"
+                        ],
+                        "additionalProperties": false
+                    }
+                ]
+            }
+        }
+    },
+    "required": [
+        "items"
+    ]
+}

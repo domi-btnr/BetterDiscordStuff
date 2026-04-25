@@ -6,7 +6,7 @@ interface BasicSettingsItem {
 
 export interface DropdownSettingsItem extends BasicSettingsItem {
     type: "dropdown";
-    options: { label: string; value: string }[];
+    options: { label: string; value: string }[] | string[];
     value: string;
 }
 
@@ -18,7 +18,7 @@ export interface SwitchSettingsItem extends BasicSettingsItem {
 export interface SliderSettingsItem extends BasicSettingsItem {
     type: "slider";
     value: number;
-    defaultValue: number;
+    defaultValue?: number;
     minValue: number;
     maxValue: number;
     markers?: number[];

@@ -1,11 +1,14 @@
 import { Patcher, Webpack } from "@api";
+import showChangelog from "@common/Changelog";
+import type { SettingsItem } from "@common/Settings";
+import { SettingsPanel } from "@common/Settings";
 import manifest from "@manifest";
 import Styles from "@styles";
+import { DisplayProfile } from "@vencord/discord-types";
 import React from "react";
 
-import showChangelog from "../common/Changelog";
 import Badges from "./components/globalBadges";
-import SettingsPanel from "./components/settings";
+import SettingsItems from "./settings.json";
 
 export default class GlobalBadges {
     start() {
@@ -22,7 +25,8 @@ export default class GlobalBadges {
     patchBadges() {
         const [BadgeList, Key_BL] = Webpack.getWithKey(Webpack.Filters.byStrings("badges", "badgeClassName", ".BADGE"));
 
-        Patcher.after(BadgeList, Key_BL, (_, [{ displayProfile }], res) => {
+        Patcher.after(BadgeList, Key_BL, (_, args, res) => {
+            const [{ displayProfile }] = args as [{ displayProfile: DisplayProfile }];
             if (!displayProfile?.userId) return;
             res.props.children.unshift(
                 <Badges userId={displayProfile.userId} />
@@ -31,6 +35,6 @@ export default class GlobalBadges {
     }
 
     getSettingsPanel() {
-        return <SettingsPanel />;
+        return <SettingsPanel items={SettingsItems.items as SettingsItem[]} />;
     }
 }
