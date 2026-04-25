@@ -51,12 +51,12 @@ declare module "@manifest" {
     export interface Manifest {
         name: string;
         version: string;
-        description: string;
+        description?: string;
         author: string;
         authorId: string;
-        invite: string;
-        donate: string;
-        source: string;
+        invite?: string;
+        donate?: string;
+        source?: string;
         changelog: ChangelogItem[];
         changelogDate: string;
         changelogImage?: string;

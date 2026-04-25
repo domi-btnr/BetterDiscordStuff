@@ -1,4 +1,5 @@
 {
+	"$schema": "../common/Schemas/manifest.schema.json",
 	"name": "GlobalBadges",
 	"version": "1.0.5",
 	"description": "Adds global badges from other client mods",

@@ -1,0 +1,91 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Plugin Manifest Schema",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "The name of the plugin"
+        },
+        "version": {
+            "type": "string",
+            "description": "The version of the plugin (semantic versioning)"
+        },
+        "description": {
+            "type": "string",
+            "description": "A description of what the plugin does"
+        },
+        "author": {
+            "type": "string",
+            "description": "The author of the plugin"
+        },
+        "authorId": {
+            "type": "string",
+            "description": "The Discord user ID of the plugin author"
+        },
+        "invite": {
+            "type": "string",
+            "description": "A Discord invite code (optional)"
+        },
+        "donate": {
+            "type": "string",
+            "description": "A donation link (optional)"
+        },
+        "source": {
+            "type": "string",
+            "description": "The source code repository URL (optional)"
+        },
+        "changelog": {
+            "type": "array",
+            "description": "List of changelog entries",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "The title of this changelog entry"
+                    },
+                    "type": {
+                        "enum": [
+                            "added",
+                            "changed",
+                            "fixed",
+                            "improved"
+                        ],
+                        "description": "The type of change"
+                    },
+                    "items": {
+                        "type": "array",
+                        "description": "List of changes",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "type",
+                    "items"
+                ],
+                "additionalProperties": false
+            }
+        },
+        "changelogDate": {
+            "type": "string",
+            "description": "The date of the latest changelog (YYYY-MM-DD)"
+        },
+        "changelogImage": {
+            "type": "string",
+            "description": "URL to an image for the changelog (optional)"
+        }
+    },
+    "required": [
+        "name",
+        "version",
+        "author",
+        "authorId",
+        "changelog",
+        "changelogDate"
+    ],
+    "additionalProperties": true
+}

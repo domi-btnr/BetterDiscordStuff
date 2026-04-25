@@ -1,5 +1,5 @@
 {
-    "$schema": "../common/Settings/settings.schema.json",
+    "$schema": "../common/Schemas/settings.schema.json",
     "items": [
         {
             "type": "switch",

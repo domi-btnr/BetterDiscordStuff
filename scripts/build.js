@@ -187,7 +187,9 @@ const buildPlugin = (pluginFolder, makeFolder) => {
             exports: "auto"
         },
         treeshake: {
-            moduleSideEffects: false,
+            moduleSideEffects: id => {
+                return id.endsWith(".css") || id.endsWith(".scss");
+            },
             propertyReadSideEffects: false,
             tryCatchDeoptimization: false
         },
