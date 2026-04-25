@@ -1,3 +1,11 @@
+> [!IMPORTANT]  
+> This Plugin has been archived due to Discord adding the feature themselves
+> 
+> That means that this Plugin will be **no longer updated**
+
+<details>
+<summary>Open archived README</summary>
+
 <div align="center">
     <h1>MultiStreamPopouts</h1>
     <p>Allows you to open multiple Streams each in their own popout windows</p>
@@ -14,10 +22,12 @@
 ---
 
 ## Preview
-![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/MultiStreamPopouts/images/Preview.png)
+![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/archive/MultiStreamPopouts/images/Preview.png)
 
 ## 📥 Installation
 
 1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/MultiStreamPopouts/MultiStreamPopouts.plugin.js)
 2. Save or move the file into your plugins folder
 3. Enable the plugin in the settings
+
+</details>
