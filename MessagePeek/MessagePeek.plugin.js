@@ -1,21 +1,23 @@
 /**
+ * @$schema ../common/Schemas/manifest.schema.json
  * @name MessagePeek
- * @version 1.2.5
+ * @version 1.2.6
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek
- * @changelogDate 2026-04-22
+ * @changelogDate 2026-04-25
  */
 
 'use strict';
 
 /* @manifest */
 const manifest = {
+    "$schema": "../common/Schemas/manifest.schema.json",
     "name": "MessagePeek",
-    "version": "1.2.5",
+    "version": "1.2.6",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,31 +25,121 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
     "changelog": [{
-        "title": "Fixed Settings",
-        "type": "fixed",
-        "items": ["Opening the Plugin Settings no longer causes an error"]
-    }],
-    "changelogDate": "2026-04-22"
+            "title": "Fixed",
+            "type": "fixed",
+            "items": ["Updated the Plugin to work with the latest Discord update"]
+        },
+        {
+            "title": "Known broken Features",
+            "type": "changed",
+            "items": ["Removed the option to show timestamps in the DM list as it doesn't work and I don't have the time to fix it right now"]
+        }
+    ],
+    "changelogDate": "2026-04-25"
 };
 
 /* @api */
 const {
-    Commands,
     Components,
-    ContextMenu,
     Data,
     DOM,
     Hooks,
-    Logger,
-    Net,
     Patcher,
-    Plugins,
     ReactUtils,
-    Themes,
     UI,
     Utils,
     Webpack
 } = new BdApi(manifest.name);
+
+/* react */
+var React = BdApi.React;
+
+/* ../common/Settings/store.ts */
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
+    searchExports: true
+});
+const Flux = Webpack.getByKeys("Store");
+const Settings = new class Settings2 extends Flux.Store {
+    constructor() {
+        super(Dispatcher, {});
+    }
+    _settings = Data.load("SETTINGS") ?? {};
+    get(key, def = null) {
+        return this._settings[key] ?? def;
+    }
+    set(key, value) {
+        this._settings[key] = value;
+        Data.save("SETTINGS", this._settings);
+        this.emitChange();
+    }
+}();
+
+/* ../common/Settings/panel.tsx */
+const {
+    SettingItem,
+    SwitchInput
+} = Components;
+const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', {
+    searchExports: true
+});
+const Slider = Webpack.getByStrings("stickToMarkers");
+
+function DropdownItem(props) {
+    return React.createElement(SettingItem, {
+        ...props
+    }, React.createElement(
+        Select, {
+            closeOnSelect: true,
+            options: props.options,
+            serialize: (v) => String(v),
+            select: (v) => Settings.set(props.id, v),
+            isSelected: (v) => Settings.get(props.id, props.value) === v
+        }
+    ));
+}
+
+function SwitchItem(props) {
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return React.createElement(SettingItem, {
+        ...props,
+        inline: true
+    }, React.createElement(SwitchInput, {
+        value,
+        onChange: (v) => Settings.set(props.id, v)
+    }));
+}
+
+function SliderItem(props) {
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return React.createElement(SettingItem, {
+        ...props
+    }, React.createElement(
+        Slider, {
+            ...props,
+            handleSize: 10,
+            initialValue: value,
+            defaultValue: props.defaultValue,
+            minValue: props.minValue,
+            maxValue: props.maxValue,
+            onValueChange: (value2) => Settings.set(props.id, Math.round(value2)),
+            onValueRender: (value2) => Math.round(value2)
+        }
+    ));
+}
+
+function SettingsPanel(props) {
+    const ComponentMap = {
+        dropdown: DropdownItem,
+        switch: SwitchItem,
+        slider: SliderItem
+    };
+    return props.items.map((item) => {
+        const Component = ComponentMap[item.type];
+        return Component ? React.createElement(Component, {
+            ...item
+        }) : null;
+    });
+}
 
 /* @styles */
 
@@ -61,9 +153,6 @@ var Styles = {
         DOM.removeStyle();
     }
 };
-
-/* react */
-var React = BdApi.React;
 
 /* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
@@ -89,6 +178,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
 
 .Changelog-Item {
   color: #c4c9ce;
+  margin-bottom: 16px;
 }
 .Changelog-Item .Changelog-Header {
   display: flex;
@@ -154,36 +244,14 @@ function showChangelog(manifest) {
 }
 
 /* components/styles.scss */
-Styles.sheets.push("/* components/styles.scss */", `a[href^="/channels/@me"] [class^=layout] {
+Styles.sheets.push("/* components/styles.scss */", `a[href^="/channels/@me/"] [class^=layout] {
   min-height: 42px;
   max-height: 50px;
   height: unset;
 }`);
 
-/* modules/settings.js */
-const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
-    searchExports: true
-});
-const Flux = Webpack.getByKeys("Store");
-const Settings = new class Settings2 extends Flux.Store {
-    constructor() {
-        super(Dispatcher, {});
-    }
-    _settings = Data.load("SETTINGS") ?? {};
-    get(key, def) {
-        return this._settings[key] ?? def;
-    }
-    set(key, value) {
-        this._settings[key] = value;
-        Data.save("SETTINGS", this._settings);
-        this.emitChange();
-    }
-}();
-
 /* components/messagePeek.jsx */
 const MessageStore = Webpack.getStore("MessageStore");
-const ChannelWrapperStyles = Webpack.getByKeys("muted", "subText");
-const ChannelStyles = Webpack.getByKeys("closeButton", "subtext");
 const Parser = Webpack.getByKeys("parseTopic");
 const i18n = Webpack.getByKeys("getLocale");
 
@@ -200,27 +268,34 @@ function MessagePeek$1({
         if (!content) return null;
         const charLimit = Settings.get("tooltipCharacterLimit", 256);
         const authorName = lastMessage.author.email && Settings.get("showYourselfAsYou", true) ? "You" : lastMessage.author["globalName"] || lastMessage.author["username"];
-        return React.createElement(
-            "div", {
-                className: ChannelWrapperStyles.subText,
-                style: {
-                    marginBottom: "2px"
-                }
+        return React.createElement("div", {
+            style: {
+                marginBottom: "2px",
+                marginTop: "-2px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap"
+            }
+        }, React.createElement(
+            Components.Tooltip, {
+                text: content.length > charLimit ? Parser.parse(content.slice(0, charLimit).trim() + "\u2026") : Parser.parse(content)
             },
-            React.createElement(
-                Components.Tooltip, {
-                    text: content.length > charLimit ? Parser.parse(content.slice(0, charLimit).trim() + "\u2026") : Parser.parse(content)
+            (props) => React.createElement(
+                "div", {
+                    ...props,
+                    style: {
+                        fontSize: "12px",
+                        fontWeight: "var(--font-weight-medium)",
+                        lineHeight: "16px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap"
+                    }
                 },
-                (props) => React.createElement(
-                    "div", {
-                        ...props,
-                        className: ChannelStyles.subtext
-                    },
-                    Settings.get("showAuthor", true) && `${authorName}: `,
-                    Parser.parseInlineReply(content)
-                )
+                Settings.get("showAuthor", true) && `${authorName}: `,
+                Parser.parseInlineReply(content)
             )
-        );
+        ));
     } else {
         const now = Date.now();
         const dateTimeFormatter = new Intl.DateTimeFormat(i18n.getLocale(), {
@@ -292,8 +367,8 @@ function MessagePeek$1({
     }
 }
 
-/* modules/settings.json */
-var SettingsItems = [{
+/* settings.json */
+var items = [{
         type: "switch",
         name: "Show in DMs",
         note: "",
@@ -363,98 +438,9 @@ var SettingsItems = [{
         defaultValue: 256
     }
 ];
-
-/* components/settings.jsx */
-const {
-    SettingItem,
-    SwitchInput
-} = Components;
-const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', {
-    searchExports: true
-});
-const Slider = Webpack.getByStrings("stickToMarkers");
-
-function DropdownItem(props) {
-    return React.createElement(SettingItem, {
-        ...props
-    }, React.createElement(
-        Select, {
-            closeOnSelect: true,
-            options: props.options,
-            serialize: (v) => String(v),
-            select: (v) => Settings.set(props.id, v),
-            isSelected: (v) => Settings.get(props.id, props.value) === v
-        }
-    ));
-}
-
-function SwitchItem(props) {
-    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    return React.createElement(
-        SettingItem, {
-            ...props,
-            inline: true
-        },
-        React.createElement(
-            SwitchInput, {
-                value,
-                onChange: (v) => {
-                    Settings.set(props.id, v);
-                }
-            }
-        )
-    );
-}
-
-function SliderItem(props) {
-    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    return React.createElement(
-        SettingItem, {
-            ...props
-        },
-        React.createElement(
-            Slider, {
-                ...props,
-                initialValue: value,
-                defaultValue: props.defaultValue,
-                minValue: props.minValue,
-                maxValue: props.maxValue,
-                handleSize: 10,
-                onValueChange: (v) => {
-                    Settings.set(props.id, Math.round(v));
-                },
-                onValueRender: (v) => Math.round(v)
-            }
-        )
-    );
-}
-
-function renderSettings(items) {
-    return items.map((item) => {
-        switch (item.type) {
-            case "dropdown":
-                return React.createElement(DropdownItem, {
-                    ...item
-                });
-            case "switch":
-                return React.createElement(SwitchItem, {
-                    ...item
-                });
-            case "slider":
-                return React.createElement(SliderItem, {
-                    ...item
-                });
-            default:
-                return null;
-        }
-    });
-}
-
-function SettingsPanel() {
-    return React.createElement("div", {
-        className: "settings-panel"
-    }, renderSettings(SettingsItems));
-}
+var SettingsItems = {
+    items: items
+};
 
 /* index.jsx */
 class MessagePeek {
@@ -470,12 +456,11 @@ class MessagePeek {
         Patcher.unpatchAll();
         Styles.unload();
     }
-    patchDMs() {
+    async patchDMs() {
         const ChannelContext = React.createContext(null);
-        const ChannelWrapper = Webpack.getBySource("activities", "isMultiUserDM", "isMobile");
-        const ChannelItem = Webpack.getById("877526");
-        const NameWrapper = Webpack.getBySource("AvatarWithText").A;
-        const ChannelClasses = Webpack.getByKeys("channel", "decorator");
+        const ChannelWrapper = await Webpack.waitForModule(Webpack.Filters.bySource('location:"PrivateChannel",', "isMobile"));
+        const NameWrapper = (await Webpack.waitForModule(Webpack.Filters.bySource("AvatarWithText"))).A;
+        const ChannelClasses = await Webpack.waitForModule(Webpack.Filters.byKeys("channel", "decorator"));
         Patcher.after(ChannelWrapper, "Ay", (_, __, res) => {
             if (!Settings.get("showInDMs", true)) return;
             Patcher.after(res, "type", (_2, [props], res2) => {
@@ -483,16 +468,6 @@ class MessagePeek {
                     value: props.channel
                 }, res2);
             });
-        });
-        Patcher.after(ChannelItem, "H", (_, __, res) => {
-            if (!Settings.get("showTimestamp", true)) return;
-            const channel = React.useContext(ChannelContext);
-            if (!channel) return res;
-            const children = res.props.children;
-            children.splice(children.length - 1, 0, React.createElement(MessagePeek$1, {
-                channelId: channel.id,
-                timestampOnly: true
-            }));
         });
         Patcher.after(NameWrapper, "render", (_, __, res) => {
             const channel = React.useContext(ChannelContext);
@@ -522,9 +497,9 @@ class MessagePeek {
             if (ChannelWrapperInstance) ChannelWrapperInstance.forceUpdate();
         }
     }
-    patchGuildChannel() {
-        const [ChannelWrapper, Key_CW] = Webpack.getWithKey(Webpack.Filters.byStrings("channel", "unread", ".ALL_MESSAGES"));
-        Patcher.after(ChannelWrapper, Key_CW, (_, [{
+    async patchGuildChannel() {
+        const ChannelWrapper = await Webpack.waitForModule(Webpack.Filters.byComponentType(Webpack.Filters.byStrings("channel", "unread", ".ALL_MESSAGES")));
+        Patcher.after(ChannelWrapper, "render", (_, [{
             channel
         }], res) => {
             if (!Settings.get("showInGuilds", true)) return;
@@ -551,7 +526,9 @@ class MessagePeek {
         });
     }
     getSettingsPanel() {
-        return React.createElement(SettingsPanel, null);
+        return React.createElement(SettingsPanel, {
+            items: SettingsItems.items
+        });
     }
 }
 
