@@ -14,6 +14,10 @@ const { js: jsBeautify } = require("js-beautify");
 
 const NO_PLUGIN_FOLDERS = [".github", "common", "scripts"];
 
+const tsconfigPath = path.resolve(process.cwd(), "tsconfig.json");
+const tsconfig = JSON.parse(fs.readFileSync(tsconfigPath, "utf8"));
+const tsPaths = tsconfig.compilerOptions?.paths || {};
+
 let argv = parseArgs({
     args: process.argv.slice(2),
     allowPositionals: true,
@@ -56,6 +60,35 @@ if (!argv.plugins.length) {
     console.error("No Plugins provided!");
     process.exit(0);
 }
+
+const tsPathAliasResolver = tsPaths => {
+    const aliases = Object.entries(tsPaths).map(([pattern, mappings]) => ({
+        pattern: pattern.replace("/*", ""),
+        mapping: mappings[0].replace("/*", "")
+    }));
+
+    return {
+        name: "TS Path Alias Resolver",
+        resolveId(id) {
+            for (const { pattern, mapping } of aliases) {
+                if (id.startsWith(pattern + "/")) {
+                    const suffix = id.slice(pattern.length + 1);
+                    const resolved = path.resolve(process.cwd(), mapping, suffix);
+                    if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
+                        const extensions = [".ts", ".tsx", ".js", ".jsx"];
+                        for (const ext of extensions) {
+                            const indexFile = path.join(resolved, `index${ext}`);
+                            if (fs.existsSync(indexFile)) {
+                                return indexFile;
+                            }
+                        }
+                    }
+                    return resolved;
+                }
+            }
+        }
+    };
+};
 
 function makeMeta(manifest) {
     manifest.author ??= manifest.authors.map(e => e.name).join(", ");
@@ -153,9 +186,15 @@ const buildPlugin = (pluginFolder, makeFolder) => {
             format: "cjs",
             exports: "auto"
         },
+        treeshake: {
+            moduleSideEffects: false,
+            propertyReadSideEffects: false,
+            tryCatchDeoptimization: false
+        },
         external: require("node:module").builtinModules,
         plugins: [
             json(),
+            tsPathAliasResolver(tsPaths),
             nodeResolve({
                 extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".scss"],
                 preferBuiltins: true

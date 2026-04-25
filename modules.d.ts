@@ -19,6 +19,7 @@ declare module "@api" {
     export const ContextMenu: ContextMenu;
     export const Data: BoundData;
     export const DOM: BoundDOM;
+    export const Hooks: any;
     export const Logger: BoundLogger;
     export const Net: Net;
     export const Patcher: BoundPatcher;
@@ -64,3 +65,5 @@ declare module "@manifest" {
     const manifest: Manifest;
     export default manifest;
 }
+
+declare module "*.scss";

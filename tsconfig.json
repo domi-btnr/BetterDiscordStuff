@@ -2,12 +2,14 @@
     "compilerOptions": {
         "esModuleInterop": true,
         "jsx": "preserve",
-        "module": "NodeNext",
-        "moduleResolution": "nodenext",
+        "module": "ESNext",
         "target": "ESNext",
         "typeRoots": [
             "./node_modules/@types",
             "./modules.d.ts"
-        ]
+        ],
+        "paths": {
+            "@common/*": ["./common/*"]
+        }
     }
 }

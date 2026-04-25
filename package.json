@@ -14,6 +14,7 @@
     "@types/node": "^22.13.0",
     "@types/react": "^19.0.2",
     "@typescript-eslint/parser": "^8.22.0",
+    "@vencord/discord-types": "^1.0.1",
     "cssom": "^0.5.0",
     "eslint": "^9.19.0",
     "eslint-plugin-react": "^7.37.4",
