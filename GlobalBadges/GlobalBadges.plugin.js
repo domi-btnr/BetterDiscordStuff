@@ -34,20 +34,12 @@ const manifest = {
 
 /* @api */
 const {
-    Commands,
     Components,
-    ContextMenu,
     Data,
     DOM,
     Hooks,
-    Logger,
-    Net,
     Patcher,
-    Plugins,
-    ReactUtils,
-    Themes,
     UI,
-    Utils,
     Webpack
 } = new BdApi(manifest.name);
 
@@ -66,66 +58,6 @@ var Styles = {
 
 /* react */
 var React = BdApi.React;
-
-/* ../common/Changelog/style.scss */
-Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
-  font-size: 20px;
-  font-weight: 600;
-  font-family: var(--font-display);
-  color: var(--header-primary);
-  line-height: 1.2;
-}
-.Changelog-Title-Wrapper div {
-  font-size: 12px;
-  font-weight: 400;
-  font-family: var(--font-primary);
-  color: var(--primary-300);
-  line-height: 1.3333333333;
-}
-
-.Changelog-Banner {
-  width: 405px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.Changelog-Item {
-  color: #c4c9ce;
-}
-.Changelog-Item .Changelog-Header {
-  display: flex;
-  text-transform: uppercase;
-  font-weight: 700;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.Changelog-Item .Changelog-Header.added {
-  color: #45BA6A;
-}
-.Changelog-Item .Changelog-Header.changed {
-  color: #F0B232;
-}
-.Changelog-Item .Changelog-Header.fixed {
-  color: #EC4245;
-}
-.Changelog-Item .Changelog-Header.improved {
-  color: #5865F2;
-}
-.Changelog-Item .Changelog-Header::after {
-  content: "";
-  flex-grow: 1;
-  height: 1px;
-  margin-left: 7px;
-  background: currentColor;
-}
-.Changelog-Item span {
-  display: list-item;
-  list-style: inside;
-  margin-left: 5px;
-}
-.Changelog-Item span::marker {
-  color: var(--background-accent);
-}`);
 
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
@@ -155,6 +87,93 @@ function showChangelog(manifest) {
     Data.save("lastVersion", manifest.version);
 }
 
+/* ../common/Settings/store.ts */
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
+    searchExports: true
+});
+const Flux = Webpack.getByKeys("Store");
+const Settings = new class Settings2 extends Flux.Store {
+    constructor() {
+        super(Dispatcher, {});
+    }
+    _settings = Data.load("SETTINGS") ?? {};
+    get(key, def = null) {
+        return this._settings[key] ?? def;
+    }
+    set(key, value) {
+        this._settings[key] = value;
+        Data.save("SETTINGS", this._settings);
+        this.emitChange();
+    }
+}();
+
+/* ../common/Settings/panel.tsx */
+const {
+    SettingItem,
+    SwitchInput
+} = Components;
+const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', {
+    searchExports: true
+});
+const Slider = Webpack.getByStrings("stickToMarkers");
+
+function DropdownItem(props) {
+    return React.createElement(SettingItem, {
+        ...props
+    }, React.createElement(
+        Select, {
+            closeOnSelect: true,
+            options: props.options,
+            serialize: (v) => String(v),
+            select: (v) => Settings.set(props.id, v),
+            isSelected: (v) => Settings.get(props.id, props.value) === v
+        }
+    ));
+}
+
+function SwitchItem(props) {
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return React.createElement(SettingItem, {
+        ...props,
+        inline: true
+    }, React.createElement(SwitchInput, {
+        value,
+        onChange: (v) => Settings.set(props.id, v)
+    }));
+}
+
+function SliderItem(props) {
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return React.createElement(SettingItem, {
+        ...props
+    }, React.createElement(
+        Slider, {
+            ...props,
+            handleSize: 10,
+            initialValue: value,
+            defaultValue: props.defaultValue,
+            minValue: props.minValue,
+            maxValue: props.maxValue,
+            onValueChange: (value2) => Settings.set(props.id, Math.round(value2)),
+            onValueRender: (value2) => Math.round(value2)
+        }
+    ));
+}
+
+function SettingsPanel(props) {
+    const ComponentMap = {
+        dropdown: DropdownItem,
+        switch: SwitchItem,
+        slider: SliderItem
+    };
+    return props.items.map((item) => {
+        const Component = ComponentMap[item.type];
+        return Component ? React.createElement(Component, {
+            ...item
+        }) : null;
+    });
+}
+
 /* modules/fetchBadges.ts */
 const API_URL = "https://api.domi-btnr.dev/clientmodbadges";
 const cache = new Map();
@@ -173,26 +192,6 @@ async function fetchBadges(id) {
         return cachedValue.badges;
     }
 }
-
-/* modules/settings.js */
-const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
-    searchExports: true
-});
-const Flux = Webpack.getByKeys("Store");
-const Settings = new class Settings2 extends Flux.Store {
-    constructor() {
-        super(Dispatcher, {});
-    }
-    _settings = Data.load("SETTINGS") ?? {};
-    get(key, def) {
-        return this._settings[key] ?? def;
-    }
-    set(key, value) {
-        this._settings[key] = value;
-        Data.save("SETTINGS", this._settings);
-        this.emitChange();
-    }
-}();
 
 /* components/globalBadges.tsx */
 function GlobalBadges$1(props) {
@@ -213,7 +212,7 @@ function GlobalBadges$1(props) {
                     "early": "Early User"
                 };
                 badge = {
-                    name: fullNames[badge] ? fullNames[badge] : badge,
+                    name: fullNames[badge] || badge,
                     badge: `${API_URL}/badges/${mod}/${badge.toLowerCase()}`
                 };
             } else if (typeof badge === "object") badge.custom = true;
@@ -242,8 +241,8 @@ function GlobalBadges$1(props) {
     return React.createElement(React.Fragment, null, globalBadges);
 }
 
-/* modules/settings.json */
-var SettingsItems = [{
+/* settings.json */
+var items = [{
         type: "switch",
         name: "Show Prefix",
         note: "Whether to show the Mod Name as a prefix on the badge",
@@ -258,49 +257,9 @@ var SettingsItems = [{
         value: true
     }
 ];
-
-/* components/settings.jsx */
-const {
-    SettingItem,
-    SwitchInput
-} = Components;
-
-function SwitchItem(props) {
-    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    return React.createElement(
-        SettingItem, {
-            ...props,
-            inline: true
-        },
-        React.createElement(
-            SwitchInput, {
-                value,
-                onChange: (v) => {
-                    Settings.set(props.id, v);
-                }
-            }
-        )
-    );
-}
-
-function renderSettings(items) {
-    return items.map((item) => {
-        switch (item.type) {
-            case "switch":
-                return React.createElement(SwitchItem, {
-                    ...item
-                });
-            default:
-                return null;
-        }
-    });
-}
-
-function SettingsPanel() {
-    return React.createElement("div", {
-        className: "settings-panel"
-    }, renderSettings(SettingsItems));
-}
+var SettingsItems = {
+    items: items
+};
 
 /* index.tsx */
 class GlobalBadges {
@@ -315,9 +274,10 @@ class GlobalBadges {
     }
     patchBadges() {
         const [BadgeList, Key_BL] = Webpack.getWithKey(Webpack.Filters.byStrings("badges", "badgeClassName", ".BADGE"));
-        Patcher.after(BadgeList, Key_BL, (_, [{
-            displayProfile
-        }], res) => {
+        Patcher.after(BadgeList, Key_BL, (_, args, res) => {
+            const [{
+                displayProfile
+            }] = args;
             if (!displayProfile?.userId) return;
             res.props.children.unshift(
                 React.createElement(GlobalBadges$1, {
@@ -327,7 +287,9 @@ class GlobalBadges {
         });
     }
     getSettingsPanel() {
-        return React.createElement(SettingsPanel, null);
+        return React.createElement(SettingsPanel, {
+            items: SettingsItems.items
+        });
     }
 }
 
