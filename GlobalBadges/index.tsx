@@ -28,9 +28,7 @@ export default class GlobalBadges {
         Patcher.after(BadgeList, Key_BL, (_, args, res) => {
             const [{ displayProfile }] = args as [{ displayProfile: DisplayProfile }];
             if (!displayProfile?.userId) return;
-            res.props.children.unshift(
-                <Badges userId={displayProfile.userId} />
-            );
+            res.props.children.unshift(<Badges userId={displayProfile.userId} />);
         });
     }
 

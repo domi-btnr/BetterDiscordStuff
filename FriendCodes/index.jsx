@@ -14,8 +14,7 @@ export default class FriendCodes {
         this.patchAddFriendsPanel();
         Styles.load();
 
-        PluginCommands
-            .forEach(cmd => Commands.register(cmd));
+        PluginCommands.forEach(cmd => Commands.register(cmd));
     }
     stop() {
         Commands.unregisterAll();
@@ -29,11 +28,13 @@ export default class FriendCodes {
         Patcher.after(PanelComponent, "render", (_, [{ children, id }]) => {
             if (id !== "ADD_FRIEND") return;
             Patcher.after(children, "type", (_, __, res) => {
-                res.props.children.splice(1, 0, (
+                res.props.children.splice(
+                    1,
+                    0,
                     <ErrorBoundary key="FriendCodesPanel" id="FriendCodesPanel">
                         <FriendCodesPanel />
                     </ErrorBoundary>
-                ));
+                );
             });
         });
     }

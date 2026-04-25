@@ -3,8 +3,10 @@ import { Data, Webpack } from "@api";
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", { searchExports: true });
 const Flux = Webpack.getByKeys("Store");
 
-const Settings = new class Settings extends Flux.Store {
-    constructor() { super(Dispatcher, {}); }
+const Settings = new (class Settings extends Flux.Store {
+    constructor() {
+        super(Dispatcher, {});
+    }
     _settings = Data.load("SETTINGS") ?? {};
 
     get(key, def) {
@@ -16,6 +18,6 @@ const Settings = new class Settings extends Flux.Store {
         Data.save("SETTINGS", this._settings);
         this.emitChange();
     }
-};
+})();
 
 export default Settings;

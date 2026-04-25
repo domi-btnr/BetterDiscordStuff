@@ -27,7 +27,7 @@ export const getUnixTimestamp = (str, format) => {
         if (timeMatch[2] && timeMatch[2].toLowerCase() === "pm" && hours < 12 && hours !== 0) {
             hours += 12;
             minutes = minutes.toString().padStart(2, "0");
-        } else if ((timeMatch[2] && timeMatch[2].toLowerCase() === "am" && hours === 12) || (hours === 24)) {
+        } else if ((timeMatch[2] && timeMatch[2].toLowerCase() === "am" && hours === 12) || hours === 24) {
             hours = 0;
         } else if (minutes >= 60) {
             hours += Math.floor(minutes / 60);

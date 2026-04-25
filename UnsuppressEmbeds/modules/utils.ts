@@ -1,5 +1,5 @@
 type MenuGroup = React.ReactElement<{
-    children: React.ReactElement[]
+    children: React.ReactElement[];
 }>;
 
 export function findGroupById(res: React.ReactElement, id: string): MenuGroup {
@@ -8,12 +8,10 @@ export function findGroupById(res: React.ReactElement, id: string): MenuGroup {
     let children: Array<React.ReactElement> = res?.props?.children;
     if (!children) return null;
 
-    if (!Array.isArray(children))
-        children = [children];
+    if (!Array.isArray(children)) children = [children];
 
-    if (children.some(child =>
-        child && typeof child === "object" && "props" in child && child.props.id === id
-    )) return res;
+    if (children.some(child => child && typeof child === "object" && "props" in child && child.props.id === id))
+        return res;
 
     for (const child of children)
         if (child && typeof child === "object") {

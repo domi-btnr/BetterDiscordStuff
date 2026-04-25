@@ -31,10 +31,7 @@ export default function FriendCodesPanel() {
                 Your Friend Codes
             </Text>
 
-            <Flex
-                style={{ marginBottom: "16px" }}
-                justify={Flex.Justify.BETWEEN}
-            >
+            <Flex style={{ marginBottom: "16px" }} justify={Flex.Justify.BETWEEN}>
                 <h2 className={styles.panelHeader}>{`Friend Codes - ${invites.length}`}</h2>
                 <Flex justify={Flex.Justify.END}>
                     <Button
@@ -57,27 +54,21 @@ export default function FriendCodesPanel() {
             </Flex>
 
             <div style={{ maxHeight: "40vh", overflowY: "auto" }}>
-                {
-                    loading ?
-                        <Text
-                            variant="heading-md/semibold"
-                            className={styles.panelText}
-                        >
-                            Loading...
-                        </Text> :
-                        invites.length === 0 ?
-                            <Text
-                                variant="heading-md/semibold"
-                                className={styles.panelText}
-                            >
-                                You don't have any friend codes yet
-                            </Text> :
-                            <div>
-                                {invites.map(invite => (
-                                    <FriendCodeCard key={invite.code} invite={invite} />
-                                ))}
-                            </div>
-                }
+                {loading ? (
+                    <Text variant="heading-md/semibold" className={styles.panelText}>
+                        Loading...
+                    </Text>
+                ) : invites.length === 0 ? (
+                    <Text variant="heading-md/semibold" className={styles.panelText}>
+                        You don't have any friend codes yet
+                    </Text>
+                ) : (
+                    <div>
+                        {invites.map(invite => (
+                            <FriendCodeCard key={invite.code} invite={invite} />
+                        ))}
+                    </div>
+                )}
             </div>
         </header>
     );

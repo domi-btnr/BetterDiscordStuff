@@ -19,26 +19,32 @@ export default function MessagePeek({ channelId, timestampOnly }) {
         const content =
             lastMessage.content ||
             lastMessage.embeds?.[0]?.rawDescription ||
-            lastMessage.stickerItems.length && "Sticker" ||
-            attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`;
+            (lastMessage.stickerItems.length && "Sticker") ||
+            (attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`);
         if (!content) return null;
 
         const charLimit = Settings.get("tooltipCharacterLimit", 256);
-        const authorName = lastMessage.author.email && Settings.get("showYourselfAsYou", true) ? "You" : lastMessage.author["globalName"] || lastMessage.author["username"];
+        const authorName =
+            lastMessage.author.email && Settings.get("showYourselfAsYou", true)
+                ? "You"
+                : lastMessage.author["globalName"] || lastMessage.author["username"];
 
         return (
-            <div style={{
-                marginBottom: "2px",
-                marginTop: "-2px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-            }}>
-                <Components.Tooltip text={
-                    content.length > charLimit ?
-                        Parser.parse(content.slice(0, charLimit).trim() + "…")
-                        : Parser.parse(content)
-                }
+            <div
+                style={{
+                    marginBottom: "2px",
+                    marginTop: "-2px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap"
+                }}
+            >
+                <Components.Tooltip
+                    text={
+                        content.length > charLimit
+                            ? Parser.parse(content.slice(0, charLimit).trim() + "…")
+                            : Parser.parse(content)
+                    }
                 >
                     {props => (
                         <div
@@ -91,9 +97,7 @@ export default function MessagePeek({ channelId, timestampOnly }) {
             }
         }
         return (
-            <Components.Tooltip
-                text={dateTimeFormatter.format(lastMessage.timestamp)}
-            >
+            <Components.Tooltip text={dateTimeFormatter.format(lastMessage.timestamp)}>
                 {props => (
                     <div
                         {...props}

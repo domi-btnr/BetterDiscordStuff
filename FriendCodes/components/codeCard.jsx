@@ -23,7 +23,8 @@ export default function FriendCodeCard({ invite }) {
                         {invite.code}
                     </Text>
                     <span>
-                        Expires {Parser.parse(`<t:${new Date(invite.expires_at).getTime() / 1000}:R>`)} • {invite.uses}/{invite.max_uses} uses
+                        Expires {Parser.parse(`<t:${new Date(invite.expires_at).getTime() / 1000}:R>`)} • {invite.uses}/
+                        {invite.max_uses} uses
                     </span>
                 </div>
                 <Flex justify={Flex.Justify.END}>

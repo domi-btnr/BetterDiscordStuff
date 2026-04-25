@@ -9,10 +9,10 @@ export async function fetchBadges(id: string): Promise<BadgeCache["badges"] | un
     const cachedValue = cache.get(id);
     if (!cache.has(id) || (cachedValue && cachedValue.expires < Date.now())) {
         const resp = await fetch(`${API_URL}/users/${id}`);
-        const body = await resp.json() as BadgeCache["badges"];
+        const body = (await resp.json()) as BadgeCache["badges"];
         cache.set(id, { badges: body, expires: Date.now() + EXPIRES });
         return body;
     } else if (cachedValue) {
         return cachedValue.badges;
     }
-};
+}

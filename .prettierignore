@@ -2,3 +2,4 @@
 archive/
 build/
 node_modules/
+*.md

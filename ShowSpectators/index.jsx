@@ -26,9 +26,7 @@ export default class ShowSpectators {
         Patcher.after(StreamIcon, "A", (_, __, res) => {
             const children = res.props.children;
             res.props.children = [
-                <Components.Tooltip
-                    text={<SpectatorsTooltip />}
-                >
+                <Components.Tooltip text={<SpectatorsTooltip />}>
                     {props => children.map(child => React.cloneElement(child, props))}
                 </Components.Tooltip>
             ];

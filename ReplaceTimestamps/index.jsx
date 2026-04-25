@@ -42,12 +42,13 @@ export default class ReplaceTimestamps {
         const relativeRegex = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/gi;
         relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
 
-        const processMessageContent = content => content
-            .replace(TimeDateRegex, x => getUnixTimestamp(x))
-            .replace(DateRegexTime, x => getUnixTimestamp(x))
-            .replace(timeRegex, x => getUnixTimestamp(x, "t"))
-            .replace(dateRegex, x => getUnixTimestamp(x, "d"))
-            .replace(relativeRegex, getRelativeTime);
+        const processMessageContent = content =>
+            content
+                .replace(TimeDateRegex, x => getUnixTimestamp(x))
+                .replace(DateRegexTime, x => getUnixTimestamp(x))
+                .replace(timeRegex, x => getUnixTimestamp(x, "t"))
+                .replace(dateRegex, x => getUnixTimestamp(x, "d"))
+                .replace(relativeRegex, getRelativeTime);
 
         Patcher.before(MessageActions, "sendMessage", (_, [, msg]) => {
             msg.content = processMessageContent(msg.content);

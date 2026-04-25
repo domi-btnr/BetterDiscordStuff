@@ -43,13 +43,7 @@
             "id": "preloadLimit",
             "minValue": 0,
             "maxValue": 30,
-            "markers": [
-                0,
-                5,
-                10,
-                20,
-                30
-            ],
+            "markers": [0, 5, 10, 20, 30],
             "stickToMarkers": false,
             "defaultValue": 10
         },
@@ -60,13 +54,7 @@
             "id": "tooltipCharacterLimit",
             "minValue": 64,
             "maxValue": 1024,
-            "markers": [
-                64,
-                128,
-                256,
-                512,
-                1024
-            ],
+            "markers": [64, 128, 256, 512, 1024],
             "stickToMarkers": true,
             "defaultValue": 256
         }

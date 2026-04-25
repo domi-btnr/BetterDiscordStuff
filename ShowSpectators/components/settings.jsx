@@ -9,10 +9,7 @@ const { SettingItem, SwitchInput } = Components;
 function SwitchItem(props) {
     const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     return (
-        <SettingItem
-            {...props}
-            inline={true}
-        >
+        <SettingItem {...props} inline={true}>
             <SwitchInput
                 value={value}
                 onChange={v => {
@@ -35,9 +32,5 @@ function renderSettings(items) {
 }
 
 export default function SettingsPanel() {
-    return (
-        <div className="settings-panel">
-            {renderSettings(SettingsItems)}
-        </div>
-    );
+    return <div className="settings-panel">{renderSettings(SettingsItems)}</div>;
 }

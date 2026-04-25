@@ -28,111 +28,118 @@ const getDisplayName = user => RelationshipStore.getNickname(user.id) || user.gl
 
 export function SpectatorsTooltip({ spectatorIds, guildId, noTitle }) {
     if (!spectatorIds && !guildId) {
-        const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
+        const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () =>
+            ApplicationStreamingStore.getCurrentUserActiveStream()
+        );
         if (!activeStream) return null;
 
         spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
         guildId = activeStream.guildId;
     }
     let unknownSpectators = 0;
-    const spectators = spectatorIds.map(id => UserStore.getUser(id)).filter(user => Boolean(user) || unknownSpectators++);
+    const spectators = spectatorIds
+        .map(id => UserStore.getUser(id))
+        .filter(user => Boolean(user) || unknownSpectators++);
 
     return (
-        (<>
+        <>
             {!noTitle && (
                 <Text size={Text.Sizes.SIZE_16}>
                     {getLocalizedString(Strings.SPECTATORS, { numViewers: spectatorIds.length })}
                 </Text>
             )}
             {spectators.length > 0 && (
-                <Flex
-                    direction={Flex.Direction.VERTICAL}
-                    style={{ alignItems: "center", gap: 6, marginTop: "8px" }}
-                >
-                    {
-                        spectators.map(user => (
-                            <Flex style={{ alignContent: "center", gap: 6 }}>
-                                <img src={user.getAvatarURL(guildId)} style={{ borderRadius: 8, height: 16, width: 16 }} />
-                                {getDisplayName(user)}
-                            </Flex>
-                        ))
-                    }
-                    {
-                        !!unknownSpectators &&
+                <Flex direction={Flex.Direction.VERTICAL} style={{ alignItems: "center", gap: 6, marginTop: "8px" }}>
+                    {spectators.map(user => (
+                        <Flex style={{ alignContent: "center", gap: 6 }}>
+                            <img src={user.getAvatarURL(guildId)} style={{ borderRadius: 8, height: 16, width: 16 }} />
+                            {getDisplayName(user)}
+                        </Flex>
+                    ))}
+                    {!!unknownSpectators && (
                         <Flex style={{ alignContent: "center" }}>
                             <Text>+{getLocalizedString(Strings.NUM_USERS, { num: unknownSpectators })}</Text>
                         </Flex>
-                    }
+                    )}
                 </Flex>
             )}
-        </>)
+        </>
     );
 }
 
 export function SpectatorsPanel() {
-    const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
+    const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () =>
+        ApplicationStreamingStore.getCurrentUserActiveStream()
+    );
     if (!activeStream || !Settings.get("showPanel", true)) return null;
 
     let unknownSpectators = 0;
     const spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
-    const spectators = spectatorIds.map(id => UserStore.getUser(id)).filter(user => Boolean(user) || unknownSpectators++);
+    const spectators = spectatorIds
+        .map(id => UserStore.getUser(id))
+        .filter(user => Boolean(user) || unknownSpectators++);
     return (
         <div className="spectators-panel">
             <Text size={Text.Sizes.SIZE_16}>
                 {getLocalizedString(Strings.SPECTATORS, { numViewers: spectatorIds.length })}
             </Text>
-            {
-                spectatorIds.length ? (
-                    <UserSummaryItem
-                        className={"spectators"}
-                        style={{
-                            marginTop: "4px",
-                            paddingBottom: "4px"
-                        }}
-                        users={spectators}
-                        count={spectatorIds.length}
-                        renderIcon={false}
-                        max={12}
-                        showDefaultAvatarsForNullUsers
-                        renderUser={user => (
-                            <Tooltip text={getDisplayName(user)}>
-                                {props => (
-                                    <Clickable
-                                        {...props}
-                                        className={AvatarStyles.clickableAvatar}
-                                        onClick={() => UserProfileActions.openUserProfileModal({ userId: user.id, guildId: activeStream.guildId })}
-                                    >
-                                        <img
-                                            className={AvatarStyles.avatar}
-                                            src={user.getAvatarURL(void 0, 80, true)}
-                                            alt={user.username}
-                                            title={user.username}
-                                        />
-                                    </Clickable>
-                                )}
-                            </Tooltip>
-                        )}
-                        renderMoreUsers={(label, count) => {
-                            const sliced = spectators.slice(-count);
-                            return (
-                                <Tooltip text={
+            {spectatorIds.length ? (
+                <UserSummaryItem
+                    className={"spectators"}
+                    style={{
+                        marginTop: "4px",
+                        paddingBottom: "4px"
+                    }}
+                    users={spectators}
+                    count={spectatorIds.length}
+                    renderIcon={false}
+                    max={12}
+                    showDefaultAvatarsForNullUsers
+                    renderUser={user => (
+                        <Tooltip text={getDisplayName(user)}>
+                            {props => (
+                                <Clickable
+                                    {...props}
+                                    className={AvatarStyles.clickableAvatar}
+                                    onClick={() =>
+                                        UserProfileActions.openUserProfileModal({
+                                            userId: user.id,
+                                            guildId: activeStream.guildId
+                                        })
+                                    }
+                                >
+                                    <img
+                                        className={AvatarStyles.avatar}
+                                        src={user.getAvatarURL(void 0, 80, true)}
+                                        alt={user.username}
+                                        title={user.username}
+                                    />
+                                </Clickable>
+                            )}
+                        </Tooltip>
+                    )}
+                    renderMoreUsers={(label, count) => {
+                        const sliced = spectators.slice(-count);
+                        return (
+                            <Tooltip
+                                text={
                                     <SpectatorsTooltip
                                         noTitle
                                         guildId={activeStream.guildId}
                                         spectatorIds={sliced.map(user => user.id)}
                                     />
-                                }>
-                                    {props => (
-                                        <div {...props} className={AvatarStyles.moreUsers}>
-                                            +{sliced.length}
-                                        </div>
-                                    )}
-                                </Tooltip>
-                            );
-                        }}
-                    />
-                ) : null
-            }
+                                }
+                            >
+                                {props => (
+                                    <div {...props} className={AvatarStyles.moreUsers}>
+                                        +{sliced.length}
+                                    </div>
+                                )}
+                            </Tooltip>
+                        );
+                    }}
+                />
+            ) : null}
         </div>
     );
 }

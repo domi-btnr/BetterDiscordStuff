@@ -1,8 +1,10 @@
-type CustomBadge = string | {
-    name: string;
-    badge: string;
-    custom?: boolean;
-};
+type CustomBadge =
+    | string
+    | {
+          name: string;
+          badge: string;
+          custom?: boolean;
+      };
 
 export interface BadgeCache {
     badges: {

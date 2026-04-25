@@ -9,8 +9,7 @@ export default function GlobalBadges(props: { userId: string }) {
     const { userId } = props;
     const [badges, setBadges] = React.useState<BadgeCache["badges"] | undefined>({});
     React.useEffect(() => {
-        fetchBadges(userId)
-            .then(setBadges);
+        fetchBadges(userId).then(setBadges);
     }, []);
 
     if (!badges || !Object.keys(badges).length) return null;
@@ -19,7 +18,7 @@ export default function GlobalBadges(props: { userId: string }) {
     Object.keys(badges).forEach(mod => {
         badges[mod].forEach(badge => {
             if (typeof badge === "string") {
-                const fullNames: Record<string, string> = { "hunter": "Bug Hunter", "early": "Early User" };
+                const fullNames: Record<string, string> = { hunter: "Bug Hunter", early: "Early User" };
                 badge = {
                     name: fullNames[badge] || badge,
                     badge: `${API_URL}/badges/${mod}/${badge.toLowerCase()}`
@@ -31,7 +30,11 @@ export default function GlobalBadges(props: { userId: string }) {
             if (!badge.custom) badge.name = `${prefix} ${cleanName.charAt(0).toUpperCase() + cleanName.slice(1)}`;
             globalBadges.push(
                 <Components.Tooltip text={badge.name}>
-                    {(props: React.JSX.IntrinsicAttributes & React.ClassAttributes<HTMLImageElement> & React.ImgHTMLAttributes<HTMLImageElement>) => (
+                    {(
+                        props: React.JSX.IntrinsicAttributes &
+                            React.ClassAttributes<HTMLImageElement> &
+                            React.ImgHTMLAttributes<HTMLImageElement>
+                    ) => (
                         <img
                             {...props}
                             src={badge.badge}
@@ -42,16 +45,11 @@ export default function GlobalBadges(props: { userId: string }) {
                                 transform: badge.badge.includes("Replugged") ? "scale(0.85)" : "scale(0.9)"
                             }}
                         />
-
                     )}
                 </Components.Tooltip>
             );
         });
     });
 
-    return (
-        <React.Fragment>
-            {globalBadges}
-        </React.Fragment>
-    );
+    return <React.Fragment>{globalBadges}</React.Fragment>;
 }

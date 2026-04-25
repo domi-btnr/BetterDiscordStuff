@@ -69,7 +69,16 @@ export default [
             "func-call-spacing": ["error", "never"],
             indent: ["error", 4, { SwitchCase: 1 }],
             "keyword-spacing": "error",
-            "max-len": ["error", { code: 120 }],
+            "max-len": [
+                "error",
+                {
+                    code: 120,
+                    ignoreUrls: true,
+                    ignoreStrings: true,
+                    ignoreComments: true,
+                    ignoreTemplateLiterals: true
+                }
+            ],
             "max-nested-callbacks": ["error", { max: 4 }],
             "max-statements-per-line": ["error", { max: 2 }],
             "no-console": "off",
@@ -81,7 +90,7 @@ export default [
             "no-whitespace-before-property": "error",
             "object-curly-spacing": ["error", "always"],
             "prefer-const": "error",
-            quotes: ["error", "double"],
+            quotes: ["error", "double", { avoidEscape: true }],
             "react/jsx-key": "off",
             "react/no-unescaped-entities": "off",
             "react/prop-types": "off",
