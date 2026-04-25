@@ -1,10 +1,10 @@
 import { Commands, Patcher, Webpack } from "@api";
+import showChangelog from "@common/Changelog";
+import ErrorBoundary from "@common/ErrorBoundary";
 import manifest from "@manifest";
 import Styles from "@styles";
 import React from "react";
 
-import showChangelog from "../common/Changelog";
-import ErrorBoundary from "../common/ErrorBoundary";
 import PluginCommands from "./commands";
 import FriendCodesPanel from "./components/panel.jsx";
 
@@ -24,14 +24,17 @@ export default class FriendCodes {
     }
 
     patchAddFriendsPanel() {
-        const AddFriendsPage = Webpack.getBySource(".Heading", "heading-lg/semibold", ".w5uwoI");
+        const PanelComponent = Webpack.getById(761508)?.V?.Panel;
 
-        Patcher.after(AddFriendsPage, "A", (_, __, res) => {
-            res.props.children.splice(1, 0, (
-                <ErrorBoundary key="FriendCodesPanel" id="FriendCodesPanel">
-                    <FriendCodesPanel />
-                </ErrorBoundary>
-            ));
+        Patcher.after(PanelComponent, "render", (_, [{ children, id }]) => {
+            if (id !== "ADD_FRIEND") return;
+            Patcher.after(children, "type", (_, __, res) => {
+                res.props.children.splice(1, 0, (
+                    <ErrorBoundary key="FriendCodesPanel" id="FriendCodesPanel">
+                        <FriendCodesPanel />
+                    </ErrorBoundary>
+                ));
+            });
         });
     }
 }

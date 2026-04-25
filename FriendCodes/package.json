@@ -1,6 +1,7 @@
 {
+	"$schema": "../common/Schemas/manifest.schema.json",
 	"name": "FriendCodes",
-	"version": "1.2.4",
+	"version": "1.2.5",
 	"description": "Generate FriendCodes to easily add friends",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -9,10 +10,10 @@
 	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes",
 	"changelog": [
 		{
-			"title": "Improvements",
-			"type": "improved",
-			"items": ["Updated the filter for FormStyles"]
+			"title": "Fixed",
+			"type": "fixed",
+			"items": ["Updated the Plugin to work with the latest Discord update"]
 		}
 	],
-	"changelogDate": "2026-03-17"
+	"changelogDate": "2026-04-25"
 }
