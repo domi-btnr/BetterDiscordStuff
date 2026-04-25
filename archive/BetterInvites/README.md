@@ -24,7 +24,7 @@
 ---
 
 ## Preview
-![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/archived/BetterInvites/images/Preview.png)
+![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/archive/BetterInvites/images/Preview.png)
 
 ## 📥 Installation
 

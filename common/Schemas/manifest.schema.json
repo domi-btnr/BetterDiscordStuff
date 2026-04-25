@@ -3,6 +3,10 @@
     "title": "Plugin Manifest Schema",
     "type": "object",
     "properties": {
+        "$schema": {
+            "type": "string",
+            "description": "The URL to the JSON schema (should be ../common/Schemas/manifest.schema.json)"
+        },
         "name": {
             "type": "string",
             "description": "The name of the plugin"
@@ -87,5 +91,5 @@
         "changelog",
         "changelogDate"
     ],
-    "additionalProperties": true
+    "additionalProperties": false
 }

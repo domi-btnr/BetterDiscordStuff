@@ -1,6 +1,7 @@
 {
+	"$schema": "../common/Schemas/manifest.schema.json",
 	"name": "MessagePeek",
-	"version": "1.2.5",
+	"version": "1.2.6",
 	"description": "See the last message in a Channel like on mobile",
 	"author": "domi.btnr",
 	"authorId": "354191516979429376",
@@ -9,10 +10,15 @@
 	"source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
 	"changelog": [
 		{
-			"title": "Fixed Settings",
+			"title": "Fixed",
 			"type": "fixed",
-			"items": ["Opening the Plugin Settings no longer causes an error"]
+			"items": ["Updated the Plugin to work with the latest Discord update"]
+		},
+		{
+			"title": "Known broken Features",
+			"type": "changed",
+			"items": ["Removed the option to show timestamps in the DM list as it doesn't work and I don't have the time to fix it right now"]
 		}
 	],
-	"changelogDate": "2026-04-22"
+	"changelogDate": "2026-04-25"
 }

@@ -1,13 +1,10 @@
 import "./styles.scss";
 
 import { Components, Hooks, Webpack } from "@api";
+import { Settings } from "@common/Settings";
 import React from "react";
 
-import Settings from "../modules/settings";
-
 const MessageStore = Webpack.getStore("MessageStore");
-const ChannelWrapperStyles = Webpack.getByKeys("muted", "subText");
-const ChannelStyles = Webpack.getByKeys("closeButton", "subtext");
 const Parser = Webpack.getByKeys("parseTopic");
 const i18n = Webpack.getByKeys("getLocale");
 
@@ -30,10 +27,13 @@ export default function MessagePeek({ channelId, timestampOnly }) {
         const authorName = lastMessage.author.email && Settings.get("showYourselfAsYou", true) ? "You" : lastMessage.author["globalName"] || lastMessage.author["username"];
 
         return (
-            <div
-                className={ChannelWrapperStyles.subText}
-                style={{ marginBottom: "2px" }}
-            >
+            <div style={{
+                marginBottom: "2px",
+                marginTop: "-2px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+            }}>
                 <Components.Tooltip text={
                     content.length > charLimit ?
                         Parser.parse(content.slice(0, charLimit).trim() + "…")
@@ -43,7 +43,14 @@ export default function MessagePeek({ channelId, timestampOnly }) {
                     {props => (
                         <div
                             {...props}
-                            className={ChannelStyles.subtext}
+                            style={{
+                                fontSize: "12px",
+                                fontWeight: "var(--font-weight-medium)",
+                                lineHeight: "16px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap"
+                            }}
                         >
                             {Settings.get("showAuthor", true) && `${authorName}: `}
                             {Parser.parseInlineReply(content)}

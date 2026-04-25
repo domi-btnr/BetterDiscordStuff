@@ -1,12 +1,12 @@
 import { Patcher, ReactUtils, Utils, Webpack } from "@api";
+import { Settings, SettingsPanel } from "@common/Settings";
 import manifest from "@manifest";
 import Styles from "@styles";
 import React from "react";
 
 import showChangelog from "../common/Changelog";
 import Peek from "./components/messagePeek";
-import SettingsPanel from "./components/settings";
-import Settings from "./modules/settings";
+import SettingsItems from "./settings.json";
 
 export default class MessagePeek {
     start() {
@@ -24,12 +24,11 @@ export default class MessagePeek {
         Styles.unload();
     }
 
-    patchDMs() {
+    async patchDMs() {
         const ChannelContext = React.createContext(null);
-        const ChannelWrapper = Webpack.getBySource("activities", "isMultiUserDM", "isMobile");
-        const ChannelItem = Webpack.getById("877526");
-        const NameWrapper = Webpack.getBySource("AvatarWithText").A;
-        const ChannelClasses = Webpack.getByKeys("channel", "decorator");
+        const ChannelWrapper = await Webpack.waitForModule(Webpack.Filters.bySource("location:\"PrivateChannel\",", "isMobile"));
+        const NameWrapper = (await Webpack.waitForModule(Webpack.Filters.bySource("AvatarWithText"))).A;
+        const ChannelClasses = await Webpack.waitForModule(Webpack.Filters.byKeys("channel", "decorator"));
 
         Patcher.after(ChannelWrapper, "Ay", (_, __, res) => {
             if (!Settings.get("showInDMs", true)) return;
@@ -42,14 +41,16 @@ export default class MessagePeek {
             });
         });
 
-        Patcher.after(ChannelItem, "H", (_, __, res) => {
-            if (!Settings.get("showTimestamp", true)) return;
-            const channel = React.useContext(ChannelContext);
-            if (!channel) return res;
+        // Patcher.after(ChannelWrapper, "th", (_, __, res) => {
+        //     console.log(__);
+        //     console.log(res);
+        //     if (!Settings.get("showTimestamp", true)) return;
+        //     const channel = React.useContext(ChannelContext);
+        //     if (!channel) return res;
 
-            const children = res.props.children;
-            children.splice(children.length - 1, 0, <Peek channelId={channel.id} timestampOnly />);
-        });
+        //     const children = res.props.children;
+        //     children.splice(children.length - 1, 0, <Peek channelId={channel.id} timestampOnly />);
+        // });
 
         Patcher.after(NameWrapper, "render", (_, __, res) => {
             const channel = React.useContext(ChannelContext);
@@ -90,10 +91,10 @@ export default class MessagePeek {
 
     }
 
-    patchGuildChannel() {
-        const [ChannelWrapper, Key_CW] = Webpack.getWithKey(Webpack.Filters.byStrings("channel", "unread", ".ALL_MESSAGES"));
+    async patchGuildChannel() {
+        const ChannelWrapper = await Webpack.waitForModule(Webpack.Filters.byComponentType(Webpack.Filters.byStrings("channel", "unread", ".ALL_MESSAGES")));
 
-        Patcher.after(ChannelWrapper, Key_CW, (_, [{ channel }], res) => {
+        Patcher.after(ChannelWrapper, "render", (_, [{ channel }], res) => {
             if (!Settings.get("showInGuilds", true)) return;
             const nameWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("name__"), { walkable: ["children", "props"] });
             if (!nameWrapper) return res;
@@ -112,6 +113,6 @@ export default class MessagePeek {
     }
 
     getSettingsPanel() {
-        return <SettingsPanel />;
+        return <SettingsPanel items={SettingsItems.items} />;
     }
 }

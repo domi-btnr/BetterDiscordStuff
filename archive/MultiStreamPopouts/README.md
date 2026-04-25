@@ -22,7 +22,7 @@
 ---
 
 ## Preview
-![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/archived/MultiStreamPopouts/images/Preview.png)
+![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/archive/MultiStreamPopouts/images/Preview.png)
 
 ## 📥 Installation
 

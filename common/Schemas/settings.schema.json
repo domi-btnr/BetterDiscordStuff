@@ -4,29 +4,37 @@
     "type": "object",
     "properties": {
         "$schema": {
-            "type": "string"
+            "type": "string",
+            "description": "The URL to the JSON schema (should be ../common/Schemas/settings.schema.json)"
         },
         "items": {
             "type": "array",
+            "description": "Array of settings items",
             "items": {
                 "oneOf": [
                     {
                         "type": "object",
+                        "description": "A switch/toggle setting",
                         "properties": {
                             "type": {
-                                "const": "switch"
+                                "const": "switch",
+                                "description": "The type of setting"
                             },
                             "name": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "The display name of the setting"
                             },
                             "note": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "Optional help text or description for the setting"
                             },
                             "id": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "Unique identifier for the setting"
                             },
                             "value": {
-                                "type": "boolean"
+                                "type": "boolean",
+                                "description": "The default boolean value for the switch"
                             }
                         },
                         "required": [
@@ -39,34 +47,44 @@
                     },
                     {
                         "type": "object",
+                        "description": "A dropdown/select setting",
                         "properties": {
                             "type": {
-                                "const": "dropdown"
+                                "const": "dropdown",
+                                "description": "The type of setting"
                             },
                             "name": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "The display name of the setting"
                             },
                             "note": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "Optional help text or description for the setting"
                             },
                             "id": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "Unique identifier for the setting"
                             },
                             "value": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "The default selected value"
                             },
                             "options": {
+                                "description": "Available options for the dropdown",
                                 "oneOf": [
                                     {
                                         "type": "array",
+                                        "description": "Array of option objects with label and value",
                                         "items": {
                                             "type": "object",
                                             "properties": {
                                                 "label": {
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "description": "Display text for the option"
                                                 },
                                                 "value": {
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "description": "Value of the option"
                                                 }
                                             },
                                             "required": [
@@ -78,6 +96,7 @@
                                     },
                                     {
                                         "type": "array",
+                                        "description": "Array of string values (labels and values will be the same)",
                                         "items": {
                                             "type": "string"
                                         }
@@ -96,48 +115,62 @@
                     },
                     {
                         "type": "object",
+                        "description": "A slider/number input setting",
                         "properties": {
                             "type": {
-                                "const": "slider"
+                                "const": "slider",
+                                "description": "The type of setting"
                             },
                             "name": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "The display name of the setting"
                             },
                             "note": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "Optional help text or description for the setting"
                             },
                             "id": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "Unique identifier for the setting"
                             },
                             "value": {
-                                "type": "number"
+                                "type": "number",
+                                "description": "The initial value (only needed when defaultValue is not set)"
                             },
                             "defaultValue": {
-                                "type": "number"
+                                "type": "number",
+                                "description": "The default value (marks green on slider, will be the default)"
                             },
                             "minValue": {
-                                "type": "number"
+                                "type": "number",
+                                "description": "Minimum allowed value"
                             },
                             "maxValue": {
-                                "type": "number"
+                                "type": "number",
+                                "description": "Maximum allowed value"
                             },
                             "markers": {
                                 "type": "array",
+                                "description": "Optional tick marks at specific values",
                                 "items": {
                                     "type": "number"
                                 }
                             },
                             "stickToMarkers": {
-                                "type": "boolean"
+                                "type": "boolean",
+                                "description": "Whether the slider should snap to markers"
                             }
                         },
                         "required": [
                             "type",
                             "name",
                             "id",
-                            "value",
                             "minValue",
                             "maxValue"
+                        ],
+                        "anyOf": [
+                            { "required": ["value"] },
+                            { "required": ["defaultValue"] }
                         ],
                         "additionalProperties": false
                     }
