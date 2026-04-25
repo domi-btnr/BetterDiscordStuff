@@ -1,4 +1,5 @@
 /**
+ * @$schema ../common/Schemas/manifest.schema.json
  * @name GlobalBadges
  * @version 1.0.5
  * @description Adds global badges from other client mods
@@ -14,6 +15,7 @@
 
 /* @manifest */
 const manifest = {
+    "$schema": "../common/Schemas/manifest.schema.json",
     "name": "GlobalBadges",
     "version": "1.0.5",
     "description": "Adds global badges from other client mods",
@@ -55,6 +57,66 @@ var Styles = {
         DOM.removeStyle();
     }
 };
+
+/* ../common/Changelog/style.scss */
+Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
+  font-size: 20px;
+  font-weight: 600;
+  font-family: var(--font-display);
+  color: var(--header-primary);
+  line-height: 1.2;
+}
+.Changelog-Title-Wrapper div {
+  font-size: 12px;
+  font-weight: 400;
+  font-family: var(--font-primary);
+  color: var(--primary-300);
+  line-height: 1.3333333333;
+}
+
+.Changelog-Banner {
+  width: 405px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.Changelog-Item {
+  color: #c4c9ce;
+}
+.Changelog-Item .Changelog-Header {
+  display: flex;
+  text-transform: uppercase;
+  font-weight: 700;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.Changelog-Item .Changelog-Header.added {
+  color: #45BA6A;
+}
+.Changelog-Item .Changelog-Header.changed {
+  color: #F0B232;
+}
+.Changelog-Item .Changelog-Header.fixed {
+  color: #EC4245;
+}
+.Changelog-Item .Changelog-Header.improved {
+  color: #5865F2;
+}
+.Changelog-Item .Changelog-Header::after {
+  content: "";
+  flex-grow: 1;
+  height: 1px;
+  margin-left: 7px;
+  background: currentColor;
+}
+.Changelog-Item span {
+  display: list-item;
+  list-style: inside;
+  margin-left: 5px;
+}
+.Changelog-Item span::marker {
+  color: var(--background-accent);
+}`);
 
 /* react */
 var React = BdApi.React;

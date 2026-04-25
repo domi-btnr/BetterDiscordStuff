@@ -1,21 +1,23 @@
 /**
+ * @$schema ../common/Schemas/manifest.schema.json
  * @name FriendCodes
- * @version 1.2.4
+ * @version 1.2.5
  * @description Generate FriendCodes to easily add friends
  * @author domi.btnr
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes
- * @changelogDate 2026-03-17
+ * @changelogDate 2026-04-25
  */
 
 'use strict';
 
 /* @manifest */
 const manifest = {
+    "$schema": "../common/Schemas/manifest.schema.json",
     "name": "FriendCodes",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "description": "Generate FriendCodes to easily add friends",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,29 +25,21 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes",
     "changelog": [{
-        "title": "Improvements",
-        "type": "improved",
-        "items": ["Updated the filter for FormStyles"]
+        "title": "Fixed",
+        "type": "fixed",
+        "items": ["Updated the Plugin to work with the latest Discord update"]
     }],
-    "changelogDate": "2026-03-17"
+    "changelogDate": "2026-04-25"
 };
 
 /* @api */
 const {
     Commands,
     Components,
-    ContextMenu,
     Data,
     DOM,
-    Hooks,
-    Logger,
-    Net,
     Patcher,
-    Plugins,
-    ReactUtils,
-    Themes,
     UI,
-    Utils,
     Webpack
 } = new BdApi(manifest.name);
 
@@ -61,9 +55,6 @@ var Styles = {
         DOM.removeStyle();
     }
 };
-
-/* react */
-var React = BdApi.React;
 
 /* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
@@ -125,6 +116,9 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   color: var(--background-accent);
 }`);
 
+/* react */
+var React = BdApi.React;
+
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
@@ -170,7 +164,7 @@ Styles.sheets.push("/* ../common/ErrorBoundary/style.scss */", `.errorBoundary {
   gap: 5px;
 }`);
 
-/* ../common/ErrorBoundary/index.jsx */
+/* ../common/ErrorBoundary/index.tsx */
 const ErrorIcon = (props) => React.createElement("svg", {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24",
@@ -488,12 +482,18 @@ class FriendCodes {
         Styles.unload();
     }
     patchAddFriendsPanel() {
-        const AddFriendsPage = Webpack.getBySource(".Heading", "heading-lg/semibold", ".w5uwoI");
-        Patcher.after(AddFriendsPage, "A", (_, __, res) => {
-            res.props.children.splice(1, 0, React.createElement(ErrorBoundary, {
-                key: "FriendCodesPanel",
-                id: "FriendCodesPanel"
-            }, React.createElement(FriendCodesPanel, null)));
+        const PanelComponent = Webpack.getById(761508)?.V?.Panel;
+        Patcher.after(PanelComponent, "render", (_, [{
+            children,
+            id
+        }]) => {
+            if (id !== "ADD_FRIEND") return;
+            Patcher.after(children, "type", (_2, __, res) => {
+                res.props.children.splice(1, 0, React.createElement(ErrorBoundary, {
+                    key: "FriendCodesPanel",
+                    id: "FriendCodesPanel"
+                }, React.createElement(FriendCodesPanel, null)));
+            });
         });
     }
 }
