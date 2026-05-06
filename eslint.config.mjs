@@ -29,7 +29,7 @@ export default [
         }
     },
     {
-        files: ["scripts/build.js"],
+        files: ["scripts/**/*.{js,cjs}"],
         languageOptions: {
             globals: {
                 ...globals.node
