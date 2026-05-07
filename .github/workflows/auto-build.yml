@@ -16,36 +16,32 @@ concurrency:
 
 jobs:
   build:
-    name: Compile Plugins
+    name: Build Plugins
     runs-on: ubuntu-latest
-
     steps:
       - name: Clean working directory
         run: rm -rf /home/runner/work/${{ github.repository }}
 
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - uses: pnpm/action-setup@v6
         with:
-          node-version: 22
+          version: 22
+          cache: true
+          run-install: true
 
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
-
-      - name: Detect changed files
+      - name: Get changed files
         id: changed-files
-        if: "github.event_name == 'push'"
-        uses: tj-actions/changed-files@v46.0.5
-        continue-on-error: true
+        run: |
+          files=$(git diff --name-only --diff-filter=AM origin/${{ github.base_ref }}...HEAD | tr '\n' ' ')
+          echo "changed_files=$files" >> $GITHUB_OUTPUT
 
       - name: Build plugins
         run: >-
           npm run build --
           --publish
           --plugins ${{ github.event.inputs.plugin }}
-          ${{ steps.changed-files.outputs.all_changed_files }}
+          ${{ steps.changed-files.outputs.changed_files }}
           && if [ ! -d builds ]; then echo "noBuildFolder=true" >> $GITHUB_ENV; fi
 
       - name: Cancel Job when no Artifact
