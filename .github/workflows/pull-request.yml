@@ -12,7 +12,7 @@ jobs:
           cache: true
           run_install: true
       - name: Run ESLint
-        run: npx eslint
+        run: pnpm exec eslint
 
   prettier:
     runs-on: ubuntu-latest
@@ -23,7 +23,7 @@ jobs:
           cache: true
           run_install: true
       - name: Run Prettier
-        run: npx prettier --check .
+        run: pnpm exec prettier --check .
   
   build-plugin:
     runs-on: ubuntu-latest
@@ -42,4 +42,4 @@ jobs:
           echo "changed_files=$files" >> $GITHUB_OUTPUT
       - name: Build plugins
         run: |
-          npm run build -- --plugins ${{ steps.changed-files.outputs.changed_files }}
+          pnpm build --plugins ${{ steps.changed-files.outputs.changed_files }}

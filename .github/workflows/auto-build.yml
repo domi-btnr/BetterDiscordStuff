@@ -34,15 +34,39 @@ jobs:
       - name: Get changed files
         id: changed-files
         run: |
+          set -e
+
+          EVENT="${GITHUB_EVENT_NAME}"
+
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            INPUT="${{ github.event.inputs.plugin }}"
+
+            if [ -n "$INPUT" ]; then
+              echo "changed_files=$INPUT" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            files=$(find . -mindepth 1 -maxdepth 1 -type d \
+              ! -name ".git" \
+              ! -name ".github" \
+              ! -name ".husky" \
+              ! -name ".vscode" \
+              ! -name "archive" \
+              ! -name "node_modules" \
+              ! -name "scripts" \
+              | tr '\n' ' ')
+
+            echo "changed_files=$files" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
           files=$(git diff --name-only --diff-filter=AM origin/${{ github.base_ref }}...HEAD | tr '\n' ' ')
           echo "changed_files=$files" >> $GITHUB_OUTPUT
 
       - name: Build plugins
         run: >-
-          npm run build --
-          --publish
-          --plugins ${{ github.event.inputs.plugin }}
-          ${{ steps.changed-files.outputs.changed_files }}
+          pnpm build --publish
+          --plugins ${{ github.event.inputs.plugin }} ${{ steps.changed-files.outputs.changed_files }}
           && if [ ! -d builds ]; then echo "noBuildFolder=true" >> $GITHUB_ENV; fi
 
       - name: Cancel Job when no Artifact
