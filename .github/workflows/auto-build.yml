@@ -60,13 +60,13 @@ jobs:
             exit 0
           fi
 
-          files=$(git diff --name-only --diff-filter=AM origin/${{ github.base_ref }}...HEAD | tr '\n' ' ')
+          BASE="${{ github.event.before }}"
+          files=$(git diff --name-only --diff-filter=AM $BASE HEAD | tr '\n' ' ')
           echo "changed_files=$files" >> $GITHUB_OUTPUT
 
       - name: Build plugins
         run: >-
-          pnpm build --publish
-          --plugins ${{ github.event.inputs.plugin }} ${{ steps.changed-files.outputs.changed_files }}
+          pnpm build --publish --plugins ${{ steps.changed-files.outputs.changed_files }}
           && if [ ! -d builds ]; then echo "noBuildFolder=true" >> $GITHUB_ENV; fi
 
       - name: Cancel Job when no Artifact

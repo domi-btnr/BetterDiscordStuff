@@ -38,7 +38,9 @@ jobs:
       - name: Get changed files
         id: changed-files
         run: |
-          files=$(git diff --name-only --diff-filter=AM origin/${{ github.base_ref }}...HEAD | tr '\n' ' ')
+          git fetch origin ${{ github.base_ref }}
+          BASE=$(git merge-base origin/${{ github.base_ref }} HEAD)
+          files=$(git diff --name-only --diff-filter=AM $BASE HEAD | tr '\n' ' ')
           echo "changed_files=$files" >> $GITHUB_OUTPUT
       - name: Build plugins
         run: |
