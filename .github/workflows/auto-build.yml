@@ -99,7 +99,7 @@ jobs:
 
       - name: Commit Changes
         run: |
-          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          COMMIT_MSG="${{ github.event.head_commit.message || format('Manual build: {0}', github.event.inputs.plugin || 'all plugins') }}"
           git config advice.addIgnoredFile false
           git add --no-all ./**
           git config --local user.email "actions@github.com"
