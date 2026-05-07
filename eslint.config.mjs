@@ -23,21 +23,17 @@ export default [
     { ignores: ["builds/**", "archive/**"] },
     {
         settings: {
-            react: {
-                version: "19"
-            }
+            react: { version: "19" }
         }
     },
     {
         files: ["scripts/**/*.{js,cjs}"],
         languageOptions: {
-            globals: {
-                ...globals.node
-            }
+            globals: { ...globals.node }
         }
     },
     {
-        ignores: ["scripts/build.js"],
+        ignores: ["scripts/**"],
         files: ["**/*.{js,jsx,ts,tsx}"],
         languageOptions: {
             globals: {
