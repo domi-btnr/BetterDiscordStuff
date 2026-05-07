@@ -27,7 +27,9 @@ const manifest = {
     "changelog": [{
         "title": "Fixed",
         "type": "fixed",
-        "items": ["Updated the Plugin to work with the latest Discord update"]
+        "items": [
+            "Updated the Plugin to work with the latest Discord update"
+        ]
     }],
     "changelogDate": "2026-04-25"
 };
@@ -80,6 +82,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
 
 .Changelog-Item {
   color: #c4c9ce;
+  margin-bottom: 16px;
 }
 .Changelog-Item .Changelog-Header {
   display: flex;
@@ -89,16 +92,16 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   margin-bottom: 10px;
 }
 .Changelog-Item .Changelog-Header.added {
-  color: #45BA6A;
+  color: #45ba6a;
 }
 .Changelog-Item .Changelog-Header.changed {
-  color: #F0B232;
+  color: #f0b232;
 }
 .Changelog-Item .Changelog-Header.fixed {
-  color: #EC4245;
+  color: #ec4245;
 }
 .Changelog-Item .Changelog-Header.improved {
-  color: #5865F2;
+  color: #5865f2;
 }
 .Changelog-Item .Changelog-Header::after {
   content: "";
@@ -137,12 +140,10 @@ function showChangelog(manifest) {
     }, React.createElement("h4", {
         className: `Changelog-Header ${item.type}`
     }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
-    "changelogImage" in manifest && items.unshift(
-        React.createElement("img", {
-            className: "Changelog-Banner",
-            src: manifest.changelogImage
-        })
-    );
+    "changelogImage" in manifest && items.unshift(React.createElement("img", {
+        className: "Changelog-Banner",
+        src: manifest.changelogImage
+    }));
     UI.alert(title, items);
     Data.save("lastVersion", manifest.version);
 }
@@ -190,8 +191,11 @@ class ErrorBoundary extends React.Component {
             info,
             hasError: true
         });
-        console.error(`[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
-`, error);
+        console.error(
+            `[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
+`,
+            error
+        );
     }
     render() {
         if (this.state.hasError) {
@@ -241,10 +245,9 @@ var createFriendCode = {
             Expires: <t:${new Date(invite.expires_at).getTime() / 1e3}:R>
             https://discord.gg/${invite.code}
         `.replace(/^\s+/gm, "");
-        if (props.find((o) => o.name === "ephemeral")?.value ?? true)
-            return {
-                content: msg
-            };
+        if (props.find((o) => o.name === "ephemeral")?.value ?? true) return {
+            content: msg
+        };
         else sendMessage(channel.id, {
             content: msg
         }, void 0, {
@@ -272,10 +275,7 @@ var revokeAllFriendCodes = {
 };
 
 /* commands/index.js */
-const PluginCommands = [
-    createFriendCode,
-    revokeAllFriendCodes
-];
+const PluginCommands = [createFriendCode, revokeAllFriendCodes];
 
 /* components/copyButton.jsx */
 const {
@@ -414,55 +414,45 @@ function FriendCodesPanel() {
             className: TextVariantStyles["heading-lg/semibold"]
         },
         "Your Friend Codes"
-    ), React.createElement(
-        Flex, {
-            style: {
-                marginBottom: "16px"
-            },
-            justify: Flex.Justify.BETWEEN
+    ), React.createElement(Flex, {
+        style: {
+            marginBottom: "16px"
         },
-        React.createElement("h2", {
-            className: styles.panelHeader
-        }, `Friend Codes - ${invites.length}`),
-        React.createElement(Flex, {
-            justify: Flex.Justify.END
-        }, React.createElement(
-            Button, {
-                color: Button.Colors.GREEN,
-                look: Button.Looks.FILLED,
-                onClick: () => createFriendInvite().then((invite) => setInvites([...invites, invite]))
+        justify: Flex.Justify.BETWEEN
+    }, React.createElement("h2", {
+        className: styles.panelHeader
+    }, `Friend Codes - ${invites.length}`), React.createElement(Flex, {
+        justify: Flex.Justify.END
+    }, React.createElement(
+        Button, {
+            color: Button.Colors.GREEN,
+            look: Button.Looks.FILLED,
+            onClick: () => createFriendInvite().then((invite) => setInvites([...invites, invite]))
+        },
+        "Create Friend Code"
+    ), React.createElement(
+        Button, {
+            style: {
+                marginLeft: "8px"
             },
-            "Create Friend Code"
-        ), React.createElement(
-            Button, {
-                style: {
-                    marginLeft: "8px"
-                },
-                color: Button.Colors.RED,
-                look: Button.Looks.OUTLINED,
-                disabled: !invites.length,
-                onClick: () => revokeFriendInvites().then(setInvites([]))
-            },
-            "Revoke all Friend Codes"
-        ))
-    ), React.createElement("div", {
+            color: Button.Colors.RED,
+            look: Button.Looks.OUTLINED,
+            disabled: !invites.length,
+            onClick: () => revokeFriendInvites().then(setInvites([]))
+        },
+        "Revoke all Friend Codes"
+    ))), React.createElement("div", {
         style: {
             maxHeight: "40vh",
             overflowY: "auto"
         }
-    }, loading ? React.createElement(
-        Text, {
-            variant: "heading-md/semibold",
-            className: styles.panelText
-        },
-        "Loading..."
-    ) : invites.length === 0 ? React.createElement(
-        Text, {
-            variant: "heading-md/semibold",
-            className: styles.panelText
-        },
-        "You don't have any friend codes yet"
-    ) : React.createElement("div", null, invites.map((invite) => React.createElement(FriendCodeCard, {
+    }, loading ? React.createElement(Text, {
+        variant: "heading-md/semibold",
+        className: styles.panelText
+    }, "Loading...") : invites.length === 0 ? React.createElement(Text, {
+        variant: "heading-md/semibold",
+        className: styles.panelText
+    }, "You don't have any friend codes yet") : React.createElement("div", null, invites.map((invite) => React.createElement(FriendCodeCard, {
         key: invite.code,
         invite
     })))));
@@ -489,10 +479,14 @@ class FriendCodes {
         }]) => {
             if (id !== "ADD_FRIEND") return;
             Patcher.after(children, "type", (_2, __, res) => {
-                res.props.children.splice(1, 0, React.createElement(ErrorBoundary, {
-                    key: "FriendCodesPanel",
-                    id: "FriendCodesPanel"
-                }, React.createElement(FriendCodesPanel, null)));
+                res.props.children.splice(
+                    1,
+                    0,
+                    React.createElement(ErrorBoundary, {
+                        key: "FriendCodesPanel",
+                        id: "FriendCodesPanel"
+                    }, React.createElement(FriendCodesPanel, null))
+                );
             });
         });
     }
