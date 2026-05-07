@@ -41,7 +41,8 @@ jobs:
       - name: Get changed files
         id: changed-files
         run: |
-          echo "changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})" >> $GITHUB_OUTPUT
+          files=$(git diff --name-only --diff-filter=AM origin/${{ github.base_ref }}...HEAD | tr '\n' ' ')
+          echo "changed_files=$files" >> $GITHUB_OUTPUT
       - name: Build plugins
         run: |
           npm run build -- --plugins ${{ steps.changed-files.outputs.changed_files }}
