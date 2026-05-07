@@ -11,7 +11,7 @@ jobs:
         with:
           version: 22
           cache: true
-          run-install: true
+          run_install: true
       - name: Run ESLint
         run: npx eslint
 
@@ -23,7 +23,7 @@ jobs:
         with:
           version: 22
           cache: true
-          run-install: true
+          run_install: true
       - name: Run Prettier
         run: npx prettier --check .
   
@@ -37,7 +37,7 @@ jobs:
         with:
           version: 22
           cache: true
-          run-install: true
+          run_install: true
       - name: Get changed files
         id: changed-files
         run: |
