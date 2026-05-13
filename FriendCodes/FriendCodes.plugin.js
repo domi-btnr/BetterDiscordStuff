@@ -1,5 +1,4 @@
 /**
- * @$schema ../common/Schemas/manifest.schema.json
  * @name FriendCodes
  * @version 1.2.5
  * @description Generate FriendCodes to easily add friends
@@ -8,7 +7,6 @@
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes
- * @changelogDate 2026-04-25
  */
 
 'use strict';

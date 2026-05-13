@@ -1,5 +1,4 @@
 /**
- * @$schema ../common/Schemas/manifest.schema.json
  * @name GlobalBadges
  * @version 1.0.5
  * @description Adds global badges from other client mods
@@ -8,7 +7,6 @@
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges
- * @changelogDate 2026-01-25
  */
 
 'use strict';
@@ -82,6 +80,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
 
 .Changelog-Item {
   color: #c4c9ce;
+  margin-bottom: 16px;
 }
 .Changelog-Item .Changelog-Header {
   display: flex;
@@ -91,16 +90,16 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   margin-bottom: 10px;
 }
 .Changelog-Item .Changelog-Header.added {
-  color: #45BA6A;
+  color: #45ba6a;
 }
 .Changelog-Item .Changelog-Header.changed {
-  color: #F0B232;
+  color: #f0b232;
 }
 .Changelog-Item .Changelog-Header.fixed {
-  color: #EC4245;
+  color: #ec4245;
 }
 .Changelog-Item .Changelog-Header.improved {
-  color: #5865F2;
+  color: #5865f2;
 }
 .Changelog-Item .Changelog-Header::after {
   content: "";
@@ -139,12 +138,10 @@ function showChangelog(manifest) {
     }, React.createElement("h4", {
         className: `Changelog-Header ${item.type}`
     }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
-    "changelogImage" in manifest && items.unshift(
-        React.createElement("img", {
-            className: "Changelog-Banner",
-            src: manifest.changelogImage
-        })
-    );
+    "changelogImage" in manifest && items.unshift(React.createElement("img", {
+        className: "Changelog-Banner",
+        src: manifest.changelogImage
+    }));
     UI.alert(title, items);
     Data.save("lastVersion", manifest.version);
 }
@@ -270,8 +267,8 @@ function GlobalBadges$1(props) {
         badges[mod].forEach((badge) => {
             if (typeof badge === "string") {
                 const fullNames = {
-                    "hunter": "Bug Hunter",
-                    "early": "Early User"
+                    hunter: "Bug Hunter",
+                    early: "Early User"
                 };
                 badge = {
                     name: fullNames[badge] || badge,
@@ -341,11 +338,9 @@ class GlobalBadges {
                 displayProfile
             }] = args;
             if (!displayProfile?.userId) return;
-            res.props.children.unshift(
-                React.createElement(GlobalBadges$1, {
-                    userId: displayProfile.userId
-                })
-            );
+            res.props.children.unshift(React.createElement(GlobalBadges$1, {
+                userId: displayProfile.userId
+            }));
         });
     }
     getSettingsPanel() {

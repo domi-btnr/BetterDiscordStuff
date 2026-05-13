@@ -7,7 +7,6 @@
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds
- * @changelogDate 
  */
 
 'use strict';
@@ -28,17 +27,9 @@ const manifest = {
 
 /* @api */
 const {
-    Commands,
-    Components,
     ContextMenu,
     Data,
     DOM,
-    Logger,
-    Net,
-    Patcher,
-    Plugins,
-    ReactUtils,
-    Themes,
     UI,
     Utils,
     Webpack
@@ -84,6 +75,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
 
 .Changelog-Item {
   color: #c4c9ce;
+  margin-bottom: 16px;
 }
 .Changelog-Item .Changelog-Header {
   display: flex;
@@ -93,16 +85,16 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   margin-bottom: 10px;
 }
 .Changelog-Item .Changelog-Header.added {
-  color: #45BA6A;
+  color: #45ba6a;
 }
 .Changelog-Item .Changelog-Header.changed {
-  color: #F0B232;
+  color: #f0b232;
 }
 .Changelog-Item .Changelog-Header.fixed {
-  color: #EC4245;
+  color: #ec4245;
 }
 .Changelog-Item .Changelog-Header.improved {
-  color: #5865F2;
+  color: #5865f2;
 }
 .Changelog-Item .Changelog-Header::after {
   content: "";
@@ -138,43 +130,39 @@ function showChangelog(manifest) {
     }, React.createElement("h4", {
         className: `Changelog-Header ${item.type}`
     }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
-    "changelogImage" in manifest && items.unshift(
-        React.createElement("img", {
-            className: "Changelog-Banner",
-            src: manifest.changelogImage
-        })
-    );
+    "changelogImage" in manifest && items.unshift(React.createElement("img", {
+        className: "Changelog-Banner",
+        src: manifest.changelogImage
+    }));
     UI.alert(title, items);
     Data.save("lastVersion", manifest.version);
 }
 
 /* components/icons.tsx */
 function ImageVisible(props) {
-    return React.createElement(
-        "svg", {
-            ...props,
-            className: Utils.className(props.className, "image-visible"),
-            viewBox: "0 0 24 24"
-        },
-        React.createElement("path", {
+    return React.createElement("svg", {
+        ...props,
+        className: Utils.className(props.className, "image-visible"),
+        viewBox: "0 0 24 24"
+    }, React.createElement(
+        "path", {
             fill: "currentColor",
             d: "M5 21q-.825 0-1.413-.587Q3 19.825 3 19V5q0-.825.587-1.413Q4.175 3 5 3h14q.825 0 1.413.587Q21 4.175 21 5v14q0 .825-.587 1.413Q19.825 21 19 21Zm0-2h14V5H5v14Zm1-2h12l-3.75-5-3 4L9 13Zm-1 2V5v14Z"
-        })
-    );
+        }
+    ));
 }
 
 function ImageInvisible(props) {
-    return React.createElement(
-        "svg", {
-            ...props,
-            className: Utils.className(props.className, "image-invisible"),
-            viewBox: "0 0 24 24"
-        },
-        React.createElement("path", {
+    return React.createElement("svg", {
+        ...props,
+        className: Utils.className(props.className, "image-invisible"),
+        viewBox: "0 0 24 24"
+    }, React.createElement(
+        "path", {
             fill: "currentColor",
             d: "m21 18.15-2-2V5H7.85l-2-2H19q.825 0 1.413.587Q21 4.175 21 5Zm-1.2 4.45L18.2 21H5q-.825 0-1.413-.587Q3 19.825 3 19V5.8L1.4 4.2l1.4-1.4 18.4 18.4ZM6 17l3-4 2.25 3 .825-1.1L5 7.825V19h11.175l-2-2Zm7.425-6.425ZM10.6 13.4Z"
-        })
-    );
+        }
+    ));
 }
 
 /* modules/utils.ts */
@@ -182,11 +170,9 @@ function findGroupById(res, id) {
     if (!res) return null;
     let children = res?.props?.children;
     if (!children) return null;
-    if (!Array.isArray(children))
-        children = [children];
-    if (children.some(
-            (child) => child && typeof child === "object" && "props" in child && child.props.id === id
-        )) return res;
+    if (!Array.isArray(children)) children = [children];
+    if (children.some((child) => child && typeof child === "object" && "props" in child && child.props.id === id))
+        return res;
     for (const child of children)
         if (child && typeof child === "object") {
             const found = findGroupById(child, id);
@@ -219,49 +205,50 @@ class UnsuppressEmbeds {
             searchExports: true
         });
         const UserStore = Webpack.getStore("UserStore");
-        unpatchContextMenu = ContextMenu.patch("message", (res, {
-            channel,
-            message: {
-                author,
-                messageSnapshots,
-                embeds,
-                flags,
-                id: messageId
+        unpatchContextMenu = ContextMenu.patch(
+            "message",
+            (res, {
+                channel,
+                message: {
+                    author,
+                    messageSnapshots,
+                    embeds,
+                    flags,
+                    id: messageId
+                }
+            }) => {
+                const isEmbedSuppressed = (flags & EMBED_SUPPRESSED) !== 0;
+                const hasEmbedsInSnapshots = messageSnapshots.some((snapshot) => snapshot?.message.embeds.length);
+                if (!isEmbedSuppressed && !embeds.length && !hasEmbedsInSnapshots) return;
+                const hasEmbedPerms = channel.isPrivate() || !!(PermissionStore.getChannelPermissions({
+                    id: channel.id
+                }) & PermissionsBits.EMBED_LINKS);
+                if (author.id === UserStore.getCurrentUser().id && !hasEmbedPerms) return;
+                const menuGroup = findGroupById(res, "delete")?.props?.children;
+                const deleteIndex = menuGroup?.findIndex((i) => i?.props?.id === "delete");
+                if (!menuGroup || !deleteIndex) return;
+                menuGroup.splice(
+                    deleteIndex - 1,
+                    0,
+                    // @ts-ignore
+                    React.createElement(
+                        ContextMenu.Item, {
+                            id: "unsuppress-embeds",
+                            key: "unsuppress-embeds",
+                            label: isEmbedSuppressed ? "Unsuppress Embeds" : "Suppress Embeds",
+                            color: isEmbedSuppressed ? void 0 : "danger",
+                            icon: isEmbedSuppressed ? ImageVisible : ImageInvisible,
+                            action: () => RestAPI.patch({
+                                url: Endpoints.MESSAGE(channel.id, messageId),
+                                body: {
+                                    flags: isEmbedSuppressed ? flags & ~EMBED_SUPPRESSED : flags | EMBED_SUPPRESSED
+                                }
+                            })
+                        }
+                    )
+                );
             }
-        }) => {
-            const isEmbedSuppressed = (flags & EMBED_SUPPRESSED) !== 0;
-            const hasEmbedsInSnapshots = messageSnapshots.some(
-                (snapshot) => snapshot?.message.embeds.length
-            );
-            if (!isEmbedSuppressed && !embeds.length && !hasEmbedsInSnapshots) return;
-            const hasEmbedPerms = channel.isPrivate() || !!(PermissionStore.getChannelPermissions({
-                id: channel.id
-            }) & PermissionsBits.EMBED_LINKS);
-            if (author.id === UserStore.getCurrentUser().id && !hasEmbedPerms) return;
-            const menuGroup = findGroupById(res, "delete")?.props?.children;
-            const deleteIndex = menuGroup?.findIndex((i) => i?.props?.id === "delete");
-            if (!menuGroup || !deleteIndex) return;
-            menuGroup.splice(
-                deleteIndex - 1,
-                0,
-                // @ts-ignore
-                React.createElement(
-                    ContextMenu.Item, {
-                        id: "unsuppress-embeds",
-                        key: "unsuppress-embeds",
-                        label: isEmbedSuppressed ? "Unsuppress Embeds" : "Suppress Embeds",
-                        color: isEmbedSuppressed ? void 0 : "danger",
-                        icon: isEmbedSuppressed ? ImageVisible : ImageInvisible,
-                        action: () => RestAPI.patch({
-                            url: Endpoints.MESSAGE(channel.id, messageId),
-                            body: {
-                                flags: isEmbedSuppressed ? flags & -5 : flags | EMBED_SUPPRESSED
-                            }
-                        })
-                    }
-                )
-            );
-        });
+        );
     }
 }
 

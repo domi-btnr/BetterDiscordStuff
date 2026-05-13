@@ -7,7 +7,6 @@
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators
- * @changelogDate 2026-01-25
  */
 
 'use strict';
@@ -35,18 +34,11 @@ const manifest = {
 
 /* @api */
 const {
-    Commands,
     Components,
-    ContextMenu,
     Data,
     DOM,
     Hooks,
-    Logger,
-    Net,
     Patcher,
-    Plugins,
-    ReactUtils,
-    Themes,
     UI,
     Utils,
     Webpack
@@ -92,6 +84,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
 
 .Changelog-Item {
   color: #c4c9ce;
+  margin-bottom: 16px;
 }
 .Changelog-Item .Changelog-Header {
   display: flex;
@@ -101,16 +94,16 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   margin-bottom: 10px;
 }
 .Changelog-Item .Changelog-Header.added {
-  color: #45BA6A;
+  color: #45ba6a;
 }
 .Changelog-Item .Changelog-Header.changed {
-  color: #F0B232;
+  color: #f0b232;
 }
 .Changelog-Item .Changelog-Header.fixed {
-  color: #EC4245;
+  color: #ec4245;
 }
 .Changelog-Item .Changelog-Header.improved {
-  color: #5865F2;
+  color: #5865f2;
 }
 .Changelog-Item .Changelog-Header::after {
   content: "";
@@ -146,12 +139,10 @@ function showChangelog(manifest) {
     }, React.createElement("h4", {
         className: `Changelog-Header ${item.type}`
     }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
-    "changelogImage" in manifest && items.unshift(
-        React.createElement("img", {
-            className: "Changelog-Banner",
-            src: manifest.changelogImage
-        })
-    );
+    "changelogImage" in manifest && items.unshift(React.createElement("img", {
+        className: "Changelog-Banner",
+        src: manifest.changelogImage
+    }));
     UI.alert(title, items);
     Data.save("lastVersion", manifest.version);
 }
@@ -193,20 +184,17 @@ const {
 
 function SwitchItem(props) {
     const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    return React.createElement(
-        SettingItem, {
-            ...props,
-            inline: true
-        },
-        React.createElement(
-            SwitchInput, {
-                value,
-                onChange: (v) => {
-                    Settings.set(props.id, v);
-                }
+    return React.createElement(SettingItem, {
+        ...props,
+        inline: true
+    }, React.createElement(
+        SwitchInput, {
+            value,
+            onChange: (v) => {
+                Settings.set(props.id, v);
             }
-        )
-    );
+        }
+    ));
 }
 
 function renderSettings(items) {
@@ -271,7 +259,10 @@ function SpectatorsTooltip({
     noTitle
 }) {
     if (!spectatorIds && !guildId) {
-        const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
+        const activeStream = Hooks.useStateFromStores(
+            [ApplicationStreamingStore],
+            () => ApplicationStreamingStore.getCurrentUserActiveStream()
+        );
         if (!activeStream) return null;
         spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
         guildId = activeStream.guildId;
@@ -282,40 +273,39 @@ function SpectatorsTooltip({
         size: Text.Sizes.SIZE_16
     }, getLocalizedString(Strings.SPECTATORS, {
         numViewers: spectatorIds.length
-    })), spectators.length > 0 && React.createElement(
-        Flex, {
-            direction: Flex.Direction.VERTICAL,
-            style: {
-                alignItems: "center",
-                gap: 6,
-                marginTop: "8px"
-            }
-        },
-        spectators.map((user) => React.createElement(Flex, {
-            style: {
-                alignContent: "center",
-                gap: 6
-            }
-        }, React.createElement("img", {
-            src: user.getAvatarURL(guildId),
-            style: {
-                borderRadius: 8,
-                height: 16,
-                width: 16
-            }
-        }), getDisplayName(user))),
-        !!unknownSpectators && React.createElement(Flex, {
-            style: {
-                alignContent: "center"
-            }
-        }, React.createElement(Text, null, "+", getLocalizedString(Strings.NUM_USERS, {
-            num: unknownSpectators
-        })))
-    ));
+    })), spectators.length > 0 && React.createElement(Flex, {
+        direction: Flex.Direction.VERTICAL,
+        style: {
+            alignItems: "center",
+            gap: 6,
+            marginTop: "8px"
+        }
+    }, spectators.map((user) => React.createElement(Flex, {
+        style: {
+            alignContent: "center",
+            gap: 6
+        }
+    }, React.createElement("img", {
+        src: user.getAvatarURL(guildId),
+        style: {
+            borderRadius: 8,
+            height: 16,
+            width: 16
+        }
+    }), getDisplayName(user))), !!unknownSpectators && React.createElement(Flex, {
+        style: {
+            alignContent: "center"
+        }
+    }, React.createElement(Text, null, "+", getLocalizedString(Strings.NUM_USERS, {
+        num: unknownSpectators
+    })))));
 }
 
 function SpectatorsPanel() {
-    const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () => ApplicationStreamingStore.getCurrentUserActiveStream());
+    const activeStream = Hooks.useStateFromStores(
+        [ApplicationStreamingStore],
+        () => ApplicationStreamingStore.getCurrentUserActiveStream()
+    );
     if (!activeStream || !Settings.get("showPanel", true)) return null;
     let unknownSpectators = 0;
     const spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
@@ -360,18 +350,21 @@ function SpectatorsPanel() {
             )),
             renderMoreUsers: (label, count) => {
                 const sliced = spectators.slice(-count);
-                return React.createElement(Tooltip, {
-                    text: React.createElement(
-                        SpectatorsTooltip, {
-                            noTitle: true,
-                            guildId: activeStream.guildId,
-                            spectatorIds: sliced.map((user) => user.id)
-                        }
-                    )
-                }, (props) => React.createElement("div", {
-                    ...props,
-                    className: AvatarStyles.moreUsers
-                }, "+", sliced.length));
+                return React.createElement(
+                    Tooltip, {
+                        text: React.createElement(
+                            SpectatorsTooltip, {
+                                noTitle: true,
+                                guildId: activeStream.guildId,
+                                spectatorIds: sliced.map((user) => user.id)
+                            }
+                        )
+                    },
+                    (props) => React.createElement("div", {
+                        ...props,
+                        className: AvatarStyles.moreUsers
+                    }, "+", sliced.length)
+                );
             }
         }
     ) : null);
@@ -394,12 +387,9 @@ class ShowSpectators {
         Patcher.after(StreamIcon, "A", (_, __, res) => {
             const children = res.props.children;
             res.props.children = [
-                React.createElement(
-                    Components.Tooltip, {
-                        text: React.createElement(SpectatorsTooltip, null)
-                    },
-                    (props) => children.map((child) => React.cloneElement(child, props))
-                )
+                React.createElement(Components.Tooltip, {
+                    text: React.createElement(SpectatorsTooltip, null)
+                }, (props) => children.map((child) => React.cloneElement(child, props)))
             ];
         });
     }

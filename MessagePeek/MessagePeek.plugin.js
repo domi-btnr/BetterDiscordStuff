@@ -1,5 +1,4 @@
 /**
- * @$schema ../common/Schemas/manifest.schema.json
  * @name MessagePeek
  * @version 1.2.6
  * @description See the last message in a Channel like on mobile
@@ -8,7 +7,6 @@
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek
- * @changelogDate 2026-04-25
  */
 
 'use strict';
@@ -27,12 +25,16 @@ const manifest = {
     "changelog": [{
             "title": "Fixed",
             "type": "fixed",
-            "items": ["Updated the Plugin to work with the latest Discord update"]
+            "items": [
+                "Updated the Plugin to work with the latest Discord update"
+            ]
         },
         {
             "title": "Known broken Features",
             "type": "changed",
-            "items": ["Removed the option to show timestamps in the DM list as it doesn't work and I don't have the time to fix it right now"]
+            "items": [
+                "Removed the option to show timestamps in the DM list as it doesn't work and I don't have the time to fix it right now"
+            ]
         }
     ],
     "changelogDate": "2026-04-25"
@@ -188,16 +190,16 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   margin-bottom: 10px;
 }
 .Changelog-Item .Changelog-Header.added {
-  color: #45BA6A;
+  color: #45ba6a;
 }
 .Changelog-Item .Changelog-Header.changed {
-  color: #F0B232;
+  color: #f0b232;
 }
 .Changelog-Item .Changelog-Header.fixed {
-  color: #EC4245;
+  color: #ec4245;
 }
 .Changelog-Item .Changelog-Header.improved {
-  color: #5865F2;
+  color: #5865f2;
 }
 .Changelog-Item .Changelog-Header::after {
   content: "";
@@ -233,12 +235,10 @@ function showChangelog(manifest) {
     }, React.createElement("h4", {
         className: `Changelog-Header ${item.type}`
     }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
-    "changelogImage" in manifest && items.unshift(
-        React.createElement("img", {
-            className: "Changelog-Banner",
-            src: manifest.changelogImage
-        })
-    );
+    "changelogImage" in manifest && items.unshift(React.createElement("img", {
+        className: "Changelog-Banner",
+        src: manifest.changelogImage
+    }));
     UI.alert(title, items);
     Data.save("lastVersion", manifest.version);
 }
@@ -268,34 +268,37 @@ function MessagePeek$1({
         if (!content) return null;
         const charLimit = Settings.get("tooltipCharacterLimit", 256);
         const authorName = lastMessage.author.email && Settings.get("showYourselfAsYou", true) ? "You" : lastMessage.author["globalName"] || lastMessage.author["username"];
-        return React.createElement("div", {
-            style: {
-                marginBottom: "2px",
-                marginTop: "-2px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap"
-            }
-        }, React.createElement(
-            Components.Tooltip, {
-                text: content.length > charLimit ? Parser.parse(content.slice(0, charLimit).trim() + "\u2026") : Parser.parse(content)
+        return React.createElement(
+            "div", {
+                style: {
+                    marginBottom: "2px",
+                    marginTop: "-2px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap"
+                }
             },
-            (props) => React.createElement(
-                "div", {
-                    ...props,
-                    style: {
-                        fontSize: "12px",
-                        fontWeight: "var(--font-weight-medium)",
-                        lineHeight: "16px",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap"
-                    }
+            React.createElement(
+                Components.Tooltip, {
+                    text: content.length > charLimit ? Parser.parse(content.slice(0, charLimit).trim() + "\u2026") : Parser.parse(content)
                 },
-                Settings.get("showAuthor", true) && `${authorName}: `,
-                Parser.parseInlineReply(content)
+                (props) => React.createElement(
+                    "div", {
+                        ...props,
+                        style: {
+                            fontSize: "12px",
+                            fontWeight: "var(--font-weight-medium)",
+                            lineHeight: "16px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap"
+                        }
+                    },
+                    Settings.get("showAuthor", true) && `${authorName}: `,
+                    Parser.parseInlineReply(content)
+                )
             )
-        ));
+        );
     } else {
         const now = Date.now();
         const dateTimeFormatter = new Intl.DateTimeFormat(i18n.getLocale(), {
@@ -348,22 +351,19 @@ function MessagePeek$1({
                 break;
             }
         }
-        return React.createElement(
-            Components.Tooltip, {
-                text: dateTimeFormatter.format(lastMessage.timestamp)
+        return React.createElement(Components.Tooltip, {
+            text: dateTimeFormatter.format(lastMessage.timestamp)
+        }, (props) => React.createElement(
+            "div", {
+                ...props,
+                style: {
+                    marginRight: "5px",
+                    alignContent: "center",
+                    color: "var(--channels-default)"
+                }
             },
-            (props) => React.createElement(
-                "div", {
-                    ...props,
-                    style: {
-                        marginRight: "5px",
-                        alignContent: "center",
-                        color: "var(--channels-default)"
-                    }
-                },
-                `${Math.abs(relativeTime)}${unit}`
-            )
-        );
+            `${Math.abs(relativeTime)}${unit}`
+        ));
     }
 }
 
@@ -445,8 +445,7 @@ var SettingsItems = {
 /* index.jsx */
 class MessagePeek {
     start() {
-        if (Settings.get("preloadLimit", 10) > 30)
-            Settings.set("preloadLimit", 10);
+        if (Settings.get("preloadLimit", 10) > 30) Settings.set("preloadLimit", 10);
         showChangelog(manifest);
         this.patchDMs();
         this.patchGuildChannel();
@@ -458,7 +457,9 @@ class MessagePeek {
     }
     async patchDMs() {
         const ChannelContext = React.createContext(null);
-        const ChannelWrapper = await Webpack.waitForModule(Webpack.Filters.bySource('location:"PrivateChannel",', "isMobile"));
+        const ChannelWrapper = await Webpack.waitForModule(
+            Webpack.Filters.bySource('location:"PrivateChannel",', "isMobile")
+        );
         const NameWrapper = (await Webpack.waitForModule(Webpack.Filters.bySource("AvatarWithText"))).A;
         const ChannelClasses = await Webpack.waitForModule(Webpack.Filters.byKeys("channel", "decorator"));
         Patcher.after(ChannelWrapper, "Ay", (_, __, res) => {
@@ -476,11 +477,9 @@ class MessagePeek {
                 walkable: ["children", "props"]
             });
             if (!nameWrapper) return res;
-            nameWrapper.props.children.push(
-                React.createElement(MessagePeek$1, {
-                    channelId: channel.id
-                })
-            );
+            nameWrapper.props.children.push(React.createElement(MessagePeek$1, {
+                channelId: channel.id
+            }));
         });
         const preload = Webpack.getByKeys("preload", "fetchChannel")?.preload;
         Webpack.getStore("ChannelStore").getSortedPrivateChannels().filter(
@@ -498,7 +497,9 @@ class MessagePeek {
         }
     }
     async patchGuildChannel() {
-        const ChannelWrapper = await Webpack.waitForModule(Webpack.Filters.byComponentType(Webpack.Filters.byStrings("channel", "unread", ".ALL_MESSAGES")));
+        const ChannelWrapper = await Webpack.waitForModule(
+            Webpack.Filters.byComponentType(Webpack.Filters.byStrings("channel", "unread", ".ALL_MESSAGES"))
+        );
         Patcher.after(ChannelWrapper, "render", (_, [{
             channel
         }], res) => {
@@ -507,12 +508,9 @@ class MessagePeek {
                 walkable: ["children", "props"]
             });
             if (!nameWrapper) return res;
-            nameWrapper.props.children = [
-                nameWrapper.props.children,
-                React.createElement(MessagePeek$1, {
-                    channelId: channel.id
-                })
-            ];
+            nameWrapper.props.children = [nameWrapper.props.children, React.createElement(MessagePeek$1, {
+                channelId: channel.id
+            })];
             if (!Settings.get("showTimestamp", true)) return;
             const innerWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("linkTop"), {
                 walkable: ["children", "props"]

@@ -7,7 +7,6 @@
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ReplaceTimestamps
- * @changelogDate 2026-01-26
  */
 
 'use strict';
@@ -38,20 +37,12 @@ const manifest = {
 
 /* @api */
 const {
-    Commands,
     Components,
-    ContextMenu,
     Data,
     DOM,
     Hooks,
-    Logger,
-    Net,
     Patcher,
-    Plugins,
-    ReactUtils,
-    Themes,
     UI,
-    Utils,
     Webpack
 } = new BdApi(manifest.name);
 
@@ -95,6 +86,7 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
 
 .Changelog-Item {
   color: #c4c9ce;
+  margin-bottom: 16px;
 }
 .Changelog-Item .Changelog-Header {
   display: flex;
@@ -104,16 +96,16 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   margin-bottom: 10px;
 }
 .Changelog-Item .Changelog-Header.added {
-  color: #45BA6A;
+  color: #45ba6a;
 }
 .Changelog-Item .Changelog-Header.changed {
-  color: #F0B232;
+  color: #f0b232;
 }
 .Changelog-Item .Changelog-Header.fixed {
-  color: #EC4245;
+  color: #ec4245;
 }
 .Changelog-Item .Changelog-Header.improved {
-  color: #5865F2;
+  color: #5865f2;
 }
 .Changelog-Item .Changelog-Header::after {
   content: "";
@@ -149,12 +141,10 @@ function showChangelog(manifest) {
     }, React.createElement("h4", {
         className: `Changelog-Header ${item.type}`
     }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
-    "changelogImage" in manifest && items.unshift(
-        React.createElement("img", {
-            className: "Changelog-Banner",
-            src: manifest.changelogImage
-        })
-    );
+    "changelogImage" in manifest && items.unshift(React.createElement("img", {
+        className: "Changelog-Banner",
+        src: manifest.changelogImage
+    }));
     UI.alert(title, items);
     Data.save("lastVersion", manifest.version);
 }
@@ -242,20 +232,17 @@ function DropdownItem(props) {
 
 function SwitchItem(props) {
     const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    return React.createElement(
-        SettingItem, {
-            ...props,
-            inline: true
-        },
-        React.createElement(
-            SwitchInput, {
-                value,
-                onChange: (v) => {
-                    Settings.set(props.id, v);
-                }
+    return React.createElement(SettingItem, {
+        ...props,
+        inline: true
+    }, React.createElement(
+        SwitchInput, {
+            value,
+            onChange: (v) => {
+                Settings.set(props.id, v);
             }
-        )
-    );
+        }
+    ));
 }
 
 function renderSettings(items) {
