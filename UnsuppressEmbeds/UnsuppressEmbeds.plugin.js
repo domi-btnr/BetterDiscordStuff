@@ -13,6 +13,7 @@
 
 /* @manifest */
 const manifest = {
+    "$schema": "../common/Schemas/manifest.schema.json",
     "name": "UnsuppressEmbeds",
     "version": "1.0.0",
     "description": "Allows you to unsuppress embeds in messages",
@@ -20,9 +21,7 @@ const manifest = {
     "authorId": "354191516979429376",
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds",
-    "changelog": [],
-    "changelogDate": ""
+    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds"
 };
 
 /* @api */
@@ -47,9 +46,6 @@ var Styles = {
         DOM.removeStyle();
     }
 };
-
-/* react */
-var React = BdApi.React;
 
 /* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
@@ -111,6 +107,9 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
 .Changelog-Item span::marker {
   color: var(--background-accent);
 }`);
+
+/* react */
+var React = BdApi.React;
 
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
@@ -197,14 +196,14 @@ class UnsuppressEmbeds {
         const Endpoints = Webpack.getModule((m) => typeof m?.MESSAGES === "function", {
             searchExports: true
         });
-        const PermissionsBits = Webpack.getModule((m) => m?.EMBED_LINKS, {
+        const PermissionsBits2 = Webpack.getModule((m) => m?.EMBED_LINKS, {
             searchExports: true
         });
-        const PermissionStore = Webpack.getStore("PermissionStore");
-        const RestAPI = Webpack.getModule((m) => typeof m === "object" && m.del && m.put, {
+        const PermissionStore2 = Webpack.getStore("PermissionStore");
+        const RestAPI2 = Webpack.getModule((m) => typeof m === "object" && m.del && m.put, {
             searchExports: true
         });
-        const UserStore = Webpack.getStore("UserStore");
+        const UserStore2 = Webpack.getStore("UserStore");
         unpatchContextMenu = ContextMenu.patch(
             "message",
             (res, {
@@ -220,10 +219,10 @@ class UnsuppressEmbeds {
                 const isEmbedSuppressed = (flags & EMBED_SUPPRESSED) !== 0;
                 const hasEmbedsInSnapshots = messageSnapshots.some((snapshot) => snapshot?.message.embeds.length);
                 if (!isEmbedSuppressed && !embeds.length && !hasEmbedsInSnapshots) return;
-                const hasEmbedPerms = channel.isPrivate() || !!(PermissionStore.getChannelPermissions({
+                const hasEmbedPerms = channel.isPrivate() || !!(PermissionStore2.getChannelPermissions({
                     id: channel.id
-                }) & PermissionsBits.EMBED_LINKS);
-                if (author.id === UserStore.getCurrentUser().id && !hasEmbedPerms) return;
+                }) & PermissionsBits2.EMBED_LINKS);
+                if (author.id === UserStore2.getCurrentUser().id && !hasEmbedPerms) return;
                 const menuGroup = findGroupById(res, "delete")?.props?.children;
                 const deleteIndex = menuGroup?.findIndex((i) => i?.props?.id === "delete");
                 if (!menuGroup || !deleteIndex) return;
@@ -238,7 +237,7 @@ class UnsuppressEmbeds {
                             label: isEmbedSuppressed ? "Unsuppress Embeds" : "Suppress Embeds",
                             color: isEmbedSuppressed ? void 0 : "danger",
                             icon: isEmbedSuppressed ? ImageVisible : ImageInvisible,
-                            action: () => RestAPI.patch({
+                            action: () => RestAPI2.patch({
                                 url: Endpoints.MESSAGE(channel.id, messageId),
                                 body: {
                                     flags: isEmbedSuppressed ? flags & ~EMBED_SUPPRESSED : flags | EMBED_SUPPRESSED

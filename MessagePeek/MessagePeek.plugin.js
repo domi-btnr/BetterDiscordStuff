@@ -53,96 +53,6 @@ const {
     Webpack
 } = new BdApi(manifest.name);
 
-/* react */
-var React = BdApi.React;
-
-/* ../common/Settings/store.ts */
-const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
-    searchExports: true
-});
-const Flux = Webpack.getByKeys("Store");
-const Settings = new class Settings2 extends Flux.Store {
-    constructor() {
-        super(Dispatcher, {});
-    }
-    _settings = Data.load("SETTINGS") ?? {};
-    get(key, def = null) {
-        return this._settings[key] ?? def;
-    }
-    set(key, value) {
-        this._settings[key] = value;
-        Data.save("SETTINGS", this._settings);
-        this.emitChange();
-    }
-}();
-
-/* ../common/Settings/panel.tsx */
-const {
-    SettingItem,
-    SwitchInput
-} = Components;
-const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', {
-    searchExports: true
-});
-const Slider = Webpack.getByStrings("stickToMarkers");
-
-function DropdownItem(props) {
-    return React.createElement(SettingItem, {
-        ...props
-    }, React.createElement(
-        Select, {
-            closeOnSelect: true,
-            options: props.options,
-            serialize: (v) => String(v),
-            select: (v) => Settings.set(props.id, v),
-            isSelected: (v) => Settings.get(props.id, props.value) === v
-        }
-    ));
-}
-
-function SwitchItem(props) {
-    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    return React.createElement(SettingItem, {
-        ...props,
-        inline: true
-    }, React.createElement(SwitchInput, {
-        value,
-        onChange: (v) => Settings.set(props.id, v)
-    }));
-}
-
-function SliderItem(props) {
-    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    return React.createElement(SettingItem, {
-        ...props
-    }, React.createElement(
-        Slider, {
-            ...props,
-            handleSize: 10,
-            initialValue: value,
-            defaultValue: props.defaultValue,
-            minValue: props.minValue,
-            maxValue: props.maxValue,
-            onValueChange: (value2) => Settings.set(props.id, Math.round(value2)),
-            onValueRender: (value2) => Math.round(value2)
-        }
-    ));
-}
-
-function SettingsPanel(props) {
-    const ComponentMap = {
-        dropdown: DropdownItem,
-        switch: SwitchItem,
-        slider: SliderItem
-    };
-    return props.items.map((item) => {
-        const Component = ComponentMap[item.type];
-        return Component ? React.createElement(Component, {
-            ...item
-        }) : null;
-    });
-}
-
 /* @styles */
 
 var Styles = {
@@ -217,6 +127,9 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   color: var(--background-accent);
 }`);
 
+/* react */
+var React = BdApi.React;
+
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
@@ -241,6 +154,165 @@ function showChangelog(manifest) {
     }));
     UI.alert(title, items);
     Data.save("lastVersion", manifest.version);
+}
+
+/* ../common/ErrorBoundary/style.scss */
+Styles.sheets.push("/* ../common/ErrorBoundary/style.scss */", `.errorBoundary {
+  align-items: center;
+  background: #473c41;
+  border: 2px solid #f04747;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 10px;
+  color: #fff;
+  font-size: 16px;
+}
+.errorBoundary .errorText {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}`);
+
+/* ../common/ErrorBoundary/index.tsx */
+const ErrorIcon = (props) => React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    viewBox: "0 0 24 24",
+    fill: "#ddd",
+    width: "24",
+    height: "24",
+    ...props
+}, React.createElement("path", {
+    d: "M0 0h24v24H0z",
+    fill: "none"
+}), React.createElement("path", {
+    d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+}));
+class ErrorBoundary extends React.Component {
+    state = {
+        hasError: false,
+        error: null,
+        info: null
+    };
+    componentDidCatch(error, info) {
+        this.setState({
+            error,
+            info,
+            hasError: true
+        });
+        console.error(
+            `[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
+`,
+            error
+        );
+    }
+    render() {
+        if (this.state.hasError) {
+            return this.props.mini ? React.createElement(ErrorIcon, {
+                fill: "#f04747"
+            }) : React.createElement("div", {
+                className: "errorBoundary"
+            }, React.createElement("div", {
+                className: "errorText"
+            }, React.createElement("span", null, "An error has occured while rendering ", this.props.id, "."), React.createElement("span", null, "Open console (", React.createElement("code", null, "CTRL + SHIFT + i / CMD + SHIFT + i"), ') - Select the "Console" tab and screenshot the big red error.')));
+        } else return this.props.children;
+    }
+}
+
+/* ../common/Settings/store.ts */
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
+    searchExports: true
+});
+const Flux = Webpack.getByKeys("Store");
+const Settings = new class Settings2 extends Flux.Store {
+    constructor() {
+        super(Dispatcher, {});
+    }
+    _settings = Data.load("SETTINGS") ?? {};
+    get(key, def = null) {
+        return this._settings[key] ?? def;
+    }
+    set(key, value) {
+        this._settings[key] = value;
+        Data.save("SETTINGS", this._settings);
+        this.emitChange();
+    }
+}();
+
+/* ../common/Settings/panel.tsx */
+const {
+    SettingItem,
+    SwitchInput
+} = Components;
+const Select = Webpack.getByStrings('selectionMode:"single",onSelectionChange:', "isSelected:", {
+    searchExports: true
+});
+const Slider = Webpack.getByStrings("stickToMarkers");
+
+function DropdownItem(props) {
+    return React.createElement(ErrorBoundary, {
+        key: props.id,
+        id: props.id
+    }, React.createElement(SettingItem, {
+        ...props
+    }, React.createElement(
+        Select, {
+            closeOnSelect: true,
+            options: props.options,
+            serialize: (v) => String(v),
+            select: (v) => Settings.set(props.id, v),
+            isSelected: (v) => Settings.get(props.id, props.value) === v
+        }
+    )));
+}
+
+function SwitchItem(props) {
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return React.createElement(ErrorBoundary, {
+        key: props.id,
+        id: props.id
+    }, React.createElement(SettingItem, {
+        ...props,
+        inline: true
+    }, React.createElement(SwitchInput, {
+        value,
+        onChange: (v) => Settings.set(props.id, v)
+    })));
+}
+
+function SliderItem(props) {
+    if (!Slider) return null;
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return React.createElement(ErrorBoundary, {
+        key: props.id,
+        id: props.id
+    }, React.createElement(SettingItem, {
+        ...props
+    }, React.createElement(
+        Slider, {
+            ...props,
+            handleSize: 10,
+            initialValue: value,
+            defaultValue: props.defaultValue,
+            minValue: props.minValue,
+            maxValue: props.maxValue,
+            onValueChange: (value2) => Settings.set(props.id, Math.round(value2)),
+            onValueRender: (value2) => Math.round(value2)
+        }
+    )));
+}
+
+function SettingsPanel(props) {
+    const ComponentMap = {
+        dropdown: DropdownItem,
+        switch: SwitchItem,
+        slider: SliderItem
+    };
+    return props.items.map((item) => {
+        const Component = ComponentMap[item.type];
+        return Component ? React.createElement(Component, {
+            ...item
+        }) : null;
+    });
 }
 
 /* components/styles.scss */

@@ -1,6 +1,6 @@
 /**
  * @name ShowSpectators
- * @version 1.0.4
+ * @version 1.0.5
  * @description Shows you who's spectating your stream under the screenshare panel
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -13,8 +13,9 @@
 
 /* @manifest */
 const manifest = {
+    "$schema": "../common/Schemas/manifest.schema.json",
     "name": "ShowSpectators",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "Shows you who's spectating your stream under the screenshare panel",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -22,14 +23,13 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators",
     "changelog": [{
-        "title": "It works again!",
-        "type": "fixed",
+        "title": "Better logging for Errors!",
+        "type": "improved",
         "items": [
-            "The Panel shows up again",
-            "Localisation works again"
+            "It should now be easier to find out why the plugin isn't working for you, as it will log the error to the console"
         ]
     }],
-    "changelogDate": "2026-01-25"
+    "changelogDate": "2026-05-15"
 };
 
 /* @api */
@@ -38,6 +38,7 @@ const {
     Data,
     DOM,
     Hooks,
+    Logger,
     Patcher,
     UI,
     Utils,
@@ -56,9 +57,6 @@ var Styles = {
         DOM.removeStyle();
     }
 };
-
-/* react */
-var React = BdApi.React;
 
 /* ../common/Changelog/style.scss */
 Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wrapper {
@@ -121,6 +119,9 @@ Styles.sheets.push("/* ../common/Changelog/style.scss */", `.Changelog-Title-Wra
   color: var(--background-accent);
 }`);
 
+/* react */
+var React = BdApi.React;
+
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
@@ -147,7 +148,69 @@ function showChangelog(manifest) {
     Data.save("lastVersion", manifest.version);
 }
 
-/* modules/settings.js */
+/* ../common/ErrorBoundary/style.scss */
+Styles.sheets.push("/* ../common/ErrorBoundary/style.scss */", `.errorBoundary {
+  align-items: center;
+  background: #473c41;
+  border: 2px solid #f04747;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 10px;
+  color: #fff;
+  font-size: 16px;
+}
+.errorBoundary .errorText {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}`);
+
+/* ../common/ErrorBoundary/index.tsx */
+const ErrorIcon = (props) => React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    viewBox: "0 0 24 24",
+    fill: "#ddd",
+    width: "24",
+    height: "24",
+    ...props
+}, React.createElement("path", {
+    d: "M0 0h24v24H0z",
+    fill: "none"
+}), React.createElement("path", {
+    d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+}));
+class ErrorBoundary extends React.Component {
+    state = {
+        hasError: false,
+        error: null,
+        info: null
+    };
+    componentDidCatch(error, info) {
+        this.setState({
+            error,
+            info,
+            hasError: true
+        });
+        console.error(
+            `[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
+`,
+            error
+        );
+    }
+    render() {
+        if (this.state.hasError) {
+            return this.props.mini ? React.createElement(ErrorIcon, {
+                fill: "#f04747"
+            }) : React.createElement("div", {
+                className: "errorBoundary"
+            }, React.createElement("div", {
+                className: "errorText"
+            }, React.createElement("span", null, "An error has occured while rendering ", this.props.id, "."), React.createElement("span", null, "Open console (", React.createElement("code", null, "CTRL + SHIFT + i / CMD + SHIFT + i"), ') - Select the "Console" tab and screenshot the big red error.')));
+        } else return this.props.children;
+    }
+}
+
+/* ../common/Settings/store.ts */
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
     searchExports: true
 });
@@ -157,7 +220,7 @@ const Settings = new class Settings2 extends Flux.Store {
         super(Dispatcher, {});
     }
     _settings = Data.load("SETTINGS") ?? {};
-    get(key, def) {
+    get(key, def = null) {
         return this._settings[key] ?? def;
     }
     set(key, value) {
@@ -167,53 +230,81 @@ const Settings = new class Settings2 extends Flux.Store {
     }
 }();
 
-/* modules/settings.json */
-var SettingsItems = [{
-    type: "switch",
-    name: "Show Spectators Panel",
-    note: "Shows a new panel with the spectators",
-    id: "showPanel",
-    value: true
-}];
-
-/* components/settings.jsx */
+/* ../common/Settings/panel.tsx */
 const {
     SettingItem,
     SwitchInput
 } = Components;
+const Select = Webpack.getByStrings('selectionMode:"single",onSelectionChange:', "isSelected:", {
+    searchExports: true
+});
+const Slider = Webpack.getByStrings("stickToMarkers");
+
+function DropdownItem(props) {
+    return React.createElement(ErrorBoundary, {
+        key: props.id,
+        id: props.id
+    }, React.createElement(SettingItem, {
+        ...props
+    }, React.createElement(
+        Select, {
+            closeOnSelect: true,
+            options: props.options,
+            serialize: (v) => String(v),
+            select: (v) => Settings.set(props.id, v),
+            isSelected: (v) => Settings.get(props.id, props.value) === v
+        }
+    )));
+}
 
 function SwitchItem(props) {
     const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    return React.createElement(SettingItem, {
+    return React.createElement(ErrorBoundary, {
+        key: props.id,
+        id: props.id
+    }, React.createElement(SettingItem, {
         ...props,
         inline: true
+    }, React.createElement(SwitchInput, {
+        value,
+        onChange: (v) => Settings.set(props.id, v)
+    })));
+}
+
+function SliderItem(props) {
+    if (!Slider) return null;
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return React.createElement(ErrorBoundary, {
+        key: props.id,
+        id: props.id
+    }, React.createElement(SettingItem, {
+        ...props
     }, React.createElement(
-        SwitchInput, {
-            value,
-            onChange: (v) => {
-                Settings.set(props.id, v);
-            }
+        Slider, {
+            ...props,
+            handleSize: 10,
+            initialValue: value,
+            defaultValue: props.defaultValue,
+            minValue: props.minValue,
+            maxValue: props.maxValue,
+            onValueChange: (value2) => Settings.set(props.id, Math.round(value2)),
+            onValueRender: (value2) => Math.round(value2)
         }
-    ));
+    )));
 }
 
-function renderSettings(items) {
-    return items.map((item) => {
-        switch (item.type) {
-            case "switch":
-                return React.createElement(SwitchItem, {
-                    ...item
-                });
-            default:
-                return null;
-        }
+function SettingsPanel(props) {
+    const ComponentMap = {
+        dropdown: DropdownItem,
+        switch: SwitchItem,
+        slider: SliderItem
+    };
+    return props.items.map((item) => {
+        const Component = ComponentMap[item.type];
+        return Component ? React.createElement(Component, {
+            ...item
+        }) : null;
     });
-}
-
-function SettingsPanel() {
-    return React.createElement("div", {
-        className: "settings-panel"
-    }, renderSettings(SettingsItems));
 }
 
 /* components/style.scss */
@@ -370,6 +461,18 @@ function SpectatorsPanel() {
     ) : null);
 }
 
+/* settings.json */
+var items = [{
+    type: "switch",
+    name: "Show Spectators Panel",
+    note: "Shows a new panel with the spectators",
+    id: "showPanel",
+    value: true
+}];
+var SettingsItems = {
+    items: items
+};
+
 /* index.jsx */
 class ShowSpectators {
     start() {
@@ -384,6 +487,7 @@ class ShowSpectators {
     }
     patchStreamIcon() {
         const StreamIcon = Webpack.getBySource(".STATUS_SCREENSHARE");
+        if (!StreamIcon) return Logger.error("Failed to find StreamIcon module");
         Patcher.after(StreamIcon, "A", (_, __, res) => {
             const children = res.props.children;
             res.props.children = [
@@ -395,12 +499,13 @@ class ShowSpectators {
     }
     patchPanel() {
         const AccountPanelSections = Webpack.getById("688810");
+        if (!AccountPanelSections) return Logger.error("Failed to find AccountPanelSections module");
         const unpatch = Patcher.after(AccountPanelSections, "f5", (_, __, res) => {
             if (!res.props.value.every((v) => v === "rtc panel")) return;
             const voiceSection = Utils.findInTree(res, (e) => e?.props?.canGoLive, {
                 walkable: ["children", "props"]
             });
-            if (!voiceSection) return;
+            if (!voiceSection) return Logger.error("Failed to find voice section in AccountPanelSections");
             unpatch();
             Patcher.after(voiceSection.type.prototype, "render", (_2, __2, res2) => {
                 if (!res2) return;
@@ -412,7 +517,9 @@ class ShowSpectators {
         });
     }
     getSettingsPanel() {
-        return React.createElement(SettingsPanel, null);
+        return React.createElement(SettingsPanel, {
+            items: SettingsItems.items
+        });
     }
 }
 
