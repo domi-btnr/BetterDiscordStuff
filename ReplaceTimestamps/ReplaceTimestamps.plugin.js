@@ -1,6 +1,6 @@
 /**
  * @name ReplaceTimestamps
- * @version 1.4.3
+ * @version 1.4.4
  * @description Replaces plaintext times and dates into Discord's timestamps
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -19,7 +19,7 @@ Object.defineProperty(exports, '__esModule', {
 const manifest = {
     "$schema": "../common/Schemas/manifest.schema.json",
     "name": "ReplaceTimestamps",
-    "version": "1.4.3",
+    "version": "1.4.4",
     "description": "Replaces plaintext times and dates into Discord's timestamps",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -33,7 +33,7 @@ const manifest = {
             "Settings open again"
         ]
     }],
-    "changelogDate": "2026-01-26"
+    "changelogDate": "2026-05-15"
 };
 
 /* @api */
