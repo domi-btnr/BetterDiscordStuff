@@ -19,9 +19,6 @@
 
 ---
 
-- ### [BetterInvites](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/BetterInvites "BetterInvites")
-    > Shows some useful information in the invitation
-
 - ### [FriendCodes](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/FriendCodes "FriendCodes")
     > Generate FriendCodes to easily add friends
 
@@ -30,9 +27,6 @@
 
 - ### [MessagePeek](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/MessagePeek "MessagePeek")
     > See the last message in a Channel like on mobile
-
-- ### [MultiStreamPopouts](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/MultiStreamPopouts "MultiStreamPopouts")
-    > Allows you to open multiple Streams each in their own popout windows
 
 - ### [ReplaceTimestamps](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/ReplaceTimestamps "ReplaceTimestamps")
     > Replaces plaintext times and dates into Discord's timestamps
@@ -43,4 +37,10 @@
 - ### [UnsupressEmbeds](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/UnsupressEmbeds "UnsupressEmbeds")
     > Allows you to unsuppress embeds in messages
 
-<!-- Test for Zerebos -->
+---
+
+## Developer Notice
+
+> [!WARNING]
+> This branch contains the **compiled source code** for BetterDiscord plugins. It is **NOT** meant for Pull Requests.
+> Please head over to the [`development`](https://github.com/domi-btnr/BetterDiscordStuff/tree/development) branch, if you want to submit fixes
