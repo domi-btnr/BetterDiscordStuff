@@ -1,4 +1,5 @@
 {
+    "$schema": "../common/Schemas/manifest.schema.json",
     "name": "ReplaceTimestamps",
     "version": "1.4.3",
     "description": "Replaces plaintext times and dates into Discord's timestamps",

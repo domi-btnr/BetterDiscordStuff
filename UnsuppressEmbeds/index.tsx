@@ -1,9 +1,10 @@
 import { ContextMenu, Webpack } from "@api";
+import showChangelog from "@common/Changelog";
 import manifest from "@manifest";
 import Styles from "@styles";
+import { Constants, PermissionsBits, PermissionStore, RestAPI, UserStore } from "@vencord/discord-types";
 import React from "react";
 
-import showChangelog from "../common/Changelog";
 import { ImageInvisible, ImageVisible } from "./components/icons";
 import { findGroupById } from "./modules/utils";
 
@@ -23,11 +24,15 @@ export default class UnsuppressEmbeds {
     }
 
     patchMessageContextMenu() {
-        const Endpoints = Webpack.getModule(m => typeof m?.MESSAGES === "function", { searchExports: true });
-        const PermissionsBits = Webpack.getModule(m => m?.EMBED_LINKS, { searchExports: true });
-        const PermissionStore = Webpack.getStore("PermissionStore");
-        const RestAPI = Webpack.getModule(m => typeof m === "object" && m.del && m.put, { searchExports: true });
-        const UserStore = Webpack.getStore("UserStore");
+        const Endpoints: Constants["Endpoints"] = Webpack.getModule(m => typeof m?.MESSAGES === "function", {
+            searchExports: true
+        });
+        const PermissionsBits: PermissionsBits = Webpack.getModule(m => m?.EMBED_LINKS, { searchExports: true });
+        const PermissionStore: PermissionStore = Webpack.getStore("PermissionStore");
+        const RestAPI: RestAPI = Webpack.getModule(m => typeof m === "object" && m.del && m.put, {
+            searchExports: true
+        });
+        const UserStore: UserStore = Webpack.getStore("UserStore");
 
         unpatchContextMenu = ContextMenu.patch(
             "message",

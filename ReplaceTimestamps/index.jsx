@@ -1,12 +1,12 @@
 import { Patcher, Webpack } from "@api";
+import showChangelog from "@common/Changelog";
+import { Settings, SettingsPanel } from "@common/Settings";
 import manifest from "@manifest";
 import Styles from "@styles";
 import React from "react";
 
-import showChangelog from "../common/Changelog";
-import SettingsPanel from "./components/settings";
-import Settings from "./modules/settings";
 import { getRelativeTime, getUnixTimestamp } from "./modules/utils";
+import SettingsItems from "./settings.json";
 
 export let timeRegexMatch, dateRegexMatch, relativeRegexMatch;
 
@@ -61,6 +61,6 @@ export default class ReplaceTimestamps {
     }
 
     getSettingsPanel() {
-        return <SettingsPanel />;
+        return <SettingsPanel items={SettingsItems.items} />;
     }
 }

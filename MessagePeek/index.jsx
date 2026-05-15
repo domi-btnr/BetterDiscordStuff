@@ -1,10 +1,10 @@
 import { Patcher, ReactUtils, Utils, Webpack } from "@api";
+import showChangelog from "@common/Changelog";
 import { Settings, SettingsPanel } from "@common/Settings";
 import manifest from "@manifest";
 import Styles from "@styles";
 import React from "react";
 
-import showChangelog from "../common/Changelog";
 import Peek from "./components/messagePeek";
 import SettingsItems from "./settings.json";
 

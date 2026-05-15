@@ -1,0 +1,12 @@
+{
+    "$schema": "../common/Schemas/settings.schema.json",
+    "items": [
+        {
+            "type": "switch",
+            "name": "Show Spectators Panel",
+            "note": "Shows a new panel with the spectators",
+            "id": "showPanel",
+            "value": true
+        }
+    ]
+}

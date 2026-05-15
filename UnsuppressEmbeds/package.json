@@ -1,4 +1,5 @@
 {
+    "$schema": "../common/Schemas/manifest.schema.json",
     "name": "UnsuppressEmbeds",
     "version": "1.0.0",
     "description": "Allows you to unsuppress embeds in messages",
@@ -6,7 +7,5 @@
     "authorId": "354191516979429376",
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds",
-    "changelog": [],
-    "changelogDate": ""
+    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds"
 }

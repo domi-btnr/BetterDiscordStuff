@@ -1,9 +1,8 @@
 import "./style.scss";
 
 import { Components, Hooks, Webpack } from "@api";
+import { Settings } from "@common/Settings";
 import React from "react";
-
-import Settings from "../modules/settings";
 
 const { Flex, Text, Tooltip } = Components;
 const ApplicationStreamingStore = Webpack.getStore("ApplicationStreamingStore");

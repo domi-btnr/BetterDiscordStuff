@@ -1,5 +1,6 @@
+import { Settings } from "@common/Settings";
+
 import { dateRegexMatch, relativeRegexMatch, timeRegexMatch } from "../index.jsx";
-import Settings from "./settings.js";
 
 export const getUnixTimestamp = (str, format) => {
     const timeMatch = str.match(timeRegexMatch);

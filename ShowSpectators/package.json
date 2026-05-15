@@ -1,6 +1,7 @@
 {
+    "$schema": "../common/Schemas/manifest.schema.json",
     "name": "ShowSpectators",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "Shows you who's spectating your stream under the screenshare panel",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -9,13 +10,12 @@
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators",
     "changelog": [
         {
-            "title": "It works again!",
-            "type": "fixed",
+            "title": "Better logging for Errors!",
+            "type": "improved",
             "items": [
-                "The Panel shows up again",
-                "Localisation works again"
+                "It should now be easier to find out why the plugin isn't working for you, as it will log the error to the console"
             ]
         }
     ],
-    "changelogDate": "2026-01-25"
+    "changelogDate": "2026-05-15"
 }
