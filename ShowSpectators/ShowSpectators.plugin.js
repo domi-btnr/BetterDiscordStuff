@@ -1,6 +1,6 @@
 /**
  * @name ShowSpectators
- * @version 1.0.5
+ * @version 1.0.6
  * @description Shows you who's spectating your stream under the screenshare panel
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -15,7 +15,7 @@
 const manifest = {
     "$schema": "../common/Schemas/manifest.schema.json",
     "name": "ShowSpectators",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "Shows you who's spectating your stream under the screenshare panel",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,13 +23,13 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators",
     "changelog": [{
-        "title": "Better logging for Errors!",
-        "type": "improved",
+        "title": "Plugin works again for everyone",
+        "type": "fixed",
         "items": [
-            "It should now be easier to find out why the plugin isn't working for you, as it will log the error to the console"
+            "Fixed the plugin for users that have already the \"2026-05-rtc-connection-functional\" experiment"
         ]
     }],
-    "changelogDate": "2026-05-15"
+    "changelogDate": "2026-05-19"
 };
 
 /* @api */
@@ -41,7 +41,6 @@ const {
     Logger,
     Patcher,
     UI,
-    Utils,
     Webpack
 } = new BdApi(manifest.name);
 
@@ -230,21 +229,18 @@ const Settings = new class Settings2 extends Flux.Store {
     }
 }();
 
-/* ../common/Settings/panel.tsx */
+/* ../common/Settings/items/dropdown.tsx */
 const {
-    SettingItem,
-    SwitchInput
+    SettingItem: SettingItem$2
 } = Components;
 const Select = Webpack.getByStrings('selectionMode:"single",onSelectionChange:', "isSelected:", {
     searchExports: true
 });
-const Slider = Webpack.getByStrings("stickToMarkers");
 
 function DropdownItem(props) {
     return React.createElement(ErrorBoundary, {
-        key: props.id,
         id: props.id
-    }, React.createElement(SettingItem, {
+    }, React.createElement(SettingItem$2, {
         ...props
     }, React.createElement(
         Select, {
@@ -257,27 +253,17 @@ function DropdownItem(props) {
     )));
 }
 
-function SwitchItem(props) {
-    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    return React.createElement(ErrorBoundary, {
-        key: props.id,
-        id: props.id
-    }, React.createElement(SettingItem, {
-        ...props,
-        inline: true
-    }, React.createElement(SwitchInput, {
-        value,
-        onChange: (v) => Settings.set(props.id, v)
-    })));
-}
+/* ../common/Settings/items/slider.tsx */
+const {
+    SettingItem: SettingItem$1
+} = Components;
+const Slider = Webpack.getByStrings("stickToMarkers");
 
 function SliderItem(props) {
-    if (!Slider) return null;
     const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     return React.createElement(ErrorBoundary, {
-        key: props.id,
         id: props.id
-    }, React.createElement(SettingItem, {
+    }, React.createElement(SettingItem$1, {
         ...props
     }, React.createElement(
         Slider, {
@@ -293,15 +279,40 @@ function SliderItem(props) {
     )));
 }
 
-function SettingsPanel(props) {
+/* ../common/Settings/items/switch.tsx */
+const {
+    SettingItem,
+    SwitchInput
+} = Components;
+
+function SwitchItem(props) {
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return React.createElement(ErrorBoundary, {
+        id: props.id
+    }, React.createElement(SettingItem, {
+        ...props,
+        inline: true
+    }, React.createElement(SwitchInput, {
+        value,
+        onChange: (v) => Settings.set(props.id, v)
+    })));
+}
+
+/* ../common/Settings/panel.tsx */
+function SettingsPanel({
+    items,
+    components: customComponents
+}) {
     const ComponentMap = {
         dropdown: DropdownItem,
         switch: SwitchItem,
-        slider: SliderItem
+        slider: SliderItem,
+        ...customComponents
     };
-    return props.items.map((item) => {
+    return items.map((item) => {
         const Component = ComponentMap[item.type];
         return Component ? React.createElement(Component, {
+            key: item.id,
             ...item
         }) : null;
     });
@@ -500,20 +511,9 @@ class ShowSpectators {
     patchPanel() {
         const AccountPanelSections = Webpack.getById("688810");
         if (!AccountPanelSections) return Logger.error("Failed to find AccountPanelSections module");
-        const unpatch = Patcher.after(AccountPanelSections, "f5", (_, __, res) => {
+        Patcher.after(AccountPanelSections, "f5", (_, __, res) => {
             if (!res.props.value.every((v) => v === "rtc panel")) return;
-            const voiceSection = Utils.findInTree(res, (e) => e?.props?.canGoLive, {
-                walkable: ["children", "props"]
-            });
-            if (!voiceSection) return Logger.error("Failed to find voice section in AccountPanelSections");
-            unpatch();
-            Patcher.after(voiceSection.type.prototype, "render", (_2, __2, res2) => {
-                if (!res2) return;
-                const original = res2.props.children();
-                res2.props.children = () => {
-                    return React.createElement(React.Fragment, null, React.createElement(SpectatorsPanel, null), original);
-                };
-            });
+            res.props.children.props.children.unshift(React.createElement(SpectatorsPanel, null));
         });
     }
     getSettingsPanel() {
