@@ -1,4 +1,4 @@
-import { Components, Logger, Patcher, Utils, Webpack } from "@api";
+import { Components, Logger, Patcher, Webpack } from "@api";
 import showChangelog from "@common/Changelog";
 import { SettingsPanel } from "@common/Settings";
 import manifest from "@manifest";
@@ -39,23 +39,9 @@ export default class ShowSpectators {
         const AccountPanelSections = Webpack.getById("688810");
         if (!AccountPanelSections) return Logger.error("Failed to find AccountPanelSections module");
 
-        const unpatch = Patcher.after(AccountPanelSections, "f5", (_, __, res) => {
+        Patcher.after(AccountPanelSections, "f5", (_, __, res) => {
             if (!res.props.value.every(v => v === "rtc panel")) return;
-            const voiceSection = Utils.findInTree(res, e => e?.props?.canGoLive, { walkable: ["children", "props"] });
-            if (!voiceSection) return Logger.error("Failed to find voice section in AccountPanelSections");
-            unpatch();
-            Patcher.after(voiceSection.type.prototype, "render", (_, __, res) => {
-                if (!res) return;
-                const original = res.props.children();
-                res.props.children = () => {
-                    return (
-                        <>
-                            <SpectatorsPanel />
-                            {original}
-                        </>
-                    );
-                };
-            });
+            res.props.children.props.children.unshift(<SpectatorsPanel />);
         });
     }
 
