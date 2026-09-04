@@ -26,7 +26,7 @@ export default class MessagePeek {
     async patchDMs() {
         const ChannelContext = React.createContext(null);
         const ChannelWrapper = await Webpack.waitForModule(
-            Webpack.Filters.bySource('location:"PrivateChannel",', "isMobile")
+            Webpack.Filters.bySource("isMobile", 'location:"PrivateChannel"')
         );
         const NameWrapper = (await Webpack.waitForModule(Webpack.Filters.bySource("AvatarWithText"))).A;
         const ChannelClasses = await Webpack.waitForModule(Webpack.Filters.byKeys("channel", "decorator"));
