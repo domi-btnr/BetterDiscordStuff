@@ -10,7 +10,7 @@ interface I18n {
 
 export default function showChangelog(manifest: Manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
-    if (!manifest.changelog.length) return;
+    if (!manifest.changelog?.length) return;
 
     const i18n: I18n = Webpack.getByKeys("getLocale");
     const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
@@ -23,7 +23,7 @@ export default function showChangelog(manifest: Manifest) {
         <div className="Changelog-Title-Wrapper">
             <h1>What's New - {manifest.name}</h1>
             <div>
-                {formatter.format(new Date(manifest.changelogDate))} - v{manifest.version}
+                {manifest.changelogDate && formatter.format(new Date(manifest.changelogDate))} - v{manifest.version}
             </div>
         </div>
     );
@@ -37,7 +37,7 @@ export default function showChangelog(manifest: Manifest) {
         </div>
     ));
 
-    "changelogImage" in manifest && items.unshift(<img className="Changelog-Banner" src={manifest.changelogImage} />);
+    manifest.changelogImage && items.unshift(<img className="Changelog-Banner" src={manifest.changelogImage} />);
 
     UI.alert(title as unknown as string, items);
     Data.save("lastVersion", manifest.version);

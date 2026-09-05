@@ -57,8 +57,8 @@ declare module "@manifest" {
         invite?: string;
         donate?: string;
         source?: string;
-        changelog: ChangelogItem[];
-        changelogDate: string;
+        changelog?: ChangelogItem[];
+        changelogDate?: string;
         changelogImage?: string;
     }
 
