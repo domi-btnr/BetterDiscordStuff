@@ -72,7 +72,7 @@ export default class UnsuppressEmbeds {
                     key="unsuppress-embeds"
                     label={isEmbedSuppressed ? "Unsuppress Embeds" : "Suppress Embeds"}
                     color={isEmbedSuppressed ? undefined : "danger"}
-                    icon={isEmbedSuppressed ? ImageVisible : ImageInvisible}
+                    leadingAccessory={{ type: "icon", icon: isEmbedSuppressed ? ImageVisible : ImageInvisible }}
                     action={() =>
                         RestAPI.patch({
                             url: Endpoints.MESSAGE(channel.id, messageId),

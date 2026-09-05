@@ -1,7 +1,7 @@
 {
     "$schema": "../common/Schemas/manifest.schema.json",
     "name": "UnsuppressEmbeds",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Allows you to unsuppress embeds in messages",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
