@@ -1,6 +1,6 @@
 /**
  * @name UnsuppressEmbeds
- * @version 1.0.0
+ * @version 1.0.1
  * @description Allows you to unsuppress embeds in messages
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -14,7 +14,7 @@
 /* @manifest */
 const manifest = {
     "name": "UnsuppressEmbeds",
-    "version": "1.0.0"
+    "version": "1.0.1"
 };
 
 /* @api */
@@ -230,7 +230,10 @@ class UnsuppressEmbeds {
                         key: "unsuppress-embeds",
                         label: isEmbedSuppressed ? "Unsuppress Embeds" : "Suppress Embeds",
                         color: isEmbedSuppressed ? void 0 : "danger",
-                        icon: isEmbedSuppressed ? ImageVisible : ImageInvisible,
+                        leadingAccessory: {
+                            type: "icon",
+                            icon: isEmbedSuppressed ? ImageVisible : ImageInvisible
+                        },
                         action: () => RestAPI2.patch({
                             url: Endpoints.MESSAGE(channel.id, messageId),
                             body: {
