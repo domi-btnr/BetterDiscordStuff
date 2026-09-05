@@ -13,15 +13,8 @@
 
 /* @manifest */
 const manifest = {
-    "$schema": "../common/Schemas/manifest.schema.json",
     "name": "UnsuppressEmbeds",
-    "version": "1.0.0",
-    "description": "Allows you to unsuppress embeds in messages",
-    "author": "domi.btnr",
-    "authorId": "354191516979429376",
-    "invite": "gp2ExK5vc7",
-    "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds"
+    "version": "1.0.0"
 };
 
 /* @api */
@@ -114,7 +107,7 @@ var React = BdApi.React;
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
-    if (!manifest.changelog.length) return;
+    if (!manifest.changelog?.length) return;
     const i18n = Webpack.getByKeys("getLocale");
     const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
         month: "long",
@@ -123,13 +116,13 @@ function showChangelog(manifest) {
     });
     const title = React.createElement("div", {
         className: "Changelog-Title-Wrapper"
-    }, React.createElement("h1", null, "What's New - ", manifest.name), React.createElement("div", null, formatter.format(new Date(manifest.changelogDate)), " - v", manifest.version));
+    }, React.createElement("h1", null, "What's New - ", manifest.name), React.createElement("div", null, manifest.changelogDate && formatter.format(new Date(manifest.changelogDate)), " - v", manifest.version));
     const items = manifest.changelog.map((item) => React.createElement("div", {
         className: "Changelog-Item"
     }, React.createElement("h4", {
         className: `Changelog-Header ${item.type}`
     }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
-    "changelogImage" in manifest && items.unshift(React.createElement("img", {
+    manifest.changelogImage && items.unshift(React.createElement("img", {
         className: "Changelog-Banner",
         src: manifest.changelogImage
     }));

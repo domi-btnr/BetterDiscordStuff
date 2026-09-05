@@ -13,15 +13,8 @@
 
 /* @manifest */
 const manifest = {
-    "$schema": "../common/Schemas/manifest.schema.json",
     "name": "FriendCodes",
     "version": "1.2.5",
-    "description": "Generate FriendCodes to easily add friends",
-    "author": "domi.btnr",
-    "authorId": "354191516979429376",
-    "invite": "gp2ExK5vc7",
-    "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes",
     "changelog": [{
         "title": "Fixed",
         "type": "fixed",
@@ -123,7 +116,7 @@ var React = BdApi.React;
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
-    if (!manifest.changelog.length) return;
+    if (!manifest.changelog?.length) return;
     const i18n = Webpack.getByKeys("getLocale");
     const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
         month: "long",
@@ -138,7 +131,7 @@ function showChangelog(manifest) {
     }, React.createElement("h4", {
         className: `Changelog-Header ${item.type}`
     }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
-    "changelogImage" in manifest && items.unshift(React.createElement("img", {
+    manifest.changelogImage && items.unshift(React.createElement("img", {
         className: "Changelog-Banner",
         src: manifest.changelogImage
     }));

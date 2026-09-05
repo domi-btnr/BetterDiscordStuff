@@ -13,15 +13,8 @@
 
 /* @manifest */
 const manifest = {
-    "$schema": "../common/Schemas/manifest.schema.json",
     "name": "GlobalBadges",
     "version": "1.0.5",
-    "description": "Adds global badges from other client mods",
-    "author": "domi.btnr",
-    "authorId": "354191516979429376",
-    "invite": "gp2ExK5vc7",
-    "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges",
     "changelog": [{
         "title": "Fixed",
         "type": "fixed",
@@ -123,7 +116,7 @@ var React = BdApi.React;
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
-    if (!manifest.changelog.length) return;
+    if (!manifest.changelog?.length) return;
     const i18n = Webpack.getByKeys("getLocale");
     const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
         month: "long",
@@ -138,12 +131,74 @@ function showChangelog(manifest) {
     }, React.createElement("h4", {
         className: `Changelog-Header ${item.type}`
     }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
-    "changelogImage" in manifest && items.unshift(React.createElement("img", {
+    manifest.changelogImage && items.unshift(React.createElement("img", {
         className: "Changelog-Banner",
         src: manifest.changelogImage
     }));
     UI.alert(title, items);
     Data.save("lastVersion", manifest.version);
+}
+
+/* ../common/ErrorBoundary/style.scss */
+Styles.sheets.push("/* ../common/ErrorBoundary/style.scss */", `.errorBoundary {
+  align-items: center;
+  background: #473c41;
+  border: 2px solid #f04747;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 10px;
+  color: #fff;
+  font-size: 16px;
+}
+.errorBoundary .errorText {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}`);
+
+/* ../common/ErrorBoundary/index.tsx */
+const ErrorIcon = (props) => React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    viewBox: "0 0 24 24",
+    fill: "#ddd",
+    width: "24",
+    height: "24",
+    ...props
+}, React.createElement("path", {
+    d: "M0 0h24v24H0z",
+    fill: "none"
+}), React.createElement("path", {
+    d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+}));
+class ErrorBoundary extends React.Component {
+    state = {
+        hasError: false,
+        error: null,
+        info: null
+    };
+    componentDidCatch(error, info) {
+        this.setState({
+            error,
+            info,
+            hasError: true
+        });
+        console.error(
+            `[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
+`,
+            error
+        );
+    }
+    render() {
+        if (this.state.hasError) {
+            return this.props.mini ? React.createElement(ErrorIcon, {
+                fill: "#f04747"
+            }) : React.createElement("div", {
+                className: "errorBoundary"
+            }, React.createElement("div", {
+                className: "errorText"
+            }, React.createElement("span", null, "An error has occured while rendering ", this.props.id, "."), React.createElement("span", null, "Open console (", React.createElement("code", null, "CTRL + SHIFT + i / CMD + SHIFT + i"), ') - Select the "Console" tab and screenshot the big red error.')));
+        } else return this.props.children;
+    }
 }
 
 /* ../common/Settings/store.ts */
@@ -166,18 +221,18 @@ const Settings = new class Settings2 extends Flux.Store {
     }
 }();
 
-/* ../common/Settings/panel.tsx */
+/* ../common/Settings/items/dropdown.tsx */
 const {
-    SettingItem,
-    SwitchInput
+    SettingItem: SettingItem$2
 } = Components;
-const Select = Webpack.getByStrings('.selectPositionTop]:"top"===', {
+const Select = Webpack.getByStrings('selectionMode:"single",onSelectionChange:', "isSelected:", {
     searchExports: true
 });
-const Slider = Webpack.getByStrings("stickToMarkers");
 
 function DropdownItem(props) {
-    return React.createElement(SettingItem, {
+    return React.createElement(ErrorBoundary, {
+        id: props.id
+    }, React.createElement(SettingItem$2, {
         ...props
     }, React.createElement(
         Select, {
@@ -187,23 +242,20 @@ function DropdownItem(props) {
             select: (v) => Settings.set(props.id, v),
             isSelected: (v) => Settings.get(props.id, props.value) === v
         }
-    ));
+    )));
 }
 
-function SwitchItem(props) {
-    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    return React.createElement(SettingItem, {
-        ...props,
-        inline: true
-    }, React.createElement(SwitchInput, {
-        value,
-        onChange: (v) => Settings.set(props.id, v)
-    }));
-}
+/* ../common/Settings/items/slider.tsx */
+const {
+    SettingItem: SettingItem$1
+} = Components;
+const Slider = Webpack.getByStrings("stickToMarkers");
 
 function SliderItem(props) {
     const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    return React.createElement(SettingItem, {
+    return React.createElement(ErrorBoundary, {
+        id: props.id
+    }, React.createElement(SettingItem$1, {
         ...props
     }, React.createElement(
         Slider, {
@@ -216,18 +268,43 @@ function SliderItem(props) {
             onValueChange: (value2) => Settings.set(props.id, Math.round(value2)),
             onValueRender: (value2) => Math.round(value2)
         }
-    ));
+    )));
 }
 
-function SettingsPanel(props) {
+/* ../common/Settings/items/switch.tsx */
+const {
+    SettingItem,
+    SwitchInput
+} = Components;
+
+function SwitchItem(props) {
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return React.createElement(ErrorBoundary, {
+        id: props.id
+    }, React.createElement(SettingItem, {
+        ...props,
+        inline: true
+    }, React.createElement(SwitchInput, {
+        value,
+        onChange: (v) => Settings.set(props.id, v)
+    })));
+}
+
+/* ../common/Settings/panel.tsx */
+function SettingsPanel({
+    items,
+    components: customComponents
+}) {
     const ComponentMap = {
         dropdown: DropdownItem,
         switch: SwitchItem,
-        slider: SliderItem
+        slider: SliderItem,
+        ...customComponents
     };
-    return props.items.map((item) => {
+    return items.map((item) => {
         const Component = ComponentMap[item.type];
         return Component ? React.createElement(Component, {
+            key: item.id,
             ...item
         }) : null;
     });

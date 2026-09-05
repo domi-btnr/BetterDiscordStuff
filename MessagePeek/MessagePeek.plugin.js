@@ -1,6 +1,6 @@
 /**
  * @name MessagePeek
- * @version 1.2.6
+ * @version 1.2.7
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -13,15 +13,8 @@
 
 /* @manifest */
 const manifest = {
-    "$schema": "../common/Schemas/manifest.schema.json",
     "name": "MessagePeek",
-    "version": "1.2.6",
-    "description": "See the last message in a Channel like on mobile",
-    "author": "domi.btnr",
-    "authorId": "354191516979429376",
-    "invite": "gp2ExK5vc7",
-    "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
+    "version": "1.2.7",
     "changelog": [{
             "title": "Fixed",
             "type": "fixed",
@@ -37,7 +30,7 @@ const manifest = {
             ]
         }
     ],
-    "changelogDate": "2026-04-25"
+    "changelogDate": "2026-09-05"
 };
 
 /* @api */
@@ -133,7 +126,7 @@ var React = BdApi.React;
 /* ../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
-    if (!manifest.changelog.length) return;
+    if (!manifest.changelog?.length) return;
     const i18n = Webpack.getByKeys("getLocale");
     const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
         month: "long",
@@ -148,7 +141,7 @@ function showChangelog(manifest) {
     }, React.createElement("h4", {
         className: `Changelog-Header ${item.type}`
     }, item.title), item.items.map((item2) => React.createElement("span", null, item2))));
-    "changelogImage" in manifest && items.unshift(React.createElement("img", {
+    manifest.changelogImage && items.unshift(React.createElement("img", {
         className: "Changelog-Banner",
         src: manifest.changelogImage
     }));
@@ -238,21 +231,18 @@ const Settings = new class Settings2 extends Flux.Store {
     }
 }();
 
-/* ../common/Settings/panel.tsx */
+/* ../common/Settings/items/dropdown.tsx */
 const {
-    SettingItem,
-    SwitchInput
+    SettingItem: SettingItem$2
 } = Components;
 const Select = Webpack.getByStrings('selectionMode:"single",onSelectionChange:', "isSelected:", {
     searchExports: true
 });
-const Slider = Webpack.getByStrings("stickToMarkers");
 
 function DropdownItem(props) {
     return React.createElement(ErrorBoundary, {
-        key: props.id,
         id: props.id
-    }, React.createElement(SettingItem, {
+    }, React.createElement(SettingItem$2, {
         ...props
     }, React.createElement(
         Select, {
@@ -265,27 +255,17 @@ function DropdownItem(props) {
     )));
 }
 
-function SwitchItem(props) {
-    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    return React.createElement(ErrorBoundary, {
-        key: props.id,
-        id: props.id
-    }, React.createElement(SettingItem, {
-        ...props,
-        inline: true
-    }, React.createElement(SwitchInput, {
-        value,
-        onChange: (v) => Settings.set(props.id, v)
-    })));
-}
+/* ../common/Settings/items/slider.tsx */
+const {
+    SettingItem: SettingItem$1
+} = Components;
+const Slider = Webpack.getByStrings("stickToMarkers");
 
 function SliderItem(props) {
-    if (!Slider) return null;
     const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     return React.createElement(ErrorBoundary, {
-        key: props.id,
         id: props.id
-    }, React.createElement(SettingItem, {
+    }, React.createElement(SettingItem$1, {
         ...props
     }, React.createElement(
         Slider, {
@@ -301,15 +281,40 @@ function SliderItem(props) {
     )));
 }
 
-function SettingsPanel(props) {
+/* ../common/Settings/items/switch.tsx */
+const {
+    SettingItem,
+    SwitchInput
+} = Components;
+
+function SwitchItem(props) {
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    return React.createElement(ErrorBoundary, {
+        id: props.id
+    }, React.createElement(SettingItem, {
+        ...props,
+        inline: true
+    }, React.createElement(SwitchInput, {
+        value,
+        onChange: (v) => Settings.set(props.id, v)
+    })));
+}
+
+/* ../common/Settings/panel.tsx */
+function SettingsPanel({
+    items,
+    components: customComponents
+}) {
     const ComponentMap = {
         dropdown: DropdownItem,
         switch: SwitchItem,
-        slider: SliderItem
+        slider: SliderItem,
+        ...customComponents
     };
-    return props.items.map((item) => {
+    return items.map((item) => {
         const Component = ComponentMap[item.type];
         return Component ? React.createElement(Component, {
+            key: item.id,
             ...item
         }) : null;
     });
@@ -530,7 +535,7 @@ class MessagePeek {
     async patchDMs() {
         const ChannelContext = React.createContext(null);
         const ChannelWrapper = await Webpack.waitForModule(
-            Webpack.Filters.bySource('location:"PrivateChannel",', "isMobile")
+            Webpack.Filters.bySource("isMobile", 'location:"PrivateChannel"')
         );
         const NameWrapper = (await Webpack.waitForModule(Webpack.Filters.bySource("AvatarWithText"))).A;
         const ChannelClasses = await Webpack.waitForModule(Webpack.Filters.byKeys("channel", "decorator"));
