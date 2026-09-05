@@ -23,7 +23,9 @@ export default class GlobalBadges {
     }
 
     patchBadges() {
-        const [BadgeList, Key_BL] = Webpack.getWithKey(Webpack.Filters.byStrings("badges", "badgeClassName", ".BADGE"));
+        const [BadgeList, Key_BL] = Webpack.getWithKey(
+            Webpack.Filters.byStrings("badges", "badgeClassName", ".BADGE")
+        )!;
 
         Patcher.after(BadgeList, Key_BL, (_, args, res) => {
             const [{ displayProfile }] = args as [{ displayProfile: DisplayProfile }];
