@@ -160,16 +160,17 @@ function ImageInvisible(props) {
 /* modules/utils.ts */
 function findGroupById(res, id) {
     if (!res) return null;
-    let children = res?.props?.children;
+    let children = res.props?.children;
     if (!children) return null;
     if (!Array.isArray(children)) children = [children];
-    if (children.some((child) => child && typeof child === "object" && "props" in child && child.props.id === id))
+    if (children.some((child) => child && typeof child === "object" && "props" in child && child.props?.id === id))
         return res;
     for (const child of children)
         if (child && typeof child === "object") {
             const found = findGroupById(child, id);
             if (found) return found;
         }
+    return null;
 }
 
 /* index.tsx */
@@ -189,58 +190,57 @@ class UnsuppressEmbeds {
         const Endpoints = Webpack.getModule((m) => typeof m?.MESSAGES === "function", {
             searchExports: true
         });
+        const RestAPI2 = Webpack.getModule((m) => typeof m === "object" && m.del && m.put, {
+            searchExports: true
+        });
         const PermissionsBits2 = Webpack.getModule((m) => m?.EMBED_LINKS, {
             searchExports: true
         });
         const PermissionStore2 = Webpack.getStore("PermissionStore");
-        const RestAPI2 = Webpack.getModule((m) => typeof m === "object" && m.del && m.put, {
-            searchExports: true
-        });
         const UserStore2 = Webpack.getStore("UserStore");
-        unpatchContextMenu = ContextMenu.patch(
-            "message",
-            (res, {
+        unpatchContextMenu = ContextMenu.patch("message", (res, props) => {
+            const {
                 channel,
-                message: {
-                    author,
-                    messageSnapshots,
-                    embeds,
-                    flags,
-                    id: messageId
-                }
-            }) => {
-                const isEmbedSuppressed = (flags & EMBED_SUPPRESSED) !== 0;
-                const hasEmbedsInSnapshots = messageSnapshots.some((snapshot) => snapshot?.message.embeds.length);
-                if (!isEmbedSuppressed && !embeds.length && !hasEmbedsInSnapshots) return;
-                const hasEmbedPerms = channel.isPrivate() || !!(PermissionStore2.getChannelPermissions({
-                    id: channel.id
-                }) & PermissionsBits2.EMBED_LINKS);
-                if (author.id === UserStore2.getCurrentUser().id && !hasEmbedPerms) return;
-                const menuGroup = findGroupById(res, "delete")?.props?.children;
-                const deleteIndex = menuGroup?.findIndex((i) => i?.props?.id === "delete");
-                if (!menuGroup || !deleteIndex) return;
-                menuGroup.splice(
-                    deleteIndex - 1,
-                    0,
-                    // @ts-ignore
-                    React.createElement(
-                        ContextMenu.Item, {
-                            id: "unsuppress-embeds",
-                            key: "unsuppress-embeds",
-                            label: isEmbedSuppressed ? "Unsuppress Embeds" : "Suppress Embeds",
-                            color: isEmbedSuppressed ? void 0 : "danger",
-                            icon: isEmbedSuppressed ? ImageVisible : ImageInvisible,
-                            action: () => RestAPI2.patch({
-                                url: Endpoints.MESSAGE(channel.id, messageId),
-                                body: {
-                                    flags: isEmbedSuppressed ? flags & ~EMBED_SUPPRESSED : flags | EMBED_SUPPRESSED
-                                }
-                            })
-                        }
-                    )
-                );
-            }
-        );
+                message
+            } = props;
+            const {
+                author,
+                messageSnapshots,
+                embeds,
+                flags,
+                id: messageId
+            } = message;
+            const isEmbedSuppressed = (flags & EMBED_SUPPRESSED) !== 0;
+            const hasEmbedsInSnapshots = messageSnapshots.some((snapshot) => snapshot?.message.embeds.length);
+            if (!isEmbedSuppressed && !embeds.length && !hasEmbedsInSnapshots) return;
+            const hasEmbedPerms = channel.isPrivate() || !!(PermissionStore2.getChannelPermissions({
+                id: channel.id
+            }) & PermissionsBits2.EMBED_LINKS);
+            if (author.id === UserStore2.getCurrentUser().id && !hasEmbedPerms) return;
+            const menuGroup = findGroupById(res, "delete")?.props.children;
+            if (!menuGroup) return;
+            const deleteIndex = menuGroup.findIndex((i) => i?.props?.id === "delete");
+            if (deleteIndex < 0) return;
+            menuGroup.splice(
+                deleteIndex - 1,
+                0,
+                React.createElement(
+                    ContextMenu.Item, {
+                        id: "unsuppress-embeds",
+                        key: "unsuppress-embeds",
+                        label: isEmbedSuppressed ? "Unsuppress Embeds" : "Suppress Embeds",
+                        color: isEmbedSuppressed ? void 0 : "danger",
+                        icon: isEmbedSuppressed ? ImageVisible : ImageInvisible,
+                        action: () => RestAPI2.patch({
+                            url: Endpoints.MESSAGE(channel.id, messageId),
+                            body: {
+                                flags: isEmbedSuppressed ? flags & ~EMBED_SUPPRESSED : flags | EMBED_SUPPRESSED
+                            }
+                        })
+                    }
+                )
+            );
+        });
     }
 }
 
