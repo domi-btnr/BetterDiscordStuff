@@ -1,5 +1,8 @@
 import { Data, UI, Webpack } from "@api";
 import { Manifest } from "@manifest";
+import React from "react";
+
+import Footer from "./footer";
 
 interface I18n {
     getLocale: () => string;
@@ -21,8 +24,8 @@ export default function showChangelog(manifest: Manifest) {
     UI.showChangelogModal({
         title: title ?? `What's New - ${manifest.name}`,
         subtitle: subtitle ?? `${date ? formatter.format(new Date(date)) + " - " : ""}v${manifest.version}`,
-        ...changelog
+        ...changelog,
+        onClose: () => Data.save("lastVersion", manifest.version),
+        footer: <Footer manifest={manifest} />
     });
-
-    Data.save("lastVersion", manifest.version);
 }
