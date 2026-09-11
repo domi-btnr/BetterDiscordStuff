@@ -10,7 +10,10 @@ interface I18n {
 
 export default function showChangelog(manifest: Manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
-    if (!manifest.changelog?.changes?.length) return;
+    if (!manifest.changelog) return;
+
+    const { date, title, subtitle, ...changelog } = manifest.changelog;
+    if (!changelog.changes?.length && !changelog.blurb && !changelog.video && !changelog.banner) return;
 
     const i18n: I18n = Webpack.getByKeys("getLocale")!;
     const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
@@ -18,8 +21,6 @@ export default function showChangelog(manifest: Manifest) {
         day: "numeric",
         year: "numeric"
     });
-
-    const { date, title, subtitle, ...changelog } = manifest.changelog;
 
     UI.showChangelogModal({
         title: title ?? `What's New - ${manifest.name}`,

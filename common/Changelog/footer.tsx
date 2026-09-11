@@ -5,7 +5,7 @@ import React from "react";
 const { Text } = Components;
 
 export default function Footer({ manifest }: { manifest: Manifest }) {
-    if (!manifest.invite || !manifest.source) return null;
+    if (!manifest.invite && !manifest.source) return null;
 
     let issuesUrl: string | undefined;
     if (manifest.source) {
