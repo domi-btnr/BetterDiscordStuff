@@ -2,7 +2,6 @@ import { Patcher, Webpack } from "@api";
 import showChangelog from "@common/Changelog";
 import { Settings, SettingsPanel } from "@common/Settings";
 import manifest from "@manifest";
-import Styles from "@styles";
 import React from "react";
 
 import { getRelativeTime, getUnixTimestamp } from "./modules/utils";
@@ -14,11 +13,9 @@ export default class ReplaceTimestamps {
     start() {
         showChangelog(manifest);
         this.patchMessageActions();
-        Styles.load();
     }
     stop() {
         Patcher.unpatchAll();
-        Styles.unload();
     }
 
     patchMessageActions() {

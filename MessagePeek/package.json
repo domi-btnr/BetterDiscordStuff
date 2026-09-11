@@ -8,21 +8,23 @@
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/MessagePeek",
-    "changelog": [
-        {
-            "title": "Fixed",
-            "type": "fixed",
-            "items": [
-                "Updated the Plugin to work with the latest Discord update"
-            ]
-        },
-        {
-            "title": "Known broken Features",
-            "type": "changed",
-            "items": [
-                "Removed the option to show timestamps in the DM list as it doesn't work and I don't have the time to fix it right now"
-            ]
-        }
-    ],
-    "changelogDate": "2026-09-05"
+    "changelog": {
+        "date": "2026-09-05",
+        "changes": [
+            {
+                "type": "fixed",
+                "title": "Fixed",
+                "items": [
+                    "Updated the Plugin to work with the latest Discord update"
+                ]
+            },
+            {
+                "type": "progress",
+                "title": "Known broken Features",
+                "items": [
+                    "Removed the option to show timestamps in the DM list as it doesn't work and I don't have the time to fix it right now"
+                ]
+            }
+        ]
+    }
 }
