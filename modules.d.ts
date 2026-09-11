@@ -29,24 +29,22 @@ declare module "@styles" {
 }
 
 declare module "@manifest" {
-    interface ChangelogItem {
-        title: string;
-        type: "added" | "changed" | "fixed" | "improved";
-        items: string[];
-    }
-
     export interface Manifest {
         name: string;
         version: string;
         description?: string;
         author: string;
-        authorId: string;
+        authorId?: string;
+        authorLink?: string;
         invite?: string;
         donate?: string;
+        patreon?: string;
         source?: string;
-        changelog?: ChangelogItem[];
-        changelogDate?: string;
-        changelogImage?: string;
+        website?: string;
+        changelog?: Omit<BetterDiscord.ChangelogProps, "transitionState" | "footer" | "onClose"> & {
+            /** RFC 3339 full-date (YYYY-MM-DD) of this changelog */
+            date?: `${number}-${number}-${number}`;
+        };
     }
 
     const manifest: Manifest;
