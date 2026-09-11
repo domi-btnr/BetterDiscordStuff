@@ -1,7 +1,6 @@
 import { ContextMenu, Webpack } from "@api";
 import showChangelog from "@common/Changelog";
 import manifest from "@manifest";
-import Styles from "@styles";
 import {
     Channel,
     Constants,
@@ -23,12 +22,10 @@ export default class UnsuppressEmbeds {
     start() {
         showChangelog(manifest);
         this.patchMessageContextMenu();
-        Styles.load();
     }
 
     stop() {
         unpatchContextMenu?.();
-        Styles.unload();
     }
 
     patchMessageContextMenu() {
