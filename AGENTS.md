@@ -1,4 +1,4 @@
-# AGENT.md
+# AGENTS.md
 
 Instructions for AI coding agents working in this repository.
 
@@ -94,6 +94,6 @@ This is a transparency expectation, not a penalty against AI-assisted work — t
 
 ## Keep this file in sync
 
-If your change makes something in this file inaccurate — a command, build/CI behavior, the general folder layout, a lint/TS rule — update the relevant section of `AGENT.md` in the same PR.
+If your change makes something in this file inaccurate — a command, build/CI behavior, the general folder layout, a lint/TS rule — update the relevant section of `AGENTS.md` in the same PR.
 
 This deliberately does **not** include field-level details like manifest/changelog fields or `@api` exports — this file points at `common/Schemas/*.schema.json`, `scripts/build.js`, and `modules.d.ts` for those on purpose, so they stay correct on their own even when nobody remembers to touch `AGENT.md`. Keep it that way: don't copy those details into this file just to "complete" this rule.
