@@ -202,7 +202,7 @@ const Settings = new class Settings2 extends Flux.Store {
         super(Dispatcher, {});
     }
     _settings = Data.load("SETTINGS") ?? {};
-    get(key, def = null) {
+    get(key, def) {
         return this._settings[key] ?? def;
     }
     set(key, value) {
