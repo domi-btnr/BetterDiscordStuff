@@ -1,6 +1,6 @@
 .github/
 archive/
-build/
+builds/
 node_modules/
 pnpm-lock.yaml
 *.plugin.js
