@@ -24,9 +24,9 @@ export default function GlobalBadges(props: { userId: string }) {
                     badge: `${API_URL}/badges/${mod}/${badge.toLowerCase()}`
                 };
             } else if (typeof badge === "object") badge.custom = true;
-            if (!Settings.get("showCustomBadges", true) && badge.custom) return;
+            if (!Settings.get<boolean>("showCustomBadges", true) && badge.custom) return;
             const cleanName = badge.name.replace(mod, "").trim();
-            const prefix = Settings.get("showPrefix", true) ? mod : "";
+            const prefix = Settings.get<boolean>("showPrefix", true) ? mod : "";
             if (!badge.custom) badge.name = `${prefix} ${cleanName.charAt(0).toUpperCase() + cleanName.slice(1)}`;
             globalBadges.push(
                 <Components.Tooltip text={badge.name}>
