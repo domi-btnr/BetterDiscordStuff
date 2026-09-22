@@ -25,6 +25,9 @@
 - ### [GlobalBadges](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/GlobalBadges "GlobalBadges")
     > Adds global badges from other client mods
 
+- ### [LateAttachments](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/LateAttachments "LateAttachments")
+    > Allows you to add attachments to messages when editing them
+
 - ### [MessagePeek](https://github.com/domi-btnr/BetterDiscordStuff/tree/main/MessagePeek "MessagePeek")
     > See the last message in a Channel like on mobile
 
