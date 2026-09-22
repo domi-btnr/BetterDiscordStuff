@@ -17,7 +17,7 @@
 
 ![image](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/LateAttachments/assets/Preview.png)
 
-![video](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/LateAttachments/assets/Preview.mp4)
+https://github.com/user-attachments/assets/056bc7ea-7036-47c7-b51a-80be31d2e52c
 
 ## 📥 Installation
 
