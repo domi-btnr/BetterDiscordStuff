@@ -13,6 +13,12 @@
 
 ---
 
+## Previews
+
+![image](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/LateAttachments/assets/Preview.png)
+
+![video](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/LateAttachments/assets/Preview.mp4)
+
 ## 📥 Installation
 
 1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/LateAttachments/LateAttachments.plugin.js)
