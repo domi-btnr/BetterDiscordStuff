@@ -12,6 +12,7 @@ body:
       options:
         - FriendCodes
         - GlobalBadges
+        - LateAttachments
         - MessagePeek
         - ReplaceTimestamps
         - ShowSpectators

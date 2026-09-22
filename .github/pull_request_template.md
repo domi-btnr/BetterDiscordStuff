@@ -6,6 +6,7 @@
 
 - [ ] FriendCodes
 - [ ] GlobalBadges
+- [ ] LateAttachments
 - [ ] MessagePeek
 - [ ] ReplaceTimestamps
 - [ ] ShowSpectators
