@@ -1,0 +1,26 @@
+{
+    "$schema": "../common/Schemas/manifest.schema.json",
+    "name": "LateAttachments",
+    "version": "1.0.0",
+    "description": "Allows you to add attachments to messages when editing them",
+    "author": "domi.btnr",
+    "authorId": "354191516979429376",
+    "invite": "gp2ExK5vc7",
+    "donate": "https://paypal.me/domibtnr",
+    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/LateAttachments",
+    "changelog": {
+        "date": "2026-09-22",
+        "changes": [
+            {
+                "type": "added",
+                "title": "Added",
+                "items": [
+                    "Add new attachments to a message while editing it, right from the edit textbox",
+                    "Paste files directly into the edit textbox to attach them",
+                    "Mark attachments as spoilers before saving",
+                    "Live upload progress while saving"
+                ]
+            }
+        ]
+    }
+}
