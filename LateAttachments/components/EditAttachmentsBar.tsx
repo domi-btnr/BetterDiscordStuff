@@ -2,13 +2,8 @@ import { Webpack } from "@api";
 import { CloudUpload } from "@vencord/discord-types";
 import React from "react";
 
-import {
-    EDIT_DRAFT_TYPE,
-    getPendingUploads,
-    isSubmitting,
-    subscribeSubmitting,
-    subscribeUploads
-} from "../modules/shared";
+import { EDIT_DRAFT_TYPE, getPendingUploads, subscribeUploads } from "../modules/shared";
+import { isSubmitting, subscribeSubmitting } from "../modules/submitting";
 
 const AttachmentArea = (Webpack.getById(822610) as any)?.A;
 const ATTACHMENT_AREA_TYPE = { drafts: { type: EDIT_DRAFT_TYPE } };

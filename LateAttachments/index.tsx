@@ -5,11 +5,10 @@ import React from "react";
 
 import AddAttachmentButton from "./components/AddAttachmentButton";
 import EditAttachmentsBar from "./components/EditAttachmentsBar";
-import EditComposerLock from "./components/EditComposerLock";
-import EditFormHint from "./components/EditFormHint";
 import { commitPendingUploads } from "./modules/attachments";
 import { handlePaste } from "./modules/paste";
-import { EditMessageStore, getPendingUploads, isSubmitting } from "./modules/shared";
+import { EditMessageStore, getPendingUploads } from "./modules/shared";
+import { isSubmitting, subscribeSubmitting } from "./modules/submitting";
 import { canAddAttachments } from "./modules/utils";
 import { ChatButtonsArgs, ChatButtonsGroup, EditFormClass, EditFormInstance } from "./types";
 
@@ -79,6 +78,8 @@ export default class LateAttachments {
             if (patchedEditFormInstances.has(editFormInstance)) return;
             patchedEditFormInstances.add(editFormInstance);
 
+            subscribeSubmitting(() => editFormInstance.forceUpdate());
+
             const originalOnSubmit = editFormInstance.onSubmit.bind(editFormInstance);
             const originalOnChange = editFormInstance.onChange.bind(editFormInstance);
 
@@ -97,8 +98,16 @@ export default class LateAttachments {
             const children = (res as any)?.props?.children;
             if (!Array.isArray(children)) return;
 
-            children[0] = <EditComposerLock channelId={channelId}>{children[0]}</EditComposerLock>;
-            children[1] = <EditFormHint channelId={channelId} originalHint={children[1]} />;
+            const submitting = isSubmitting(channelId);
+
+            if (submitting && editFormInstance.node.current?.contains(document.activeElement)) {
+                (document.activeElement as HTMLElement).blur();
+            }
+
+            if (submitting) {
+                children[0] = <div style={{ opacity: 0.5, pointerEvents: "none" }}>{children[0]}</div>;
+            }
+            children[1] = submitting ? null : children[1];
             children.splice(1, 0, <EditAttachmentsBar channelId={channelId} />);
         });
     }

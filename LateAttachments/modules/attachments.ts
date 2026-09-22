@@ -3,7 +3,8 @@ import { CloudUpload as CloudUploadType, MessageStore as MessageStoreType, RestA
 import type { CloudUploadPlatform } from "@vencord/discord-types/enums";
 
 import { FileUtils as FileUtilsType, RemoteAttachment } from "../types";
-import { EDIT_DRAFT_TYPE, getPendingUploads, isSubmitting, notifySubmittingListeners, setSubmitting } from "./shared";
+import { EDIT_DRAFT_TYPE, getPendingUploads } from "./shared";
+import { isSubmitting, notifySubmittingListeners, setSubmitting } from "./submitting";
 
 const PLATFORM_WEB: CloudUploadPlatform.WEB = 1;
 const MAX_ATTACHMENTS = 10;

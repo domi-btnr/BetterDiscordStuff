@@ -1,4 +1,5 @@
 import type { Channel, Message, WebUploadItem } from "@vencord/discord-types";
+import type { RefObject } from "react";
 
 type ChatButtonsProps = {
     type: {
@@ -86,6 +87,8 @@ export interface EditFormInstance {
         channel: Channel;
         message: Message;
     };
+    node: RefObject<HTMLElement>;
+    forceUpdate(): void;
     render(): unknown;
     // eslint-disable-next-line no-unused-vars
     onSubmit(value: string): Promise<{ shouldClear: boolean; shouldRefocus: boolean }>;
