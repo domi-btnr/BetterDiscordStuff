@@ -1,5 +1,6 @@
 {
     "$schema": "../common/Schemas/manifest.schema.json",
+    "runAt": "idle",
     "name": "LateAttachments",
     "version": "1.0.0",
     "description": "Allows you to add attachments to messages when editing them",
