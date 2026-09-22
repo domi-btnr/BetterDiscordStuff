@@ -8,10 +8,9 @@ import type { DraftType } from "@vencord/discord-types/enums";
 
 import { LanguageModule as LanguageModuleType } from "../types";
 
-export const EditMessageStore = Webpack.getStore("EditMessageStore") as unknown as EditMessageStoreType;
-
 export const EDIT_DRAFT_TYPE = 67;
 
+export const EditMessageStore = Webpack.getStore("EditMessageStore") as unknown as EditMessageStoreType;
 const UploadAttachmentStore = Webpack.getStore("UploadAttachmentStore") as unknown as UploadAttachmentStoreType;
 
 export function getPendingUploads(channelId: string): CloudUploadType[] {
