@@ -113,8 +113,8 @@ function showChangelog(manifest) {
 }
 
 /* modules/shared.ts */
-const EditMessageStore = Webpack.getStore("EditMessageStore");
 const EDIT_DRAFT_TYPE = 67;
+const EditMessageStore = Webpack.getStore("EditMessageStore");
 const UploadAttachmentStore = Webpack.getStore("UploadAttachmentStore");
 
 function getPendingUploads(channelId) {
@@ -316,13 +316,13 @@ function AddAttachmentButton({
 }
 
 /* components/EditAttachmentsBar.tsx */
-const AttachmentArea = Webpack.getById(822610)?.A;
 const ATTACHMENT_AREA_TYPE = {
     drafts: {
         type: EDIT_DRAFT_TYPE
     }
 };
-const UploadProgress = Webpack.getById(564771)?.e;
+const AttachmentArea = Webpack.getBySource("ignoreUploadId", ".ATTACHMENT", "smallAttachments")?.A;
+const UploadProgress = Webpack.getBySource(".filesize", ".progress")?.e;
 
 function combineUploads(uploads) {
     const totalSize = uploads.reduce((sum, upload) => sum + (upload.item?.file?.size ?? 0), 0);
