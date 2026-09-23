@@ -418,28 +418,9 @@ class LateAttachments {
             }
         });
     }
-    patchEditForm() {
-        const EditForm = Webpack.getBySource("onClickSave")?.A;
-        this.patchEditFormSubmit(EditForm);
-        this.patchEditFormAttachmentsUI(EditForm);
-    }
-    patchEditFormSubmit(EditForm) {
+    async patchEditForm() {
+        const EditForm = (await Webpack.waitForModule(Webpack.Filters.bySource("onClickSave")))?.A;
         const patchedEditFormInstances = new WeakSet();
-        async function submitEdit(thisObject, value, originalOnSubmit) {
-            const {
-                channel,
-                message
-            } = thisObject.props;
-            const uploads = getPendingUploads(channel.id);
-            if (uploads.length) {
-                const committed = await commitPendingUploads(channel.id, message.id, message.content, uploads);
-                if (!committed) return {
-                    shouldClear: false,
-                    shouldRefocus: false
-                };
-            }
-            return originalOnSubmit(value);
-        }
         Patcher.before(EditForm.prototype, "render", (instance) => {
             const editFormInstance = instance;
             if (patchedEditFormInstances.has(editFormInstance)) return;
@@ -447,13 +428,25 @@ class LateAttachments {
             subscribeSubmitting(() => editFormInstance.forceUpdate());
             const originalOnSubmit = editFormInstance.onSubmit.bind(editFormInstance);
             const originalOnChange = editFormInstance.onChange.bind(editFormInstance);
-            editFormInstance.onSubmit = (value) => submitEdit(editFormInstance, value, originalOnSubmit);
+            editFormInstance.onSubmit = async (value) => {
+                const {
+                    channel,
+                    message
+                } = editFormInstance.props;
+                const uploads = getPendingUploads(channel.id);
+                if (uploads.length) {
+                    const committed = await commitPendingUploads(channel.id, message.id, message.content, uploads);
+                    if (!committed) return {
+                        shouldClear: false,
+                        shouldRefocus: false
+                    };
+                }
+                return originalOnSubmit(value);
+            };
             editFormInstance.onChange = (...args) => {
                 if (!isSubmitting(editFormInstance.props.channel.id)) originalOnChange(...args);
             };
         });
-    }
-    patchEditFormAttachmentsUI(EditForm) {
         Patcher.after(EditForm.prototype, "render", (instance, _args, res) => {
             const editFormInstance = instance;
             const channelId = editFormInstance.props.channel.id;
