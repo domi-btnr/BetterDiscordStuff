@@ -22,10 +22,10 @@ export default class GlobalBadges {
         Styles.unload();
     }
 
-    patchBadges() {
-        const [BadgeList, Key_BL] = Webpack.getWithKey(
-            Webpack.Filters.byStrings("badges", "badgeClassName", ".BADGE")
-        )!;
+    async patchBadges() {
+        const [BadgeList, Key_BL] = Webpack.getWithKey(() => true, {
+            target: await Webpack.waitForModule(Webpack.Filters.bySource("badges", "badgeClassName", ".BADGE"))
+        })!;
 
         Patcher.after(BadgeList, Key_BL, (_, args, res) => {
             const [{ displayProfile }] = args as [{ displayProfile: DisplayProfile }];
