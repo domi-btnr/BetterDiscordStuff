@@ -1,6 +1,6 @@
 /**
  * @name GlobalBadges
- * @version 1.0.5
+ * @version 1.0.6
  * @description Adds global badges from other client mods
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -15,7 +15,7 @@
 const manifest = {
     "$schema": "../common/Schemas/manifest.schema.json",
     "name": "GlobalBadges",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "Adds global badges from other client mods",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,7 +23,7 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges",
     "changelog": {
-        "date": "2026-01-25",
+        "date": "2026-10-04",
         "changes": [{
             "type": "fixed",
             "title": "Fixed",
@@ -389,10 +389,10 @@ class GlobalBadges {
         Patcher.unpatchAll();
         Styles.unload();
     }
-    patchBadges() {
-        const [BadgeList, Key_BL] = Webpack.getWithKey(
-            Webpack.Filters.byStrings("badges", "badgeClassName", ".BADGE")
-        );
+    async patchBadges() {
+        const [BadgeList, Key_BL] = Webpack.getWithKey(() => true, {
+            target: await Webpack.waitForModule(Webpack.Filters.bySource("badges", "badgeClassName", ".BADGE"))
+        });
         Patcher.after(BadgeList, Key_BL, (_, args, res) => {
             const [{
                 displayProfile
