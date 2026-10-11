@@ -109,14 +109,46 @@ function showChangelog(manifest) {
 
 /* @styles */
 
+
+const STYLE_ID = manifest.name + "-popout-styles";
+
 var Styles = {
     sheets: [],
     _element: null,
+    _listener: null,
+    get _store() {
+        return Webpack.getStore("PopoutWindowStore");
+    },
+    _forEachPopout(cb) {
+        if (!this._store) return;
+        for (const key of this._store.getWindowKeys()) {
+            const doc = this._store.getWindow(key)?.document;
+            if (doc) cb(doc);
+        }
+    },
+    _injectPopouts() {
+        const css = this.sheets.join("\n");
+        this._forEachPopout(doc => {
+            if (doc.getElementById(STYLE_ID)) return;
+            DOM.createElement("style", {
+                id: STYLE_ID,
+                target: doc.body
+            }, css);
+        });
+    },
     load() {
         DOM.addStyle(this.sheets.join("\n"));
+        if (!this._store) return;
+        this._listener = () => this._injectPopouts();
+        this._store.addChangeListener(this._listener);
+        this._injectPopouts();
     },
     unload() {
         DOM.removeStyle();
+        if (!this._store) return;
+        if (this._listener) this._store.removeChangeListener(this._listener);
+        this._listener = null;
+        this._forEachPopout(doc => doc.getElementById(STYLE_ID)?.remove());
     }
 };
 

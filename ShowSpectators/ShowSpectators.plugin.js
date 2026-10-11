@@ -110,14 +110,46 @@ function showChangelog(manifest) {
 
 /* @styles */
 
+
+const STYLE_ID = manifest.name + "-popout-styles";
+
 var Styles = {
     sheets: [],
     _element: null,
+    _listener: null,
+    get _store() {
+        return Webpack.getStore("PopoutWindowStore");
+    },
+    _forEachPopout(cb) {
+        if (!this._store) return;
+        for (const key of this._store.getWindowKeys()) {
+            const doc = this._store.getWindow(key)?.document;
+            if (doc) cb(doc);
+        }
+    },
+    _injectPopouts() {
+        const css = this.sheets.join("\n");
+        this._forEachPopout(doc => {
+            if (doc.getElementById(STYLE_ID)) return;
+            DOM.createElement("style", {
+                id: STYLE_ID,
+                target: doc.body
+            }, css);
+        });
+    },
     load() {
         DOM.addStyle(this.sheets.join("\n"));
+        if (!this._store) return;
+        this._listener = () => this._injectPopouts();
+        this._store.addChangeListener(this._listener);
+        this._injectPopouts();
     },
     unload() {
         DOM.removeStyle();
+        if (!this._store) return;
+        if (this._listener) this._store.removeChangeListener(this._listener);
+        this._listener = null;
+        this._forEachPopout(doc => doc.getElementById(STYLE_ID)?.remove());
     }
 };
 
@@ -259,12 +291,37 @@ const {
     SwitchInput
 } = Components;
 
-function SwitchItem(props) {
+function BetaTag() {
+    return React.createElement(
+        "span", {
+            style: {
+                marginLeft: 8,
+                padding: "0 6px",
+                borderRadius: 16,
+                background: "var(--brand-500, #5865f2)",
+                color: "#fff",
+                fontSize: 12,
+                fontWeight: 700,
+                lineHeight: "16px",
+                textTransform: "uppercase",
+                verticalAlign: "middle"
+            }
+        },
+        "Beta"
+    );
+}
+
+function SwitchItem({
+    isBeta = false,
+    ...props
+}) {
     const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
+    const name = isBeta ? React.createElement(React.Fragment, null, props.name, React.createElement(BetaTag, null)) : props.name;
     return React.createElement(ErrorBoundary, {
         id: props.id
     }, React.createElement(SettingItem, {
         ...props,
+        name,
         inline: true
     }, React.createElement(SwitchInput, {
         value,

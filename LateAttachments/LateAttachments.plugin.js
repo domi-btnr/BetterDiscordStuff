@@ -112,6 +112,51 @@ function showChangelog(manifest) {
     Data.save("lastVersion", manifest.version);
 }
 
+/* @styles */
+
+
+const STYLE_ID = manifest.name + "-popout-styles";
+
+var Styles = {
+    sheets: [],
+    _element: null,
+    _listener: null,
+    get _store() {
+        return Webpack.getStore("PopoutWindowStore");
+    },
+    _forEachPopout(cb) {
+        if (!this._store) return;
+        for (const key of this._store.getWindowKeys()) {
+            const doc = this._store.getWindow(key)?.document;
+            if (doc) cb(doc);
+        }
+    },
+    _injectPopouts() {
+        const css = this.sheets.join("\n");
+        this._forEachPopout(doc => {
+            if (doc.getElementById(STYLE_ID)) return;
+            DOM.createElement("style", {
+                id: STYLE_ID,
+                target: doc.body
+            }, css);
+        });
+    },
+    load() {
+        DOM.addStyle(this.sheets.join("\n"));
+        if (!this._store) return;
+        this._listener = () => this._injectPopouts();
+        this._store.addChangeListener(this._listener);
+        this._injectPopouts();
+    },
+    unload() {
+        DOM.removeStyle();
+        if (!this._store) return;
+        if (this._listener) this._store.removeChangeListener(this._listener);
+        this._listener = null;
+        this._forEachPopout(doc => doc.getElementById(STYLE_ID)?.remove());
+    }
+};
+
 /* modules/shared.ts */
 const EDIT_DRAFT_TYPE = 67;
 const EditMessageStore = Webpack.getStore("EditMessageStore");
@@ -315,6 +360,16 @@ function AddAttachmentButton({
     ));
 }
 
+/* components/EditAttachmentsBar.scss */
+Styles.sheets.push("/* components/EditAttachmentsBar.scss */", `[class^=messageListItem] ul[class^=channelAttachmentArea_] {
+  gap: 12px;
+}
+[class^=messageListItem] [class*=attachmentItemSmall__] {
+  max-height: 200px;
+  max-width: 200px;
+  padding: 8px;
+}`);
+
 /* components/EditAttachmentsBar.tsx */
 const ATTACHMENT_AREA_TYPE = {
     drafts: {
@@ -387,6 +442,7 @@ function handlePaste(event) {
 class LateAttachments {
     start() {
         showChangelog(manifest);
+        Styles.load();
         this.patchChannelTextArea();
         this.patchEditForm();
         document.addEventListener("paste", handlePaste, {
@@ -395,6 +451,7 @@ class LateAttachments {
     }
     stop() {
         Patcher.unpatchAll();
+        Styles.unload();
         document.removeEventListener("paste", handlePaste, {
             capture: true
         });
