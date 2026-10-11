@@ -1,0 +1,11 @@
+[class^="messageListItem"] {
+    ul[class^="channelAttachmentArea_"] {
+        gap: 12px;
+    }
+
+    [class*="attachmentItemSmall__"] {
+        max-height: 200px;
+        max-width: 200px;
+        padding: 8px;
+    }
+}

@@ -1,6 +1,7 @@
 import { Patcher, Webpack } from "@api";
 import showChangelog from "@common/Changelog";
 import manifest from "@manifest";
+import Styles from "@styles";
 import React from "react";
 
 import AddAttachmentButton from "./components/AddAttachmentButton";
@@ -15,6 +16,7 @@ import { ChatButtonsArgs, ChatButtonsGroup, EditFormClass, EditFormInstance } fr
 export default class LateAttachments {
     start() {
         showChangelog(manifest);
+        Styles.load();
         this.patchChannelTextArea();
         this.patchEditForm();
         document.addEventListener("paste", handlePaste, { capture: true });
@@ -22,6 +24,7 @@ export default class LateAttachments {
 
     stop() {
         Patcher.unpatchAll();
+        Styles.unload();
         document.removeEventListener("paste", handlePaste, { capture: true });
     }
 

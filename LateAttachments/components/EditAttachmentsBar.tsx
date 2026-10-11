@@ -1,3 +1,5 @@
+import "./EditAttachmentsBar.scss";
+
 import { Webpack } from "@api";
 import { CloudUpload } from "@vencord/discord-types";
 import React from "react";
