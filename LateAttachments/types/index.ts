@@ -72,7 +72,6 @@ type ChatButtonsProps = {
 export type ChatButtonsArgs = [ChatButtonsProps, any];
 
 export type ChatButtonsGroup = {
-    // eslint-disable-next-line no-unused-vars
     type(...args: any[]): any;
 };
 
@@ -90,9 +89,7 @@ export interface EditFormInstance {
     node: RefObject<HTMLElement>;
     forceUpdate(): void;
     render(): unknown;
-    // eslint-disable-next-line no-unused-vars
     onSubmit(value: string): Promise<{ shouldClear: boolean; shouldRefocus: boolean }>;
-    // eslint-disable-next-line no-unused-vars
     onChange(...args: unknown[]): void;
 }
 
@@ -101,16 +98,13 @@ export type EditFormClass = {
 };
 
 export type FileUtils = {
-    // eslint-disable-next-line no-unused-vars
     addFile(options: { channelId: string; draftType: number; file: WebUploadItem }): void;
-    // eslint-disable-next-line no-unused-vars
     remove(channelId: string, uploadId: string, draftType: number): void;
 };
 
 export type LanguageModule = {
     t: Record<string, unknown>;
     intl: {
-        // eslint-disable-next-line no-unused-vars
         formatToPlainString(message: unknown): string;
     };
 };
