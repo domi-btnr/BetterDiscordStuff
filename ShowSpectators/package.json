@@ -1,7 +1,7 @@
 {
     "$schema": "../common/Schemas/manifest.schema.json",
     "name": "ShowSpectators",
-    "version": "1.0.6",
+    "version": "1.1.0",
     "description": "Shows you who's spectating your stream under the screenshare panel",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -9,13 +9,21 @@
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators",
     "changelog": {
-        "date": "2026-05-19",
+        "date": "2026-10-19",
         "changes": [
             {
-                "type": "fixed",
-                "title": "Plugin works again for everyone",
+                "type": "added",
+                "title": "Choose between popout and full profile",
                 "items": [
-                    "Fixed the plugin for users that have already the \"2026-05-rtc-connection-functional\" experiment"
+                    "Clicking on a spectator now opens the small user popout, just like in the member list",
+                    "Prefer the full profile? Turn on the new \"Open Full Profile\" option in the plugin settings"
+                ]
+            },
+            {
+                "type": "fixed",
+                "title": "Opening profiles works again",
+                "items": [
+                    "Fixed clicking on a spectator not opening their profile"
                 ]
             }
         ]
