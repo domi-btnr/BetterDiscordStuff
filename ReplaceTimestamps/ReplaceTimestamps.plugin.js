@@ -43,6 +43,7 @@ const {
     Components,
     Data,
     Hooks,
+    Logger,
     Patcher,
     UI,
     Webpack
@@ -136,11 +137,8 @@ class ErrorBoundary extends React.Component {
             info,
             hasError: true
         });
-        console.error(
-            `[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
-`,
-            error
-        );
+        Logger.error(`[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
+`, error);
     }
     render() {
         if (this.state.hasError) {
@@ -328,7 +326,6 @@ const getUnixTimestamp = (str, format) => {
     return `<t:${then}${format ? `:${format}` : ""}>`;
 };
 const getRelativeTime = (str) => {
-    console.log(str);
     const timeMatch = str.match(exports.relativeRegexMatch);
     if (!timeMatch) return str;
     const now = new Date();

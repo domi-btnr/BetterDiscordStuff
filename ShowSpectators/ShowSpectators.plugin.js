@@ -196,11 +196,8 @@ class ErrorBoundary extends React.Component {
             info,
             hasError: true
         });
-        console.error(
-            `[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
-`,
-            error
-        );
+        Logger.error(`[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
+`, error);
     }
     render() {
         if (this.state.hasError) {
