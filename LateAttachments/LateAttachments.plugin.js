@@ -135,10 +135,9 @@ var Styles = {
         const css = this.sheets.join("\n");
         this._forEachPopout(doc => {
             if (doc.getElementById(STYLE_ID)) return;
-            DOM.createElement("style", {
-                id: STYLE_ID,
-                target: doc.body
-            }, css);
+            doc.head.append(DOM.createElement("style", {
+                id: STYLE_ID
+            }, css));
         });
     },
     load() {

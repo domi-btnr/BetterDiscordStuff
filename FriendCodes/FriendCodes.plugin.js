@@ -131,10 +131,9 @@ var Styles = {
         const css = this.sheets.join("\n");
         this._forEachPopout(doc => {
             if (doc.getElementById(STYLE_ID)) return;
-            DOM.createElement("style", {
-                id: STYLE_ID,
-                target: doc.body
-            }, css);
+            doc.head.append(DOM.createElement("style", {
+                id: STYLE_ID
+            }, css));
         });
     },
     load() {
@@ -332,7 +331,7 @@ Styles.sheets.push("/* components/style.scss */", `.card {
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.02em;
-  font-family: var(--font-display);
+  font-family: var(--font-primary);
   font-weight: 600;
 }
 
