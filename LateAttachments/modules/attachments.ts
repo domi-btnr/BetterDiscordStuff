@@ -75,7 +75,6 @@ export async function commitPendingUploads(
     }
 }
 
-// eslint-disable-next-line no-unused-vars
 function putFile(url: string, file: File, onProgress: (loaded: number) => void): Promise<void> {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
