@@ -1,6 +1,6 @@
 /**
  * @name ShowSpectators
- * @version 1.0.6
+ * @version 1.1.0
  * @description Shows you who's spectating your stream under the screenshare panel
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -15,7 +15,7 @@
 const manifest = {
     "$schema": "../common/Schemas/manifest.schema.json",
     "name": "ShowSpectators",
-    "version": "1.0.6",
+    "version": "1.1.0",
     "description": "Shows you who's spectating your stream under the screenshare panel",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,14 +23,23 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/ShowSpectators",
     "changelog": {
-        "date": "2026-05-19",
+        "date": "2026-10-19",
         "changes": [{
-            "type": "fixed",
-            "title": "Plugin works again for everyone",
-            "items": [
-                "Fixed the plugin for users that have already the \"2026-05-rtc-connection-functional\" experiment"
-            ]
-        }]
+                "type": "added",
+                "title": "Choose between popout and full profile",
+                "items": [
+                    "Clicking on a spectator now opens the small user popout, just like in the member list",
+                    "Prefer the full profile? Turn on the new \"Open Full Profile\" option in the plugin settings"
+                ]
+            },
+            {
+                "type": "fixed",
+                "title": "Opening profiles works again",
+                "items": [
+                    "Fixed clicking on a spectator not opening their profile"
+                ]
+            }
+        ]
     }
 };
 
@@ -368,10 +377,17 @@ const AvatarStyles = Webpack.getByKeys("moreUsers", "emptyUser", "avatarContaine
 const Clickable = Webpack.getByStrings("this.context?this.renderNonInteractive():", {
     searchExports: true
 });
+const openUserProfileModal = Webpack.getByStrings('type:"USER_PROFILE_MODAL_OPEN"', {
+    searchExports: true
+});
 const RelationshipStore = Webpack.getStore("RelationshipStore");
-const UserProfileActions = Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal");
 const UserStore = Webpack.getStore("UserStore");
 const UserSummaryItem = Webpack.getByStrings("defaultRenderUser", "showDefaultAvatarsForNullUsers");
+const {
+    UserPopout
+} = Webpack.getMangled(['type:"popout",withMutualGuilds', "disableUserProfileLink"], {
+    UserPopout: (x) => x?.$$typeof === Symbol.for("react.memo")
+});
 const LanguageModule = Webpack.getModule((m) => m.intl);
 const getLocalizedString = (key, values) => {
     if (!values) return LanguageModule?.intl.formatToPlainString(LanguageModule.t[key]);
@@ -431,6 +447,53 @@ function SpectatorsTooltip({
     })))));
 }
 
+function SpectatorAvatar({
+    user,
+    guildId
+}) {
+    const avatarRef = React.useRef(null);
+    const prefersFullProfile = Hooks.useStateFromStores([Settings], () => Settings.get("openFullProfile", false));
+    const showFullProfile = prefersFullProfile || !UserPopout;
+    const renderAvatar = (props) => React.createElement(Clickable, {
+        ...props,
+        className: AvatarStyles.clickableAvatar
+    }, React.createElement(
+        "img", {
+            ref: avatarRef,
+            className: AvatarStyles.avatar,
+            src: user.getAvatarURL(void 0, 80, true),
+            alt: user.username,
+            title: user.username
+        }
+    ));
+    return React.createElement(Tooltip, {
+        text: getDisplayName(user)
+    }, (tooltipProps) => showFullProfile ? renderAvatar({
+        ...tooltipProps,
+        onClick: () => {
+            if (!UserPopout) {
+                Logger.error("Failed to find UserPopout module, falling back to the full profile");
+            }
+            openUserProfileModal?.({
+                userId: user.id,
+                guildId
+            });
+        }
+    }) : React.createElement(
+        UserPopout, {
+            targetElementRef: avatarRef,
+            userId: user.id,
+            guildId,
+            position: "top",
+            align: "center"
+        },
+        (popoutProps) => renderAvatar({
+            ...tooltipProps,
+            ...popoutProps
+        })
+    ));
+}
+
 function SpectatorsPanel() {
     const activeStream = Hooks.useStateFromStores(
         [ApplicationStreamingStore],
@@ -458,26 +521,10 @@ function SpectatorsPanel() {
             renderIcon: false,
             max: 12,
             showDefaultAvatarsForNullUsers: true,
-            renderUser: (user) => React.createElement(Tooltip, {
-                text: getDisplayName(user)
-            }, (props) => React.createElement(
-                Clickable, {
-                    ...props,
-                    className: AvatarStyles.clickableAvatar,
-                    onClick: () => UserProfileActions.openUserProfileModal({
-                        userId: user.id,
-                        guildId: activeStream.guildId
-                    })
-                },
-                React.createElement(
-                    "img", {
-                        className: AvatarStyles.avatar,
-                        src: user.getAvatarURL(void 0, 80, true),
-                        alt: user.username,
-                        title: user.username
-                    }
-                )
-            )),
+            renderUser: (user) => React.createElement(SpectatorAvatar, {
+                user,
+                guildId: activeStream.guildId
+            }),
             renderMoreUsers: (label, count) => {
                 const sliced = spectators.slice(-count);
                 return React.createElement(
@@ -502,12 +549,20 @@ function SpectatorsPanel() {
 
 /* settings.json */
 var items = [{
-    type: "switch",
-    name: "Show Spectators Panel",
-    note: "Shows a new panel with the spectators",
-    id: "showPanel",
-    value: true
-}];
+        type: "switch",
+        name: "Show Spectators Panel",
+        note: "Shows a new panel with the spectators",
+        id: "showPanel",
+        value: true
+    },
+    {
+        type: "switch",
+        name: "Open Full Profile",
+        note: "Opens the full profile instead of the small user popout when clicking on a spectator",
+        id: "openFullProfile",
+        value: false
+    }
+];
 var SettingsItems = {
     items: items
 };
