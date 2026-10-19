@@ -1,6 +1,6 @@
 import "./style.scss";
 
-import { Components, Hooks, Webpack } from "@api";
+import { Components, Hooks, Logger, Webpack } from "@api";
 import { Settings } from "@common/Settings";
 import React from "react";
 
@@ -8,10 +8,13 @@ const { Flex, Text, Tooltip } = Components;
 const ApplicationStreamingStore = Webpack.getStore("ApplicationStreamingStore");
 const AvatarStyles = Webpack.getByKeys("moreUsers", "emptyUser", "avatarContainer", "clickableAvatar");
 const Clickable = Webpack.getByStrings("this.context?this.renderNonInteractive():", { searchExports: true });
+const openUserProfileModal = Webpack.getByStrings('type:"USER_PROFILE_MODAL_OPEN"', { searchExports: true });
 const RelationshipStore = Webpack.getStore("RelationshipStore");
-const UserProfileActions = Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal");
 const UserStore = Webpack.getStore("UserStore");
 const UserSummaryItem = Webpack.getByStrings("defaultRenderUser", "showDefaultAvatarsForNullUsers");
+const { UserPopout } = Webpack.getMangled(['type:"popout",withMutualGuilds', "disableUserProfileLink"], {
+    UserPopout: x => x?.$$typeof === Symbol.for("react.memo")
+});
 
 const LanguageModule = Webpack.getModule(m => m.intl);
 const getLocalizedString = (key, values) => {
@@ -66,6 +69,52 @@ export function SpectatorsTooltip({ spectatorIds, guildId, noTitle }) {
     );
 }
 
+function SpectatorAvatar({ user, guildId }) {
+    const avatarRef = React.useRef(null);
+    const prefersFullProfile = Hooks.useStateFromStores([Settings], () => Settings.get("openFullProfile", false));
+    const showFullProfile = prefersFullProfile || !UserPopout;
+
+    const renderAvatar = props => (
+        <Clickable {...props} className={AvatarStyles.clickableAvatar}>
+            <img
+                ref={avatarRef}
+                className={AvatarStyles.avatar}
+                src={user.getAvatarURL(void 0, 80, true)}
+                alt={user.username}
+                title={user.username}
+            />
+        </Clickable>
+    );
+
+    return (
+        <Tooltip text={getDisplayName(user)}>
+            {tooltipProps =>
+                showFullProfile ? (
+                    renderAvatar({
+                        ...tooltipProps,
+                        onClick: () => {
+                            if (!UserPopout) {
+                                Logger.error("Failed to find UserPopout module, falling back to the full profile");
+                            }
+                            openUserProfileModal?.({ userId: user.id, guildId });
+                        }
+                    })
+                ) : (
+                    <UserPopout
+                        targetElementRef={avatarRef}
+                        userId={user.id}
+                        guildId={guildId}
+                        position="top"
+                        align="center"
+                    >
+                        {popoutProps => renderAvatar({ ...tooltipProps, ...popoutProps })}
+                    </UserPopout>
+                )
+            }
+        </Tooltip>
+    );
+}
+
 export function SpectatorsPanel() {
     const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () =>
         ApplicationStreamingStore.getCurrentUserActiveStream()
@@ -94,29 +143,7 @@ export function SpectatorsPanel() {
                     renderIcon={false}
                     max={12}
                     showDefaultAvatarsForNullUsers
-                    renderUser={user => (
-                        <Tooltip text={getDisplayName(user)}>
-                            {props => (
-                                <Clickable
-                                    {...props}
-                                    className={AvatarStyles.clickableAvatar}
-                                    onClick={() =>
-                                        UserProfileActions.openUserProfileModal({
-                                            userId: user.id,
-                                            guildId: activeStream.guildId
-                                        })
-                                    }
-                                >
-                                    <img
-                                        className={AvatarStyles.avatar}
-                                        src={user.getAvatarURL(void 0, 80, true)}
-                                        alt={user.username}
-                                        title={user.username}
-                                    />
-                                </Clickable>
-                            )}
-                        </Tooltip>
-                    )}
+                    renderUser={user => <SpectatorAvatar user={user} guildId={activeStream.guildId} />}
                     renderMoreUsers={(label, count) => {
                         const sliced = spectators.slice(-count);
                         return (

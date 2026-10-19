@@ -7,6 +7,13 @@
             "note": "Shows a new panel with the spectators",
             "id": "showPanel",
             "value": true
+        },
+        {
+            "type": "switch",
+            "name": "Open Full Profile",
+            "note": "Opens the full profile instead of the small user popout when clicking on a spectator",
+            "id": "openFullProfile",
+            "value": false
         }
     ]
 }
