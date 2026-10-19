@@ -45,7 +45,6 @@ export const getUnixTimestamp = (str, format) => {
 };
 
 export const getRelativeTime = str => {
-    console.log(str);
     const timeMatch = str.match(relativeRegexMatch);
     if (!timeMatch) return str;
 
