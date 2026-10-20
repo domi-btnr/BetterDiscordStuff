@@ -57,22 +57,32 @@ let argv = parseArgs({
 });
 argv.values.plugins = [...argv.values.plugins, ...argv.positionals];
 argv = argv.values;
+const isPluginFolder = pluginName => {
+    if (!pluginName || pluginName === "." || pluginName === "..") return false;
+    const pluginFolder = path.join(PLUGINS_DIR, pluginName);
+    return fs.existsSync(pluginFolder) && fs.statSync(pluginFolder).isDirectory();
+};
+
+const unknownPlugins = [];
 const toPluginName = plugin => {
     const relative = path.relative(PLUGINS_DIR, path.resolve(plugin));
     if (relative && !relative.startsWith("..") && !path.isAbsolute(relative)) return relative.split(path.sep)[0];
-    if (!/[\\/]/.test(plugin)) return plugin;
+
+    const pluginName = plugin.replace(/[\\/]+$/, "");
+    if (!/[\\/]/.test(pluginName) && isPluginFolder(pluginName)) return pluginName;
+
+    if (/[\\/]/.test(pluginName) || fs.existsSync(plugin)) return null;
+
+    unknownPlugins.push(plugin);
     return null;
 };
 
-argv.plugins = [
-    ...new Set(
-        argv.plugins.map(toPluginName).filter(pluginName => {
-            if (!pluginName) return false;
-            const pluginFolder = path.join(PLUGINS_DIR, pluginName);
-            return fs.existsSync(pluginFolder) && fs.statSync(pluginFolder).isDirectory();
-        })
-    )
-];
+argv.plugins = [...new Set(argv.plugins.map(toPluginName).filter(isPluginFolder))];
+
+if (unknownPlugins.length) {
+    console.error(`Unknown plugin(s): ${unknownPlugins.join(", ")}`);
+    process.exit(1);
+}
 
 if (!argv.plugins.length) {
     console.error("No Plugins provided!");

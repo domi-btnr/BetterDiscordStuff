@@ -61,7 +61,7 @@ jobs:
 
       - name: Build plugins
         run: >-
-          pnpm build --publish --plugins ${{ steps.changed-files.outputs.changed_files }}
+          pnpm build --publish ${{ steps.changed-files.outputs.changed_files }}
           && if [ ! -d builds ]; then echo "noBuildFolder=true" >> $GITHUB_ENV; fi
 
       - name: Cancel Job when no Artifact

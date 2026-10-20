@@ -60,4 +60,4 @@ jobs:
           fi
       - name: Build plugins
         run: |
-          pnpm build --plugins ${{ steps.changed-files.outputs.changed_files }}
+          pnpm build ${{ steps.changed-files.outputs.changed_files }}
