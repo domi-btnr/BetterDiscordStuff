@@ -94,10 +94,13 @@ jobs:
 
       - name: Commit Changes
         run: |
-          COMMIT_MSG="${{ github.event.head_commit.message || format('Manual build: {0}', github.event.inputs.plugin || 'all plugins') }}"
+          COMMIT_MSG="Publish build for ${GITHUB_SHA::7}"
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            COMMIT_MSG="$COMMIT_MSG (manual run)"
+          fi
           git config advice.addIgnoredFile false
           git add --no-all ./**
           git config --local user.email "actions@github.com"
           git config --local user.name "PluginBuilder"
-          git commit -F <(printf "%s" "$COMMIT_MSG")
+          git commit -m "$COMMIT_MSG"
           git push
