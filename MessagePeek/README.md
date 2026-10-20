@@ -15,7 +15,7 @@
 
 ## Preview
 
-| ![MessagePeek in DMs](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/refs/heads/development/MessagePeek/images/preview_dm.png) | ![MessagePeek in Guild Channel](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/refs/heads/development/MessagePeek/images/preview_guild.png) |
+| ![MessagePeek in DMs](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/refs/heads/development/src/plugins/MessagePeek/images/preview_dm.png) | ![MessagePeek in Guild Channel](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/refs/heads/development/src/plugins/MessagePeek/images/preview_guild.png) |
 | ------------------------------------------------ | ------------------------------------------------------------- |
 |                MessagePeek in DMs                |                  MessagePeek in Guild Channel                 |
 

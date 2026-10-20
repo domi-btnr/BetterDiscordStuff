@@ -18,7 +18,7 @@
 </div>
 
 ## Preview
-![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/ShowSpectators/images/Preview.png)
+![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/src/plugins/ShowSpectators/images/Preview.png)
 
 ## 📥 Installation
 

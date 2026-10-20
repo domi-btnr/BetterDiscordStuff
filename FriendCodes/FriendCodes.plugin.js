@@ -6,14 +6,14 @@
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
- * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes
+ * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/FriendCodes
  */
 
 'use strict';
 
 /* @manifest */
 const manifest = {
-    "$schema": "../common/Schemas/manifest.schema.json",
+    "$schema": "../../common/Schemas/manifest.schema.json",
     "name": "FriendCodes",
     "version": "1.2.5",
     "description": "Generate FriendCodes to easily add friends",
@@ -21,7 +21,7 @@ const manifest = {
     "authorId": "354191516979429376",
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/FriendCodes",
+    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/FriendCodes",
     "changelog": {
         "date": "2026-04-25",
         "changes": [{
@@ -49,7 +49,7 @@ const {
 /* react */
 var React = BdApi.React;
 
-/* ../common/Changelog/footer.tsx */
+/* ../../common/Changelog/footer.tsx */
 const {
     Text: Text$2
 } = Components;
@@ -80,7 +80,7 @@ function Footer({
     }, "GitHub")));
 }
 
-/* ../common/Changelog/index.tsx */
+/* ../../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
     if (!manifest.changelog) return;
@@ -152,8 +152,8 @@ var Styles = {
     }
 };
 
-/* ../common/ErrorBoundary/style.scss */
-Styles.sheets.push("/* ../common/ErrorBoundary/style.scss */", `.errorBoundary {
+/* ../../common/ErrorBoundary/style.scss */
+Styles.sheets.push("/* ../../common/ErrorBoundary/style.scss */", `.errorBoundary {
   align-items: center;
   background: #473c41;
   border: 2px solid #f04747;
@@ -169,7 +169,7 @@ Styles.sheets.push("/* ../common/ErrorBoundary/style.scss */", `.errorBoundary {
   gap: 5px;
 }`);
 
-/* ../common/ErrorBoundary/index.tsx */
+/* ../../common/ErrorBoundary/index.tsx */
 const ErrorIcon = (props) => React.createElement("svg", {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24",

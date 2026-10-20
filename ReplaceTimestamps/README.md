@@ -14,7 +14,7 @@
 ---
 
 ## Preview
-![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/ReplaceTimestamps/images/Preview.png)
+![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/src/plugins/ReplaceTimestamps/images/Preview.png)
 
 ## 📥 Installation
 

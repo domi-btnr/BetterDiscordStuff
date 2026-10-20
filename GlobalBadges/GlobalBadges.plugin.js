@@ -6,14 +6,14 @@
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
- * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges
+ * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/GlobalBadges
  */
 
 'use strict';
 
 /* @manifest */
 const manifest = {
-    "$schema": "../common/Schemas/manifest.schema.json",
+    "$schema": "../../common/Schemas/manifest.schema.json",
     "name": "GlobalBadges",
     "version": "1.0.6",
     "description": "Adds global badges from other client mods",
@@ -21,7 +21,7 @@ const manifest = {
     "authorId": "354191516979429376",
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/GlobalBadges",
+    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/GlobalBadges",
     "changelog": {
         "date": "2026-10-04",
         "changes": [{
@@ -49,7 +49,7 @@ const {
 /* react */
 var React = BdApi.React;
 
-/* ../common/Changelog/footer.tsx */
+/* ../../common/Changelog/footer.tsx */
 const {
     Text
 } = Components;
@@ -80,7 +80,7 @@ function Footer({
     }, "GitHub")));
 }
 
-/* ../common/Changelog/index.tsx */
+/* ../../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
     if (!manifest.changelog) return;
@@ -152,8 +152,8 @@ var Styles = {
     }
 };
 
-/* ../common/ErrorBoundary/style.scss */
-Styles.sheets.push("/* ../common/ErrorBoundary/style.scss */", `.errorBoundary {
+/* ../../common/ErrorBoundary/style.scss */
+Styles.sheets.push("/* ../../common/ErrorBoundary/style.scss */", `.errorBoundary {
   align-items: center;
   background: #473c41;
   border: 2px solid #f04747;
@@ -169,7 +169,7 @@ Styles.sheets.push("/* ../common/ErrorBoundary/style.scss */", `.errorBoundary {
   gap: 5px;
 }`);
 
-/* ../common/ErrorBoundary/index.tsx */
+/* ../../common/ErrorBoundary/index.tsx */
 const ErrorIcon = (props) => React.createElement("svg", {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24",
@@ -211,7 +211,7 @@ class ErrorBoundary extends React.Component {
     }
 }
 
-/* ../common/Settings/store.ts */
+/* ../../common/Settings/store.ts */
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
     searchExports: true
 });
@@ -231,7 +231,7 @@ const Settings = new class Settings2 extends Flux.Store {
     }
 }();
 
-/* ../common/Settings/items/shared.tsx */
+/* ../../common/Settings/items/shared.tsx */
 function BetaTag() {
     return React.createElement(
         "span", {
@@ -286,7 +286,7 @@ function getItemLabels({
     };
 }
 
-/* ../common/Settings/items/dropdown.tsx */
+/* ../../common/Settings/items/dropdown.tsx */
 const {
     SettingItem: SettingItem$2
 } = Components;
@@ -332,7 +332,7 @@ function DropdownItem({
     ))));
 }
 
-/* ../common/Settings/items/slider.tsx */
+/* ../../common/Settings/items/slider.tsx */
 const {
     SettingItem: SettingItem$1
 } = Components;
@@ -372,7 +372,7 @@ function SliderItem({
     )));
 }
 
-/* ../common/Settings/items/switch.tsx */
+/* ../../common/Settings/items/switch.tsx */
 const {
     SettingItem,
     SwitchInput
@@ -403,7 +403,7 @@ function SwitchItem({
     })));
 }
 
-/* ../common/Settings/panel.tsx */
+/* ../../common/Settings/panel.tsx */
 function SettingsPanel({
     items,
     components: customComponents

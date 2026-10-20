@@ -6,14 +6,14 @@
  * @authorId 354191516979429376
  * @invite gp2ExK5vc7
  * @donate https://paypal.me/domibtnr
- * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds
+ * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/UnsuppressEmbeds
  */
 
 'use strict';
 
 /* @manifest */
 const manifest = {
-    "$schema": "../common/Schemas/manifest.schema.json",
+    "$schema": "../../common/Schemas/manifest.schema.json",
     "name": "UnsuppressEmbeds",
     "version": "1.0.1",
     "description": "Allows you to unsuppress embeds in messages",
@@ -21,7 +21,7 @@ const manifest = {
     "authorId": "354191516979429376",
     "invite": "gp2ExK5vc7",
     "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/UnsuppressEmbeds"
+    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/UnsuppressEmbeds"
 };
 
 /* @api */
@@ -37,7 +37,7 @@ const {
 /* react */
 var React = BdApi.React;
 
-/* ../common/Changelog/footer.tsx */
+/* ../../common/Changelog/footer.tsx */
 const {
     Text
 } = Components;
@@ -68,7 +68,7 @@ function Footer({
     }, "GitHub")));
 }
 
-/* ../common/Changelog/index.tsx */
+/* ../../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
     if (!manifest.changelog) return;

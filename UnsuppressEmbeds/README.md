@@ -14,7 +14,7 @@
 ---
 
 ## Preview
-![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/UnsuppressEmbeds/images/Preview.gif)
+![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/src/plugins/UnsuppressEmbeds/images/Preview.gif)
 
 ## 📥 Installation
 
