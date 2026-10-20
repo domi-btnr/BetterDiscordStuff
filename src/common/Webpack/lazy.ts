@@ -1,6 +1,6 @@
 /**
- * Wraps a module lookup so it only runs on first use. Reads and writes go to the real module, so it can be patched.
- * @param getter Looks up the module. Runs again on the next access as long as it returns nothing.
+ * Wraps a module lookup so it only runs on first use. Reads and writes go to the real module.
+ * @param getter Looks up the module. Only runs once, even if it finds nothing.
  * @returns A stand-in for the module.
  */
 export function lazyExport<T extends object>(getter: () => T | undefined | void): T {
