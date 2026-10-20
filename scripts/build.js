@@ -12,7 +12,7 @@ const nodeResolve = require("@rollup/plugin-node-resolve");
 const cssom = require("cssom");
 const { js: jsBeautify } = require("js-beautify");
 
-const NO_PLUGIN_FOLDERS = [".github", ".husky", ".vscode", "archive", "common", "scripts"];
+const PLUGINS_DIR = path.resolve(process.cwd(), "src", "plugins");
 const PLUGIN_META_FIELDS = [
     "name",
     "author",
@@ -57,15 +57,20 @@ let argv = parseArgs({
 });
 argv.values.plugins = [...argv.values.plugins, ...argv.positionals];
 argv = argv.values;
+const toPluginName = plugin => {
+    const relative = path.relative(PLUGINS_DIR, path.resolve(plugin));
+    if (relative && !relative.startsWith("..") && !path.isAbsolute(relative)) return relative.split(path.sep)[0];
+    if (!/[\\/]/.test(plugin)) return plugin;
+    return null;
+};
+
 argv.plugins = [
     ...new Set(
-        argv.plugins
-            .map(p => path.normalize(p).split(path.sep)[0])
-            .filter(p => {
-                if (fs.statSync(p).isDirectory() && !NO_PLUGIN_FOLDERS.includes(p)) {
-                    return true;
-                }
-            })
+        argv.plugins.map(toPluginName).filter(pluginName => {
+            if (!pluginName) return false;
+            const pluginFolder = path.join(PLUGINS_DIR, pluginName);
+            return fs.existsSync(pluginFolder) && fs.statSync(pluginFolder).isDirectory();
+        })
     )
 ];
 
@@ -203,8 +208,8 @@ function toCamelCase(str) {
     return out;
 }
 
-const buildPlugin = (pluginFolder, makeFolder) => {
-    pluginFolder = path.resolve(process.cwd(), pluginFolder);
+const buildPlugin = (pluginName, makeFolder) => {
+    const pluginFolder = path.join(PLUGINS_DIR, pluginName);
     if (!fs.existsSync(pluginFolder)) {
         console.error(`Can't find plugin folder "${path.basename(pluginFolder)}"`);
         process.exit(1);
@@ -354,11 +359,8 @@ const buildPlugin = (pluginFolder, makeFolder) => {
                     if (makeFolder) {
                         const folder = path.resolve(process.cwd(), "builds", manifest.name);
                         if (!fs.existsSync(folder)) fs.mkdirSync(folder);
-                        if (fs.existsSync(path.resolve(manifest.name, "README.md")))
-                            fs.copyFileSync(
-                                path.resolve(manifest.name, "README.md"),
-                                path.resolve(folder, "README.md")
-                            );
+                        if (fs.existsSync(path.resolve(pluginFolder, "README.md")))
+                            fs.copyFileSync(path.resolve(pluginFolder, "README.md"), path.resolve(folder, "README.md"));
                     }
                     const outfile = makeFolder
                         ? path.resolve(process.cwd(), "builds", manifest.name, `${manifest.name}.plugin.js`)
