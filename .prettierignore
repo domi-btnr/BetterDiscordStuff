@@ -1,5 +1,5 @@
 .github/
-archive/
+src/archive/
 builds/
 node_modules/
 pnpm-lock.yaml

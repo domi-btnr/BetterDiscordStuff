@@ -51,8 +51,13 @@ jobs:
         run: |
           git fetch origin ${{ github.base_ref }}
           BASE=$(git merge-base origin/${{ github.base_ref }} HEAD)
-          files=$(git diff --name-only --diff-filter=AM $BASE HEAD | tr '\n' ' ')
-          echo "changed_files=$files" >> $GITHUB_OUTPUT
+          files=$(git diff --name-only --diff-filter=AMR $BASE HEAD | tr '\n' ' ')
+
+          if echo "$files" | tr ' ' '\n' | grep -q '^src/common/'; then
+            echo "changed_files=$(find src/plugins -mindepth 1 -maxdepth 1 -type d | tr '\n' ' ')" >> $GITHUB_OUTPUT
+          else
+            echo "changed_files=$files" >> $GITHUB_OUTPUT
+          fi
       - name: Build plugins
         run: |
-          pnpm build --plugins ${{ steps.changed-files.outputs.changed_files }}
+          pnpm build ${{ steps.changed-files.outputs.changed_files }}

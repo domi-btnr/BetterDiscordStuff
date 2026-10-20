@@ -1,6 +1,6 @@
 <div align="center">
-    <h1>ReplaceTimestamps</h1>
-    <p>Replaces plaintext times and dates into Discord's timestamps</p>
+    <h1>LateAttachments</h1>
+    <p>Allows you to add attachments to messages when editing them</p>
 </div>
 <div align="center">
     <a href="https://discord.gg/gp2ExK5vc7">
@@ -13,11 +13,14 @@
 
 ---
 
-## Preview
-![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/ReplaceTimestamps/images/Preview.png)
+## Previews
+
+![image](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/src/plugins/LateAttachments/assets/Preview.png)
+
+https://github.com/user-attachments/assets/056bc7ea-7036-47c7-b51a-80be31d2e52c
 
 ## 📥 Installation
 
-1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/ReplaceTimestamps/ReplaceTimestamps.plugin.js)
+1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/LateAttachments/LateAttachments.plugin.js)
 2. Save or move the file into your plugins folder
 3. Enable the plugin in the settings

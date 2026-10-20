@@ -36,18 +36,6 @@ jobs:
         run: |
           set -e
 
-          get_all_plugins() {
-            find . -mindepth 1 -maxdepth 1 -type d \
-              ! -name ".git" \
-              ! -name ".github" \
-              ! -name ".husky" \
-              ! -name ".vscode" \
-              ! -name "archive" \
-              ! -name "node_modules" \
-              ! -name "scripts" \
-              | tr '\n' ' '
-          }
-
           EVENT="${GITHUB_EVENT_NAME}"
 
           if [ "$EVENT" = "workflow_dispatch" ]; then
@@ -58,22 +46,22 @@ jobs:
               exit 0
             fi
 
-            echo "changed_files=$(get_all_plugins)" >> $GITHUB_OUTPUT
+            echo "changed_files=$(find src/plugins -mindepth 1 -maxdepth 1 -type d | tr '\n' ' ')" >> $GITHUB_OUTPUT
             exit 0
           fi
 
           BASE="${{ github.event.before }}"
-          files=$(git diff --name-only --diff-filter=AM $BASE HEAD | tr '\n' ' ')
+          files=$(git diff --name-only --diff-filter=AMR $BASE HEAD | tr '\n' ' ')
 
-          if echo "$files" | tr ' ' '\n' | grep -q '^common/'; then
-            echo "changed_files=$(get_all_plugins)" >> $GITHUB_OUTPUT
+          if echo "$files" | tr ' ' '\n' | grep -q '^src/common/'; then
+            echo "changed_files=$(find src/plugins -mindepth 1 -maxdepth 1 -type d | tr '\n' ' ')" >> $GITHUB_OUTPUT
           else
             echo "changed_files=$files" >> $GITHUB_OUTPUT
           fi
 
       - name: Build plugins
         run: >-
-          pnpm build --publish --plugins ${{ steps.changed-files.outputs.changed_files }}
+          pnpm build --publish ${{ steps.changed-files.outputs.changed_files }}
           && if [ ! -d builds ]; then echo "noBuildFolder=true" >> $GITHUB_ENV; fi
 
       - name: Cancel Job when no Artifact

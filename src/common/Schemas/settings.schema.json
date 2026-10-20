@@ -5,7 +5,7 @@
     "properties": {
         "$schema": {
             "type": "string",
-            "description": "The URL to the JSON schema (should be ../common/Schemas/settings.schema.json)"
+            "description": "The URL to the JSON schema (should be ../../common/Schemas/settings.schema.json)"
         },
         "items": {
             "type": "array",

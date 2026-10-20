@@ -1,6 +1,6 @@
 <div align="center">
-    <h1>MessagePeek</h1>
-    <p>See the last message in a Channel like on mobile</p>
+    <h1>UnsuppressEmbeds</h1>
+    <p>Allows you to unsuppress embeds in messages</p>
 </div>
 <div align="center">
     <a href="https://discord.gg/gp2ExK5vc7">
@@ -14,13 +14,10 @@
 ---
 
 ## Preview
-
-| ![MessagePeek in DMs](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/refs/heads/development/MessagePeek/images/preview_dm.png) | ![MessagePeek in Guild Channel](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/refs/heads/development/MessagePeek/images/preview_guild.png) |
-| ------------------------------------------------ | ------------------------------------------------------------- |
-|                MessagePeek in DMs                |                  MessagePeek in Guild Channel                 |
+![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/src/plugins/UnsuppressEmbeds/images/Preview.gif)
 
 ## 📥 Installation
 
-1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/MessagePeek/MessagePeek.plugin.js)
+1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/UnsuppressEmbeds/UnsuppressEmbeds.plugin.js)
 2. Save or move the file into your plugins folder
 3. Enable the plugin in the settings

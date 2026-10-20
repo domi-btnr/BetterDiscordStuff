@@ -1,5 +1,5 @@
 {
-    "exclude": ["archive"],
+    "exclude": ["src/archive"],
     "compilerOptions": {
         "esModuleInterop": true,
         "jsx": "preserve",
@@ -7,7 +7,7 @@
         "target": "ESNext",
         "types": ["node", "react"],
         "paths": {
-            "@common/*": ["./common/*"]
+            "@common/*": ["./src/common/*"]
         }
     }
 }

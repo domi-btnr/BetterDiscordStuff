@@ -1,4 +1,5 @@
 const { execSync } = require("node:child_process");
+const fs = require("node:fs");
 
 const protectedBranches = ["development"];
 
@@ -16,10 +17,21 @@ console.log("Protected branch detected → running pre-push checks...");
 try {
     const upstream = execSync(`git rev-parse --abbrev-ref ${branch}@{upstream}`).toString().trim() || null;
     const changedFiles =
-        execSync(`git diff --name-only ${upstream}...${branch}`).toString().trim().split("\n").filter(Boolean) || [];
+        execSync(`git diff --name-only --diff-filter=AMR ${upstream}...${branch}`)
+            .toString()
+            .trim()
+            .split("\n")
+            .filter(Boolean) || [];
+    let buildTargets = changedFiles;
+    if (changedFiles.some(file => file.startsWith("src/common/"))) {
+        buildTargets = fs
+            .readdirSync("src/plugins", { withFileTypes: true })
+            .filter(entry => entry.isDirectory())
+            .map(entry => entry.name);
+    }
 
     execSync("npm run lint", { stdio: "inherit" });
-    execSync(`npm run build -- --plugins ${changedFiles.join(" ")}`, { stdio: "inherit" });
+    execSync(`npm run build -- ${buildTargets.join(" ")}`, { stdio: "inherit" });
     console.log("");
     console.log("Pre-push checks passed");
     console.log("");

@@ -10,7 +10,7 @@ export default defineConfig([
     js.configs.recommended,
     react.configs.flat.recommended,
     tseslint.configs.recommended,
-    { ignores: ["builds/**", "archive/**"] },
+    { ignores: ["builds/**", "src/archive/**"] },
     {
         settings: {
             react: { version: "19.2" }
