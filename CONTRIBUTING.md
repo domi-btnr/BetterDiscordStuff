@@ -55,7 +55,18 @@ Before submitting a bug report, confirm that you are using the latest version of
    | `--watch`   | Watch for file changes and automatically recompile                   |
    | `--install` | Install the plugin directly to your BetterDiscord Plugins folder     |
    | `--publish` | Prepare a folder with the compiled plugin and README for main branch |
-   | `--plugins` | Specify which plugin(s) to compile (requires folder name)            |
+   | `--plugins` | Specify which plugin(s) to compile (folder name in `src/plugins/`)   |
+
+## Project Structure
+
+```
+src/
+├── plugins/   every active plugin, one folder per plugin
+├── common/    shared code, imported via @common/*
+├── archive/   retired plugins, not built or linted
+└── types/     ambient type declarations
+scripts/       build script and git hooks
+```
 
 ## Pull Request Guidelines
 
