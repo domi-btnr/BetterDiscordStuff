@@ -1,8 +1,9 @@
 import { Components, Webpack } from "@api";
+import { getLocalizedString } from "@common/i18n";
 import React from "react";
 
 import { activateUploadDialogue } from "../modules/attachments";
-import { getLocalizedString, Strings } from "../modules/shared";
+import { Strings } from "../modules/shared";
 
 const PlusLargeIcon = (Webpack.getByKeys("PlusLargeIcon") as { PlusLargeIcon: React.ComponentType }).PlusLargeIcon;
 const styles = {

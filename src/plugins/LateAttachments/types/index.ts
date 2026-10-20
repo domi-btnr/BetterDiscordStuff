@@ -101,10 +101,3 @@ export type FileUtils = {
     addFile(options: { channelId: string; draftType: number; file: WebUploadItem }): void;
     remove(channelId: string, uploadId: string, draftType: number): void;
 };
-
-export type LanguageModule = {
-    t: Record<string, unknown>;
-    intl: {
-        formatToPlainString(message: unknown): string;
-    };
-};

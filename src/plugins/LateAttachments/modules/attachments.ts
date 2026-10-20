@@ -1,5 +1,6 @@
 import { DOM, Logger, UI, Webpack } from "@api";
-import { CloudUpload as CloudUploadType, MessageStore as MessageStoreType, RestAPI } from "@vencord/discord-types";
+import { RestAPI } from "@common/Webpack";
+import { CloudUpload as CloudUploadType, MessageStore as MessageStoreType } from "@vencord/discord-types";
 import type { CloudUploadPlatform } from "@vencord/discord-types/enums";
 
 import { FileUtils as FileUtilsType, RemoteAttachment } from "../types";
@@ -10,9 +11,6 @@ const PLATFORM_WEB: CloudUploadPlatform.WEB = 1;
 const MAX_ATTACHMENTS = 10;
 
 const FileUtils = Webpack.getByKeys("addFile", "remove") as FileUtilsType;
-const RestAPIModule = Webpack.getModule(m => typeof m === "object" && m.del && m.put, {
-    searchExports: true
-}) as RestAPI;
 const MessageStore = Webpack.getStore("MessageStore") as unknown as MessageStoreType;
 
 export function addFiles(channelId: string, existingAttachmentCount: number, files: File[]) {
@@ -102,7 +100,7 @@ async function submitEditWithAttachments(
 
     const {
         body: { attachments }
-    } = (await RestAPIModule.post({
+    } = (await RestAPI.post({
         url: `/channels/${channelId}/attachments`,
         body: {
             files: files.map((file, i) => ({
@@ -133,7 +131,7 @@ async function submitEditWithAttachments(
 
     const existingMessage = MessageStore.getMessage(channelId, messageId);
 
-    return RestAPIModule.patch({
+    return RestAPI.patch({
         url: `/channels/${channelId}/messages/${messageId}`,
         body: {
             content: payload?.content,

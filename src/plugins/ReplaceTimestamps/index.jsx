@@ -1,6 +1,7 @@
-import { Patcher, Webpack } from "@api";
+import { Patcher } from "@api";
 import showChangelog from "@common/Changelog";
 import { Settings, SettingsPanel } from "@common/Settings";
+import { MessageActions } from "@common/Webpack";
 import manifest from "@manifest";
 import React from "react";
 
@@ -19,8 +20,6 @@ export default class ReplaceTimestamps {
     }
 
     patchMessageActions() {
-        const MessageActions = Webpack.getByKeys("sendMessage", "editMessage");
-
         const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
         timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
 

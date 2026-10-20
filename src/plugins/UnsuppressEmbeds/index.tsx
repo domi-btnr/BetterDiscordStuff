@@ -1,19 +1,12 @@
 import { ContextMenu, Webpack } from "@api";
 import showChangelog from "@common/Changelog";
+import { findContextMenuGroupByItemId } from "@common/ContextMenu";
+import { RestAPI } from "@common/Webpack";
 import manifest from "@manifest";
-import {
-    Channel,
-    Constants,
-    Message,
-    PermissionsBits,
-    PermissionStore,
-    RestAPI,
-    UserStore
-} from "@vencord/discord-types";
+import { Channel, Constants, Message, PermissionsBits, PermissionStore, UserStore } from "@vencord/discord-types";
 import React from "react";
 
 import { ImageInvisible, ImageVisible } from "./components/icons";
-import { findGroupById } from "./modules/utils";
 
 let unpatchContextMenu: () => void;
 const EMBED_SUPPRESSED = 1 << 2;
@@ -30,9 +23,6 @@ export default class UnsuppressEmbeds {
 
     patchMessageContextMenu() {
         const Endpoints: Constants["Endpoints"] = Webpack.getModule(m => typeof m?.MESSAGES === "function", {
-            searchExports: true
-        })!;
-        const RestAPI: RestAPI = Webpack.getModule(m => typeof m === "object" && m.del && m.put, {
             searchExports: true
         })!;
 
@@ -55,7 +45,7 @@ export default class UnsuppressEmbeds {
                 !!(PermissionStore.getChannelPermissions({ id: channel.id }) & PermissionsBits.EMBED_LINKS);
             if (author.id === UserStore.getCurrentUser().id && !hasEmbedPerms) return;
 
-            const menuGroup = findGroupById(res, "delete")?.props.children;
+            const menuGroup = findContextMenuGroupByItemId(res, "delete")?.props.children;
             if (!menuGroup) return;
 
             const deleteIndex = menuGroup.findIndex(i => i?.props?.id === "delete");

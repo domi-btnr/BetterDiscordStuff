@@ -1,4 +1,5 @@
-import { Components, Webpack } from "@api";
+import { Components } from "@api";
+import { Parser } from "@common/Webpack";
 import React from "react";
 
 import { TextVariantStyles } from "../modules/shared";
@@ -7,7 +8,6 @@ import styles from "./style.scss";
 
 const { Flex, Text } = Components;
 const { clipboard } = DiscordNative;
-const Parser = Webpack.getByKeys("parseTopic");
 
 export default function FriendCodeCard({ invite }) {
     return (
