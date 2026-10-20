@@ -53,6 +53,65 @@ const {
 /* react */
 var React = BdApi.React;
 
+/* ../../common/Webpack/lazy.ts */
+function lazyExport(getter) {
+    let resolved = false;
+    let cached;
+    const resolve = () => {
+        if (!resolved) {
+            cached = getter() || void 0;
+            resolved = true;
+        }
+        return cached;
+    };
+    return new Proxy({}, {
+        get: (_, key) => resolve()?.[key],
+        set: (_, key, value) => {
+            const target = resolve();
+            if (!target) return false;
+            target[key] = value;
+            return true;
+        },
+        defineProperty: (_, key, descriptor) => {
+            const target = resolve();
+            return !!target && Reflect.defineProperty(target, key, descriptor);
+        },
+        deleteProperty: (_, key) => {
+            const target = resolve();
+            return !!target && Reflect.deleteProperty(target, key);
+        },
+        has: (_, key) => key in (resolve() ?? {}),
+        ownKeys: () => Reflect.ownKeys(resolve() ?? {}),
+        getOwnPropertyDescriptor: (_, key) => {
+            const descriptor = Reflect.getOwnPropertyDescriptor(resolve() ?? {}, key);
+            return descriptor && {
+                ...descriptor,
+                configurable: true
+            };
+        }
+    });
+}
+
+/* ../../common/Webpack/I18nModule.ts */
+const I18nModule = lazyExport(() => Webpack.getModule((m) => m.intl));
+
+/* ../../common/Webpack/RestAPI.ts */
+const RestAPI = lazyExport(
+    () => Webpack.getModule((m) => typeof m === "object" && m.del && m.put, {
+        searchExports: true
+    })
+);
+
+/* ../../common/i18n/index.ts */
+function getLocalizedString(key, values) {
+    if (!values) return I18nModule.intl?.formatToPlainString(I18nModule.t[key]) ?? void 0;
+    return I18nModule.intl?.format(I18nModule.t[key], values) ?? void 0;
+}
+
+function getLocale() {
+    return Webpack.getStore("LocaleStore").locale;
+}
+
 /* ../../common/Changelog/footer.tsx */
 const {
     Text
@@ -95,8 +154,7 @@ function showChangelog(manifest) {
         ...changelog
     } = manifest.changelog;
     if (!changelog.changes?.length && !changelog.blurb && !changelog.video && !changelog.banner) return;
-    const i18n = Webpack.getByKeys("getLocale");
-    const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+    const formatter = new Intl.DateTimeFormat(getLocale(), {
         month: "long",
         day: "numeric",
         year: "numeric"
@@ -169,14 +227,9 @@ function subscribeUploads(listener) {
     UploadAttachmentStore.addChangeListener(listener);
     return () => UploadAttachmentStore.removeChangeListener(listener);
 }
-const LanguageModule = Webpack.getModule((m) => m.intl);
 const Strings = {
     CHAT_ATTACH_UPLOAD_A_FILE: "d3+iYs"
 };
-
-function getLocalizedString(key) {
-    return LanguageModule?.intl.formatToPlainString(LanguageModule.t[key]);
-}
 
 /* modules/submitting.ts */
 const submittingChannels = new Set();
@@ -205,9 +258,6 @@ function setSubmitting(channelId, submitting) {
 const PLATFORM_WEB = 1;
 const MAX_ATTACHMENTS = 10;
 const FileUtils = Webpack.getByKeys("addFile", "remove");
-const RestAPIModule = Webpack.getModule((m) => typeof m === "object" && m.del && m.put, {
-    searchExports: true
-});
 const MessageStore = Webpack.getStore("MessageStore");
 
 function addFiles(channelId, existingAttachmentCount, files) {
@@ -292,7 +342,7 @@ async function submitEditWithAttachments(channelId, messageId, payload, uploads)
         body: {
             attachments
         }
-    } = await RestAPIModule.post({
+    } = await RestAPI.post({
         url: `/channels/${channelId}/attachments`,
         body: {
             files: files.map((file, i) => ({
@@ -319,7 +369,7 @@ async function submitEditWithAttachments(channelId, messageId, payload, uploads)
         })
     );
     const existingMessage = MessageStore.getMessage(channelId, messageId);
-    return RestAPIModule.patch({
+    return RestAPI.patch({
         url: `/channels/${channelId}/messages/${messageId}`,
         body: {
             content: payload?.content,

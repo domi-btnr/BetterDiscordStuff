@@ -37,6 +37,57 @@ const {
 /* react */
 var React = BdApi.React;
 
+/* ../../common/Webpack/lazy.ts */
+function lazyExport(getter) {
+    let resolved = false;
+    let cached;
+    const resolve = () => {
+        if (!resolved) {
+            cached = getter() || void 0;
+            resolved = true;
+        }
+        return cached;
+    };
+    return new Proxy({}, {
+        get: (_, key) => resolve()?.[key],
+        set: (_, key, value) => {
+            const target = resolve();
+            if (!target) return false;
+            target[key] = value;
+            return true;
+        },
+        defineProperty: (_, key, descriptor) => {
+            const target = resolve();
+            return !!target && Reflect.defineProperty(target, key, descriptor);
+        },
+        deleteProperty: (_, key) => {
+            const target = resolve();
+            return !!target && Reflect.deleteProperty(target, key);
+        },
+        has: (_, key) => key in (resolve() ?? {}),
+        ownKeys: () => Reflect.ownKeys(resolve() ?? {}),
+        getOwnPropertyDescriptor: (_, key) => {
+            const descriptor = Reflect.getOwnPropertyDescriptor(resolve() ?? {}, key);
+            return descriptor && {
+                ...descriptor,
+                configurable: true
+            };
+        }
+    });
+}
+
+/* ../../common/Webpack/RestAPI.ts */
+const RestAPI = lazyExport(
+    () => Webpack.getModule((m) => typeof m === "object" && m.del && m.put, {
+        searchExports: true
+    })
+);
+
+/* ../../common/i18n/index.ts */
+function getLocale() {
+    return Webpack.getStore("LocaleStore").locale;
+}
+
 /* ../../common/Changelog/footer.tsx */
 const {
     Text
@@ -79,8 +130,7 @@ function showChangelog(manifest) {
         ...changelog
     } = manifest.changelog;
     if (!changelog.changes?.length && !changelog.blurb && !changelog.video && !changelog.banner) return;
-    const i18n = Webpack.getByKeys("getLocale");
-    const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+    const formatter = new Intl.DateTimeFormat(getLocale(), {
         month: "long",
         day: "numeric",
         year: "numeric"
@@ -94,6 +144,22 @@ function showChangelog(manifest) {
         })
     });
     Data.save("lastVersion", manifest.version);
+}
+
+/* ../../common/ContextMenu/index.ts */
+function findContextMenuGroupByItemId(res, id) {
+    if (!res) return null;
+    let children = res.props?.children;
+    if (!children) return null;
+    if (!Array.isArray(children)) children = [children];
+    if (children.some((child) => child && typeof child === "object" && "props" in child && child.props?.id === id))
+        return res;
+    for (const child of children)
+        if (child && typeof child === "object") {
+            const found = findContextMenuGroupByItemId(child, id);
+            if (found) return found;
+        }
+    return null;
 }
 
 /* components/icons.tsx */
@@ -123,22 +189,6 @@ function ImageInvisible(props) {
     ));
 }
 
-/* modules/utils.ts */
-function findGroupById(res, id) {
-    if (!res) return null;
-    let children = res.props?.children;
-    if (!children) return null;
-    if (!Array.isArray(children)) children = [children];
-    if (children.some((child) => child && typeof child === "object" && "props" in child && child.props?.id === id))
-        return res;
-    for (const child of children)
-        if (child && typeof child === "object") {
-            const found = findGroupById(child, id);
-            if (found) return found;
-        }
-    return null;
-}
-
 /* index.tsx */
 let unpatchContextMenu;
 const EMBED_SUPPRESSED = 1 << 2;
@@ -152,9 +202,6 @@ class UnsuppressEmbeds {
     }
     patchMessageContextMenu() {
         const Endpoints = Webpack.getModule((m) => typeof m?.MESSAGES === "function", {
-            searchExports: true
-        });
-        const RestAPI2 = Webpack.getModule((m) => typeof m === "object" && m.del && m.put, {
             searchExports: true
         });
         const PermissionsBits2 = Webpack.getModule((m) => m?.EMBED_LINKS, {
@@ -181,7 +228,7 @@ class UnsuppressEmbeds {
                 id: channel.id
             }) & PermissionsBits2.EMBED_LINKS);
             if (author.id === UserStore2.getCurrentUser().id && !hasEmbedPerms) return;
-            const menuGroup = findGroupById(res, "delete")?.props.children;
+            const menuGroup = findContextMenuGroupByItemId(res, "delete")?.props.children;
             if (!menuGroup) return;
             const deleteIndex = menuGroup.findIndex((i) => i?.props?.id === "delete");
             if (deleteIndex < 0) return;
@@ -198,7 +245,7 @@ class UnsuppressEmbeds {
                             type: "icon",
                             icon: isEmbedSuppressed ? ImageVisible : ImageInvisible
                         },
-                        action: () => RestAPI2.patch({
+                        action: () => RestAPI.patch({
                             url: Endpoints.MESSAGE(channel.id, messageId),
                             body: {
                                 flags: isEmbedSuppressed ? flags & ~EMBED_SUPPRESSED : flags | EMBED_SUPPRESSED

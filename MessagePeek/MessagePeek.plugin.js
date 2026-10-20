@@ -59,6 +59,61 @@ const {
 /* react */
 var React = BdApi.React;
 
+/* ../../common/Webpack/Dispatcher.ts */
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers", {
+    searchExports: true
+});
+
+/* ../../common/Webpack/Flux.ts */
+const Flux = Webpack.getByKeys("Store");
+
+/* ../../common/Webpack/lazy.ts */
+function lazyExport(getter) {
+    let resolved = false;
+    let cached;
+    const resolve = () => {
+        if (!resolved) {
+            cached = getter() || void 0;
+            resolved = true;
+        }
+        return cached;
+    };
+    return new Proxy({}, {
+        get: (_, key) => resolve()?.[key],
+        set: (_, key, value) => {
+            const target = resolve();
+            if (!target) return false;
+            target[key] = value;
+            return true;
+        },
+        defineProperty: (_, key, descriptor) => {
+            const target = resolve();
+            return !!target && Reflect.defineProperty(target, key, descriptor);
+        },
+        deleteProperty: (_, key) => {
+            const target = resolve();
+            return !!target && Reflect.deleteProperty(target, key);
+        },
+        has: (_, key) => key in (resolve() ?? {}),
+        ownKeys: () => Reflect.ownKeys(resolve() ?? {}),
+        getOwnPropertyDescriptor: (_, key) => {
+            const descriptor = Reflect.getOwnPropertyDescriptor(resolve() ?? {}, key);
+            return descriptor && {
+                ...descriptor,
+                configurable: true
+            };
+        }
+    });
+}
+
+/* ../../common/Webpack/Parser.ts */
+const Parser = lazyExport(() => Webpack.getByKeys("parseTopic"));
+
+/* ../../common/i18n/index.ts */
+function getLocale() {
+    return Webpack.getStore("LocaleStore").locale;
+}
+
 /* ../../common/Changelog/footer.tsx */
 const {
     Text
@@ -101,8 +156,7 @@ function showChangelog(manifest) {
         ...changelog
     } = manifest.changelog;
     if (!changelog.changes?.length && !changelog.blurb && !changelog.video && !changelog.banner) return;
-    const i18n = Webpack.getByKeys("getLocale");
-    const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+    const formatter = new Intl.DateTimeFormat(getLocale(), {
         month: "long",
         day: "numeric",
         year: "numeric"
@@ -222,10 +276,6 @@ class ErrorBoundary extends React.Component {
 }
 
 /* ../../common/Settings/store.ts */
-const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
-    searchExports: true
-});
-const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
     constructor() {
         super(Dispatcher, {});
@@ -442,8 +492,6 @@ Styles.sheets.push("/* components/styles.scss */", `a[href^="/channels/@me/"] [c
 
 /* components/messagePeek.jsx */
 const MessageStore = Webpack.getStore("MessageStore");
-const Parser = Webpack.getByKeys("parseTopic");
-const i18n = Webpack.getByKeys("getLocale");
 
 function MessagePeek$1({
     channelId,
@@ -491,7 +539,7 @@ function MessagePeek$1({
         );
     } else {
         const now = Date.now();
-        const dateTimeFormatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+        const dateTimeFormatter = new Intl.DateTimeFormat(getLocale(), {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",

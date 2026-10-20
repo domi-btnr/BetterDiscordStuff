@@ -52,6 +52,22 @@ const {
 /* react */
 var React = BdApi.React;
 
+/* ../../common/Webpack/Dispatcher.ts */
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers", {
+    searchExports: true
+});
+
+/* ../../common/Webpack/Flux.ts */
+const Flux = Webpack.getByKeys("Store");
+
+/* ../../common/Webpack/MessageActions.ts */
+const MessageActions = Webpack.getByKeys("sendMessage", "editMessage");
+
+/* ../../common/i18n/index.ts */
+function getLocale() {
+    return Webpack.getStore("LocaleStore").locale;
+}
+
 /* ../../common/Changelog/footer.tsx */
 const {
     Text
@@ -94,8 +110,7 @@ function showChangelog(manifest) {
         ...changelog
     } = manifest.changelog;
     if (!changelog.changes?.length && !changelog.blurb && !changelog.video && !changelog.banner) return;
-    const i18n = Webpack.getByKeys("getLocale");
-    const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+    const formatter = new Intl.DateTimeFormat(getLocale(), {
         month: "long",
         day: "numeric",
         year: "numeric"
@@ -154,10 +169,6 @@ class ErrorBoundary extends React.Component {
 }
 
 /* ../../common/Settings/store.ts */
-const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
-    searchExports: true
-});
-const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
     constructor() {
         super(Dispatcher, {});
@@ -508,7 +519,6 @@ class ReplaceTimestamps {
         Patcher.unpatchAll();
     }
     patchMessageActions() {
-        const MessageActions = Webpack.getByKeys("sendMessage", "editMessage");
         const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
         exports.timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
         const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy").replace(/[./]/g, "[./]").replace("dd", "(\\d{2})").replace("MM", "(\\d{2})").replace("yyyy", "(\\d{4})");

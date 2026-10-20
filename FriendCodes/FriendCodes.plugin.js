@@ -49,6 +49,56 @@ const {
 /* react */
 var React = BdApi.React;
 
+/* ../../common/Webpack/lazy.ts */
+function lazyExport(getter) {
+    let resolved = false;
+    let cached;
+    const resolve = () => {
+        if (!resolved) {
+            cached = getter() || void 0;
+            resolved = true;
+        }
+        return cached;
+    };
+    return new Proxy({}, {
+        get: (_, key) => resolve()?.[key],
+        set: (_, key, value) => {
+            const target = resolve();
+            if (!target) return false;
+            target[key] = value;
+            return true;
+        },
+        defineProperty: (_, key, descriptor) => {
+            const target = resolve();
+            return !!target && Reflect.defineProperty(target, key, descriptor);
+        },
+        deleteProperty: (_, key) => {
+            const target = resolve();
+            return !!target && Reflect.deleteProperty(target, key);
+        },
+        has: (_, key) => key in (resolve() ?? {}),
+        ownKeys: () => Reflect.ownKeys(resolve() ?? {}),
+        getOwnPropertyDescriptor: (_, key) => {
+            const descriptor = Reflect.getOwnPropertyDescriptor(resolve() ?? {}, key);
+            return descriptor && {
+                ...descriptor,
+                configurable: true
+            };
+        }
+    });
+}
+
+/* ../../common/Webpack/MessageActions.ts */
+const MessageActions = Webpack.getByKeys("sendMessage", "editMessage");
+
+/* ../../common/Webpack/Parser.ts */
+const Parser = lazyExport(() => Webpack.getByKeys("parseTopic"));
+
+/* ../../common/i18n/index.ts */
+function getLocale() {
+    return Webpack.getStore("LocaleStore").locale;
+}
+
 /* ../../common/Changelog/footer.tsx */
 const {
     Text: Text$2
@@ -91,8 +141,7 @@ function showChangelog(manifest) {
         ...changelog
     } = manifest.changelog;
     if (!changelog.changes?.length && !changelog.blurb && !changelog.video && !changelog.banner) return;
-    const i18n = Webpack.getByKeys("getLocale");
-    const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+    const formatter = new Intl.DateTimeFormat(getLocale(), {
         month: "long",
         day: "numeric",
         year: "numeric"
@@ -224,9 +273,6 @@ const {
 const {
     createFriendInvite: createFriendInvite$1
 } = InviteModule;
-const {
-    sendMessage
-} = Webpack.getByKeys("sendMessage");
 var createFriendCode = {
     id: "FC-Create",
     name: "create-friend-code",
@@ -249,7 +295,7 @@ var createFriendCode = {
         if (props.find((o) => o.name === "ephemeral")?.value ?? true) return {
             content: msg
         };
-        else sendMessage(channel.id, {
+        else MessageActions.sendMessage(channel.id, {
             content: msg
         }, void 0, {
             location: "chat_input"
@@ -355,7 +401,6 @@ const {
 const {
     clipboard
 } = DiscordNative;
-const Parser = Webpack.getByKeys("parseTopic");
 
 function FriendCodeCard({
     invite

@@ -49,6 +49,19 @@ const {
 /* react */
 var React = BdApi.React;
 
+/* ../../common/Webpack/Dispatcher.ts */
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers", {
+    searchExports: true
+});
+
+/* ../../common/Webpack/Flux.ts */
+const Flux = Webpack.getByKeys("Store");
+
+/* ../../common/i18n/index.ts */
+function getLocale() {
+    return Webpack.getStore("LocaleStore").locale;
+}
+
 /* ../../common/Changelog/footer.tsx */
 const {
     Text
@@ -91,8 +104,7 @@ function showChangelog(manifest) {
         ...changelog
     } = manifest.changelog;
     if (!changelog.changes?.length && !changelog.blurb && !changelog.video && !changelog.banner) return;
-    const i18n = Webpack.getByKeys("getLocale");
-    const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+    const formatter = new Intl.DateTimeFormat(getLocale(), {
         month: "long",
         day: "numeric",
         year: "numeric"
@@ -212,10 +224,6 @@ class ErrorBoundary extends React.Component {
 }
 
 /* ../../common/Settings/store.ts */
-const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
-    searchExports: true
-});
-const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
     constructor() {
         super(Dispatcher, {});

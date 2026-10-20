@@ -58,6 +58,66 @@ const {
 /* react */
 var React = BdApi.React;
 
+/* ../../common/Webpack/Dispatcher.ts */
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers", {
+    searchExports: true
+});
+
+/* ../../common/Webpack/Flux.ts */
+const Flux = Webpack.getByKeys("Store");
+
+/* ../../common/Webpack/lazy.ts */
+function lazyExport(getter) {
+    let resolved = false;
+    let cached;
+    const resolve = () => {
+        if (!resolved) {
+            cached = getter() || void 0;
+            resolved = true;
+        }
+        return cached;
+    };
+    return new Proxy({}, {
+        get: (_, key) => resolve()?.[key],
+        set: (_, key, value) => {
+            const target = resolve();
+            if (!target) return false;
+            target[key] = value;
+            return true;
+        },
+        defineProperty: (_, key, descriptor) => {
+            const target = resolve();
+            return !!target && Reflect.defineProperty(target, key, descriptor);
+        },
+        deleteProperty: (_, key) => {
+            const target = resolve();
+            return !!target && Reflect.deleteProperty(target, key);
+        },
+        has: (_, key) => key in (resolve() ?? {}),
+        ownKeys: () => Reflect.ownKeys(resolve() ?? {}),
+        getOwnPropertyDescriptor: (_, key) => {
+            const descriptor = Reflect.getOwnPropertyDescriptor(resolve() ?? {}, key);
+            return descriptor && {
+                ...descriptor,
+                configurable: true
+            };
+        }
+    });
+}
+
+/* ../../common/Webpack/I18nModule.ts */
+const I18nModule = lazyExport(() => Webpack.getModule((m) => m.intl));
+
+/* ../../common/i18n/index.ts */
+function getLocalizedString(key, values) {
+    if (!values) return I18nModule.intl?.formatToPlainString(I18nModule.t[key]) ?? void 0;
+    return I18nModule.intl?.format(I18nModule.t[key], values) ?? void 0;
+}
+
+function getLocale() {
+    return Webpack.getStore("LocaleStore").locale;
+}
+
 /* ../../common/Changelog/footer.tsx */
 const {
     Text: Text$1
@@ -100,8 +160,7 @@ function showChangelog(manifest) {
         ...changelog
     } = manifest.changelog;
     if (!changelog.changes?.length && !changelog.blurb && !changelog.video && !changelog.banner) return;
-    const i18n = Webpack.getByKeys("getLocale");
-    const formatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+    const formatter = new Intl.DateTimeFormat(getLocale(), {
         month: "long",
         day: "numeric",
         year: "numeric"
@@ -221,10 +280,6 @@ class ErrorBoundary extends React.Component {
 }
 
 /* ../../common/Settings/store.ts */
-const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", {
-    searchExports: true
-});
-const Flux = Webpack.getByKeys("Store");
 const Settings = new class Settings2 extends Flux.Store {
     constructor() {
         super(Dispatcher, {});
@@ -465,11 +520,6 @@ const {
 } = Webpack.getMangled(['type:"popout",withMutualGuilds', "disableUserProfileLink"], {
     UserPopout: (x) => x?.$$typeof === Symbol.for("react.memo")
 });
-const LanguageModule = Webpack.getModule((m) => m.intl);
-const getLocalizedString = (key, values) => {
-    if (!values) return LanguageModule?.intl.formatToPlainString(LanguageModule.t[key]);
-    return LanguageModule?.intl.format(LanguageModule.t[key], values);
-};
 const Strings = {
     SPECTATORS: "BR7Tno",
     NUM_USERS: "3uHFUR"
