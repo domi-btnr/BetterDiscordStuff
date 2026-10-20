@@ -25,14 +25,14 @@ pnpm lint       # prettier --check . && eslint && tsc --noEmit -p tsconfig.json
 pnpm lint:fix   # same, but prettier --write and eslint --fix
 ```
 
-- `--plugins <Name>` limits build/lint-relevant checks to one or more plugin folders. Accepts folder names (e.g. `GlobalBadges`) or any path inside `src/plugins/` (e.g. `src/plugins/GlobalBadges/index.tsx`); other paths are ignored.
+- `--plugins <Name>` limits the build to one or more plugins. Accepts folder names (e.g. `GlobalBadges`) or any path inside `src/plugins/` (e.g. `src/plugins/GlobalBadges/index.tsx`); other paths are ignored, unknown plugin names fail the build.
 - `--install` copies the built file into your local BetterDiscord plugins folder — only meaningful if BetterDiscord is actually installed on the machine.
 - `--publish` is what CI uses to stage output for `main`; don't invoke it manually as part of normal edits.
 - There is **no test suite**. The quality bar is: `pnpm lint` passes, and `pnpm build --plugins <Name>` succeeds for any plugin you touched. Do both before considering a change done.
 
 ## Repo layout
 
-- **All source code lives in `src/`**; the root only holds `scripts/`, tooling folders (`.github`, `.husky`, `.vscode`) and config files.
+- **All source code lives in `src/`**; the root only holds `scripts/`, tooling folders (`.github`, `.husky`, `.vscode`), config and docs files.
 - **A "plugin" is any folder in `src/plugins/`** (see `PLUGINS_DIR` in `scripts/build.js`). Each plugin folder has an `index.jsx`/`index.tsx` entry point, optionally `components/`, `modules/`, `types/`, its own `package.json` (doubles as the BD manifest — see below), and a `README.md`. Run `pnpm build --plugins <FolderName>` to build one.
   - Adding or removing a plugin folder also means updating `.github/pull_request_template.md` and `.github/ISSUE_TEMPLATE/bug-report.yml` — both hardcode the current plugin list as checkboxes/dropdown options.
 - **`src/common/`** — shared code, imported via the `@common/*` path alias (see `tsconfig.json` `paths` and the matching resolver in `scripts/build.js`):
@@ -97,4 +97,4 @@ This is a transparency expectation, not a penalty against AI-assisted work — t
 
 If your change makes something in this file inaccurate — a command, build/CI behavior, the general folder layout, a lint/TS rule — update the relevant section of `AGENTS.md` in the same PR.
 
-This deliberately does **not** include field-level details like manifest/changelog fields or `@api` exports — this file points at `src/common/Schemas/*.schema.json`, `scripts/build.js`, and `src/types/modules.d.ts` for those on purpose, so they stay correct on their own even when nobody remembers to touch `AGENT.md`. Keep it that way: don't copy those details into this file just to "complete" this rule.
+This deliberately does **not** include field-level details like manifest/changelog fields or `@api` exports — this file points at `src/common/Schemas/*.schema.json`, `scripts/build.js`, and `src/types/modules.d.ts` for those on purpose, so they stay correct on their own even when nobody remembers to touch `AGENTS.md`. Keep it that way: don't copy those details into this file just to "complete" this rule.
