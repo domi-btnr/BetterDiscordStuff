@@ -9,11 +9,11 @@ import { I18nModule } from "../Webpack";
  * @param key The hashed message key (e.g. `"d3+iYs"`).
  * @param values Values for the message's placeholders. Without them, the message is returned as plain text.
  */
-export function getLocalizedString(key: string): string;
-export function getLocalizedString(key: string, values: Record<string, unknown>): ReactNode[];
-export function getLocalizedString(key: string, values?: Record<string, unknown>) {
-    if (!values) return I18nModule.intl?.formatToPlainString(I18nModule.t[key]);
-    return I18nModule.intl?.format(I18nModule.t[key], values);
+export function getLocalizedString(key: string): string | undefined;
+export function getLocalizedString(key: string, values: Record<string, unknown>): ReactNode[] | undefined;
+export function getLocalizedString(key: string, values?: Record<string, unknown>): string | ReactNode[] | undefined {
+    if (!values) return I18nModule.intl?.formatToPlainString(I18nModule.t[key]) ?? undefined;
+    return I18nModule.intl?.format(I18nModule.t[key], values) ?? undefined;
 }
 
 /** @returns The locale Discord is currently displayed in (e.g. `"en-US"`). */

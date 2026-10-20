@@ -4,15 +4,31 @@
  * @returns A stand-in for the module.
  */
 export function lazyExport<T extends object>(getter: () => T | undefined | void): T {
-    let cached: T | undefined;
-    const resolve = () => (cached ??= getter() || undefined) as Record<PropertyKey, unknown> | undefined;
+    let resolved = false;
+    let cached: Record<PropertyKey, unknown> | undefined;
+    const resolve = () => {
+        if (!resolved) {
+            cached = (getter() || undefined) as Record<PropertyKey, unknown> | undefined;
+            resolved = true;
+        }
+        return cached;
+    };
 
     return new Proxy({} as T, {
         get: (_, key) => resolve()?.[key],
         set: (_, key, value) => {
             const target = resolve();
-            if (target) target[key] = value;
+            if (!target) return false;
+            target[key] = value;
             return true;
+        },
+        defineProperty: (_, key, descriptor) => {
+            const target = resolve();
+            return !!target && Reflect.defineProperty(target, key, descriptor);
+        },
+        deleteProperty: (_, key) => {
+            const target = resolve();
+            return !!target && Reflect.deleteProperty(target, key);
         },
         has: (_, key) => key in (resolve() ?? {}),
         ownKeys: () => Reflect.ownKeys(resolve() ?? {}),
