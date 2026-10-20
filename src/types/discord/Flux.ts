@@ -1,12 +1,13 @@
 import type { ActionHandlers, Flux as VencordFlux, FluxDispatcher, FluxStore } from "@vencord/discord-types";
 import type { ComponentType } from "react";
 
-/** Priority band of a store's action handlers. Lower bands run first. */
-export enum DispatchBand {
-    Early = 0,
-    Database = 1,
-    Default = 2
-}
+/**
+ * Priority band of a store's action handlers. Lower bands run first.
+ * - `0`: Early
+ * - `1`: Database
+ * - `2`: Default
+ */
+export type DispatchBand = 0 | 1 | 2;
 
 export interface PersistedStoreClearOptions {
     type: "all" | "user-data-only";
@@ -31,7 +32,7 @@ export interface PersistedStore extends FluxStore {
     clear(): void;
 }
 
-export interface PersistedStoreClass {
+export interface PersistedStoreClass extends Omit<typeof FluxStore, "prototype"> {
     new (dispatcher: FluxDispatcher, actionHandlers?: ActionHandlers, band?: DispatchBand): PersistedStore;
     persistKey: string;
     migrations?: ((state: unknown) => unknown)[];
@@ -43,6 +44,9 @@ export interface PersistedStoreClass {
     _writePromises: Map<string, Promise<boolean>>;
     _writeResolvers: Map<string, [resolve: (persisted: boolean) => void, idleCallbackId: number]>;
     _clearAllPromise?: Promise<void> | null;
+    displayName?: string;
+    initialized: Promise<void>;
+    removeAllConditionalListeners(): void;
     clearAll(options: PersistedStoreClearOptions): Promise<void>;
     shouldClear(options: PersistedStoreClearOptions, persistKey: string): boolean;
     clearPersistQueue(options: PersistedStoreClearOptions): void;

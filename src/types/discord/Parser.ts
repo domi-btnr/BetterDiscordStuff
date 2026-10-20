@@ -1,7 +1,7 @@
 import type { Parser as VencordParser } from "@vencord/discord-types";
 import type { ReactNode } from "react";
 
-export type ParserType = VencordParser & {
+export interface ParserType extends VencordParser {
     parseTruncatedTopic(
         content: string,
         inline?: boolean,
@@ -9,4 +9,4 @@ export type ParserType = VencordParser & {
         options?: Record<string, any>
     ): ReactNode[];
     guildEventLocationRules: Record<string, Record<"react" | "html" | "parse" | "match" | "order", any>>;
-};
+}

@@ -20,7 +20,7 @@ export interface DispatcherType extends FluxDispatcher {
      * @param name The name of the store.
      * @param actionHandlers The handlers, keyed by action type.
      * @param storeDidChange Called after a handler of this store ran.
-     * @param band The priority band of the handlers. Defaults to `DispatchBand.Default`.
+     * @param band The priority band of the handlers. Defaults to `2` (Default).
      * @returns The dispatch token of the registered handlers.
      */
     register(
