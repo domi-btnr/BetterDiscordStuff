@@ -1,8 +1,6 @@
-import { Data, Webpack } from "@api";
-import type { Flux as FluxType, FluxDispatcher } from "@vencord/discord-types";
+import { Data } from "@api";
 
-const Dispatcher: FluxDispatcher = Webpack.getByKeys("dispatch", "subscribe", { searchExports: true })!;
-const Flux: FluxType = Webpack.getByKeys("Store")!;
+import { Dispatcher, Flux } from "../Webpack";
 
 const Settings = new (class Settings extends Flux.Store {
     constructor() {
