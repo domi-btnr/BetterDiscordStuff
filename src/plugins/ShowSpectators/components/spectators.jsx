@@ -1,6 +1,7 @@
 import "./style.scss";
 
 import { Components, Hooks, Logger, Webpack } from "@api";
+import { getLocalizedString } from "@common/i18n";
 import { Settings } from "@common/Settings";
 import React from "react";
 
@@ -16,11 +17,6 @@ const { UserPopout } = Webpack.getMangled(['type:"popout",withMutualGuilds', "di
     UserPopout: x => x?.$$typeof === Symbol.for("react.memo")
 });
 
-const LanguageModule = Webpack.getModule(m => m.intl);
-const getLocalizedString = (key, values) => {
-    if (!values) return LanguageModule?.intl.formatToPlainString(LanguageModule.t[key]);
-    return LanguageModule?.intl.format(LanguageModule.t[key], values);
-};
 const Strings = {
     SPECTATORS: "BR7Tno",
     NUM_USERS: "3uHFUR"

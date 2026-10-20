@@ -1,12 +1,12 @@
 import "./styles.scss";
 
 import { Components, Hooks, Webpack } from "@api";
+import { getLocale } from "@common/i18n";
 import { Settings } from "@common/Settings";
+import { Parser } from "@common/Webpack";
 import React from "react";
 
 const MessageStore = Webpack.getStore("MessageStore");
-const Parser = Webpack.getByKeys("parseTopic");
-const i18n = Webpack.getByKeys("getLocale");
 
 export default function MessagePeek({ channelId, timestampOnly }) {
     if (!channelId) return null;
@@ -67,7 +67,7 @@ export default function MessagePeek({ channelId, timestampOnly }) {
         );
     } else {
         const now = Date.now();
-        const dateTimeFormatter = new Intl.DateTimeFormat(i18n.getLocale(), {
+        const dateTimeFormatter = new Intl.DateTimeFormat(getLocale(), {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",

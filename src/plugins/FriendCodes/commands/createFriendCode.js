@@ -1,4 +1,5 @@
-import { Commands, Webpack } from "@api";
+import { Commands } from "@api";
+import { MessageActions } from "@common/Webpack";
 
 import { InviteModule } from "../modules/shared";
 
@@ -6,8 +7,6 @@ const {
     Types: { OptionTypes }
 } = Commands;
 const { createFriendInvite } = InviteModule;
-
-const { sendMessage } = Webpack.getByKeys("sendMessage");
 
 export default {
     id: "FC-Create",
@@ -29,6 +28,6 @@ export default {
             https://discord.gg/${invite.code}
         `.replace(/^\s+/gm, "");
         if (props.find(o => o.name === "ephemeral")?.value ?? true) return { content: msg };
-        else sendMessage(channel.id, { content: msg }, undefined, { location: "chat_input" });
+        else MessageActions.sendMessage(channel.id, { content: msg }, undefined, { location: "chat_input" });
     }
 };

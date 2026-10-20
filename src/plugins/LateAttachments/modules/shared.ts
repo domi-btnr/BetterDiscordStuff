@@ -6,8 +6,6 @@ import {
 } from "@vencord/discord-types";
 import type { DraftType } from "@vencord/discord-types/enums";
 
-import { LanguageModule as LanguageModuleType } from "../types";
-
 export const EDIT_DRAFT_TYPE = 67;
 
 export const EditMessageStore = Webpack.getStore("EditMessageStore") as unknown as EditMessageStoreType;
@@ -22,12 +20,6 @@ export function subscribeUploads(listener: () => void): () => void {
     return () => UploadAttachmentStore.removeChangeListener(listener);
 }
 
-const LanguageModule = Webpack.getModule(m => m.intl) as LanguageModuleType | undefined;
-
 export const Strings = {
     CHAT_ATTACH_UPLOAD_A_FILE: "d3+iYs"
 };
-
-export function getLocalizedString(key: string) {
-    return LanguageModule?.intl.formatToPlainString(LanguageModule.t[key]);
-}
