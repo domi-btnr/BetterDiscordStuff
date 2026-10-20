@@ -16,7 +16,7 @@
 
 ## Previews
 
-![image](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/FriendCodes/images/image.png)
+![image](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/src/plugins/FriendCodes/images/image.png)
 
 ## 📥 Installation
 

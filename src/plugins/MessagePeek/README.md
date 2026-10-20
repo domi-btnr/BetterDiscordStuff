@@ -1,6 +1,6 @@
 <div align="center">
-    <h1>LateAttachments</h1>
-    <p>Allows you to add attachments to messages when editing them</p>
+    <h1>MessagePeek</h1>
+    <p>See the last message in a Channel like on mobile</p>
 </div>
 <div align="center">
     <a href="https://discord.gg/gp2ExK5vc7">
@@ -13,14 +13,14 @@
 
 ---
 
-## Previews
+## Preview
 
-![image](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/LateAttachments/assets/Preview.png)
-
-https://github.com/user-attachments/assets/056bc7ea-7036-47c7-b51a-80be31d2e52c
+| ![MessagePeek in DMs](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/refs/heads/development/src/plugins/MessagePeek/images/preview_dm.png) | ![MessagePeek in Guild Channel](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/refs/heads/development/src/plugins/MessagePeek/images/preview_guild.png) |
+| ------------------------------------------------ | ------------------------------------------------------------- |
+|                MessagePeek in DMs                |                  MessagePeek in Guild Channel                 |
 
 ## 📥 Installation
 
-1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/LateAttachments/LateAttachments.plugin.js)
+1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/MessagePeek/MessagePeek.plugin.js)
 2. Save or move the file into your plugins folder
 3. Enable the plugin in the settings

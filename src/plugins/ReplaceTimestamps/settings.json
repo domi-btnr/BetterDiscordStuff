@@ -1,5 +1,5 @@
 {
-    "$schema": "../common/Schemas/settings.schema.json",
+    "$schema": "../../common/Schemas/settings.schema.json",
     "items": [
         {
             "type": "dropdown",

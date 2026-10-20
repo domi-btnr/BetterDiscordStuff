@@ -1,6 +1,6 @@
 <div align="center">
-    <h1>UnsuppressEmbeds</h1>
-    <p>Allows you to unsuppress embeds in messages</p>
+    <h1>ReplaceTimestamps</h1>
+    <p>Replaces plaintext times and dates into Discord's timestamps</p>
 </div>
 <div align="center">
     <a href="https://discord.gg/gp2ExK5vc7">
@@ -14,10 +14,10 @@
 ---
 
 ## Preview
-![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/UnsuppressEmbeds/images/Preview.gif)
+![Preview](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/development/src/plugins/ReplaceTimestamps/images/Preview.png)
 
 ## 📥 Installation
 
-1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/UnsuppressEmbeds/UnsuppressEmbeds.plugin.js)
+1. Download the file from [here](https://raw.githubusercontent.com/domi-btnr/BetterDiscordStuff/main/ReplaceTimestamps/ReplaceTimestamps.plugin.js)
 2. Save or move the file into your plugins folder
 3. Enable the plugin in the settings
