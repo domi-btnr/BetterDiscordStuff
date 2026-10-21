@@ -25,12 +25,20 @@ const manifest = {
     "changelog": {
         "date": "2026-10-21",
         "changes": [{
-            "type": "fixed",
-            "title": "Fixed",
-            "items": [
-                "Fixed the FriendCodes panel not showing up after the latest Discord update"
-            ]
-        }]
+                "type": "fixed",
+                "title": "Fixed",
+                "items": [
+                    "Fixed the FriendCodes panel not showing up after the latest Discord update"
+                ]
+            },
+            {
+                "type": "improved",
+                "title": "Improved",
+                "items": [
+                    "Friend Codes are now cached, so the panel shows them instantly when you switch back to it"
+                ]
+            }
+        ]
     }
 };
 
@@ -40,6 +48,7 @@ const {
     Components,
     Data,
     DOM,
+    Hooks,
     Logger,
     Patcher,
     UI,
@@ -48,6 +57,14 @@ const {
 
 /* react */
 var React = BdApi.React;
+
+/* ../../common/Webpack/Dispatcher.ts */
+const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers", {
+    searchExports: true
+});
+
+/* ../../common/Webpack/Flux.ts */
+const Flux = Webpack.getByKeys("Store");
 
 /* ../../common/Webpack/lazy.ts */
 function lazyExport(getter) {
@@ -324,6 +341,36 @@ var revokeAllFriendCodes = {
 /* commands/index.js */
 const PluginCommands = [createFriendCode, revokeAllFriendCodes];
 
+/* modules/store.js */
+let invites = [];
+let loaded = false;
+const FriendInvitesStore = new class FriendInvitesStore2 extends Flux.Store {
+    constructor() {
+        super(Dispatcher, {
+            FRIEND_INVITES_FETCH_RESPONSE: ({
+                invites: fetched
+            }) => {
+                invites = fetched;
+                loaded = true;
+            },
+            FRIEND_INVITE_CREATE_SUCCESS: ({
+                invite
+            }) => {
+                invites = [...invites, invite];
+            },
+            FRIEND_INVITE_REVOKE_SUCCESS: () => {
+                invites = [];
+            }
+        });
+    }
+    getInvites() {
+        return invites;
+    }
+    hasLoaded() {
+        return loaded;
+    }
+}();
+
 /* components/copyButton.jsx */
 const {
     Button: Button$1
@@ -444,12 +491,16 @@ const {
 } = InviteModule;
 
 function FriendCodesPanel() {
-    const [invites, setInvites] = React.useState([]);
-    const [loading, setLoading] = React.useState(false);
+    const invites = Hooks.useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.getInvites());
+    const loading = Hooks.useStateFromStores([FriendInvitesStore], () => !FriendInvitesStore.hasLoaded());
+    const [pending, setPending] = React.useState(false);
     React.useEffect(() => {
-        setLoading(true);
-        getAllFriendInvites().then(setInvites).then(() => setLoading(false));
+        getAllFriendInvites();
     }, []);
+    const runRequest = (request) => {
+        setPending(true);
+        request().finally(() => setPending(false));
+    };
     return React.createElement("header", {
         className: FormStyles.header
     }, React.createElement(
@@ -473,7 +524,8 @@ function FriendCodesPanel() {
         Button, {
             color: Button.Colors.GREEN,
             look: Button.Looks.FILLED,
-            onClick: () => createFriendInvite().then((invite) => setInvites([...invites, invite]))
+            disabled: pending,
+            onClick: () => runRequest(createFriendInvite)
         },
         "Create Friend Code"
     ), React.createElement(
@@ -483,8 +535,8 @@ function FriendCodesPanel() {
             },
             color: Button.Colors.RED,
             look: Button.Looks.OUTLINED,
-            disabled: !invites.length,
-            onClick: () => revokeFriendInvites().then(setInvites([]))
+            disabled: pending || !invites.length,
+            onClick: () => runRequest(revokeFriendInvites)
         },
         "Revoke all Friend Codes"
     ))), React.createElement("div", {
