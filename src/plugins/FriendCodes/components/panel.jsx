@@ -1,7 +1,8 @@
-import { Components, Webpack } from "@api";
+import { Components, Hooks, Webpack } from "@api";
 import React from "react";
 
 import { InviteModule, TextVariantStyles } from "../modules/shared";
+import FriendInvitesStore from "../modules/store";
 import FriendCodeCard from "./codeCard";
 import styles from "./style.scss";
 
@@ -10,15 +11,18 @@ const FormStyles = Webpack.getModule(m => m.header && m.title && Object.keys(m).
 const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = InviteModule;
 
 export default function FriendCodesPanel() {
-    const [invites, setInvites] = React.useState([]);
-    const [loading, setLoading] = React.useState(false);
+    const invites = Hooks.useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.getInvites());
+    const loading = Hooks.useStateFromStores([FriendInvitesStore], () => !FriendInvitesStore.hasLoaded());
+    const [pending, setPending] = React.useState(false);
 
     React.useEffect(() => {
-        setLoading(true);
-        getAllFriendInvites()
-            .then(setInvites)
-            .then(() => setLoading(false));
+        getAllFriendInvites();
     }, []);
+
+    const runRequest = request => {
+        setPending(true);
+        request().finally(() => setPending(false));
+    };
 
     return (
         <header className={FormStyles.header}>
@@ -37,7 +41,8 @@ export default function FriendCodesPanel() {
                     <Button
                         color={Button.Colors.GREEN}
                         look={Button.Looks.FILLED}
-                        onClick={() => createFriendInvite().then(invite => setInvites([...invites, invite]))}
+                        disabled={pending}
+                        onClick={() => runRequest(createFriendInvite)}
                     >
                         Create Friend Code
                     </Button>
@@ -45,8 +50,8 @@ export default function FriendCodesPanel() {
                         style={{ marginLeft: "8px" }}
                         color={Button.Colors.RED}
                         look={Button.Looks.OUTLINED}
-                        disabled={!invites.length}
-                        onClick={() => revokeFriendInvites().then(setInvites([]))}
+                        disabled={pending || !invites.length}
+                        onClick={() => runRequest(revokeFriendInvites)}
                     >
                         Revoke all Friend Codes
                     </Button>

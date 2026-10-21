@@ -17,6 +17,13 @@
                 "items": [
                     "Fixed the FriendCodes panel not showing up after the latest Discord update"
                 ]
+            },
+            {
+                "type": "improved",
+                "title": "Improved",
+                "items": [
+                    "Friend Codes are now cached, so the panel shows them instantly when you switch back to it"
+                ]
             }
         ]
     }
