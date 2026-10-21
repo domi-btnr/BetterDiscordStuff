@@ -1,6 +1,6 @@
 /**
  * @name FriendCodes
- * @version 1.2.5
+ * @version 1.2.6
  * @description Generate FriendCodes to easily add friends
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -15,7 +15,7 @@
 const manifest = {
     "$schema": "../../common/Schemas/manifest.schema.json",
     "name": "FriendCodes",
-    "version": "1.2.5",
+    "version": "1.2.6",
     "description": "Generate FriendCodes to easily add friends",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -23,12 +23,12 @@ const manifest = {
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/FriendCodes",
     "changelog": {
-        "date": "2026-04-25",
+        "date": "2026-10-21",
         "changes": [{
             "type": "fixed",
             "title": "Fixed",
             "items": [
-                "Updated the Plugin to work with the latest Discord update"
+                "Fixed the FriendCodes panel not showing up after the latest Discord update"
             ]
         }]
     }
@@ -518,8 +518,10 @@ class FriendCodes {
         Styles.unload();
     }
     patchAddFriendsPanel() {
-        const PanelComponent = Webpack.getById(761508)?.V?.Panel;
-        Patcher.after(PanelComponent, "render", (_, [{
+        const TabBar = Webpack.getByKeys("Header", "Item", "Separator", "Panel", {
+            searchExports: true
+        });
+        Patcher.after(TabBar, "Panel", (_, [{
             children,
             id
         }]) => {
