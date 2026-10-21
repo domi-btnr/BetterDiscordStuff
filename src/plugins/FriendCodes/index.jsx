@@ -23,9 +23,9 @@ export default class FriendCodes {
     }
 
     patchAddFriendsPanel() {
-        const PanelComponent = Webpack.getById(761508)?.V?.Panel;
+        const TabBar = Webpack.getByKeys("Header", "Item", "Separator", "Panel", { searchExports: true });
 
-        Patcher.after(PanelComponent, "render", (_, [{ children, id }]) => {
+        Patcher.after(TabBar, "Panel", (_, [{ children, id }]) => {
             if (id !== "ADD_FRIEND") return;
             Patcher.after(children, "type", (_, __, res) => {
                 res.props.children.splice(
