@@ -9,48 +9,35 @@
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/ReplaceTimestamps
  */
 
-'use strict';
+"use strict";
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
+Object.defineProperty(exports, "__esModule", { value: true });
 
 /* @manifest */
 const manifest = {
-    "$schema": "../../common/Schemas/manifest.schema.json",
-    "name": "ReplaceTimestamps",
-    "version": "1.4.4",
-    "description": "Replaces plaintext times and dates into Discord's timestamps",
-    "author": "domi.btnr",
-    "authorId": "354191516979429376",
-    "invite": "gp2ExK5vc7",
-    "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/ReplaceTimestamps",
-    "changelog": {
-        "date": "2026-05-15",
-        "changes": [{
-            "type": "fixed",
-            "title": "Fixed Settings",
-            "items": [
-                "Settings open again"
-            ]
-        }]
+    $schema: "../../common/Schemas/manifest.schema.json",
+    name: "ReplaceTimestamps",
+    version: "1.4.4",
+    description: "Replaces plaintext times and dates into Discord's timestamps",
+    author: "domi.btnr",
+    authorId: "354191516979429376",
+    invite: "gp2ExK5vc7",
+    donate: "https://paypal.me/domibtnr",
+    source: "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/ReplaceTimestamps",
+    changelog: {
+        date: "2026-05-15",
+        changes: [
+            {
+                type: "fixed",
+                title: "Fixed Settings",
+                items: ["Settings open again"]
+            }
+        ]
     }
 };
 
 /* @api */
-const {
-    Components,
-    Data,
-    Hooks,
-    Logger,
-    Patcher,
-    UI,
-    Webpack
-} = new BdApi(manifest.name);
-
-/* react */
-var React = BdApi.React;
+const { Components, Data, Hooks, Logger, Patcher, UI, Webpack } = new BdApi(manifest.name);
 
 /* ../../common/Webpack/Dispatcher.ts */
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers", {
@@ -69,13 +56,9 @@ function getLocale() {
 }
 
 /* ../../common/Changelog/footer.tsx */
-const {
-    Text
-} = Components;
+const { Text } = Components;
 
-function Footer({
-    manifest
-}) {
+function Footer({ manifest }) {
     if (!manifest.invite && !manifest.source) return null;
     let issuesUrl;
     if (manifest.source) {
@@ -84,31 +67,44 @@ function Footer({
         url.pathname = `/${owner}/${repo}/issues`;
         issuesUrl = url.toString();
     }
-    return React.createElement(Text, null, "Need support?", " ", manifest.invite && React.createElement(React.Fragment, null, "Join the", " ", React.createElement("a", {
-        onClick: () => UI.showInviteModal(manifest.invite),
-        style: {
-            textDecoration: "underline"
-        }
-    }, "Discord Server"), manifest.source && " or "), manifest.source && React.createElement(React.Fragment, null, "Check for Issues on", " ", React.createElement("a", {
-        href: issuesUrl,
-        target: "_blank",
-        rel: "noreferrer",
-        style: {
-            textDecoration: "underline"
-        }
-    }, "GitHub")));
+    return BdApi.React.createElement(
+        Text,
+        null,
+        "Need support?",
+        " ",
+        manifest.invite
+            && BdApi.React.createElement(
+                BdApi.React.Fragment,
+                null,
+                "Join the",
+                " ",
+                BdApi.React.createElement(
+                    "a",
+                    { onClick: () => UI.showInviteModal(manifest.invite), style: { textDecoration: "underline" } },
+                    "Discord Server"
+                ),
+                manifest.source && " or "
+            ),
+        manifest.source
+            && BdApi.React.createElement(
+                BdApi.React.Fragment,
+                null,
+                "Check for Issues on",
+                " ",
+                BdApi.React.createElement(
+                    "a",
+                    { href: issuesUrl, target: "_blank", rel: "noreferrer", style: { textDecoration: "underline" } },
+                    "GitHub"
+                )
+            )
+    );
 }
 
 /* ../../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
     if (!manifest.changelog) return;
-    const {
-        date,
-        title,
-        subtitle,
-        ...changelog
-    } = manifest.changelog;
+    const { date, title, subtitle, ...changelog } = manifest.changelog;
     if (!changelog.changes?.length && !changelog.blurb && !changelog.video && !changelog.banner) return;
     const formatter = new Intl.DateTimeFormat(getLocale(), {
         month: "long",
@@ -119,57 +115,71 @@ function showChangelog(manifest) {
         title: title ?? `What's New - ${manifest.name}`,
         subtitle: subtitle ?? `${date ? formatter.format(new Date(date)) + " - " : ""}v${manifest.version}`,
         ...changelog,
-        footer: React.createElement(Footer, {
-            manifest
-        })
+        footer: BdApi.React.createElement(Footer, { manifest })
     });
     Data.save("lastVersion", manifest.version);
 }
 
 /* ../../common/ErrorBoundary/index.tsx */
-const ErrorIcon = (props) => React.createElement("svg", {
-    xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 24 24",
-    fill: "#ddd",
-    width: "24",
-    height: "24",
-    ...props
-}, React.createElement("path", {
-    d: "M0 0h24v24H0z",
-    fill: "none"
-}), React.createElement("path", {
-    d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
-}));
-class ErrorBoundary extends React.Component {
-    state = {
-        hasError: false,
-        error: null,
-        info: null
-    };
+const ErrorIcon = props =>
+    BdApi.React.createElement(
+        "svg",
+        {
+            xmlns: "http://www.w3.org/2000/svg",
+            viewBox: "0 0 24 24",
+            fill: "#ddd",
+            width: "24",
+            height: "24",
+            ...props
+        },
+        BdApi.React.createElement("path", { d: "M0 0h24v24H0z", fill: "none" }),
+        BdApi.React.createElement("path", {
+            d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+        })
+    );
+
+class ErrorBoundary extends BdApi.React.Component {
+    state = { hasError: false, error: null, info: null };
     componentDidCatch(error, info) {
-        this.setState({
-            error,
-            info,
-            hasError: true
-        });
-        Logger.error(`[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
-`, error);
+        this.setState({ error, info, hasError: true });
+        Logger.error(
+            `[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
+`,
+            error
+        );
     }
     render() {
         if (this.state.hasError) {
-            return this.props.mini ? React.createElement(ErrorIcon, {
-                fill: "#f04747"
-            }) : React.createElement("div", {
-                className: "errorBoundary"
-            }, React.createElement("div", {
-                className: "errorText"
-            }, React.createElement("span", null, "An error has occured while rendering ", this.props.id, "."), React.createElement("span", null, "Open console (", React.createElement("code", null, "CTRL + SHIFT + i / CMD + SHIFT + i"), ') - Select the "Console" tab and screenshot the big red error.')));
+            return this.props.mini
+                ? BdApi.React.createElement(ErrorIcon, { fill: "#f04747" })
+                : BdApi.React.createElement(
+                      "div",
+                      { className: "errorBoundary" },
+                      BdApi.React.createElement(
+                          "div",
+                          { className: "errorText" },
+                          BdApi.React.createElement(
+                              "span",
+                              null,
+                              "An error has occured while rendering ",
+                              this.props.id,
+                              "."
+                          ),
+                          BdApi.React.createElement(
+                              "span",
+                              null,
+                              "Open console (",
+                              BdApi.React.createElement("code", null, "CTRL + SHIFT + i / CMD + SHIFT + i"),
+                              ') - Select the "Console" tab and screenshot the big red error.'
+                          )
+                      )
+                  );
         } else return this.props.children;
     }
 }
 
 /* ../../common/Settings/store.ts */
-const Settings = new class Settings2 extends Flux.Store {
+const Settings = new (class Settings2 extends Flux.Store {
     constructor() {
         super(Dispatcher, {});
     }
@@ -182,12 +192,13 @@ const Settings = new class Settings2 extends Flux.Store {
         Data.save("SETTINGS", this._settings);
         this.emitChange();
     }
-}();
+})();
 
 /* ../../common/Settings/items/shared.tsx */
 function BetaTag() {
-    return React.createElement(
-        "span", {
+    return BdApi.React.createElement(
+        "span",
+        {
             style: {
                 display: "inline-flex",
                 alignItems: "center",
@@ -207,11 +218,10 @@ function BetaTag() {
     );
 }
 
-function Warning({
-    children
-}) {
-    return React.createElement(
-        "div", {
+function Warning({ children }) {
+    return BdApi.React.createElement(
+        "div",
+        {
             style: {
                 marginTop: 8,
                 padding: "6px 10px",
@@ -227,152 +237,109 @@ function Warning({
     );
 }
 
-function getItemLabels({
-    name,
-    note,
-    isBeta,
-    warning
-}) {
+function getItemLabels({ name, note, isBeta, warning }) {
     return {
-        name: isBeta ? React.createElement(React.Fragment, null, name, React.createElement(BetaTag, null)) : name,
-        note: warning ? React.createElement(React.Fragment, null, note, React.createElement(Warning, null, warning)) : note
+        name: isBeta
+            ? BdApi.React.createElement(BdApi.React.Fragment, null, name, BdApi.React.createElement(BetaTag, null))
+            : name,
+        note: warning
+            ? BdApi.React.createElement(
+                  BdApi.React.Fragment,
+                  null,
+                  note,
+                  BdApi.React.createElement(Warning, null, warning)
+              )
+            : note
     };
 }
 
 /* ../../common/Settings/items/dropdown.tsx */
-const {
-    SettingItem: SettingItem$2
-} = Components;
+const { SettingItem: SettingItem$2 } = Components;
+
 const Select = Webpack.getByStrings('selectionMode:"single",onSelectionChange:', "clear:()=>", {
     searchExports: true
 });
 
-function DropdownItem({
-    isBeta,
-    warning,
-    ...props
-}) {
+function DropdownItem({ isBeta, warning, ...props }) {
     const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    const options = props.options.map(
-        (option) => typeof option === "string" ? {
-            label: option,
-            value: option
-        } : option
+    const options = props.options.map(option =>
+        typeof option === "string" ? { label: option, value: option } : option
     );
-    return React.createElement(ErrorBoundary, {
-        id: props.id
-    }, React.createElement(SettingItem$2, {
-        ...props,
-        ...getItemLabels({
-            ...props,
-            isBeta,
-            warning
-        }),
-        inline: true
-    }, React.createElement("div", {
-        style: {
-            width: 200,
-            flexShrink: 0
-        }
-    }, React.createElement(
-        Select, {
-            closeOnSelect: true,
-            options,
-            value,
-            onChange: (v) => Settings.set(props.id, v),
-            renderOptionLabel: (option) => option.label
-        }
-    ))));
+    return BdApi.React.createElement(
+        ErrorBoundary,
+        { id: props.id },
+        BdApi.React.createElement(
+            SettingItem$2,
+            { ...props, ...getItemLabels({ ...props, isBeta, warning }), inline: true },
+            BdApi.React.createElement(
+                "div",
+                { style: { width: 200, flexShrink: 0 } },
+                BdApi.React.createElement(Select, {
+                    closeOnSelect: true,
+                    options,
+                    value,
+                    onChange: v => Settings.set(props.id, v),
+                    renderOptionLabel: option => option.label
+                })
+            )
+        )
+    );
 }
 
 /* ../../common/Settings/items/slider.tsx */
-const {
-    SettingItem: SettingItem$1
-} = Components;
-const Slider = Webpack.getByStrings("stickToMarkers", "moveStaggered", {
-    searchExports: true
-});
+const { SettingItem: SettingItem$1 } = Components;
+const Slider = Webpack.getByStrings("stickToMarkers", "moveStaggered", { searchExports: true });
 
-function SliderItem({
-    isBeta,
-    warning,
-    ...props
-}) {
-    const value = Hooks.useStateFromStores(
-        [Settings],
-        () => Settings.get(props.id, props.value ?? props.defaultValue)
+function SliderItem({ isBeta, warning, ...props }) {
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value ?? props.defaultValue));
+    return BdApi.React.createElement(
+        ErrorBoundary,
+        { id: props.id },
+        BdApi.React.createElement(
+            SettingItem$1,
+            { ...props, ...getItemLabels({ ...props, isBeta, warning }) },
+            BdApi.React.createElement(Slider, {
+                ...props,
+                handleSize: 10,
+                initialValue: value,
+                defaultValue: props.defaultValue,
+                minValue: props.minValue,
+                maxValue: props.maxValue,
+                onValueChange: value2 => Settings.set(props.id, Math.round(value2)),
+                onValueRender: value2 => Math.round(value2)
+            })
+        )
     );
-    return React.createElement(ErrorBoundary, {
-        id: props.id
-    }, React.createElement(SettingItem$1, {
-        ...props,
-        ...getItemLabels({
-            ...props,
-            isBeta,
-            warning
-        })
-    }, React.createElement(
-        Slider, {
-            ...props,
-            handleSize: 10,
-            initialValue: value,
-            defaultValue: props.defaultValue,
-            minValue: props.minValue,
-            maxValue: props.maxValue,
-            onValueChange: (value2) => Settings.set(props.id, Math.round(value2)),
-            onValueRender: (value2) => Math.round(value2)
-        }
-    )));
 }
 
 /* ../../common/Settings/items/switch.tsx */
-const {
-    SettingItem,
-    SwitchInput
-} = Components;
+const { SettingItem, SwitchInput } = Components;
 
-function SwitchItem({
-    isBeta = false,
-    disabled = false,
-    warning,
-    ...props
-}) {
+function SwitchItem({ isBeta = false, disabled = false, warning, ...props }) {
     const stored = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     const value = disabled ? false : stored;
-    return React.createElement(ErrorBoundary, {
-        id: props.id
-    }, React.createElement(SettingItem, {
-        ...props,
-        ...getItemLabels({
-            ...props,
-            isBeta,
-            warning
-        }),
-        inline: true
-    }, React.createElement(SwitchInput, {
-        value,
-        disabled,
-        onChange: (v) => Settings.set(props.id, v)
-    })));
+    return BdApi.React.createElement(
+        ErrorBoundary,
+        { id: props.id },
+        BdApi.React.createElement(
+            SettingItem,
+            { ...props, ...getItemLabels({ ...props, isBeta, warning }), inline: true },
+            BdApi.React.createElement(SwitchInput, { value, disabled, onChange: v => Settings.set(props.id, v) })
+        )
+    );
 }
 
 /* ../../common/Settings/panel.tsx */
-function SettingsPanel({
-    items,
-    components: customComponents
-}) {
+function SettingsPanel({ items, components: customComponents }) {
     const ComponentMap = {
         dropdown: DropdownItem,
         switch: SwitchItem,
         slider: SliderItem,
         ...customComponents
     };
-    return items.map((item) => {
+    return items.map(item => {
         const Component = ComponentMap[item.type];
-        return Component ? React.createElement(Component, {
-            key: item.id,
-            ...item
-        }) : null;
+        return Component ? BdApi.React.createElement(Component, { key: item.id, ...item }) : null;
     });
 }
 
@@ -396,11 +363,11 @@ const getUnixTimestamp = (str, format) => {
     }
     let time = date;
     if (timeMatch) {
-        let [hours, minutes] = timeMatch[1].split(":").map((e) => parseInt(e));
+        let [hours, minutes] = timeMatch[1].split(":").map(e => parseInt(e));
         if (timeMatch[2] && timeMatch[2].toLowerCase() === "pm" && hours < 12 && hours !== 0) {
             hours += 12;
             minutes = minutes.toString().padStart(2, "0");
-        } else if (timeMatch[2] && timeMatch[2].toLowerCase() === "am" && hours === 12 || hours === 24) {
+        } else if ((timeMatch[2] && timeMatch[2].toLowerCase() === "am" && hours === 12) || hours === 24) {
             hours = 0;
         } else if (minutes >= 60) {
             hours += Math.floor(minutes / 60);
@@ -414,7 +381,8 @@ const getUnixTimestamp = (str, format) => {
     if (isNaN(then)) return str;
     return `<t:${then}${format ? `:${format}` : ""}>`;
 };
-const getRelativeTime = (str) => {
+
+const getRelativeTime = str => {
     const timeMatch = str.match(exports.relativeRegexMatch);
     if (!timeMatch) return str;
     const now = new Date();
@@ -462,12 +430,14 @@ const getRelativeTime = (str) => {
 };
 
 /* settings.json */
-var items = [{
+const items = [
+    {
         type: "dropdown",
         name: "Date Format",
         note: "Select the date format for converting dates to timestamps",
         id: "dateFormat",
-        options: [{
+        options: [
+            {
                 label: "dd.MM.yyyy",
                 value: "dd.MM.yyyy"
             },
@@ -502,7 +472,8 @@ var items = [{
         value: true
     }
 ];
-var SettingsItems = {
+
+const SettingsItems = {
     items: items
 };
 
@@ -510,6 +481,7 @@ var SettingsItems = {
 exports.timeRegexMatch = void 0;
 exports.dateRegexMatch = void 0;
 exports.relativeRegexMatch = void 0;
+
 class ReplaceTimestamps {
     start() {
         showChangelog(manifest);
@@ -521,14 +493,24 @@ class ReplaceTimestamps {
     patchMessageActions() {
         const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
         exports.timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
-        const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy").replace(/[./]/g, "[./]").replace("dd", "(\\d{2})").replace("MM", "(\\d{2})").replace("yyyy", "(\\d{4})");
+        const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy")
+            .replace(/[./]/g, "[./]")
+            .replace("dd", "(\\d{2})")
+            .replace("MM", "(\\d{2})")
+            .replace("yyyy", "(\\d{4})");
         const dateRegex = new RegExp(`${dateFormat}`, "gi");
         exports.dateRegexMatch = new RegExp(`${dateFormat}`, "i");
         const TimeDateRegex = new RegExp(`(${timeRegex.source})\\s+${dateRegex.source}`, "gi");
         const DateRegexTime = new RegExp(`${dateRegex.source}\\s+(${timeRegex.source})`, "gi");
         const relativeRegex = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/gi;
         exports.relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
-        const processMessageContent = (content) => content.replace(TimeDateRegex, (x) => getUnixTimestamp(x)).replace(DateRegexTime, (x) => getUnixTimestamp(x)).replace(timeRegex, (x) => getUnixTimestamp(x, "t")).replace(dateRegex, (x) => getUnixTimestamp(x, "d")).replace(relativeRegex, getRelativeTime);
+        const processMessageContent = content =>
+            content
+                .replace(TimeDateRegex, x => getUnixTimestamp(x))
+                .replace(DateRegexTime, x => getUnixTimestamp(x))
+                .replace(timeRegex, x => getUnixTimestamp(x, "t"))
+                .replace(dateRegex, x => getUnixTimestamp(x, "d"))
+                .replace(relativeRegex, getRelativeTime);
         Patcher.before(MessageActions, "sendMessage", (_, [, msg]) => {
             msg.content = processMessageContent(msg.content);
         });
@@ -538,9 +520,7 @@ class ReplaceTimestamps {
         });
     }
     getSettingsPanel() {
-        return React.createElement(SettingsPanel, {
-            items: SettingsItems.items
-        });
+        return BdApi.React.createElement(SettingsPanel, { items: SettingsItems.items });
     }
 }
 

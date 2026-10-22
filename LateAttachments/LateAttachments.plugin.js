@@ -10,48 +10,39 @@
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/LateAttachments
  */
 
-'use strict';
+"use strict";
 
 /* @manifest */
 const manifest = {
-    "$schema": "../../common/Schemas/manifest.schema.json",
-    "runAt": "idle",
-    "name": "LateAttachments",
-    "version": "1.0.0",
-    "description": "Allows you to add attachments to messages when editing them",
-    "author": "domi.btnr",
-    "authorId": "354191516979429376",
-    "invite": "gp2ExK5vc7",
-    "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/LateAttachments",
-    "changelog": {
-        "date": "2026-09-22",
-        "changes": [{
-            "type": "added",
-            "title": "Added",
-            "items": [
-                "Add new attachments to a message while editing it, right from the edit textbox",
-                "Paste files directly into the edit textbox to attach them",
-                "Mark attachments as spoilers before saving",
-                "Live upload progress while saving"
-            ]
-        }]
+    $schema: "../../common/Schemas/manifest.schema.json",
+    runAt: "idle",
+    name: "LateAttachments",
+    version: "1.0.0",
+    description: "Allows you to add attachments to messages when editing them",
+    author: "domi.btnr",
+    authorId: "354191516979429376",
+    invite: "gp2ExK5vc7",
+    donate: "https://paypal.me/domibtnr",
+    source: "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/LateAttachments",
+    changelog: {
+        date: "2026-09-22",
+        changes: [
+            {
+                type: "added",
+                title: "Added",
+                items: [
+                    "Add new attachments to a message while editing it, right from the edit textbox",
+                    "Paste files directly into the edit textbox to attach them",
+                    "Mark attachments as spoilers before saving",
+                    "Live upload progress while saving"
+                ]
+            }
+        ]
     }
 };
 
 /* @api */
-const {
-    Components,
-    Data,
-    DOM,
-    Logger,
-    Patcher,
-    UI,
-    Webpack
-} = new BdApi(manifest.name);
-
-/* react */
-var React = BdApi.React;
+const { Components, Data, DOM, Logger, Patcher, UI, Webpack } = new BdApi(manifest.name);
 
 /* ../../common/Webpack/lazy.ts */
 function lazyExport(getter) {
@@ -64,42 +55,40 @@ function lazyExport(getter) {
         }
         return cached;
     };
-    return new Proxy({}, {
-        get: (_, key) => resolve()?.[key],
-        set: (_, key, value) => {
-            const target = resolve();
-            if (!target) return false;
-            target[key] = value;
-            return true;
-        },
-        defineProperty: (_, key, descriptor) => {
-            const target = resolve();
-            return !!target && Reflect.defineProperty(target, key, descriptor);
-        },
-        deleteProperty: (_, key) => {
-            const target = resolve();
-            return !!target && Reflect.deleteProperty(target, key);
-        },
-        has: (_, key) => key in (resolve() ?? {}),
-        ownKeys: () => Reflect.ownKeys(resolve() ?? {}),
-        getOwnPropertyDescriptor: (_, key) => {
-            const descriptor = Reflect.getOwnPropertyDescriptor(resolve() ?? {}, key);
-            return descriptor && {
-                ...descriptor,
-                configurable: true
-            };
+    return new Proxy(
+        {},
+        {
+            get: (_, key) => resolve()?.[key],
+            set: (_, key, value) => {
+                const target = resolve();
+                if (!target) return false;
+                target[key] = value;
+                return true;
+            },
+            defineProperty: (_, key, descriptor) => {
+                const target = resolve();
+                return !!target && Reflect.defineProperty(target, key, descriptor);
+            },
+            deleteProperty: (_, key) => {
+                const target = resolve();
+                return !!target && Reflect.deleteProperty(target, key);
+            },
+            has: (_, key) => key in (resolve() ?? {}),
+            ownKeys: () => Reflect.ownKeys(resolve() ?? {}),
+            getOwnPropertyDescriptor: (_, key) => {
+                const descriptor = Reflect.getOwnPropertyDescriptor(resolve() ?? {}, key);
+                return descriptor && { ...descriptor, configurable: true };
+            }
         }
-    });
+    );
 }
 
 /* ../../common/Webpack/I18nModule.ts */
-const I18nModule = lazyExport(() => Webpack.getModule((m) => m.intl));
+const I18nModule = lazyExport(() => Webpack.getModule(m => m.intl));
 
 /* ../../common/Webpack/RestAPI.ts */
-const RestAPI = lazyExport(
-    () => Webpack.getModule((m) => typeof m === "object" && m.del && m.put, {
-        searchExports: true
-    })
+const RestAPI = lazyExport(() =>
+    Webpack.getModule(m => typeof m === "object" && m.del && m.put, { searchExports: true })
 );
 
 /* ../../common/i18n/index.ts */
@@ -113,13 +102,9 @@ function getLocale() {
 }
 
 /* ../../common/Changelog/footer.tsx */
-const {
-    Text
-} = Components;
+const { Text } = Components;
 
-function Footer({
-    manifest
-}) {
+function Footer({ manifest }) {
     if (!manifest.invite && !manifest.source) return null;
     let issuesUrl;
     if (manifest.source) {
@@ -128,31 +113,44 @@ function Footer({
         url.pathname = `/${owner}/${repo}/issues`;
         issuesUrl = url.toString();
     }
-    return React.createElement(Text, null, "Need support?", " ", manifest.invite && React.createElement(React.Fragment, null, "Join the", " ", React.createElement("a", {
-        onClick: () => UI.showInviteModal(manifest.invite),
-        style: {
-            textDecoration: "underline"
-        }
-    }, "Discord Server"), manifest.source && " or "), manifest.source && React.createElement(React.Fragment, null, "Check for Issues on", " ", React.createElement("a", {
-        href: issuesUrl,
-        target: "_blank",
-        rel: "noreferrer",
-        style: {
-            textDecoration: "underline"
-        }
-    }, "GitHub")));
+    return BdApi.React.createElement(
+        Text,
+        null,
+        "Need support?",
+        " ",
+        manifest.invite
+            && BdApi.React.createElement(
+                BdApi.React.Fragment,
+                null,
+                "Join the",
+                " ",
+                BdApi.React.createElement(
+                    "a",
+                    { onClick: () => UI.showInviteModal(manifest.invite), style: { textDecoration: "underline" } },
+                    "Discord Server"
+                ),
+                manifest.source && " or "
+            ),
+        manifest.source
+            && BdApi.React.createElement(
+                BdApi.React.Fragment,
+                null,
+                "Check for Issues on",
+                " ",
+                BdApi.React.createElement(
+                    "a",
+                    { href: issuesUrl, target: "_blank", rel: "noreferrer", style: { textDecoration: "underline" } },
+                    "GitHub"
+                )
+            )
+    );
 }
 
 /* ../../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
     if (!manifest.changelog) return;
-    const {
-        date,
-        title,
-        subtitle,
-        ...changelog
-    } = manifest.changelog;
+    const { date, title, subtitle, ...changelog } = manifest.changelog;
     if (!changelog.changes?.length && !changelog.blurb && !changelog.video && !changelog.banner) return;
     const formatter = new Intl.DateTimeFormat(getLocale(), {
         month: "long",
@@ -163,19 +161,15 @@ function showChangelog(manifest) {
         title: title ?? `What's New - ${manifest.name}`,
         subtitle: subtitle ?? `${date ? formatter.format(new Date(date)) + " - " : ""}v${manifest.version}`,
         ...changelog,
-        footer: React.createElement(Footer, {
-            manifest
-        })
+        footer: BdApi.React.createElement(Footer, { manifest })
     });
     Data.save("lastVersion", manifest.version);
 }
 
 /* @styles */
-
-
 const STYLE_ID = manifest.name + "-popout-styles";
 
-var Styles = {
+const Styles = {
     sheets: [],
     _element: null,
     _listener: null,
@@ -193,9 +187,7 @@ var Styles = {
         const css = this.sheets.join("\n");
         this._forEachPopout(doc => {
             if (doc.getElementById(STYLE_ID)) return;
-            doc.head.append(DOM.createElement("style", {
-                id: STYLE_ID
-            }, css));
+            doc.head.append(DOM.createElement("style", { id: STYLE_ID }, css));
         });
     },
     load() {
@@ -227,6 +219,7 @@ function subscribeUploads(listener) {
     UploadAttachmentStore.addChangeListener(listener);
     return () => UploadAttachmentStore.removeChangeListener(listener);
 }
+
 const Strings = {
     CHAT_ATTACH_UPLOAD_A_FILE: "d3+iYs"
 };
@@ -245,7 +238,7 @@ function subscribeSubmitting(listener) {
 }
 
 function notifySubmittingListeners() {
-    submittingListeners.forEach((listener) => listener());
+    submittingListeners.forEach(listener => listener());
 }
 
 function setSubmitting(channelId, submitting) {
@@ -263,9 +256,7 @@ const MessageStore = Webpack.getStore("MessageStore");
 function addFiles(channelId, existingAttachmentCount, files) {
     const remaining = MAX_ATTACHMENTS - existingAttachmentCount - getPendingUploads(channelId).length;
     if (remaining <= 0) {
-        UI.showToast("You cannot add more attachments to this message.", {
-            type: "error"
-        });
+        UI.showToast("You cannot add more attachments to this message.", { type: "error" });
         return;
     }
     if (files.length > remaining) {
@@ -274,14 +265,7 @@ function addFiles(channelId, existingAttachmentCount, files) {
         });
     }
     for (const file of files.slice(0, remaining)) {
-        FileUtils.addFile({
-            channelId,
-            draftType: EDIT_DRAFT_TYPE,
-            file: {
-                platform: PLATFORM_WEB,
-                file
-            }
-        });
+        FileUtils.addFile({ channelId, draftType: EDIT_DRAFT_TYPE, file: { platform: PLATFORM_WEB, file } });
     }
 }
 
@@ -298,22 +282,19 @@ function activateUploadDialogue(channelId, existingAttachmentCount) {
 }
 
 function clearPendingUploads(channelId, uploads) {
-    uploads.forEach((upload) => FileUtils.remove(channelId, upload.id, EDIT_DRAFT_TYPE));
+    uploads.forEach(upload => FileUtils.remove(channelId, upload.id, EDIT_DRAFT_TYPE));
 }
+
 async function commitPendingUploads(channelId, messageId, content, uploads) {
     if (isSubmitting(channelId)) return false;
     setSubmitting(channelId, true);
     try {
-        await submitEditWithAttachments(channelId, messageId, {
-            content
-        }, uploads);
+        await submitEditWithAttachments(channelId, messageId, { content }, uploads);
         clearPendingUploads(channelId, uploads);
         return true;
     } catch (error) {
         Logger.error("Failed to add attachments to message", error);
-        UI.showToast("Failed to add attachments to the message.", {
-            type: "error"
-        });
+        UI.showToast("Failed to add attachments to the message.", { type: "error" });
         return false;
     } finally {
         setSubmitting(channelId, false);
@@ -324,7 +305,7 @@ function putFile(url, file, onProgress) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open("PUT", url);
-        xhr.upload.onprogress = (event) => {
+        xhr.upload.onprogress = event => {
             if (event.lengthComputable) onProgress(event.loaded);
         };
         xhr.onload = () => {
@@ -335,13 +316,12 @@ function putFile(url, file, onProgress) {
         xhr.send(file);
     });
 }
+
 async function submitEditWithAttachments(channelId, messageId, payload, uploads) {
-    const files = uploads.map((upload) => upload.item.file);
-    const filenames = uploads.map((upload, i) => upload.spoiler ? `SPOILER_${files[i].name}` : files[i].name);
+    const files = uploads.map(upload => upload.item.file);
+    const filenames = uploads.map((upload, i) => (upload.spoiler ? `SPOILER_${files[i].name}` : files[i].name));
     const {
-        body: {
-            attachments
-        }
+        body: { attachments }
     } = await RestAPI.post({
         url: `/channels/${channelId}/attachments`,
         body: {
@@ -357,9 +337,9 @@ async function submitEditWithAttachments(channelId, messageId, payload, uploads)
         attachments.map((attachment, i) => {
             const file = files[i];
             const upload = uploads[i];
-            return putFile(attachment.upload_url, file, (loaded) => {
+            return putFile(attachment.upload_url, file, loaded => {
                 upload.currentSize = loaded;
-                upload.progress = Math.round(loaded / file.size * 100);
+                upload.progress = Math.round((loaded / file.size) * 100);
                 notifySubmittingListeners();
             }).then(() => ({
                 id: attachment.id,
@@ -380,51 +360,51 @@ async function submitEditWithAttachments(channelId, messageId, payload, uploads)
 
 /* components/AddAttachmentButton.tsx */
 const PlusLargeIcon = Webpack.getByKeys("PlusLargeIcon").PlusLargeIcon;
+
 const styles = {
     ...Webpack.getByKeys("attachButtonInner"),
     ...Webpack.getByKeys("buttonWrapper", "notificationDot")
 };
 
-function AddAttachmentButton({
-    channelId,
-    existingAttachmentCount
-}) {
-    return React.createElement(Components.Tooltip, {
-        text: getLocalizedString(Strings.CHAT_ATTACH_UPLOAD_A_FILE)
-    }, (props) => React.createElement(
-        "div", {
-            ...props,
-            className: [styles.attachButton, styles.button].join(" "),
-            onClick: () => activateUploadDialogue(channelId, existingAttachmentCount)
-        },
-        React.createElement(
-            "div", {
-                className: [styles.buttonWrapper, styles.attachButtonInner].join(" "),
-                style: {
-                    height: "auto"
-                }
-            },
-            React.createElement(PlusLargeIcon, null)
-        )
-    ));
+function AddAttachmentButton({ channelId, existingAttachmentCount }) {
+    return BdApi.React.createElement(
+        Components.Tooltip,
+        { text: getLocalizedString(Strings.CHAT_ATTACH_UPLOAD_A_FILE) },
+        props =>
+            BdApi.React.createElement(
+                "div",
+                {
+                    ...props,
+                    className: [styles.attachButton, styles.button].join(" "),
+                    onClick: () => activateUploadDialogue(channelId, existingAttachmentCount)
+                },
+                BdApi.React.createElement(
+                    "div",
+                    {
+                        className: [styles.buttonWrapper, styles.attachButtonInner].join(" "),
+                        style: { height: "auto" }
+                    },
+                    BdApi.React.createElement(PlusLargeIcon, null)
+                )
+            )
+    );
 }
 
 /* components/EditAttachmentsBar.scss */
-Styles.sheets.push("/* components/EditAttachmentsBar.scss */", `[class^=messageListItem] ul[class^=channelAttachmentArea_] {
+Styles.sheets.push(
+    "/* components/EditAttachmentsBar.scss */",
+    `[class^=messageListItem] ul[class^=channelAttachmentArea_] {
   gap: 12px;
 }
 [class^=messageListItem] [class*=attachmentItemSmall__] {
   max-height: 200px;
   max-width: 200px;
   padding: 8px;
-}`);
+}`
+);
 
 /* components/EditAttachmentsBar.tsx */
-const ATTACHMENT_AREA_TYPE = {
-    drafts: {
-        type: EDIT_DRAFT_TYPE
-    }
-};
+const ATTACHMENT_AREA_TYPE = { drafts: { type: EDIT_DRAFT_TYPE } };
 const AttachmentArea = Webpack.getBySource("ignoreUploadId", ".ATTACHMENT", "smallAttachments")?.A;
 const UploadProgress = Webpack.getBySource(".filesize", ".progress")?.e;
 
@@ -432,24 +412,20 @@ function combineUploads(uploads) {
     const totalSize = uploads.reduce((sum, upload) => sum + (upload.item?.file?.size ?? 0), 0);
     const uploadedSize = uploads.reduce((sum, upload) => sum + (upload.currentSize ?? 0), 0);
     return {
-        id: uploads.map((upload) => upload.id).join(","),
-        items: uploads.map((upload) => ({
-            filename: upload.filename
-        })),
-        progress: totalSize > 0 ? Math.round(uploadedSize / totalSize * 100) : 0,
+        id: uploads.map(upload => upload.id).join(","),
+        items: uploads.map(upload => ({ filename: upload.filename })),
+        progress: totalSize > 0 ? Math.round((uploadedSize / totalSize) * 100) : 0,
         currentSize: uploadedSize
     };
 }
 
-function EditAttachmentsBar({
-    channelId
-}) {
-    const uploads = React.useSyncExternalStore(subscribeUploads, () => getPendingUploads(channelId));
-    const submitting = React.useSyncExternalStore(subscribeSubmitting, () => isSubmitting(channelId));
+function EditAttachmentsBar({ channelId }) {
+    const uploads = BdApi.React.useSyncExternalStore(subscribeUploads, () => getPendingUploads(channelId));
+    const submitting = BdApi.React.useSyncExternalStore(subscribeSubmitting, () => isSubmitting(channelId));
     if (!uploads.length) return null;
     if (!submitting) {
         if (!AttachmentArea) return null;
-        return React.createElement(AttachmentArea, {
+        return BdApi.React.createElement(AttachmentArea, {
             channelId,
             type: ATTACHMENT_AREA_TYPE,
             canAttachFiles: true,
@@ -458,10 +434,7 @@ function EditAttachmentsBar({
     }
     if (!UploadProgress) return null;
     const file = uploads.length > 1 ? combineUploads(uploads) : uploads[0];
-    return React.createElement(UploadProgress, {
-        channelId,
-        file
-    });
+    return BdApi.React.createElement(UploadProgress, { channelId, file });
 }
 
 /* modules/utils.ts */
@@ -470,7 +443,11 @@ const MESSAGE_TYPE_REPLY = 19;
 const VOICE_MESSAGE_FLAG = 1 << 13;
 
 function canAddAttachments(msg) {
-    return [MESSAGE_TYPE_DEFAULT, MESSAGE_TYPE_REPLY].includes(msg.type) && !msg.hasFlag(VOICE_MESSAGE_FLAG) && msg.attachments.length < 10;
+    return (
+        [MESSAGE_TYPE_DEFAULT, MESSAGE_TYPE_REPLY].includes(msg.type)
+        && !msg.hasFlag(VOICE_MESSAGE_FLAG)
+        && msg.attachments.length < 10
+    );
 }
 
 /* modules/paste.ts */
@@ -494,29 +471,27 @@ class LateAttachments {
         Styles.load();
         this.patchChannelTextArea();
         this.patchEditForm();
-        document.addEventListener("paste", handlePaste, {
-            capture: true
-        });
+        document.addEventListener("paste", handlePaste, { capture: true });
     }
     stop() {
         Patcher.unpatchAll();
         Styles.unload();
-        document.removeEventListener("paste", handlePaste, {
-            capture: true
-        });
+        document.removeEventListener("paste", handlePaste, { capture: true });
     }
     patchChannelTextArea() {
         const ChatButtonsGroup2 = Webpack.getBySource("isSubmitButtonEnabled", ".A.getActiveOption(")?.A;
         Patcher.after(ChatButtonsGroup2, "type", (_, methodArgs, res) => {
-            const [{
-                channel,
-                disabled,
-                type
-            }] = methodArgs;
+            const [{ channel, disabled, type }] = methodArgs;
             const message = EditMessageStore.getEditingMessage(channel.id);
-            if (!disabled && type.analyticsName === "edit" && message && canAddAttachments(message) && Array.isArray(res.props?.children)) {
+            if (
+                !disabled
+                && type.analyticsName === "edit"
+                && message
+                && canAddAttachments(message)
+                && Array.isArray(res.props?.children)
+            ) {
                 res.props.children.unshift(
-                    React.createElement(AddAttachmentButton, {
+                    BdApi.React.createElement(AddAttachmentButton, {
                         channelId: channel.id,
                         existingAttachmentCount: message.attachments.length
                     })
@@ -527,25 +502,19 @@ class LateAttachments {
     async patchEditForm() {
         const EditForm = (await Webpack.waitForModule(Webpack.Filters.bySource("onClickSave")))?.A;
         const patchedEditFormInstances = new WeakSet();
-        Patcher.before(EditForm.prototype, "render", (instance) => {
+        Patcher.before(EditForm.prototype, "render", instance => {
             const editFormInstance = instance;
             if (patchedEditFormInstances.has(editFormInstance)) return;
             patchedEditFormInstances.add(editFormInstance);
             subscribeSubmitting(() => editFormInstance.forceUpdate());
             const originalOnSubmit = editFormInstance.onSubmit.bind(editFormInstance);
             const originalOnChange = editFormInstance.onChange.bind(editFormInstance);
-            editFormInstance.onSubmit = async (value) => {
-                const {
-                    channel,
-                    message
-                } = editFormInstance.props;
+            editFormInstance.onSubmit = async value => {
+                const { channel, message } = editFormInstance.props;
                 const uploads = getPendingUploads(channel.id);
                 if (uploads.length) {
                     const committed = await commitPendingUploads(channel.id, message.id, message.content, uploads);
-                    if (!committed) return {
-                        shouldClear: false,
-                        shouldRefocus: false
-                    };
+                    if (!committed) return { shouldClear: false, shouldRefocus: false };
                 }
                 return originalOnSubmit(value);
             };
@@ -563,17 +532,14 @@ class LateAttachments {
                 document.activeElement.blur();
             }
             if (submitting) {
-                children[0] = React.createElement("div", {
-                    style: {
-                        opacity: 0.5,
-                        pointerEvents: "none"
-                    }
-                }, children[0]);
+                children[0] = BdApi.React.createElement(
+                    "div",
+                    { style: { opacity: 0.5, pointerEvents: "none" } },
+                    children[0]
+                );
             }
             children[1] = submitting ? null : children[1];
-            children.splice(1, 0, React.createElement(EditAttachmentsBar, {
-                channelId
-            }));
+            children.splice(1, 0, BdApi.React.createElement(EditAttachmentsBar, { channelId }));
         });
     }
 }

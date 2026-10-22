@@ -9,32 +9,31 @@
  * @source https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/MessagePeek
  */
 
-'use strict';
+"use strict";
 
 /* @manifest */
 const manifest = {
-    "$schema": "../../common/Schemas/manifest.schema.json",
-    "name": "MessagePeek",
-    "version": "1.2.7",
-    "description": "See the last message in a Channel like on mobile",
-    "author": "domi.btnr",
-    "authorId": "354191516979429376",
-    "invite": "gp2ExK5vc7",
-    "donate": "https://paypal.me/domibtnr",
-    "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/MessagePeek",
-    "changelog": {
-        "date": "2026-09-05",
-        "changes": [{
-                "type": "fixed",
-                "title": "Fixed",
-                "items": [
-                    "Updated the Plugin to work with the latest Discord update"
-                ]
+    $schema: "../../common/Schemas/manifest.schema.json",
+    name: "MessagePeek",
+    version: "1.2.7",
+    description: "See the last message in a Channel like on mobile",
+    author: "domi.btnr",
+    authorId: "354191516979429376",
+    invite: "gp2ExK5vc7",
+    donate: "https://paypal.me/domibtnr",
+    source: "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/MessagePeek",
+    changelog: {
+        date: "2026-09-05",
+        changes: [
+            {
+                type: "fixed",
+                title: "Fixed",
+                items: ["Updated the Plugin to work with the latest Discord update"]
             },
             {
-                "type": "progress",
-                "title": "Known broken Features",
-                "items": [
+                type: "progress",
+                title: "Known broken Features",
+                items: [
                     "Removed the option to show timestamps in the DM list as it doesn't work and I don't have the time to fix it right now"
                 ]
             }
@@ -43,21 +42,7 @@ const manifest = {
 };
 
 /* @api */
-const {
-    Components,
-    Data,
-    DOM,
-    Hooks,
-    Logger,
-    Patcher,
-    ReactUtils,
-    UI,
-    Utils,
-    Webpack
-} = new BdApi(manifest.name);
-
-/* react */
-var React = BdApi.React;
+const { Components, Data, DOM, Hooks, Logger, Patcher, ReactUtils, UI, Utils, Webpack } = new BdApi(manifest.name);
 
 /* ../../common/Webpack/Dispatcher.ts */
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers", {
@@ -78,32 +63,32 @@ function lazyExport(getter) {
         }
         return cached;
     };
-    return new Proxy({}, {
-        get: (_, key) => resolve()?.[key],
-        set: (_, key, value) => {
-            const target = resolve();
-            if (!target) return false;
-            target[key] = value;
-            return true;
-        },
-        defineProperty: (_, key, descriptor) => {
-            const target = resolve();
-            return !!target && Reflect.defineProperty(target, key, descriptor);
-        },
-        deleteProperty: (_, key) => {
-            const target = resolve();
-            return !!target && Reflect.deleteProperty(target, key);
-        },
-        has: (_, key) => key in (resolve() ?? {}),
-        ownKeys: () => Reflect.ownKeys(resolve() ?? {}),
-        getOwnPropertyDescriptor: (_, key) => {
-            const descriptor = Reflect.getOwnPropertyDescriptor(resolve() ?? {}, key);
-            return descriptor && {
-                ...descriptor,
-                configurable: true
-            };
+    return new Proxy(
+        {},
+        {
+            get: (_, key) => resolve()?.[key],
+            set: (_, key, value) => {
+                const target = resolve();
+                if (!target) return false;
+                target[key] = value;
+                return true;
+            },
+            defineProperty: (_, key, descriptor) => {
+                const target = resolve();
+                return !!target && Reflect.defineProperty(target, key, descriptor);
+            },
+            deleteProperty: (_, key) => {
+                const target = resolve();
+                return !!target && Reflect.deleteProperty(target, key);
+            },
+            has: (_, key) => key in (resolve() ?? {}),
+            ownKeys: () => Reflect.ownKeys(resolve() ?? {}),
+            getOwnPropertyDescriptor: (_, key) => {
+                const descriptor = Reflect.getOwnPropertyDescriptor(resolve() ?? {}, key);
+                return descriptor && { ...descriptor, configurable: true };
+            }
         }
-    });
+    );
 }
 
 /* ../../common/Webpack/Parser.ts */
@@ -115,13 +100,9 @@ function getLocale() {
 }
 
 /* ../../common/Changelog/footer.tsx */
-const {
-    Text
-} = Components;
+const { Text } = Components;
 
-function Footer({
-    manifest
-}) {
+function Footer({ manifest }) {
     if (!manifest.invite && !manifest.source) return null;
     let issuesUrl;
     if (manifest.source) {
@@ -130,31 +111,44 @@ function Footer({
         url.pathname = `/${owner}/${repo}/issues`;
         issuesUrl = url.toString();
     }
-    return React.createElement(Text, null, "Need support?", " ", manifest.invite && React.createElement(React.Fragment, null, "Join the", " ", React.createElement("a", {
-        onClick: () => UI.showInviteModal(manifest.invite),
-        style: {
-            textDecoration: "underline"
-        }
-    }, "Discord Server"), manifest.source && " or "), manifest.source && React.createElement(React.Fragment, null, "Check for Issues on", " ", React.createElement("a", {
-        href: issuesUrl,
-        target: "_blank",
-        rel: "noreferrer",
-        style: {
-            textDecoration: "underline"
-        }
-    }, "GitHub")));
+    return BdApi.React.createElement(
+        Text,
+        null,
+        "Need support?",
+        " ",
+        manifest.invite
+            && BdApi.React.createElement(
+                BdApi.React.Fragment,
+                null,
+                "Join the",
+                " ",
+                BdApi.React.createElement(
+                    "a",
+                    { onClick: () => UI.showInviteModal(manifest.invite), style: { textDecoration: "underline" } },
+                    "Discord Server"
+                ),
+                manifest.source && " or "
+            ),
+        manifest.source
+            && BdApi.React.createElement(
+                BdApi.React.Fragment,
+                null,
+                "Check for Issues on",
+                " ",
+                BdApi.React.createElement(
+                    "a",
+                    { href: issuesUrl, target: "_blank", rel: "noreferrer", style: { textDecoration: "underline" } },
+                    "GitHub"
+                )
+            )
+    );
 }
 
 /* ../../common/Changelog/index.tsx */
 function showChangelog(manifest) {
     if (Data.load("lastVersion") === manifest.version) return;
     if (!manifest.changelog) return;
-    const {
-        date,
-        title,
-        subtitle,
-        ...changelog
-    } = manifest.changelog;
+    const { date, title, subtitle, ...changelog } = manifest.changelog;
     if (!changelog.changes?.length && !changelog.blurb && !changelog.video && !changelog.banner) return;
     const formatter = new Intl.DateTimeFormat(getLocale(), {
         month: "long",
@@ -165,19 +159,15 @@ function showChangelog(manifest) {
         title: title ?? `What's New - ${manifest.name}`,
         subtitle: subtitle ?? `${date ? formatter.format(new Date(date)) + " - " : ""}v${manifest.version}`,
         ...changelog,
-        footer: React.createElement(Footer, {
-            manifest
-        })
+        footer: BdApi.React.createElement(Footer, { manifest })
     });
     Data.save("lastVersion", manifest.version);
 }
 
 /* @styles */
-
-
 const STYLE_ID = manifest.name + "-popout-styles";
 
-var Styles = {
+const Styles = {
     sheets: [],
     _element: null,
     _listener: null,
@@ -195,9 +185,7 @@ var Styles = {
         const css = this.sheets.join("\n");
         this._forEachPopout(doc => {
             if (doc.getElementById(STYLE_ID)) return;
-            doc.head.append(DOM.createElement("style", {
-                id: STYLE_ID
-            }, css));
+            doc.head.append(DOM.createElement("style", { id: STYLE_ID }, css));
         });
     },
     load() {
@@ -217,7 +205,9 @@ var Styles = {
 };
 
 /* ../../common/ErrorBoundary/style.scss */
-Styles.sheets.push("/* ../../common/ErrorBoundary/style.scss */", `.errorBoundary {
+Styles.sheets.push(
+    "/* ../../common/ErrorBoundary/style.scss */",
+    `.errorBoundary {
   align-items: center;
   background: #473c41;
   border: 2px solid #f04747;
@@ -231,52 +221,69 @@ Styles.sheets.push("/* ../../common/ErrorBoundary/style.scss */", `.errorBoundar
   display: flex;
   flex-direction: column;
   gap: 5px;
-}`);
+}`
+);
 
 /* ../../common/ErrorBoundary/index.tsx */
-const ErrorIcon = (props) => React.createElement("svg", {
-    xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 24 24",
-    fill: "#ddd",
-    width: "24",
-    height: "24",
-    ...props
-}, React.createElement("path", {
-    d: "M0 0h24v24H0z",
-    fill: "none"
-}), React.createElement("path", {
-    d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
-}));
-class ErrorBoundary extends React.Component {
-    state = {
-        hasError: false,
-        error: null,
-        info: null
-    };
+const ErrorIcon = props =>
+    BdApi.React.createElement(
+        "svg",
+        {
+            xmlns: "http://www.w3.org/2000/svg",
+            viewBox: "0 0 24 24",
+            fill: "#ddd",
+            width: "24",
+            height: "24",
+            ...props
+        },
+        BdApi.React.createElement("path", { d: "M0 0h24v24H0z", fill: "none" }),
+        BdApi.React.createElement("path", {
+            d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+        })
+    );
+
+class ErrorBoundary extends BdApi.React.Component {
+    state = { hasError: false, error: null, info: null };
     componentDidCatch(error, info) {
-        this.setState({
-            error,
-            info,
-            hasError: true
-        });
-        Logger.error(`[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
-`, error);
+        this.setState({ error, info, hasError: true });
+        Logger.error(
+            `[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
+`,
+            error
+        );
     }
     render() {
         if (this.state.hasError) {
-            return this.props.mini ? React.createElement(ErrorIcon, {
-                fill: "#f04747"
-            }) : React.createElement("div", {
-                className: "errorBoundary"
-            }, React.createElement("div", {
-                className: "errorText"
-            }, React.createElement("span", null, "An error has occured while rendering ", this.props.id, "."), React.createElement("span", null, "Open console (", React.createElement("code", null, "CTRL + SHIFT + i / CMD + SHIFT + i"), ') - Select the "Console" tab and screenshot the big red error.')));
+            return this.props.mini
+                ? BdApi.React.createElement(ErrorIcon, { fill: "#f04747" })
+                : BdApi.React.createElement(
+                      "div",
+                      { className: "errorBoundary" },
+                      BdApi.React.createElement(
+                          "div",
+                          { className: "errorText" },
+                          BdApi.React.createElement(
+                              "span",
+                              null,
+                              "An error has occured while rendering ",
+                              this.props.id,
+                              "."
+                          ),
+                          BdApi.React.createElement(
+                              "span",
+                              null,
+                              "Open console (",
+                              BdApi.React.createElement("code", null, "CTRL + SHIFT + i / CMD + SHIFT + i"),
+                              ') - Select the "Console" tab and screenshot the big red error.'
+                          )
+                      )
+                  );
         } else return this.props.children;
     }
 }
 
 /* ../../common/Settings/store.ts */
-const Settings = new class Settings2 extends Flux.Store {
+const Settings = new (class Settings2 extends Flux.Store {
     constructor() {
         super(Dispatcher, {});
     }
@@ -289,12 +296,13 @@ const Settings = new class Settings2 extends Flux.Store {
         Data.save("SETTINGS", this._settings);
         this.emitChange();
     }
-}();
+})();
 
 /* ../../common/Settings/items/shared.tsx */
 function BetaTag() {
-    return React.createElement(
-        "span", {
+    return BdApi.React.createElement(
+        "span",
+        {
             style: {
                 display: "inline-flex",
                 alignItems: "center",
@@ -314,11 +322,10 @@ function BetaTag() {
     );
 }
 
-function Warning({
-    children
-}) {
-    return React.createElement(
-        "div", {
+function Warning({ children }) {
+    return BdApi.React.createElement(
+        "div",
+        {
             style: {
                 marginTop: 8,
                 padding: "6px 10px",
@@ -334,180 +341,145 @@ function Warning({
     );
 }
 
-function getItemLabels({
-    name,
-    note,
-    isBeta,
-    warning
-}) {
+function getItemLabels({ name, note, isBeta, warning }) {
     return {
-        name: isBeta ? React.createElement(React.Fragment, null, name, React.createElement(BetaTag, null)) : name,
-        note: warning ? React.createElement(React.Fragment, null, note, React.createElement(Warning, null, warning)) : note
+        name: isBeta
+            ? BdApi.React.createElement(BdApi.React.Fragment, null, name, BdApi.React.createElement(BetaTag, null))
+            : name,
+        note: warning
+            ? BdApi.React.createElement(
+                  BdApi.React.Fragment,
+                  null,
+                  note,
+                  BdApi.React.createElement(Warning, null, warning)
+              )
+            : note
     };
 }
 
 /* ../../common/Settings/items/dropdown.tsx */
-const {
-    SettingItem: SettingItem$2
-} = Components;
+const { SettingItem: SettingItem$2 } = Components;
+
 const Select = Webpack.getByStrings('selectionMode:"single",onSelectionChange:', "clear:()=>", {
     searchExports: true
 });
 
-function DropdownItem({
-    isBeta,
-    warning,
-    ...props
-}) {
+function DropdownItem({ isBeta, warning, ...props }) {
     const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
-    const options = props.options.map(
-        (option) => typeof option === "string" ? {
-            label: option,
-            value: option
-        } : option
+    const options = props.options.map(option =>
+        typeof option === "string" ? { label: option, value: option } : option
     );
-    return React.createElement(ErrorBoundary, {
-        id: props.id
-    }, React.createElement(SettingItem$2, {
-        ...props,
-        ...getItemLabels({
-            ...props,
-            isBeta,
-            warning
-        }),
-        inline: true
-    }, React.createElement("div", {
-        style: {
-            width: 200,
-            flexShrink: 0
-        }
-    }, React.createElement(
-        Select, {
-            closeOnSelect: true,
-            options,
-            value,
-            onChange: (v) => Settings.set(props.id, v),
-            renderOptionLabel: (option) => option.label
-        }
-    ))));
+    return BdApi.React.createElement(
+        ErrorBoundary,
+        { id: props.id },
+        BdApi.React.createElement(
+            SettingItem$2,
+            { ...props, ...getItemLabels({ ...props, isBeta, warning }), inline: true },
+            BdApi.React.createElement(
+                "div",
+                { style: { width: 200, flexShrink: 0 } },
+                BdApi.React.createElement(Select, {
+                    closeOnSelect: true,
+                    options,
+                    value,
+                    onChange: v => Settings.set(props.id, v),
+                    renderOptionLabel: option => option.label
+                })
+            )
+        )
+    );
 }
 
 /* ../../common/Settings/items/slider.tsx */
-const {
-    SettingItem: SettingItem$1
-} = Components;
-const Slider = Webpack.getByStrings("stickToMarkers", "moveStaggered", {
-    searchExports: true
-});
+const { SettingItem: SettingItem$1 } = Components;
+const Slider = Webpack.getByStrings("stickToMarkers", "moveStaggered", { searchExports: true });
 
-function SliderItem({
-    isBeta,
-    warning,
-    ...props
-}) {
-    const value = Hooks.useStateFromStores(
-        [Settings],
-        () => Settings.get(props.id, props.value ?? props.defaultValue)
+function SliderItem({ isBeta, warning, ...props }) {
+    const value = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value ?? props.defaultValue));
+    return BdApi.React.createElement(
+        ErrorBoundary,
+        { id: props.id },
+        BdApi.React.createElement(
+            SettingItem$1,
+            { ...props, ...getItemLabels({ ...props, isBeta, warning }) },
+            BdApi.React.createElement(Slider, {
+                ...props,
+                handleSize: 10,
+                initialValue: value,
+                defaultValue: props.defaultValue,
+                minValue: props.minValue,
+                maxValue: props.maxValue,
+                onValueChange: value2 => Settings.set(props.id, Math.round(value2)),
+                onValueRender: value2 => Math.round(value2)
+            })
+        )
     );
-    return React.createElement(ErrorBoundary, {
-        id: props.id
-    }, React.createElement(SettingItem$1, {
-        ...props,
-        ...getItemLabels({
-            ...props,
-            isBeta,
-            warning
-        })
-    }, React.createElement(
-        Slider, {
-            ...props,
-            handleSize: 10,
-            initialValue: value,
-            defaultValue: props.defaultValue,
-            minValue: props.minValue,
-            maxValue: props.maxValue,
-            onValueChange: (value2) => Settings.set(props.id, Math.round(value2)),
-            onValueRender: (value2) => Math.round(value2)
-        }
-    )));
 }
 
 /* ../../common/Settings/items/switch.tsx */
-const {
-    SettingItem,
-    SwitchInput
-} = Components;
+const { SettingItem, SwitchInput } = Components;
 
-function SwitchItem({
-    isBeta = false,
-    disabled = false,
-    warning,
-    ...props
-}) {
+function SwitchItem({ isBeta = false, disabled = false, warning, ...props }) {
     const stored = Hooks.useStateFromStores([Settings], () => Settings.get(props.id, props.value));
     const value = disabled ? false : stored;
-    return React.createElement(ErrorBoundary, {
-        id: props.id
-    }, React.createElement(SettingItem, {
-        ...props,
-        ...getItemLabels({
-            ...props,
-            isBeta,
-            warning
-        }),
-        inline: true
-    }, React.createElement(SwitchInput, {
-        value,
-        disabled,
-        onChange: (v) => Settings.set(props.id, v)
-    })));
+    return BdApi.React.createElement(
+        ErrorBoundary,
+        { id: props.id },
+        BdApi.React.createElement(
+            SettingItem,
+            { ...props, ...getItemLabels({ ...props, isBeta, warning }), inline: true },
+            BdApi.React.createElement(SwitchInput, { value, disabled, onChange: v => Settings.set(props.id, v) })
+        )
+    );
 }
 
 /* ../../common/Settings/panel.tsx */
-function SettingsPanel({
-    items,
-    components: customComponents
-}) {
+function SettingsPanel({ items, components: customComponents }) {
     const ComponentMap = {
         dropdown: DropdownItem,
         switch: SwitchItem,
         slider: SliderItem,
         ...customComponents
     };
-    return items.map((item) => {
+    return items.map(item => {
         const Component = ComponentMap[item.type];
-        return Component ? React.createElement(Component, {
-            key: item.id,
-            ...item
-        }) : null;
+        return Component ? BdApi.React.createElement(Component, { key: item.id, ...item }) : null;
     });
 }
 
 /* components/styles.scss */
-Styles.sheets.push("/* components/styles.scss */", `a[href^="/channels/@me/"] [class^=layout] {
+Styles.sheets.push(
+    "/* components/styles.scss */",
+    `a[href^="/channels/@me/"] [class^=layout] {
   min-height: 42px;
   max-height: 50px;
   height: unset;
-}`);
+}`
+);
 
 /* components/messagePeek.jsx */
 const MessageStore = Webpack.getStore("MessageStore");
 
-function MessagePeek$1({
-    channelId,
-    timestampOnly
-}) {
+function MessagePeek$1({ channelId, timestampOnly }) {
     if (!channelId) return null;
     const lastMessage = Hooks.useStateFromStores([MessageStore], () => MessageStore.getMessages(channelId)?.last());
     if (!lastMessage) return null;
     if (!timestampOnly) {
         const attachmentCount = lastMessage.attachments.length;
-        const content = lastMessage.content || lastMessage.embeds?.[0]?.rawDescription || lastMessage.stickerItems.length && "Sticker" || attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`;
+        const content =
+            lastMessage.content
+            || lastMessage.embeds?.[0]?.rawDescription
+            || (lastMessage.stickerItems.length && "Sticker")
+            || (attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`);
         if (!content) return null;
         const charLimit = Settings.get("tooltipCharacterLimit", 256);
-        const authorName = lastMessage.author.email && Settings.get("showYourselfAsYou", true) ? "You" : lastMessage.author["globalName"] || lastMessage.author["username"];
-        return React.createElement(
-            "div", {
+        const authorName =
+            lastMessage.author.email && Settings.get("showYourselfAsYou", true)
+                ? "You"
+                : lastMessage.author["globalName"] || lastMessage.author["username"];
+        return BdApi.React.createElement(
+            "div",
+            {
                 style: {
                     marginBottom: "2px",
                     marginTop: "-2px",
@@ -516,25 +488,31 @@ function MessagePeek$1({
                     whiteSpace: "nowrap"
                 }
             },
-            React.createElement(
-                Components.Tooltip, {
-                    text: content.length > charLimit ? Parser.parse(content.slice(0, charLimit).trim() + "\u2026") : Parser.parse(content)
+            BdApi.React.createElement(
+                Components.Tooltip,
+                {
+                    text:
+                        content.length > charLimit
+                            ? Parser.parse(content.slice(0, charLimit).trim() + "\u2026")
+                            : Parser.parse(content)
                 },
-                (props) => React.createElement(
-                    "div", {
-                        ...props,
-                        style: {
-                            fontSize: "12px",
-                            fontWeight: "var(--font-weight-medium)",
-                            lineHeight: "16px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap"
-                        }
-                    },
-                    Settings.get("showAuthor", true) && `${authorName}: `,
-                    Parser.parseInlineReply(content)
-                )
+                props =>
+                    BdApi.React.createElement(
+                        "div",
+                        {
+                            ...props,
+                            style: {
+                                fontSize: "12px",
+                                fontWeight: "var(--font-weight-medium)",
+                                lineHeight: "16px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap"
+                            }
+                        },
+                        Settings.get("showAuthor", true) && `${authorName}: `,
+                        Parser.parseInlineReply(content)
+                    )
             )
         );
     } else {
@@ -546,67 +524,49 @@ function MessagePeek$1({
             hour: "2-digit",
             minute: "2-digit"
         });
-        const units = [{
-                unit: "s",
-                ms: 1e3
-            },
-            {
-                unit: "m",
-                ms: 1e3 * 60
-            },
-            {
-                unit: "h",
-                ms: 1e3 * 60 * 60
-            },
-            {
-                unit: "d",
-                ms: 1e3 * 60 * 60 * 24
-            },
-            {
-                unit: "w",
-                ms: 1e3 * 60 * 60 * 24 * 7
-            },
-            {
-                unit: "mo",
-                ms: 1e3 * 60 * 60 * 24 * 30
-            },
-            {
-                unit: "y",
-                ms: 1e3 * 60 * 60 * 24 * 365
-            }
+        const units = [
+            { unit: "s", ms: 1e3 },
+            { unit: "m", ms: 1e3 * 60 },
+            { unit: "h", ms: 1e3 * 60 * 60 },
+            { unit: "d", ms: 1e3 * 60 * 60 * 24 },
+            { unit: "w", ms: 1e3 * 60 * 60 * 24 * 7 },
+            { unit: "mo", ms: 1e3 * 60 * 60 * 24 * 30 },
+            { unit: "y", ms: 1e3 * 60 * 60 * 24 * 365 }
         ];
         const diffInMs = lastMessage.timestamp - now;
         let relativeTime = 0;
         let unit = "";
         for (let i = units.length - 1; i >= 0; i--) {
-            const {
-                unit: u,
-                ms
-            } = units[i];
+            const { unit: u, ms } = units[i];
             if (Math.abs(diffInMs) >= ms) {
                 relativeTime = Math.floor(diffInMs / ms);
                 unit = u;
                 break;
             }
         }
-        return React.createElement(Components.Tooltip, {
-            text: dateTimeFormatter.format(lastMessage.timestamp)
-        }, (props) => React.createElement(
-            "div", {
-                ...props,
-                style: {
-                    marginRight: "5px",
-                    alignContent: "center",
-                    color: "var(--channels-default)"
-                }
-            },
-            `${Math.abs(relativeTime)}${unit}`
-        ));
+        return BdApi.React.createElement(
+            Components.Tooltip,
+            { text: dateTimeFormatter.format(lastMessage.timestamp) },
+            props =>
+                BdApi.React.createElement(
+                    "div",
+                    {
+                        ...props,
+                        style: {
+                            marginRight: "5px",
+                            alignContent: "center",
+                            color: "var(--channels-default)"
+                        }
+                    },
+                    `${Math.abs(relativeTime)}${unit}`
+                )
+        );
     }
 }
 
 /* settings.json */
-var items = [{
+const items = [
+    {
         type: "switch",
         name: "Show in DMs",
         note: "",
@@ -629,8 +589,8 @@ var items = [{
     },
     {
         type: "switch",
-        name: "Show as \"You\"",
-        note: "Whether to show your name or \"You\"",
+        name: 'Show as "You"',
+        note: 'Whether to show your name or "You"',
         id: "showYourselfAsYou",
         value: true
     },
@@ -648,13 +608,7 @@ var items = [{
         id: "preloadLimit",
         minValue: 0,
         maxValue: 30,
-        markers: [
-            0,
-            5,
-            10,
-            20,
-            30
-        ],
+        markers: [0, 5, 10, 20, 30],
         stickToMarkers: false,
         defaultValue: 10
     },
@@ -665,18 +619,13 @@ var items = [{
         id: "tooltipCharacterLimit",
         minValue: 64,
         maxValue: 1024,
-        markers: [
-            64,
-            128,
-            256,
-            512,
-            1024
-        ],
+        markers: [64, 128, 256, 512, 1024],
         stickToMarkers: true,
         defaultValue: 256
     }
 ];
-var SettingsItems = {
+
+const SettingsItems = {
     items: items
 };
 
@@ -694,7 +643,7 @@ class MessagePeek {
         Styles.unload();
     }
     async patchDMs() {
-        const ChannelContext = React.createContext(null);
+        const ChannelContext = BdApi.React.createContext(null);
         const ChannelWrapper = await Webpack.waitForModule(
             Webpack.Filters.bySource("isMobile", 'location:"PrivateChannel"')
         );
@@ -703,31 +652,31 @@ class MessagePeek {
         Patcher.after(ChannelWrapper, "Ay", (_, __, res) => {
             if (!Settings.get("showInDMs", true)) return;
             Patcher.after(res, "type", (_2, [props], res2) => {
-                return React.createElement(ChannelContext.Provider, {
-                    value: props.channel
-                }, res2);
+                return BdApi.React.createElement(ChannelContext.Provider, { value: props.channel }, res2);
             });
         });
         Patcher.after(NameWrapper, "render", (_, __, res) => {
-            const channel = React.useContext(ChannelContext);
+            const channel = BdApi.React.useContext(ChannelContext);
             if (!channel) return res;
-            const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("content__"), {
+            const nameWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("content__"), {
                 walkable: ["children", "props"]
             });
             if (!nameWrapper) return res;
-            nameWrapper.props.children.push(React.createElement(MessagePeek$1, {
-                channelId: channel.id
-            }));
+            nameWrapper.props.children.push(BdApi.React.createElement(MessagePeek$1, { channelId: channel.id }));
         });
         const preload = Webpack.getByKeys("preload", "fetchChannel")?.preload;
-        Webpack.getStore("ChannelStore").getSortedPrivateChannels().filter(
-            (channel) => channel.lastMessageId && !Webpack.getStore("MessageStore").getMessages(channel.id)?.last()
-        ).slice(0, Settings.get("preloadLimit", 10)).reduce((promise, channel, index) => {
-            return promise.then(() => {
-                preload("@me", channel.id);
-                return new Promise((resolve) => setTimeout(resolve, 125 + index * 125));
-            });
-        }, Promise.resolve());
+        Webpack.getStore("ChannelStore")
+            .getSortedPrivateChannels()
+            .filter(
+                channel => channel.lastMessageId && !Webpack.getStore("MessageStore").getMessages(channel.id)?.last()
+            )
+            .slice(0, Settings.get("preloadLimit", 10))
+            .reduce((promise, channel, index) => {
+                return promise.then(() => {
+                    preload("@me", channel.id);
+                    return new Promise(resolve => setTimeout(resolve, 125 + index * 125));
+                });
+            }, Promise.resolve());
         const ChannelWrapperElement = document.querySelector(`h2 + .${ChannelClasses.channel}`);
         if (ChannelWrapperElement) {
             const ChannelWrapperInstance = ReactUtils.getOwnerInstance(ChannelWrapperElement);
@@ -738,33 +687,31 @@ class MessagePeek {
         const ChannelWrapper = await Webpack.waitForModule(
             Webpack.Filters.byComponentType(Webpack.Filters.byStrings("channel", "unread", ".ALL_MESSAGES"))
         );
-        Patcher.after(ChannelWrapper, "render", (_, [{
-            channel
-        }], res) => {
+        Patcher.after(ChannelWrapper, "render", (_, [{ channel }], res) => {
             if (!Settings.get("showInGuilds", true)) return;
-            const nameWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("name__"), {
+            const nameWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("name__"), {
                 walkable: ["children", "props"]
             });
             if (!nameWrapper) return res;
-            nameWrapper.props.children = [nameWrapper.props.children, React.createElement(MessagePeek$1, {
-                channelId: channel.id
-            })];
+            nameWrapper.props.children = [
+                nameWrapper.props.children,
+                BdApi.React.createElement(MessagePeek$1, { channelId: channel.id })
+            ];
             if (!Settings.get("showTimestamp", true)) return;
-            const innerWrapper = Utils.findInTree(res, (e) => e?.props?.className?.startsWith("linkTop"), {
+            const innerWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("linkTop"), {
                 walkable: ["children", "props"]
             });
             if (!innerWrapper) return res;
             const children = innerWrapper.props.children;
-            children.splice(children.length - 1, 0, React.createElement(MessagePeek$1, {
-                channelId: channel.id,
-                timestampOnly: true
-            }));
+            children.splice(
+                children.length - 1,
+                0,
+                BdApi.React.createElement(MessagePeek$1, { channelId: channel.id, timestampOnly: true })
+            );
         });
     }
     getSettingsPanel() {
-        return React.createElement(SettingsPanel, {
-            items: SettingsItems.items
-        });
+        return BdApi.React.createElement(SettingsPanel, { items: SettingsItems.items });
     }
 }
 
