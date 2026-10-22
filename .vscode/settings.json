@@ -1,5 +1,15 @@
 {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "i18n-ally.enabledFrameworks": ["react-i18next"],
+    "i18n-ally.localesPaths": ["src/plugins/*/locales"],
+    "i18n-ally.pathMatcher": "{locale}.json",
+    "i18n-ally.keystyle": "nested",
+    "i18n-ally.sourceLanguage": "en",
+    "i18n-ally.displayLanguage": "en",
+    "i18n-ally.indent": 4,
+    "i18n-ally.tabStyle": "space",
+    "i18n-ally.sortKeys": false,
+    "i18n-ally.keepFulfilled": false,
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.codeActionsOnSave": {
