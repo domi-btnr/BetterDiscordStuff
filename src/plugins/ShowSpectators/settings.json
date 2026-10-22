@@ -14,6 +14,13 @@
             "note": "Opens the full profile instead of the small user popout when clicking on a spectator",
             "id": "openFullProfile",
             "value": false
+        },
+        {
+            "type": "switch",
+            "name": "Compact Mode",
+            "note": "Shows up to 3 spectator names instead of avatars",
+            "id": "compactMode",
+            "value": false
         }
     ]
 }

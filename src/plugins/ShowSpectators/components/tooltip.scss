@@ -1,0 +1,29 @@
+.show-spectators-tooltip-title {
+    font-weight: 600;
+
+    & + * {
+        margin-top: 8px;
+    }
+}
+
+.show-spectators-tooltip-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .show-spectators-tooltip-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .show-spectators-tooltip-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+    }
+
+    .show-spectators-tooltip-more {
+        color: var(--text-muted);
+    }
+}

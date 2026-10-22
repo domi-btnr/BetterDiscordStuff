@@ -1,7 +1,7 @@
 {
     "$schema": "../../common/Schemas/manifest.schema.json",
     "name": "ShowSpectators",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Shows you who's spectating your stream under the screenshare panel",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -9,21 +9,21 @@
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/ShowSpectators",
     "changelog": {
-        "date": "2026-10-19",
+        "date": "2026-10-22",
         "changes": [
             {
                 "type": "added",
-                "title": "Choose between popout and full profile",
+                "title": "Compact mode",
                 "items": [
-                    "Clicking on a spectator now opens the small user popout, just like in the member list",
-                    "Prefer the full profile? Turn on the new \"Open Full Profile\" option in the plugin settings"
+                    "Prefer it short? Turn on the new \"Compact Mode\" option to list spectators in a single sentence. Clicking a name in the panel opens their profile, just like the avatars do"
                 ]
             },
             {
-                "type": "fixed",
-                "title": "Opening profiles works again",
+                "type": "improved",
+                "title": "Improved",
                 "items": [
-                    "Fixed clicking on a spectator not opening their profile"
+                    "Rewrote the plugin from the ground up, making it lighter and less likely to break when Discord updates",
+                    "Spectators now show their server avatars"
                 ]
             }
         ]
