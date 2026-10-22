@@ -9,6 +9,7 @@ import tseslint from "typescript-eslint";
 export default defineConfig([
     js.configs.recommended,
     react.configs.flat.recommended,
+    react.configs.flat["jsx-runtime"],
     tseslint.configs.recommended,
     { ignores: ["builds/**", "src/archive/**"] },
     {

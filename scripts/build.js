@@ -28,6 +28,18 @@ const PLUGIN_META_FIELDS = [
     "runAt"
 ];
 
+const OUTPUT_OPTIONS = {
+    format: "cjs",
+    exports: "auto",
+    generatedCode: {
+        arrowFunctions: true,
+        constBindings: true,
+        objectShorthand: true,
+        reservedNamesAsProps: true,
+        symbols: false
+    }
+};
+
 const tsconfigPath = path.resolve(process.cwd(), "tsconfig.json");
 const tsconfig = JSON.parse(fs.readFileSync(tsconfigPath, "utf8"));
 const tsPaths = tsconfig.compilerOptions?.paths || {};
@@ -131,10 +143,8 @@ function makeMeta(manifest) {
     );
 }
 
-const styleLoader = `
-import { DOM, Webpack } from "@api";
+const styleLoader = `import { DOM, Webpack } from "@api";
 import manifest from "@manifest";
-
 const STYLE_ID = manifest.name + "-popout-styles";
 
 export default {
@@ -191,6 +201,30 @@ const matchAll = ({ regex, input, parent = false, flat = false }) => {
     return output;
 };
 
+const GLOBAL_MODULES = {
+    react: "BdApi.React",
+    "react-dom": "BdApi.ReactDOM"
+};
+const toPlaceholder = global => `__${global.replaceAll(".", "_")}__`;
+
+const globalModules = Object.fromEntries(
+    Object.entries(GLOBAL_MODULES).map(([id, global]) => [
+        id,
+        {
+            code: `const ${toPlaceholder(global)} = ${global}; export default ${toPlaceholder(global)};`,
+            syntheticNamedExports: "default"
+        }
+    ])
+);
+
+const inlineGlobalModules = code => {
+    for (const global of Object.values(GLOBAL_MODULES)) {
+        const placeholder = toPlaceholder(global);
+        code = code.replace(`const ${placeholder} = ${global};\n`, "").replaceAll(placeholder, global);
+    }
+    return code;
+};
+
 const virtual = files => ({
     name: "Virtual Files",
     resolveId(id) {
@@ -245,10 +279,7 @@ const buildPlugin = (pluginName, makeFolder) => {
         watch: {
             skipWrite: true
         },
-        output: {
-            format: "cjs",
-            exports: "auto"
-        },
+        output: OUTPUT_OPTIONS,
         treeshake: {
             moduleSideEffects: id => {
                 return id.endsWith(".css") || id.endsWith(".scss");
@@ -258,7 +289,7 @@ const buildPlugin = (pluginName, makeFolder) => {
         },
         external: require("node:module").builtinModules,
         plugins: [
-            json(),
+            json({ preferConst: true }),
             tsPathAliasResolver(tsPaths),
             nodeResolve({
                 extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".scss"],
@@ -266,12 +297,14 @@ const buildPlugin = (pluginName, makeFolder) => {
             }),
             commonjs(),
             esBuild({
-                target: "esNext",
-                jsx: "transform"
+                tsconfig: false,
+                target: "chrome152",
+                jsx: "transform",
+                jsxFactory: "BdApi.React.createElement",
+                jsxFragment: "BdApi.React.Fragment"
             }),
             virtual({
-                react: "export default BdApi.React",
-                "react-dom": "export default BdApi.ReactDOM",
+                ...globalModules,
                 "@styles": styleLoader,
                 get "@manifest"() {
                     return "export default " + fs.readFileSync(manifestPath, "utf8");
@@ -325,6 +358,8 @@ const buildPlugin = (pluginName, makeFolder) => {
             {
                 name: "Code Regions",
                 transform(code, id) {
+                    if (GLOBAL_MODULES[id]) return null;
+
                     const isRealPath = fs.existsSync(id);
                     const relativePath = isRealPath ? path.relative(pluginFolder, id) : id;
 
@@ -350,9 +385,9 @@ const buildPlugin = (pluginName, makeFolder) => {
 
                     let {
                         output: [{ code }]
-                    } = await bundle.generate({ format: "cjs", exports: "auto" });
+                    } = await bundle.generate(OUTPUT_OPTIONS);
 
-                    code = code.replace(/var (\w+) =/, "const $1 =");
+                    code = inlineGlobalModules(code);
                     code = code.replaceAll("/* @__PURE__ */ ", "");
                     code = jsBeautify(code, {});
 
@@ -419,7 +454,10 @@ const buildPlugin = (pluginName, makeFolder) => {
             case "ERROR":
                 {
                     console.error(event.error);
-                    if (!argv.watch) watcher.close();
+                    if (!argv.watch) {
+                        process.exitCode = 1;
+                        watcher.close();
+                    }
                 }
                 break;
         }

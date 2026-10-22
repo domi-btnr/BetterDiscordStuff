@@ -4,7 +4,6 @@ import { Components, Hooks, Webpack } from "@api";
 import { getLocale } from "@common/i18n";
 import { Settings } from "@common/Settings";
 import { Parser } from "@common/Webpack";
-import React from "react";
 
 const MessageStore = Webpack.getStore("MessageStore");
 

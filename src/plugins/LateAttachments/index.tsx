@@ -2,7 +2,6 @@ import { Patcher, Webpack } from "@api";
 import showChangelog from "@common/Changelog";
 import manifest from "@manifest";
 import Styles from "@styles";
-import React from "react";
 
 import AddAttachmentButton from "./components/AddAttachmentButton";
 import EditAttachmentsBar from "./components/EditAttachmentsBar";

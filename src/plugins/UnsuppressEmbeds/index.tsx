@@ -4,7 +4,6 @@ import { findContextMenuGroupByItemId } from "@common/ContextMenu";
 import { RestAPI } from "@common/Webpack";
 import manifest from "@manifest";
 import { Channel, Constants, Message, PermissionsBits, PermissionStore, UserStore } from "@vencord/discord-types";
-import React from "react";
 
 import { ImageInvisible, ImageVisible } from "./components/icons";
 

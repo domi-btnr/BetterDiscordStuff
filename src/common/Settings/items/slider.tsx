@@ -1,7 +1,6 @@
 import { Components, Hooks, Webpack } from "@api";
 import ErrorBoundary from "@common/ErrorBoundary";
 import { Slider as SliderType } from "@vencord/discord-types";
-import React from "react";
 
 import Settings from "../store";
 import type { SettingsItemForType } from "../types";

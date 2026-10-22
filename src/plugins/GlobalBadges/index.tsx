@@ -5,7 +5,6 @@ import { SettingsPanel } from "@common/Settings";
 import manifest from "@manifest";
 import Styles from "@styles";
 import { DisplayProfile } from "@vencord/discord-types";
-import React from "react";
 
 import Badges from "./components/globalBadges";
 import SettingsItems from "./settings.json";
