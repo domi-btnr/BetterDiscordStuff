@@ -1,4 +1,5 @@
 import { Webpack } from "@api";
+import type { ModuleWithKey } from "@typings";
 import type {
     ApplicationStreamingStore as ApplicationStreamingStoreType,
     ChannelRTCStore as ChannelRTCStoreType,
@@ -11,7 +12,6 @@ import type {
     AvatarComponent,
     AvatarStyles as AvatarStylesType,
     ClickableComponent,
-    ModuleWithKey,
     NameUtils as NameUtilsType,
     UserPopoutComponent,
     UserProfileActions as UserProfileActionsType,

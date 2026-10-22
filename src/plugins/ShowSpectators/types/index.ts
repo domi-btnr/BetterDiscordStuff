@@ -23,8 +23,6 @@ export interface InteractionProps {
     [key: string]: unknown;
 }
 
-export type ModuleWithKey = [module: Record<string, any>, key: string];
-
 export interface NameUtils {
     getName(guildId: string | null | undefined, channelId: string | null | undefined, user: User): string;
 }

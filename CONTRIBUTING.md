@@ -64,7 +64,7 @@ src/
 ├── plugins/   every active plugin, one folder per plugin
 ├── common/    shared code, imported via @common/*
 ├── archive/   retired plugins, not built or linted
-└── types/     type declarations (virtual modules, Discord module types)
+└── types/     shared type declarations, imported via @typings
 scripts/       build script and git hooks
 ```
 
