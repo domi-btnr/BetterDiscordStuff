@@ -1,6 +1,6 @@
 /**
  * @name ShowSpectators
- * @version 1.1.0
+ * @version 1.2.0
  * @description Shows you who's spectating your stream under the screenshare panel
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -15,7 +15,7 @@
 const manifest = {
     $schema: "../../common/Schemas/manifest.schema.json",
     name: "ShowSpectators",
-    version: "1.1.0",
+    version: "1.2.0",
     description: "Shows you who's spectating your stream under the screenshare panel",
     author: "domi.btnr",
     authorId: "354191516979429376",
@@ -23,20 +23,23 @@ const manifest = {
     donate: "https://paypal.me/domibtnr",
     source: "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/ShowSpectators",
     changelog: {
-        date: "2026-10-19",
+        date: "2026-10-22",
         changes: [
             {
                 type: "added",
-                title: "Choose between popout and full profile",
+                title: "New options",
                 items: [
-                    "Clicking on a spectator now opens the small user popout, just like in the member list",
-                    'Prefer the full profile? Turn on the new "Open Full Profile" option in the plugin settings'
+                    'Prefer it short? Turn on the new "Compact Mode" option to list spectators in a single sentence. Clicking a name in the panel opens their profile, just like the avatars do',
+                    "Watching someone else's stream? The panel now shows who else is watching. Don't need it? Turn off the new \"Show Watched Stream's Spectators\" option"
                 ]
             },
             {
-                type: "fixed",
-                title: "Opening profiles works again",
-                items: ["Fixed clicking on a spectator not opening their profile"]
+                type: "improved",
+                title: "Improved",
+                items: [
+                    "Rewrote the plugin from the ground up, making it lighter and less likely to break when Discord updates",
+                    "Spectators now show their server avatars"
+                ]
             }
         ]
     }
@@ -453,189 +456,416 @@ function SettingsPanel({ items, components: customComponents }) {
     });
 }
 
-/* components/style.scss */
+/* modules/webpack.ts */
+const { Filters } = Webpack;
+
+const Modules = Webpack.getBulkKeyed({
+    AccountPanelSections: {
+        filter: Filters.combine(
+            Filters.byStrings(".Provider,{value:"),
+            Filters.bySource("createContext([])", "newestAnalyticsLocation:")
+        ),
+        searchExports: true,
+        withKey: true,
+        cacheId: "ShowSpectators.AccountPanelSections"
+    },
+    Avatar: {
+        filter: Filters.byStrings("typingIndicatorRef", "statusTooltipDelay", "statusBackdropColor"),
+        searchExports: true,
+        cacheId: "ShowSpectators.Avatar"
+    },
+    AvatarStyles: {
+        filter: Filters.byKeys("moreUsers", "emptyUser", "avatarContainer", "clickableAvatar"),
+        cacheId: "ShowSpectators.AvatarStyles"
+    },
+    Clickable: {
+        filter: Filters.byStrings("this.context?this.renderNonInteractive():"),
+        searchExports: true,
+        cacheId: "ShowSpectators.Clickable"
+    },
+    NameUtils: {
+        filter: Filters.byKeys("getName", "getNickname", "useName"),
+        cacheId: "ShowSpectators.NameUtils"
+    },
+    StreamIcon: {
+        filter: Filters.byStrings(".STATUS_SCREENSHARE"),
+        withKey: true,
+        cacheId: "ShowSpectators.StreamIcon"
+    },
+    UserPopout: {
+        filter: Filters.combine(
+            m => m?.$$typeof === Symbol.for("react.memo"),
+            Filters.bySource('type:"popout",withMutualGuilds', "disableUserProfileLink")
+        ),
+        searchExports: true,
+        cacheId: "ShowSpectators.UserPopout"
+    },
+    UserProfileActions: {
+        filter: Filters.byKeys("openUserProfileModal"),
+        cacheId: "ShowSpectators.UserProfileActions"
+    },
+    UserSummaryItem: {
+        filter: Filters.byStrings("defaultRenderUser", "showDefaultAvatarsForNullUsers"),
+        cacheId: "ShowSpectators.UserSummaryItem"
+    }
+});
+
+const {
+    AccountPanelSections,
+    Avatar,
+    AvatarStyles,
+    Clickable,
+    NameUtils,
+    StreamIcon,
+    UserPopout,
+    UserProfileActions,
+    UserSummaryItem
+} = Modules;
+
+const ApplicationStreamingStore = Webpack.getStore("ApplicationStreamingStore");
+
+const ChannelRTCStore = Webpack.getStore("ChannelRTCStore");
+const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
+const UserStore = Webpack.getStore("UserStore");
+const WindowStore = Webpack.getStore("WindowStore");
+
+/* modules/spectators.ts */
+const Strings = {
+    SPECTATORS: "BR7Tno",
+    NUM_USERS: "3uHFUR",
+    USER_LIST: "A+bT9O"
+};
+
+const MAX_COMPACT_NAMES = 3;
+const getDisplayName = (user, { guildId, channelId }) =>
+    NameUtils?.getName(guildId, channelId, user) ?? user.globalName ?? user.username;
+
+function getSpectatorSentence(spectators, renderName = user => getDisplayName(user, spectators)) {
+    const names = spectators.users.slice(0, MAX_COMPACT_NAMES).map(renderName);
+    const others = spectators.total - names.length;
+    if (others > 0) names.push(getLocalizedString(Strings.NUM_USERS, { num: others }));
+    return getLocalizedString(Strings.USER_LIST, {
+        users: names.length,
+        user1: names[0],
+        user2: names[1],
+        commaSeparatedUsers: BdApi.React.createElement(
+            BdApi.React.Fragment,
+            null,
+            ...names.slice(0, -1).flatMap((name, i) => (i ? [", ", name] : [name]))
+        ),
+        lastUser: names.at(-1)
+    });
+}
+
+function getWatchedStream() {
+    const currentUserId = UserStore.getCurrentUser()?.id;
+    const watched = ApplicationStreamingStore.getAllActiveStreams().filter(stream => stream.ownerId !== currentUserId);
+    if (!watched.length) return null;
+    const channelId = SelectedChannelStore.getVoiceChannelId();
+    const selected = channelId ? ChannelRTCStore.getSelectedParticipant(channelId) : null;
+    const selectedOwnerId = selected && "stream" in selected ? selected.stream.ownerId : void 0;
+    const lastActiveOwnerId = ApplicationStreamingStore.getLastActiveStream()?.ownerId;
+    return (
+        watched.find(stream => stream.ownerId === selectedOwnerId)
+        ?? watched.find(stream => stream.ownerId === lastActiveOwnerId)
+        ?? watched[0]
+    );
+}
+
+function isSameSpectators(a, b) {
+    if (a === b) return true;
+    if (!a || !b) return false;
+    return (
+        a.guildId === b.guildId
+        && a.channelId === b.channelId
+        && a.streamer === b.streamer
+        && a.total === b.total
+        && a.users.length === b.users.length
+        && a.users.every((user, i) => user === b.users[i])
+    );
+}
+
+function useSpectators() {
+    return Hooks.useStateFromStores(
+        [ApplicationStreamingStore, ChannelRTCStore, SelectedChannelStore, Settings, UserStore],
+        () => {
+            const stream =
+                ApplicationStreamingStore.getCurrentUserActiveStream()
+                ?? (Settings.get("showWatchedStream", true) ? getWatchedStream() : null);
+            if (!stream) return null;
+            const viewerIds = ApplicationStreamingStore.getViewerIds(stream);
+            const isOwnStream = stream.ownerId === UserStore.getCurrentUser()?.id;
+            return {
+                guildId: stream.guildId,
+                channelId: stream.channelId,
+                streamer: isOwnStream ? void 0 : UserStore.getUser(stream.ownerId),
+                total: viewerIds.length,
+                users: viewerIds.map(id => UserStore.getUser(id)).filter(Boolean)
+            };
+        },
+        [],
+        isSameSpectators
+    );
+}
+
+/* components/panel.scss */
 Styles.sheets.push(
-    "/* components/style.scss */",
-    `.spectators-panel {
+    "/* components/panel.scss */",
+    `.show-spectators-panel {
   padding: 8px;
   align-items: center;
   border-bottom: 1px solid var(--border-subtle);
 }
-.spectators-panel .spectators {
+.show-spectators-panel .show-spectators-panel-content {
   margin-top: 4px;
   padding-bottom: 4px;
 }`
 );
-
-/* components/spectators.jsx */
-const { Flex, Text, Tooltip } = Components;
-const ApplicationStreamingStore = Webpack.getStore("ApplicationStreamingStore");
-const AvatarStyles = Webpack.getByKeys("moreUsers", "emptyUser", "avatarContainer", "clickableAvatar");
-const Clickable = Webpack.getByStrings("this.context?this.renderNonInteractive():", { searchExports: true });
-const openUserProfileModal = Webpack.getByStrings('type:"USER_PROFILE_MODAL_OPEN"', { searchExports: true });
-const RelationshipStore = Webpack.getStore("RelationshipStore");
-const UserStore = Webpack.getStore("UserStore");
-const UserSummaryItem = Webpack.getByStrings("defaultRenderUser", "showDefaultAvatarsForNullUsers");
-
-const { UserPopout } = Webpack.getMangled(['type:"popout",withMutualGuilds', "disableUserProfileLink"], {
-    UserPopout: x => x?.$$typeof === Symbol.for("react.memo")
-});
-
-const Strings = {
-    SPECTATORS: "BR7Tno",
-    NUM_USERS: "3uHFUR"
+const styles$2 = {
+    showSpectatorsPanel: "show-spectators-panel",
+    showSpectatorsPanelContent: "show-spectators-panel-content"
 };
 
-const getDisplayName = user => RelationshipStore.getNickname(user.id) || user.globalName || user.username;
+/* components/spectator.scss */
+Styles.sheets.push(
+    "/* components/spectator.scss */",
+    `.show-spectators-name {
+  cursor: pointer;
+}
+.show-spectators-name:hover {
+  text-decoration: underline;
+}`
+);
+const styles$1 = {
+    showSpectatorsName: "show-spectators-name"
+};
 
-function SpectatorsTooltip({ spectatorIds, guildId, noTitle }) {
-    if (!spectatorIds && !guildId) {
-        const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () =>
-            ApplicationStreamingStore.getCurrentUserActiveStream()
-        );
-        if (!activeStream) return null;
-        spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
-        guildId = activeStream.guildId;
-    }
-    let unknownSpectators = 0;
-    const spectators = spectatorIds
-        .map(id => UserStore.getUser(id))
-        .filter(user => Boolean(user) || unknownSpectators++);
+/* components/tooltip.scss */
+Styles.sheets.push(
+    "/* components/tooltip.scss */",
+    `.show-spectators-tooltip-title {
+  font-weight: 600;
+}
+.show-spectators-tooltip-title + * {
+  margin-top: 8px;
+}
+
+.show-spectators-tooltip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.show-spectators-tooltip-list .show-spectators-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.show-spectators-tooltip-list .show-spectators-tooltip-row .show-spectators-tooltip-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+.show-spectators-tooltip-list .show-spectators-tooltip-more {
+  color: var(--text-muted);
+}`
+);
+const styles = {
+    showSpectatorsTooltipTitle: "show-spectators-tooltip-title",
+    showSpectatorsTooltipList: "show-spectators-tooltip-list",
+    showSpectatorsTooltipRow: "show-spectators-tooltip-row",
+    showSpectatorsTooltipAvatar: "show-spectators-tooltip-avatar",
+    showSpectatorsTooltipMore: "show-spectators-tooltip-more"
+};
+
+/* components/tooltip.tsx */
+const Tooltip = Components.Tooltip;
+
+function SpectatorList({ spectators, showTitle }) {
+    const compact = Hooks.useStateFromStores([Settings], () => Settings.get("compactMode", false));
+    const { guildId, total, users } = spectators;
+    const unknownCount = total - users.length;
     return BdApi.React.createElement(
         BdApi.React.Fragment,
         null,
-        !noTitle
+        showTitle
             && BdApi.React.createElement(
-                Text,
-                { size: Text.Sizes.SIZE_16 },
-                getLocalizedString(Strings.SPECTATORS, { numViewers: spectatorIds.length })
+                "div",
+                { className: styles.showSpectatorsTooltipTitle },
+                getLocalizedString(Strings.SPECTATORS, { numViewers: total })
             ),
-        spectators.length > 0
-            && BdApi.React.createElement(
-                Flex,
-                { direction: Flex.Direction.VERTICAL, style: { alignItems: "center", gap: 6, marginTop: "8px" } },
-                spectators.map(user =>
-                    BdApi.React.createElement(
-                        Flex,
-                        { style: { alignContent: "center", gap: 6 } },
-                        BdApi.React.createElement("img", {
-                            src: user.getAvatarURL(guildId),
-                            style: { borderRadius: 8, height: 16, width: 16 }
-                        }),
-                        getDisplayName(user)
-                    )
-                ),
-                !!unknownSpectators
-                    && BdApi.React.createElement(
-                        Flex,
-                        { style: { alignContent: "center" } },
-                        BdApi.React.createElement(
-                            Text,
-                            null,
-                            "+",
-                            getLocalizedString(Strings.NUM_USERS, { num: unknownSpectators })
-                        )
-                    )
-            )
+        total > 0
+            && (compact
+                ? BdApi.React.createElement("div", null, getSpectatorSentence(spectators))
+                : BdApi.React.createElement(
+                      "div",
+                      { className: styles.showSpectatorsTooltipList },
+                      users.map(user =>
+                          BdApi.React.createElement(
+                              "div",
+                              { key: user.id, className: styles.showSpectatorsTooltipRow },
+                              BdApi.React.createElement("img", {
+                                  className: styles.showSpectatorsTooltipAvatar,
+                                  src: user.getAvatarURL(guildId, 40),
+                                  alt: user.username
+                              }),
+                              getDisplayName(user, spectators)
+                          )
+                      ),
+                      unknownCount > 0
+                          && BdApi.React.createElement(
+                              "div",
+                              { className: styles.showSpectatorsTooltipMore },
+                              "+",
+                              getLocalizedString(Strings.NUM_USERS, { num: unknownCount })
+                          )
+                  ))
     );
 }
 
-function SpectatorAvatar({ user, guildId }) {
-    const avatarRef = BdApi.React.useRef(null);
-    const prefersFullProfile = Hooks.useStateFromStores([Settings], () => Settings.get("openFullProfile", false));
-    const showFullProfile = prefersFullProfile || !UserPopout;
-    const renderAvatar = props =>
+function StreamTooltip() {
+    const spectators = useSpectators();
+    if (!spectators) return null;
+    return BdApi.React.createElement(SpectatorList, { showTitle: true, spectators });
+}
+
+function StreamIconTooltip({ children }) {
+    return BdApi.React.createElement(
+        Tooltip,
+        {
+            text: BdApi.React.createElement(
+                ErrorBoundary,
+                { id: "ShowSpectators.Tooltip", mini: true },
+                BdApi.React.createElement(StreamTooltip, null)
+            )
+        },
+        props => BdApi.React.cloneElement(children, props)
+    );
+}
+
+/* components/spectator.tsx */
+if (!UserPopout) {
+    const fallback = Settings.get("openFullProfile", false) ? "" : ", falling back to the full profile";
+    Logger.error(`Failed to find UserPopout module${fallback}`);
+}
+
+function ProfilePopout({ user, spectators, openFullProfile, children }) {
+    const ref = BdApi.React.useRef(null);
+    const { guildId } = spectators;
+    if (openFullProfile || !UserPopout) {
+        return children({ onClick: () => UserProfileActions?.openUserProfileModal({ userId: user.id, guildId }) }, ref);
+    }
+    return BdApi.React.createElement(
+        UserPopout,
+        { targetElementRef: ref, userId: user.id, guildId, position: "top", align: "center" },
+        popoutProps => children(popoutProps, ref)
+    );
+}
+
+function SpectatorAvatar({ user, spectators, openFullProfile, animate }) {
+    return BdApi.React.createElement(Tooltip, { text: getDisplayName(user, spectators) }, tooltipProps =>
+        BdApi.React.createElement(ProfilePopout, { user, spectators, openFullProfile }, (props, ref) =>
+            BdApi.React.createElement(
+                Clickable,
+                {
+                    ...tooltipProps,
+                    ...props,
+                    className: AvatarStyles.clickableAvatar,
+                    onClick: event => {
+                        tooltipProps.onClick?.(event);
+                        props.onClick?.(event);
+                    }
+                },
+                BdApi.React.createElement(Avatar, {
+                    ref,
+                    "src": user.getAvatarURL(spectators.guildId, 48, animate),
+                    "size": "SIZE_24",
+                    "aria-label": user.username
+                })
+            )
+        )
+    );
+}
+
+function SpectatorName({ user, spectators, openFullProfile }) {
+    return BdApi.React.createElement(ProfilePopout, { user, spectators, openFullProfile }, (props, ref) =>
         BdApi.React.createElement(
             Clickable,
-            { ...props, className: AvatarStyles.clickableAvatar },
-            BdApi.React.createElement("img", {
-                ref: avatarRef,
-                className: AvatarStyles.avatar,
-                src: user.getAvatarURL(void 0, 80, true),
-                alt: user.username,
-                title: user.username
-            })
-        );
-    return BdApi.React.createElement(Tooltip, { text: getDisplayName(user) }, tooltipProps =>
-        showFullProfile
-            ? renderAvatar({
-                  ...tooltipProps,
-                  onClick: () => {
-                      if (!UserPopout) {
-                          Logger.error("Failed to find UserPopout module, falling back to the full profile");
-                      }
-                      openUserProfileModal?.({ userId: user.id, guildId });
-                  }
-              })
-            : BdApi.React.createElement(
-                  UserPopout,
-                  {
-                      targetElementRef: avatarRef,
-                      userId: user.id,
-                      guildId,
-                      position: "top",
-                      align: "center"
-                  },
-                  popoutProps => renderAvatar({ ...tooltipProps, ...popoutProps })
-              )
+            { ...props, tag: "span", className: styles$1.showSpectatorsName },
+            BdApi.React.createElement("span", { ref }, getDisplayName(user, spectators))
+        )
+    );
+}
+
+/* components/panel.tsx */
+const { Text } = Components;
+const MAX_AVATARS = 12;
+
+function SpectatorAvatars({ spectators, openFullProfile }) {
+    const isFocused = Hooks.useStateFromStores([WindowStore], () => WindowStore.isFocused());
+    const { total, users } = spectators;
+    const shownCount = users.length === MAX_AVATARS ? MAX_AVATARS : Math.min(users.length, MAX_AVATARS - 1);
+    const hidden = { ...spectators, users: users.slice(shownCount), total: total - shownCount };
+    return BdApi.React.createElement(UserSummaryItem, {
+        className: styles$2.showSpectatorsPanelContent,
+        users,
+        count: total,
+        renderIcon: false,
+        max: MAX_AVATARS,
+        renderUser: user =>
+            BdApi.React.createElement(SpectatorAvatar, {
+                key: user.id,
+                user,
+                spectators,
+                openFullProfile,
+                animate: isFocused
+            }),
+        renderMoreUsers: () =>
+            hidden.total > 0
+            && BdApi.React.createElement(
+                Tooltip,
+                { text: BdApi.React.createElement(SpectatorList, { spectators: hidden }) },
+                props =>
+                    BdApi.React.createElement("div", { ...props, className: AvatarStyles.moreUsers }, "+", hidden.total)
+            )
+    });
+}
+
+function Panel() {
+    const openFullProfile = Hooks.useStateFromStores([Settings], () => Settings.get("openFullProfile", false));
+    const compact = Hooks.useStateFromStores([Settings], () => Settings.get("compactMode", false));
+    const spectators = useSpectators();
+    if (!spectators) return null;
+    const { streamer, total } = spectators;
+    return BdApi.React.createElement(
+        "div",
+        { className: styles$2.showSpectatorsPanel },
+        BdApi.React.createElement(
+            Text,
+            { size: Text.Sizes.SIZE_16 },
+            streamer && `${getDisplayName(streamer, spectators)}'s `,
+            getLocalizedString(Strings.SPECTATORS, { numViewers: total })
+        ),
+        total > 0
+            && (compact
+                ? BdApi.React.createElement(
+                      Text,
+                      { className: styles$2.showSpectatorsPanelContent },
+                      getSpectatorSentence(spectators, user =>
+                          BdApi.React.createElement(SpectatorName, {
+                              key: user.id,
+                              user,
+                              spectators,
+                              openFullProfile
+                          })
+                      )
+                  )
+                : BdApi.React.createElement(SpectatorAvatars, { spectators, openFullProfile }))
     );
 }
 
 function SpectatorsPanel() {
-    const activeStream = Hooks.useStateFromStores([ApplicationStreamingStore], () =>
-        ApplicationStreamingStore.getCurrentUserActiveStream()
-    );
-    if (!activeStream || !Settings.get("showPanel", true)) return null;
-    let unknownSpectators = 0;
-    const spectatorIds = ApplicationStreamingStore.getViewerIds(activeStream);
-    const spectators = spectatorIds
-        .map(id => UserStore.getUser(id))
-        .filter(user => Boolean(user) || unknownSpectators++);
-    return BdApi.React.createElement(
-        "div",
-        { className: "spectators-panel" },
-        BdApi.React.createElement(
-            Text,
-            { size: Text.Sizes.SIZE_16 },
-            getLocalizedString(Strings.SPECTATORS, { numViewers: spectatorIds.length })
-        ),
-        spectatorIds.length
-            ? BdApi.React.createElement(UserSummaryItem, {
-                  className: "spectators",
-                  style: {
-                      marginTop: "4px",
-                      paddingBottom: "4px"
-                  },
-                  users: spectators,
-                  count: spectatorIds.length,
-                  renderIcon: false,
-                  max: 12,
-                  showDefaultAvatarsForNullUsers: true,
-                  renderUser: user =>
-                      BdApi.React.createElement(SpectatorAvatar, { user, guildId: activeStream.guildId }),
-                  renderMoreUsers: (label, count) => {
-                      const sliced = spectators.slice(-count);
-                      return BdApi.React.createElement(
-                          Tooltip,
-                          {
-                              text: BdApi.React.createElement(SpectatorsTooltip, {
-                                  noTitle: true,
-                                  guildId: activeStream.guildId,
-                                  spectatorIds: sliced.map(user => user.id)
-                              })
-                          },
-                          props =>
-                              BdApi.React.createElement(
-                                  "div",
-                                  { ...props, className: AvatarStyles.moreUsers },
-                                  "+",
-                                  sliced.length
-                              )
-                      );
-                  }
-              })
-            : null
-    );
+    const showPanel = Hooks.useStateFromStores([Settings], () => Settings.get("showPanel", true));
+    return showPanel ? BdApi.React.createElement(Panel, null) : null;
 }
 
 /* settings.json */
@@ -653,6 +883,20 @@ const items = [
         note: "Opens the full profile instead of the small user popout when clicking on a spectator",
         id: "openFullProfile",
         value: false
+    },
+    {
+        type: "switch",
+        name: "Compact Mode",
+        note: "Shows up to 3 spectator names instead of avatars",
+        id: "compactMode",
+        value: false
+    },
+    {
+        type: "switch",
+        name: "Show Watched Stream's Spectators",
+        note: "Shows the spectators of the stream you're watching when you're not streaming yourself",
+        id: "showWatchedStream",
+        value: true
     }
 ];
 
@@ -660,7 +904,7 @@ const SettingsItems = {
     items: items
 };
 
-/* index.jsx */
+/* index.tsx */
 class ShowSpectators {
     start() {
         Styles.load();
@@ -673,25 +917,26 @@ class ShowSpectators {
         Styles.unload();
     }
     patchStreamIcon() {
-        const StreamIcon = Webpack.getBySource(".STATUS_SCREENSHARE");
         if (!StreamIcon) return Logger.error("Failed to find StreamIcon module");
-        Patcher.after(StreamIcon, "A", (_, __, res) => {
-            const children = res.props.children;
-            res.props.children = [
-                BdApi.React.createElement(
-                    Components.Tooltip,
-                    { text: BdApi.React.createElement(SpectatorsTooltip, null) },
-                    props => children.map(child => BdApi.React.cloneElement(child, props))
-                )
-            ];
+        Patcher.after(...StreamIcon, (_, __, res) => {
+            if (!BdApi.React.isValidElement(res)) return;
+            return BdApi.React.createElement(StreamIconTooltip, null, res);
         });
     }
     patchPanel() {
-        const AccountPanelSections = Webpack.getById("688810");
         if (!AccountPanelSections) return Logger.error("Failed to find AccountPanelSections module");
-        Patcher.after(AccountPanelSections, "f5", (_, __, res) => {
-            if (!res.props.value.every(v => v === "rtc panel")) return;
-            res.props.children.props.children.unshift(BdApi.React.createElement(SpectatorsPanel, null));
+        Patcher.after(...AccountPanelSections, (_, args, res) => {
+            const [{ value }] = args;
+            if (!value?.length || !value.every(location => location === "rtc panel")) return;
+            const sections = res?.props?.children?.props?.children;
+            if (!Array.isArray(sections) || sections.some(section => section?.key === "ShowSpectators")) return;
+            sections.unshift(
+                BdApi.React.createElement(
+                    ErrorBoundary,
+                    { key: "ShowSpectators", id: "ShowSpectators.Panel" },
+                    BdApi.React.createElement(SpectatorsPanel, null)
+                )
+            );
         });
     }
     getSettingsPanel() {
