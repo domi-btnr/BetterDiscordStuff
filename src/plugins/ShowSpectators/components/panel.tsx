@@ -2,7 +2,7 @@ import { Components, Hooks } from "@api";
 import { getLocalizedString } from "@common/i18n";
 import { Settings } from "@common/Settings";
 
-import { getSpectatorSentence, Strings, useSpectators } from "../modules/spectators";
+import { getDisplayName, getSpectatorSentence, Strings, useSpectators } from "../modules/spectators";
 import { AvatarStyles, UserSummaryItem, WindowStore } from "../modules/webpack";
 import type { Spectators } from "../types";
 import styles from "./panel.scss";
@@ -61,10 +61,13 @@ function Panel() {
     const spectators = useSpectators();
     if (!spectators) return null;
 
-    const { total } = spectators;
+    const { streamer, total } = spectators;
     return (
         <div className={styles.showSpectatorsPanel}>
-            <Text size={Text.Sizes.SIZE_16}>{getLocalizedString(Strings.SPECTATORS, { numViewers: total })}</Text>
+            <Text size={Text.Sizes.SIZE_16}>
+                {streamer && `${getDisplayName(streamer, spectators)}'s `}
+                {getLocalizedString(Strings.SPECTATORS, { numViewers: total })}
+            </Text>
             {total > 0
                 && (compact ? (
                     <Text className={styles.showSpectatorsPanelContent}>

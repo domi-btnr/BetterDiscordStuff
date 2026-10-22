@@ -1,10 +1,11 @@
 import { Hooks } from "@api";
 import { getLocalizedString } from "@common/i18n";
-import type { User } from "@vencord/discord-types";
+import { Settings } from "@common/Settings";
+import type { Stream, User } from "@vencord/discord-types";
 import { createElement, Fragment, type ReactNode } from "react";
 
 import type { Spectators } from "../types";
-import { ApplicationStreamingStore, NameUtils, UserStore } from "./webpack";
+import { ApplicationStreamingStore, ChannelRTCStore, NameUtils, SelectedChannelStore, UserStore } from "./webpack";
 
 export const Strings = {
     SPECTATORS: "BR7Tno",
@@ -38,12 +39,30 @@ export function getSpectatorSentence(
     });
 }
 
+function getWatchedStream(): Stream | null {
+    const currentUserId = UserStore.getCurrentUser()?.id;
+    const watched = ApplicationStreamingStore.getAllActiveStreams().filter(stream => stream.ownerId !== currentUserId);
+    if (!watched.length) return null;
+
+    const channelId = SelectedChannelStore.getVoiceChannelId();
+    const selected = channelId ? ChannelRTCStore.getSelectedParticipant(channelId) : null;
+    const selectedOwnerId = selected && "stream" in selected ? selected.stream.ownerId : undefined;
+    const lastActiveOwnerId = ApplicationStreamingStore.getLastActiveStream()?.ownerId;
+
+    return (
+        watched.find(stream => stream.ownerId === selectedOwnerId)
+        ?? watched.find(stream => stream.ownerId === lastActiveOwnerId)
+        ?? watched[0]
+    );
+}
+
 function isSameSpectators(a: Spectators | null, b: Spectators | null) {
     if (a === b) return true;
     if (!a || !b) return false;
     return (
         a.guildId === b.guildId
         && a.channelId === b.channelId
+        && a.streamer === b.streamer
         && a.total === b.total
         && a.users.length === b.users.length
         && a.users.every((user, i) => user === b.users[i])
@@ -52,15 +71,19 @@ function isSameSpectators(a: Spectators | null, b: Spectators | null) {
 
 export function useSpectators(): Spectators | null {
     return Hooks.useStateFromStores(
-        [ApplicationStreamingStore, UserStore] as any,
+        [ApplicationStreamingStore, ChannelRTCStore, SelectedChannelStore, Settings, UserStore] as any,
         () => {
-            const stream = ApplicationStreamingStore.getCurrentUserActiveStream();
+            const stream =
+                ApplicationStreamingStore.getCurrentUserActiveStream()
+                ?? (Settings.get("showWatchedStream", true) ? getWatchedStream() : null);
             if (!stream) return null;
 
             const viewerIds = ApplicationStreamingStore.getViewerIds(stream);
+            const isOwnStream = stream.ownerId === UserStore.getCurrentUser()?.id;
             return {
                 guildId: stream.guildId,
                 channelId: stream.channelId,
+                streamer: isOwnStream ? undefined : UserStore.getUser(stream.ownerId),
                 total: viewerIds.length,
                 users: viewerIds.map(id => UserStore.getUser(id)).filter(Boolean)
             };

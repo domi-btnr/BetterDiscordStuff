@@ -13,9 +13,10 @@
         "changes": [
             {
                 "type": "added",
-                "title": "Compact mode",
+                "title": "New options",
                 "items": [
-                    "Prefer it short? Turn on the new \"Compact Mode\" option to list spectators in a single sentence. Clicking a name in the panel opens their profile, just like the avatars do"
+                    "Prefer it short? Turn on the new \"Compact Mode\" option to list spectators in a single sentence. Clicking a name in the panel opens their profile, just like the avatars do",
+                    "Watching someone else's stream? The panel now shows who else is watching. Don't need it? Turn off the new \"Show Watched Stream's Spectators\" option"
                 ]
             },
             {

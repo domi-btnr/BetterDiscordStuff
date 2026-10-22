@@ -1,6 +1,8 @@
 import { Webpack } from "@api";
 import type {
     ApplicationStreamingStore as ApplicationStreamingStoreType,
+    ChannelRTCStore as ChannelRTCStoreType,
+    SelectedChannelStore as SelectedChannelStoreType,
     UserStore as UserStoreType,
     WindowStore as WindowStoreType
 } from "@vencord/discord-types";
@@ -96,5 +98,7 @@ export const {
 export const ApplicationStreamingStore = Webpack.getStore(
     "ApplicationStreamingStore"
 ) as unknown as ApplicationStreamingStoreType;
+export const ChannelRTCStore = Webpack.getStore("ChannelRTCStore") as unknown as ChannelRTCStoreType;
+export const SelectedChannelStore = Webpack.getStore("SelectedChannelStore") as unknown as SelectedChannelStoreType;
 export const UserStore = Webpack.getStore("UserStore") as unknown as UserStoreType;
 export const WindowStore = Webpack.getStore("WindowStore") as unknown as WindowStoreType;

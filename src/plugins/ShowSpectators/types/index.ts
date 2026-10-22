@@ -32,6 +32,7 @@ export interface NameUtils {
 export interface Spectators {
     guildId: string | null;
     channelId: string;
+    streamer?: User;
     total: number;
     users: User[];
 }

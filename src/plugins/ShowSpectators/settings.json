@@ -21,6 +21,13 @@
             "note": "Shows up to 3 spectator names instead of avatars",
             "id": "compactMode",
             "value": false
+        },
+        {
+            "type": "switch",
+            "name": "Show Watched Stream's Spectators",
+            "note": "Shows the spectators of the stream you're watching when you're not streaming yourself",
+            "id": "showWatchedStream",
+            "value": true
         }
     ]
 }
