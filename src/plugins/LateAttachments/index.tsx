@@ -36,11 +36,11 @@ export default class LateAttachments {
             const message = EditMessageStore.getEditingMessage(channel.id);
 
             if (
-                !disabled &&
-                type.analyticsName === "edit" &&
-                message &&
-                canAddAttachments(message) &&
-                Array.isArray(res.props?.children)
+                !disabled
+                && type.analyticsName === "edit"
+                && message
+                && canAddAttachments(message)
+                && Array.isArray(res.props?.children)
             ) {
                 res.props.children.unshift(
                     <AddAttachmentButton channelId={channel.id} existingAttachmentCount={message.attachments.length} />

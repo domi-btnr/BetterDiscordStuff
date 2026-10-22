@@ -16,10 +16,10 @@ export default function MessagePeek({ channelId, timestampOnly }) {
     if (!timestampOnly) {
         const attachmentCount = lastMessage.attachments.length;
         const content =
-            lastMessage.content ||
-            lastMessage.embeds?.[0]?.rawDescription ||
-            (lastMessage.stickerItems.length && "Sticker") ||
-            (attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`);
+            lastMessage.content
+            || lastMessage.embeds?.[0]?.rawDescription
+            || (lastMessage.stickerItems.length && "Sticker")
+            || (attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`);
         if (!content) return null;
 
         const charLimit = Settings.get("tooltipCharacterLimit", 256);

@@ -31,9 +31,9 @@ export default function GlobalBadges(props: { userId: string }) {
             globalBadges.push(
                 <Components.Tooltip text={badge.name}>
                     {(
-                        props: React.JSX.IntrinsicAttributes &
-                            React.ClassAttributes<HTMLImageElement> &
-                            React.ImgHTMLAttributes<HTMLImageElement>
+                        props: React.JSX.IntrinsicAttributes
+                            & React.ClassAttributes<HTMLImageElement>
+                            & React.ImgHTMLAttributes<HTMLImageElement>
                     ) => (
                         <img
                             {...props}

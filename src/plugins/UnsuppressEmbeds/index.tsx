@@ -40,8 +40,8 @@ export default class UnsuppressEmbeds {
             if (!isEmbedSuppressed && !embeds.length && !hasEmbedsInSnapshots) return;
 
             const hasEmbedPerms =
-                channel.isPrivate() ||
-                !!(PermissionStore.getChannelPermissions({ id: channel.id }) & PermissionsBits.EMBED_LINKS);
+                channel.isPrivate()
+                || !!(PermissionStore.getChannelPermissions({ id: channel.id }) & PermissionsBits.EMBED_LINKS);
             if (author.id === UserStore.getCurrentUser().id && !hasEmbedPerms) return;
 
             const menuGroup = findContextMenuGroupByItemId(res, "delete")?.props.children;

@@ -10,7 +10,7 @@ const { default: esBuild } = require("rollup-plugin-esbuild");
 const { watch } = require("rollup");
 const nodeResolve = require("@rollup/plugin-node-resolve");
 const cssom = require("cssom");
-const { js: jsBeautify } = require("js-beautify");
+const prettier = require("prettier");
 
 const PLUGINS_DIR = path.resolve(process.cwd(), "src", "plugins");
 const PLUGIN_META_FIELDS = [
@@ -43,6 +43,8 @@ const OUTPUT_OPTIONS = {
 const tsconfigPath = path.resolve(process.cwd(), "tsconfig.json");
 const tsconfig = JSON.parse(fs.readFileSync(tsconfigPath, "utf8"));
 const tsPaths = tsconfig.compilerOptions?.paths || {};
+
+const prettierConfig = prettier.resolveConfig(path.resolve(process.cwd(), "package.json"));
 
 let argv = parseArgs({
     args: process.argv.slice(2),
@@ -202,7 +204,7 @@ const matchAll = ({ regex, input, parent = false, flat = false }) => {
 };
 
 const GLOBAL_MODULES = {
-    react: "BdApi.React",
+    "react": "BdApi.React",
     "react-dom": "BdApi.ReactDOM"
 };
 const toPlaceholder = global => `__${global.replaceAll(".", "_")}__`;
@@ -310,8 +312,8 @@ const buildPlugin = (pluginName, makeFolder) => {
                     return "export default " + fs.readFileSync(manifestPath, "utf8");
                 },
                 "@api":
-                    'import manifest from "@manifest";' +
-                    "export const { Commands, Components, ContextMenu, Data, DOM, Hooks, Logger, Net, Patcher, Plugins, ReactUtils, Themes, UI, Utils, Webpack } = new BdApi(manifest.name);"
+                    'import manifest from "@manifest";'
+                    + "export const { Commands, Components, ContextMenu, Data, DOM, Hooks, Logger, Net, Patcher, Plugins, ReactUtils, Themes, UI, Utils, Webpack } = new BdApi(manifest.name);"
             }),
             {
                 name: "StyleSheet Loader",
@@ -347,11 +349,11 @@ const buildPlugin = (pluginName, makeFolder) => {
                     const filePath = path.normalize(path.relative(pluginFolder, id).replaceAll("\\", "\\\\"));
 
                     return (
-                        'import Styles from "@styles";' +
-                        `Styles.sheets.push("/* ${filePath} */",` +
-                        `\`${content.replaceAll("`", "\\`")}\`);` +
-                        "export default " +
-                        JSON.stringify(names, null, 4)
+                        'import Styles from "@styles";'
+                        + `Styles.sheets.push("/* ${filePath} */",`
+                        + `\`${content.replaceAll("`", "\\`")}\`);`
+                        + "export default "
+                        + JSON.stringify(names, null, 4)
                     );
                 }
             },
@@ -364,6 +366,24 @@ const buildPlugin = (pluginName, makeFolder) => {
                     const relativePath = isRealPath ? path.relative(pluginFolder, id) : id;
 
                     return `/* ${relativePath} */\n${code}\n\n\n`;
+                }
+            },
+            {
+                name: "Statement Spacing",
+                renderChunk(code) {
+                    const statements = this.parse(code).body;
+                    const isMultiline = node => code.slice(node.start, node.end).includes("\n");
+
+                    for (let i = statements.length - 1; i > 0; i--) {
+                        const prev = statements[i - 1];
+                        const next = statements[i];
+                        if (!isMultiline(prev) && !isMultiline(next)) continue;
+                        if (/\n\s*\n/.test(code.slice(prev.end, next.start))) continue;
+
+                        code = code.slice(0, prev.end) + "\n" + code.slice(prev.end);
+                    }
+
+                    return code;
                 }
             }
         ]
@@ -389,7 +409,7 @@ const buildPlugin = (pluginName, makeFolder) => {
 
                     code = inlineGlobalModules(code);
                     code = code.replaceAll("/* @__PURE__ */ ", "");
-                    code = jsBeautify(code, {});
+                    code = await prettier.format(code, { ...(await prettierConfig), parser: "babel" });
 
                     const contents = makeMeta(manifest) + code;
 
