@@ -9,6 +9,7 @@ import tseslint from "typescript-eslint";
 export default defineConfig([
     js.configs.recommended,
     react.configs.flat.recommended,
+    react.configs.flat["jsx-runtime"],
     tseslint.configs.recommended,
     { ignores: ["builds/**", "src/archive/**"] },
     {
@@ -57,7 +58,7 @@ export default defineConfig([
             "comma-style": "error",
             "eol-last": ["error", "always"],
             "func-call-spacing": ["error", "never"],
-            indent: ["error", 4, { SwitchCase: 1 }],
+            "indent": ["error", 4, { SwitchCase: 1 }],
             "keyword-spacing": "error",
             "max-len": [
                 "error",
@@ -80,11 +81,11 @@ export default defineConfig([
             "no-whitespace-before-property": "error",
             "object-curly-spacing": ["error", "always"],
             "prefer-const": "error",
-            quotes: ["error", "double", { avoidEscape: true }],
+            "quotes": ["error", "double", { avoidEscape: true }],
             "react/jsx-key": "off",
             "react/no-unescaped-entities": "off",
             "react/prop-types": "off",
-            semi: ["error", "always"],
+            "semi": ["error", "always"],
             "space-before-blocks": "error",
             "space-before-function-paren": ["error", { anonymous: "never", named: "never", asyncArrow: "always" }],
             "space-in-parens": "error",
@@ -92,7 +93,7 @@ export default defineConfig([
             "space-unary-ops": "error",
             "@typescript-eslint/no-explicit-any": "off",
             "spaced-comment": ["error", "always", { markers: ["/"] }],
-            yoda: "error",
+            "yoda": "error",
             "simple-import-sort/imports": "error",
             "simple-import-sort/exports": "error",
             "unused-imports/no-unused-imports": "error"

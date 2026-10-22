@@ -1,6 +1,5 @@
 import { Data, UI } from "@api";
 import { Manifest } from "@manifest";
-import React from "react";
 
 import { getLocale } from "../i18n";
 import Footer from "./footer";

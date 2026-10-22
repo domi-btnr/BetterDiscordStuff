@@ -3,8 +3,17 @@
     "scripts": {
         "prepare": "husky",
         "build": "node scripts/build.js",
-        "lint": "prettier --check . && eslint && tsc --noEmit -p tsconfig.json",
-        "lint:fix": "prettier --write . && eslint --fix && tsc --noEmit -p tsconfig.json"
+        "lint": "prettier --check --cache . && eslint --cache --cache-location node_modules/.cache/eslint/ && tsc --noEmit -p tsconfig.json --incremental --tsBuildInfoFile node_modules/.cache/tsc/tsbuildinfo",
+        "lint:fix": "prettier --write --cache . && eslint --fix --cache --cache-location node_modules/.cache/eslint/ && tsc --noEmit -p tsconfig.json --incremental --tsBuildInfoFile node_modules/.cache/tsc/tsbuildinfo",
+        "lint:clear-cache": "node -e \"for (const tool of ['eslint', 'prettier', 'tsc']) require('fs').rmSync('node_modules/.cache/' + tool, { recursive: true, force: true })\""
+    },
+    "prettier": {
+        "arrowParens": "avoid",
+        "experimentalOperatorPosition": "start",
+        "printWidth": 120,
+        "quoteProps": "consistent",
+        "tabWidth": 4,
+        "trailingComma": "none"
     },
     "devDependencies": {
         "@betterdiscord/types": "^1.14.3",
@@ -22,7 +31,6 @@
         "eslint-plugin-unused-imports": "^4.4.1",
         "globals": "^17.13.0",
         "husky": "^9.1.7",
-        "js-beautify": "^2.0.3",
         "prettier": "^3.9.10",
         "rollup": "^4.64.7",
         "rollup-plugin-esbuild": "^6.2.1",

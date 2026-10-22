@@ -1,6 +1,5 @@
 import { Components, Hooks } from "@api";
 import ErrorBoundary from "@common/ErrorBoundary";
-import React from "react";
 
 import Settings from "../store";
 import type { SettingsItemForType } from "../types";

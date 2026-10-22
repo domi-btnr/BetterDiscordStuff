@@ -2,7 +2,7 @@
     "exclude": ["src/archive"],
     "compilerOptions": {
         "esModuleInterop": true,
-        "jsx": "preserve",
+        "jsx": "react-jsx",
         "module": "ESNext",
         "target": "ESNext",
         "types": ["node", "react"],

@@ -45,7 +45,8 @@ pnpm lint:fix   # same, but prettier --write and eslint --fix
   - `Schemas/` — `manifest.schema.json` and `settings.schema.json`, referenced via `$schema` from each plugin's `package.json`/`settings.json`.
 - **`scripts/build.js`** — the custom Rollup+esbuild bundler behind `pnpm build`. Compiles each plugin's entry file into a single `builds/<Plugin>.plugin.js`, prepending a BetterDiscord `/** @name ... */` meta block generated from that plugin's `package.json`. It injects several **virtual modules** that source files import as if they were normal packages — this is why plugin code looks like ordinary React/npm code despite having no real dependencies:
   - `@api` → a bound `BdApi(manifest.name)` instance, destructured into individual exports (`Data`, `DOM`, `Patcher`, `UI`, `Webpack`, etc.). For the current, authoritative list of exported names, check the `virtual(...)` block in `scripts/build.js` or the `declare module "@api"` block in `src/types/modules.d.ts` — don't rely on any list written here going stale.
-  - `react` / `react-dom` → `BdApi.React` / `BdApi.ReactDOM`
+  - `react` / `react-dom` → `BdApi.React` / `BdApi.ReactDOM`. Import them like in any React app (default, named or namespace); the bundle references the global directly (`useState` → `BdApi.React.useState`), see `GLOBAL_MODULES` in `scripts/build.js`.
+  - JSX compiles straight to `BdApi.React.createElement` / `BdApi.React.Fragment`, so files that only use JSX don't need to import React. esbuild ignores `tsconfig.json`, which only drives type checking.
   - `@manifest` → the plugin's own `package.json` contents
   - `@styles` → a loader backed by `DOM.addStyle`/`removeStyle` that also injects into Discord popout windows (via `PopoutWindowStore`); `.scss`/`.css` imports are compiled and exposed as class-name maps
   - Ambient types for all of the above live in `src/types/modules.d.ts`.

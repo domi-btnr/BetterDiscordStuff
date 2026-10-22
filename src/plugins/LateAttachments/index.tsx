@@ -2,7 +2,6 @@ import { Patcher, Webpack } from "@api";
 import showChangelog from "@common/Changelog";
 import manifest from "@manifest";
 import Styles from "@styles";
-import React from "react";
 
 import AddAttachmentButton from "./components/AddAttachmentButton";
 import EditAttachmentsBar from "./components/EditAttachmentsBar";
@@ -37,11 +36,11 @@ export default class LateAttachments {
             const message = EditMessageStore.getEditingMessage(channel.id);
 
             if (
-                !disabled &&
-                type.analyticsName === "edit" &&
-                message &&
-                canAddAttachments(message) &&
-                Array.isArray(res.props?.children)
+                !disabled
+                && type.analyticsName === "edit"
+                && message
+                && canAddAttachments(message)
+                && Array.isArray(res.props?.children)
             ) {
                 res.props.children.unshift(
                     <AddAttachmentButton channelId={channel.id} existingAttachmentCount={message.attachments.length} />

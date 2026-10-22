@@ -4,7 +4,6 @@ import { Components, Hooks, Webpack } from "@api";
 import { getLocale } from "@common/i18n";
 import { Settings } from "@common/Settings";
 import { Parser } from "@common/Webpack";
-import React from "react";
 
 const MessageStore = Webpack.getStore("MessageStore");
 
@@ -17,10 +16,10 @@ export default function MessagePeek({ channelId, timestampOnly }) {
     if (!timestampOnly) {
         const attachmentCount = lastMessage.attachments.length;
         const content =
-            lastMessage.content ||
-            lastMessage.embeds?.[0]?.rawDescription ||
-            (lastMessage.stickerItems.length && "Sticker") ||
-            (attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`);
+            lastMessage.content
+            || lastMessage.embeds?.[0]?.rawDescription
+            || (lastMessage.stickerItems.length && "Sticker")
+            || (attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`);
         if (!content) return null;
 
         const charLimit = Settings.get("tooltipCharacterLimit", 256);

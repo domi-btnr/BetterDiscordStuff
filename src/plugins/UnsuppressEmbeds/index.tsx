@@ -4,7 +4,6 @@ import { findContextMenuGroupByItemId } from "@common/ContextMenu";
 import { RestAPI } from "@common/Webpack";
 import manifest from "@manifest";
 import { Channel, Constants, Message, PermissionsBits, PermissionStore, UserStore } from "@vencord/discord-types";
-import React from "react";
 
 import { ImageInvisible, ImageVisible } from "./components/icons";
 
@@ -41,8 +40,8 @@ export default class UnsuppressEmbeds {
             if (!isEmbedSuppressed && !embeds.length && !hasEmbedsInSnapshots) return;
 
             const hasEmbedPerms =
-                channel.isPrivate() ||
-                !!(PermissionStore.getChannelPermissions({ id: channel.id }) & PermissionsBits.EMBED_LINKS);
+                channel.isPrivate()
+                || !!(PermissionStore.getChannelPermissions({ id: channel.id }) & PermissionsBits.EMBED_LINKS);
             if (author.id === UserStore.getCurrentUser().id && !hasEmbedPerms) return;
 
             const menuGroup = findContextMenuGroupByItemId(res, "delete")?.props.children;

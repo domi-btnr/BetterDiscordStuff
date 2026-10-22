@@ -1,6 +1,5 @@
 import { Components } from "@api";
 import { Parser } from "@common/Webpack";
-import React from "react";
 
 import { TextVariantStyles } from "../modules/shared";
 import CopyButton from "./copyButton";

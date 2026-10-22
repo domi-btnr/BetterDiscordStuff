@@ -3,7 +3,6 @@ import showChangelog from "@common/Changelog";
 import { Settings, SettingsPanel } from "@common/Settings";
 import { MessageActions } from "@common/Webpack";
 import manifest from "@manifest";
-import React from "react";
 
 import { getRelativeTime, getUnixTimestamp } from "./modules/utils";
 import SettingsItems from "./settings.json";
