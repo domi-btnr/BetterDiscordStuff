@@ -1,8 +1,9 @@
-.spectators-panel {
+.show-spectators-panel {
     padding: 8px;
     align-items: center;
     border-bottom: 1px solid var(--border-subtle);
-    .spectators {
+
+    .show-spectators-panel-content {
         margin-top: 4px;
         padding-bottom: 4px;
     }
