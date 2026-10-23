@@ -1,0 +1,12 @@
+{
+    "title": "Something went wrong",
+    "description": "{{plugin}} couldn't show this part. Try again, or press <keybind/> to open the console for details.",
+    "retry": "Try Again",
+    "mini": "{{plugin}} ran into an error",
+    "copy": "Copy Error",
+    "copied": "Copied",
+    "keys": {
+        "command": "Command",
+        "option": "Option"
+    }
+}

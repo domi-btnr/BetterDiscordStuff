@@ -25,11 +25,15 @@ export function getLanguages(resources: Record<string, unknown>): string[] {
     return [...new Set([locale, locale.split("-")[0], FALLBACK_LANGUAGE])].filter(language => language in resources);
 }
 
-/** @returns One of Discord's messages as plain text, or `undefined` if it's missing or not loaded yet. */
+/** @returns One of Discord's messages as plain text, or `undefined` if it's missing, not loaded yet or fails to format. */
 function getDiscordMessage(key: string, values: TOptions): string | undefined {
-    const message = I18nModule.t?.[key];
-    if (!message) return;
-    return I18nModule.intl?.formatToPlainString(message, values) || undefined;
+    try {
+        const message = I18nModule.t?.[key];
+        if (!message) return;
+        return I18nModule.intl?.formatToPlainString(message, values) || undefined;
+    } catch {
+        return undefined;
+    }
 }
 
 /**

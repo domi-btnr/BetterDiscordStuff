@@ -1,0 +1,12 @@
+{
+    "title": "Etwas ist schiefgelaufen",
+    "description": "{{plugin}} konnte diesen Bereich nicht anzeigen. Versuche es erneut oder drück <keybind/>, um die Details in der Konsole zu sehen.",
+    "retry": "Erneut versuchen",
+    "mini": "Bei {{plugin}} ist ein Fehler aufgetreten",
+    "copy": "Fehler kopieren",
+    "copied": "Kopiert",
+    "keys": {
+        "command": "Befehl",
+        "option": "Option"
+    }
+}

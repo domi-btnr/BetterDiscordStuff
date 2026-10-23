@@ -1,6 +1,5 @@
 import { Commands, Logger, Patcher } from "@api";
 import showChangelog from "@common/Changelog";
-import ErrorBoundary from "@common/ErrorBoundary";
 import { onLocaleChange } from "@common/i18n";
 import manifest from "@manifest";
 import Styles from "@styles";
@@ -18,13 +17,7 @@ function AddFriendPage({ page, ...props }: AddFriendPageProps) {
     const res = page(props);
     const children = res?.props?.children;
     if (Array.isArray(children)) {
-        children.splice(
-            1,
-            0,
-            <ErrorBoundary key="FriendCodes" id="FriendCodes.Panel">
-                <FriendCodesPanel />
-            </ErrorBoundary>
-        );
+        children.splice(1, 0, <FriendCodesPanel key="FriendCodes" />);
     }
     return res;
 }

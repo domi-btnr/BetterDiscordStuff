@@ -1,4 +1,5 @@
 import { Components, Hooks, Logger, UI } from "@api";
+import ErrorBoundary from "@common/ErrorBoundary";
 import { useEffect, useState } from "react";
 
 import { useTranslation } from "../modules/i18n";
@@ -45,7 +46,7 @@ function PanelContent() {
     return invites.map(invite => <FriendCodeRow key={invite.code} invite={invite} />);
 }
 
-export default function FriendCodesPanel() {
+function PanelBody() {
     const { t } = useTranslation();
     const count = Hooks.useStateFromStores([FriendInvitesStore] as any, () => FriendInvitesStore.getInvites().length);
     const [pending, setPending] = useState(false);
@@ -65,7 +66,7 @@ export default function FriendCodesPanel() {
     };
 
     return (
-        <header className={styles.friendCodesPanel}>
+        <>
             <Flex className={styles.friendCodesPanelHeader} align={Flex.Align.START} justify={Flex.Justify.BETWEEN}>
                 <div className={styles.friendCodesPanelHeading}>
                     <Text tag="h2" size={Text.Sizes.SIZE_20} color={Text.Colors.HEADER_PRIMARY} strong>
@@ -106,6 +107,16 @@ export default function FriendCodesPanel() {
             <div className={styles.friendCodesPanelList}>
                 <PanelContent />
             </div>
+        </>
+    );
+}
+
+export default function FriendCodesPanel() {
+    return (
+        <header className={styles.friendCodesPanel}>
+            <ErrorBoundary id="FriendCodes.Panel">
+                <PanelBody />
+            </ErrorBoundary>
         </header>
     );
 }
