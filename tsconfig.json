@@ -7,7 +7,9 @@
         "target": "ESNext",
         "types": ["node", "react"],
         "paths": {
-            "@common/*": ["./src/common/*"]
+            "@common/*": ["./src/common/*"],
+            "@typings": ["./src/types"],
+            "@typings/*": ["./src/types/*"]
         }
     }
 }

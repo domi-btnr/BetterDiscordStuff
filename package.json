@@ -21,6 +21,7 @@
         "@rollup/plugin-commonjs": "^29.0.3",
         "@rollup/plugin-json": "^6.1.0",
         "@rollup/plugin-node-resolve": "^16.0.3",
+        "@sentry/browser": "8.55.0",
         "@types/node": "^26.6.5",
         "@types/react": "~19.2.18",
         "@vencord/discord-types": "^1.0.2",

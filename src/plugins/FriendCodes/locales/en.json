@@ -1,0 +1,33 @@
+{
+    "panel": {
+        "title": "Your Friend Codes",
+        "description": "Share a friend code so others can add you without knowing your username.",
+        "count": "Friend Codes — {{count}}",
+        "create": "Create Friend Code",
+        "revokeAll": "Revoke All",
+        "empty": "You don't have any friend codes yet.",
+        "loadFailed": "Couldn't load your friend codes.",
+        "retry": "Try Again"
+    },
+    "card": {
+        "details": "Expires <expires/> • {{uses}}/{{maxUses}} uses",
+        "copy": "Copy",
+        "copied": "Copied"
+    },
+    "errors": {
+        "create": "Couldn't create a friend code. Please try again later.",
+        "revoke": "Couldn't revoke your friend codes. Please try again later."
+    },
+    "commands": {
+        "create": {
+            "description": "Create a friend code",
+            "ephemeral": "Whether only you can see the message",
+            "message": "Max Uses: {{maxUses}}\nExpires: {{expires}}\n{{link}}"
+        },
+        "revoke": {
+            "description": "Revoke all your friend codes",
+            "revoked_one": "Revoked {{count}} friend code.",
+            "revoked_other": "Revoked {{count}} friend codes."
+        }
+    }
+}
