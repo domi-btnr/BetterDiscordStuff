@@ -1,0 +1,33 @@
+{
+    "panel": {
+        "title": "Deine Freundescodes",
+        "description": "Teile einen Freundescode, damit andere dich hinzufügen können, ohne deinen Benutzernamen zu kennen.",
+        "count": "Freundescodes — {{count}}",
+        "create": "Freundescode erstellen",
+        "revokeAll": "Alle löschen",
+        "empty": "Du hast noch keine Freundescodes.",
+        "loadFailed": "Deine Freundescodes konnten nicht geladen werden.",
+        "retry": "Erneut versuchen"
+    },
+    "card": {
+        "details": "Läuft <expires/> ab • {{uses}}/{{maxUses}} Verwendungen",
+        "copy": "Kopieren",
+        "copied": "Kopiert"
+    },
+    "errors": {
+        "create": "Der Freundescode konnte nicht erstellt werden. Bitte versuche es später erneut.",
+        "revoke": "Deine Freundescodes konnten nicht gelöscht werden. Bitte versuche es später erneut."
+    },
+    "commands": {
+        "create": {
+            "description": "Erstellt einen Freundescode",
+            "ephemeral": "Ob nur du die Nachricht sehen kannst",
+            "message": "Max. Verwendungen: {{maxUses}}\nLäuft ab: {{expires}}\n{{link}}"
+        },
+        "revoke": {
+            "description": "Löscht alle deine Freundescodes",
+            "revoked_one": "{{count}} Freundescode gelöscht.",
+            "revoked_other": "{{count}} Freundescodes gelöscht."
+        }
+    }
+}

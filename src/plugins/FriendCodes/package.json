@@ -1,7 +1,7 @@
 {
     "$schema": "../../common/Schemas/manifest.schema.json",
     "name": "FriendCodes",
-    "version": "1.2.6",
+    "version": "1.3.0",
     "description": "Generate FriendCodes to easily add friends",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -9,20 +9,29 @@
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/FriendCodes",
     "changelog": {
-        "date": "2026-10-21",
+        "date": "2026-10-23",
         "changes": [
             {
-                "type": "fixed",
-                "title": "Fixed",
+                "type": "added",
+                "title": "Now speaking German 🇩🇪",
                 "items": [
-                    "Fixed the FriendCodes panel not showing up after the latest Discord update"
+                    "FriendCodes follows your Discord language and is now fully translated into German. Switch languages and it updates right away"
+                ]
+            },
+            {
+                "type": "fixed",
+                "title": "No more endless loading",
+                "items": [
+                    "The panel no longer gets stuck on \"Loading...\" when Discord doesn't respond. You can retry instead"
                 ]
             },
             {
                 "type": "improved",
-                "title": "Improved",
+                "title": "Feels like part of Discord",
                 "items": [
-                    "Friend Codes are now cached, so the panel shows them instantly when you switch back to it"
+                    "Rewrote the plugin from the ground up, making it lighter and less likely to break when Discord updates",
+                    "The panel got a cleaner look that fits right in with the rest of the Add Friend page",
+                    "Creating or revoking friend codes now tells you when something goes wrong, in the panel and in the slash commands"
                 ]
             }
         ]

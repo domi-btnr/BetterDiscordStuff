@@ -1,0 +1,84 @@
+.friend-codes-panel {
+    padding: 20px 30px;
+    border-bottom: 1px solid var(--border-subtle);
+
+    .friend-codes-panel-header {
+        flex-wrap: wrap;
+        gap: 12px 16px;
+
+        .friend-codes-panel-heading {
+            flex: 1 1 280px;
+            min-width: 0;
+
+            .friend-codes-panel-description {
+                margin-top: 8px;
+            }
+        }
+
+        .friend-codes-panel-actions {
+            flex: 0 0 auto;
+            width: auto;
+            gap: 8px;
+        }
+
+        .friend-codes-panel-revoke.bd-button-outlined {
+            border-color: var(--status-danger);
+            color: var(--status-danger);
+
+            &:hover:not(:disabled) {
+                background-color: var(--status-danger);
+                color: var(--white-500, #fff);
+            }
+        }
+    }
+
+    .friend-codes-panel-count {
+        margin: 20px 0 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+    }
+
+    .friend-codes-panel-list {
+        max-height: 40vh;
+        overflow-y: auto;
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        background-color: var(--background-base-lower);
+
+        &::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+            border: 2px solid var(--scrollbar-thin-track);
+            background-color: var(--scrollbar-thin-track);
+        }
+
+        &::-webkit-scrollbar-thumb {
+            min-height: 40px;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            background-color: var(--scrollbar-thin-thumb);
+            background-clip: padding-box;
+        }
+
+        &::-webkit-scrollbar-corner {
+            background-color: transparent;
+        }
+
+        .no-webkit-scrollbar & {
+            scrollbar-width: thin;
+            scrollbar-color: var(--scrollbar-thin-thumb) var(--scrollbar-thin-track);
+        }
+
+        .friend-codes-panel-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px 16px;
+            text-align: center;
+        }
+    }
+}

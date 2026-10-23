@@ -1,17 +1,21 @@
 import { Components } from "@api";
-import React from "react";
+import { useState } from "react";
 
 const { Button } = Components;
 
-// Copy Button from Strencher
-// https://github.com/Strencher/BetterDiscordStuff/blob/development/ShowSessions/components/list.tsx#L25-L44
-export default function CopyButton({ copyText, copiedText, onClick }) {
-    const [copied, setCopied] = React.useState(false);
+interface CopyButtonProps {
+    copyText: string;
+    copiedText: string;
+    onClick: () => void;
+}
 
-    const handleButtonClick = e => {
+export default function CopyButton({ copyText, copiedText, onClick }: CopyButtonProps) {
+    const [copied, setCopied] = useState(false);
+
+    const handleButtonClick = () => {
         setCopied(true);
         setTimeout(() => setCopied(false), 1000);
-        onClick(e);
+        onClick();
     };
 
     return (

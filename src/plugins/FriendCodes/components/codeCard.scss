@@ -1,0 +1,12 @@
+.friend-codes-row {
+    gap: 16px;
+    padding: 12px 16px;
+
+    & + & {
+        border-top: 1px solid var(--border-subtle);
+    }
+
+    .friend-codes-row-details {
+        margin-top: 2px;
+    }
+}
