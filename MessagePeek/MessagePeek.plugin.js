@@ -94,7 +94,7 @@ function lazyExport(getter) {
 /* ../../common/Webpack/Parser.ts */
 const Parser = lazyExport(() => Webpack.getByKeys("parseTopic"));
 
-/* ../../common/i18n/index.ts */
+/* ../../common/i18n/discord.ts */
 function getLocale() {
     return Webpack.getStore("LocaleStore").locale;
 }

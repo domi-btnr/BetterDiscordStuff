@@ -1,6 +1,6 @@
 /**
  * @name FriendCodes
- * @version 1.2.6
+ * @version 1.3.0
  * @description Generate FriendCodes to easily add friends
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -15,7 +15,7 @@
 const manifest = {
     $schema: "../../common/Schemas/manifest.schema.json",
     name: "FriendCodes",
-    version: "1.2.6",
+    version: "1.3.0",
     description: "Generate FriendCodes to easily add friends",
     author: "domi.btnr",
     authorId: "354191516979429376",
@@ -23,17 +23,30 @@ const manifest = {
     donate: "https://paypal.me/domibtnr",
     source: "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/FriendCodes",
     changelog: {
-        date: "2026-10-21",
+        date: "2026-10-23",
         changes: [
             {
+                type: "added",
+                title: "Now speaking German 🇩🇪",
+                items: [
+                    "FriendCodes follows your Discord language and is now fully translated into German. Switch languages and it updates right away"
+                ]
+            },
+            {
                 type: "fixed",
-                title: "Fixed",
-                items: ["Fixed the FriendCodes panel not showing up after the latest Discord update"]
+                title: "No more endless loading",
+                items: [
+                    'The panel no longer gets stuck on "Loading..." when Discord doesn\'t respond. You can retry instead'
+                ]
             },
             {
                 type: "improved",
-                title: "Improved",
-                items: ["Friend Codes are now cached, so the panel shows them instantly when you switch back to it"]
+                title: "Feels like part of Discord",
+                items: [
+                    "Rewrote the plugin from the ground up, making it lighter and less likely to break when Discord updates",
+                    "The panel got a cleaner look that fits right in with the rest of the Add Friend page",
+                    "Creating or revoking friend codes now tells you when something goes wrong, in the panel and in the slash commands"
+                ]
             }
         ]
     }
@@ -89,13 +102,132 @@ function lazyExport(getter) {
     );
 }
 
+/* ../../common/Webpack/I18nModule.ts */
+const I18nModule = lazyExport(() => Webpack.getModule(m => m.intl));
+
 /* ../../common/Webpack/MessageActions.ts */
 const MessageActions = Webpack.getByKeys("sendMessage", "editMessage");
 
 /* ../../common/Webpack/Parser.ts */
 const Parser = lazyExport(() => Webpack.getByKeys("parseTopic"));
 
-/* ../../common/i18n/index.ts */
+/* ../../common/i18n/locale.ts */
+const FALLBACK_LANGUAGE = "en";
+
+function getCurrentLocale() {
+    return I18nModule.intl?.currentLocale ?? FALLBACK_LANGUAGE;
+}
+
+function onLocaleChange(callback) {
+    return I18nModule.intl?.onLocaleChange(callback) ?? (() => void 0);
+}
+
+function useLocale() {
+    return BdApi.React.useSyncExternalStore(onLocaleChange, getCurrentLocale);
+}
+
+/* ../../common/i18n/resolve.ts */
+const pluralRules = new Map();
+
+function getPluralRules(language) {
+    let rules = pluralRules.get(language);
+    if (!rules) pluralRules.set(language, (rules = new Intl.PluralRules(language)));
+    return rules;
+}
+
+function getPath(resource, key) {
+    let value = resource;
+    for (const part of key.split(".")) {
+        if (typeof value !== "object") return;
+        value = value[part];
+    }
+    return typeof value === "string" ? value : void 0;
+}
+
+function getLanguages(resources) {
+    const locale = getCurrentLocale();
+    return [...new Set([locale, locale.split("-")[0], FALLBACK_LANGUAGE])].filter(language => language in resources);
+}
+
+function getDiscordMessage(key, values) {
+    const message = I18nModule.t?.[key];
+    if (!message) return;
+    return I18nModule.intl?.formatToPlainString(message, values) || void 0;
+}
+
+function resolveMessage(resources, key, options = {}, discordKey) {
+    const discordMessage = discordKey && getDiscordMessage(discordKey, options);
+    if (discordMessage) return discordMessage;
+    for (const language of getLanguages(resources)) {
+        const resource = resources[language];
+        if (options.count != null) {
+            const rule = getPluralRules(language).select(options.count);
+            const plural =
+                (options.count === 0 ? getPath(resource, `${key}_zero`) : void 0)
+                ?? getPath(resource, `${key}_${rule}`)
+                ?? getPath(resource, `${key}_other`);
+            if (plural != null) return plural;
+        }
+        const message = getPath(resource, key);
+        if (message != null) return message;
+    }
+    return options.defaultValue;
+}
+
+function interpolate(message, values) {
+    return message.replace(/\{\{\s*(\w+)\s*\}\}/g, (match, name) => (name in values ? String(values[name]) : match));
+}
+
+/* ../../common/i18n/trans.ts */
+const TAG_REGEX = /<(\w+)\s*\/>|<(\w+)>(.*?)<\/\2>/s;
+
+function renderTags(message, components, fill) {
+    const parts = message.split(TAG_REGEX);
+    const children = [];
+    for (let i = 0; i < parts.length; i += 4) {
+        if (parts[i]) children.push(fill(parts[i]));
+        const [selfClosing, tag, inner] = parts.slice(i + 1, i + 4);
+        const component = components[selfClosing ?? tag];
+        if (selfClosing)
+            children.push(component ? BdApi.React.cloneElement(component, { key: i }) : `<${selfClosing}/>`);
+        else if (tag)
+            children.push(component ? BdApi.React.cloneElement(component, { key: i }, fill(inner)) : fill(inner));
+    }
+    return BdApi.React.createElement(BdApi.React.Fragment, null, ...children);
+}
+
+/* ../../common/i18n/createI18n.ts */
+function createI18n({ resources, discord = {} }) {
+    const allResources = resources;
+    const discordKeys = discord;
+    const resolve = (key, options) => resolveMessage(allResources, key, options, discordKeys[key]);
+    function t(key, options = {}) {
+        return interpolate(resolve(key, options) ?? key, options);
+    }
+    const i18n = {
+        /** The language messages are currently picked from. */
+        get language() {
+            return getLanguages(allResources)[0];
+        },
+        /** Every language the plugin has messages for. */
+        languages: Object.keys(resources),
+        exists: (key, options) => resolve(key, options) != null,
+        t
+    };
+    function useTranslation() {
+        useLocale();
+        return { t, i18n, ready: true };
+    }
+    function Trans({ i18nKey, values, components = {}, ...options }) {
+        useLocale();
+        const allValues = { ...options, ...values };
+        const message = resolve(i18nKey, allValues) ?? i18nKey;
+        return renderTags(message, components, text => interpolate(text, allValues));
+    }
+    return { i18n, t, useTranslation, Trans };
+}
+
+/* ../../common/i18n/discord.ts */
 function getLocale() {
     return Webpack.getStore("LocaleStore").locale;
 }
@@ -283,71 +415,195 @@ class ErrorBoundary extends BdApi.React.Component {
     }
 }
 
-/* modules/shared.js */
-const InviteModule = Webpack.getByKeys("createFriendInvite");
-const TextVariantStyles = Webpack.getByKeys("heading-lg/semibold");
+/* locales/de.json */
+const panel$1 = {
+    title: "Deine Freundescodes",
+    description: "Teile einen Freundescode, damit andere dich hinzufügen können, ohne deinen Benutzernamen zu kennen.",
+    count: "Freundescodes — {{count}}",
+    create: "Freundescode erstellen",
+    revokeAll: "Alle löschen",
+    empty: "Du hast noch keine Freundescodes.",
+    loadFailed: "Deine Freundescodes konnten nicht geladen werden.",
+    retry: "Erneut versuchen"
+};
 
-/* commands/createFriendCode.js */
+const card$1 = {
+    details: "Läuft <expires/> ab • {{uses}}/{{maxUses}} Verwendungen",
+    copy: "Kopieren",
+    copied: "Kopiert"
+};
+
+const errors$1 = {
+    create: "Der Freundescode konnte nicht erstellt werden. Bitte versuche es später erneut.",
+    revoke: "Deine Freundescodes konnten nicht gelöscht werden. Bitte versuche es später erneut."
+};
+
+const commands$1 = {
+    create: {
+        description: "Erstellt einen Freundescode",
+        ephemeral: "Ob nur du die Nachricht sehen kannst",
+        message: "Max. Verwendungen: {{maxUses}}\nLäuft ab: {{expires}}\n{{link}}"
+    },
+    revoke: {
+        description: "Löscht alle deine Freundescodes",
+        revoked_one: "{{count}} Freundescode gelöscht.",
+        revoked_other: "{{count}} Freundescodes gelöscht."
+    }
+};
+
+const de = {
+    panel: panel$1,
+    card: card$1,
+    errors: errors$1,
+    commands: commands$1
+};
+
+/* locales/en.json */
+const panel = {
+    title: "Your Friend Codes",
+    description: "Share a friend code so others can add you without knowing your username.",
+    count: "Friend Codes — {{count}}",
+    create: "Create Friend Code",
+    revokeAll: "Revoke All",
+    empty: "You don't have any friend codes yet.",
+    loadFailed: "Couldn't load your friend codes.",
+    retry: "Try Again"
+};
+
+const card = {
+    details: "Expires <expires/> • {{uses}}/{{maxUses}} uses",
+    copy: "Copy",
+    copied: "Copied"
+};
+
+const errors = {
+    create: "Couldn't create a friend code. Please try again later.",
+    revoke: "Couldn't revoke your friend codes. Please try again later."
+};
+
+const commands = {
+    create: {
+        description: "Create a friend code",
+        ephemeral: "Whether only you can see the message",
+        message: "Max Uses: {{maxUses}}\nExpires: {{expires}}\n{{link}}"
+    },
+    revoke: {
+        description: "Revoke all your friend codes",
+        revoked_one: "Revoked {{count}} friend code.",
+        revoked_other: "Revoked {{count}} friend codes."
+    }
+};
+
+const en = {
+    panel: panel,
+    card: card,
+    errors: errors,
+    commands: commands
+};
+
+/* modules/i18n.ts */
+const { t, useTranslation, Trans } = createI18n({
+    resources: { en, de },
+    discord: {
+        "card.copy": "OpuAlK",
+        "card.copied": "q30c5i",
+        "panel.retry": "TdQXA8"
+    }
+});
+
+/* modules/webpack.ts */
+const { Filters } = Webpack;
+
+const Modules = Webpack.getBulkKeyed({
+    InviteModule: {
+        filter: Filters.byKeys("createFriendInvite", "getAllFriendInvites", "revokeFriendInvites"),
+        cacheId: "FriendCodes.InviteModule"
+    },
+    TabBar: {
+        filter: Filters.byKeys("Header", "Item", "Separator", "Panel"),
+        searchExports: true,
+        cacheId: "FriendCodes.TabBar"
+    }
+});
+
+const { InviteModule, TabBar } = Modules;
+
+/* commands/createFriendCode.ts */
 const {
     Types: { OptionTypes }
 } = Commands;
 
-const { createFriendInvite: createFriendInvite$1 } = InviteModule;
-
-const createFriendCode = {
-    id: "FC-Create",
-    name: "create-friend-code",
-    description: "Create a friend code",
-    options: [
-        {
-            type: OptionTypes.BOOLEAN,
-            name: "ephemeral",
-            description: "Whether the message should be only visible to you or for everyone",
-            required: false
+function createFriendCode() {
+    return {
+        id: "FC-Create",
+        name: "create-friend-code",
+        description: t("commands.create.description"),
+        options: [
+            {
+                type: OptionTypes.BOOLEAN,
+                name: "ephemeral",
+                description: t("commands.create.ephemeral"),
+                required: false
+            }
+        ],
+        execute: async (options, { channel }) => {
+            try {
+                const invite = await InviteModule.createFriendInvite();
+                const msg = t("commands.create.message", {
+                    maxUses: invite.max_uses,
+                    expires: `<t:${new Date(invite.expires_at).getTime() / 1e3}:R>`,
+                    link: `https://discord.gg/${invite.code}`
+                });
+                if (options.find(o => o.name === "ephemeral")?.value ?? true) return { content: msg };
+                MessageActions.sendMessage(channel.id, { content: msg }, void 0, { location: "chat_input" });
+            } catch (err) {
+                Logger.error("Failed to create a Friend Code", err);
+                return { content: t("errors.create") };
+            }
         }
-    ],
-    execute: async (props, { channel }) => {
-        const invite = await createFriendInvite$1();
-        const msg = `
-            Max Uses: ${invite.max_uses}
-            Expires: <t:${new Date(invite.expires_at).getTime() / 1e3}:R>
-            https://discord.gg/${invite.code}
-        `.replace(/^\s+/gm, "");
-        if (props.find(o => o.name === "ephemeral")?.value ?? true) return { content: msg };
-        else MessageActions.sendMessage(channel.id, { content: msg }, void 0, { location: "chat_input" });
-    }
-};
+    };
+}
 
-/* commands/revokeAllFriendCodes.js */
-const { getAllFriendInvites: getAllFriendInvites$1, revokeFriendInvites: revokeFriendInvites$1 } = InviteModule;
+/* commands/revokeAllFriendCodes.ts */
+function revokeAllFriendCodes() {
+    return {
+        id: "FC-RevokeAll",
+        name: "revoke-all-friend-codes",
+        description: t("commands.revoke.description"),
+        execute: async () => {
+            try {
+                const invites = await InviteModule.getAllFriendInvites();
+                await InviteModule.revokeFriendInvites();
+                return { content: t("commands.revoke.revoked", { count: invites.length }) };
+            } catch (err) {
+                Logger.error("Failed to revoke your Friend Codes", err);
+                return { content: t("errors.revoke") };
+            }
+        }
+    };
+}
 
-const revokeAllFriendCodes = {
-    id: "FC-RevokeAll",
-    name: "revoke-all-friend-codes",
-    description: "Revoke all Friend Codes",
-    execute: async () => {
-        const invites = await getAllFriendInvites$1();
-        await revokeFriendInvites$1();
-        return { content: `Revoked ${invites.length} Friend Code${invites.length == 1 ? "" : "s"}` };
-    }
-};
+/* commands/index.ts */
+function getCommands() {
+    return [createFriendCode(), revokeAllFriendCodes()];
+}
 
-/* commands/index.js */
-const PluginCommands = [createFriendCode, revokeAllFriendCodes];
-
-/* modules/store.js */
+/* modules/store.ts */
 let invites = [];
 let loaded = false;
+let failed = false;
+const uniqueByCode = list => [...new Map(list.map(invite => [invite.code, invite])).values()];
 
 const FriendInvitesStore = new (class FriendInvitesStore2 extends Flux.Store {
     constructor() {
         super(Dispatcher, {
             FRIEND_INVITES_FETCH_RESPONSE: ({ invites: fetched }) => {
-                invites = fetched;
+                invites = uniqueByCode(fetched);
                 loaded = true;
+                failed = false;
             },
             FRIEND_INVITE_CREATE_SUCCESS: ({ invite }) => {
-                invites = [...invites, invite];
+                invites = uniqueByCode([...invites, invite]);
             },
             FRIEND_INVITE_REVOKE_SUCCESS: () => {
                 invites = [];
@@ -360,17 +616,49 @@ const FriendInvitesStore = new (class FriendInvitesStore2 extends Flux.Store {
     hasLoaded() {
         return loaded;
     }
+    hasFailed() {
+        return failed;
+    }
 })();
 
-/* components/copyButton.jsx */
+function fetchInvites() {
+    failed = false;
+    FriendInvitesStore.emitChange();
+    return InviteModule.getAllFriendInvites().catch(err => {
+        Logger.error("Failed to fetch Friend Codes", err);
+        failed = true;
+        FriendInvitesStore.emitChange();
+    });
+}
+
+/* components/codeCard.scss */
+Styles.sheets.push(
+    "/* components/codeCard.scss */",
+    `.friend-codes-row {
+  gap: 16px;
+  padding: 12px 16px;
+}
+.friend-codes-row + .friend-codes-row {
+  border-top: 1px solid var(--border-subtle);
+}
+.friend-codes-row .friend-codes-row-details {
+  margin-top: 2px;
+}`
+);
+const styles$1 = {
+    friendCodesRow: "friend-codes-row",
+    friendCodesRowDetails: "friend-codes-row-details"
+};
+
+/* components/copyButton.tsx */
 const { Button: Button$1 } = Components;
 
 function CopyButton({ copyText, copiedText, onClick }) {
     const [copied, setCopied] = BdApi.React.useState(false);
-    const handleButtonClick = e => {
+    const handleButtonClick = () => {
         setCopied(true);
         setTimeout(() => setCopied(false), 1e3);
-        onClick(e);
+        onClick();
     };
     return BdApi.React.createElement(
         Button$1,
@@ -384,210 +672,293 @@ function CopyButton({ copyText, copiedText, onClick }) {
     );
 }
 
-/* components/style.scss */
+/* components/codeCard.tsx */
+const { Flex: Flex$1, Text: Text$1 } = Components;
+
+function FriendCodeRow({ invite }) {
+    const { t } = useTranslation();
+    const expiresAt = new Date(invite.expires_at).getTime() / 1e3;
+    return BdApi.React.createElement(
+        Flex$1,
+        { className: styles$1.friendCodesRow, align: Flex$1.Align.CENTER, justify: Flex$1.Justify.BETWEEN },
+        BdApi.React.createElement(
+            "div",
+            null,
+            BdApi.React.createElement(
+                Text$1,
+                { tag: "h4", size: Text$1.Sizes.SIZE_16, color: Text$1.Colors.HEADER_PRIMARY, strong: true },
+                invite.code
+            ),
+            BdApi.React.createElement(
+                Text$1,
+                { className: styles$1.friendCodesRowDetails, color: Text$1.Colors.MUTED },
+                BdApi.React.createElement(Trans, {
+                    i18nKey: "card.details",
+                    values: { uses: invite.uses, maxUses: invite.max_uses },
+                    components: {
+                        expires: BdApi.React.createElement(
+                            BdApi.React.Fragment,
+                            null,
+                            Parser.parse(`<t:${expiresAt}:R>`)
+                        )
+                    }
+                })
+            )
+        ),
+        BdApi.React.createElement(CopyButton, {
+            copyText: t("card.copy"),
+            copiedText: t("card.copied"),
+            onClick: () => DiscordNative.clipboard.copy(`https://discord.gg/${invite.code}`)
+        })
+    );
+}
+
+/* components/panel.scss */
 Styles.sheets.push(
-    "/* components/style.scss */",
-    `.card {
-  padding: 20px;
-  margin-bottom: var(--custom-margin-margin-small);
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-  border-color: var(--border-subtle);
+    "/* components/panel.scss */",
+    `.friend-codes-panel {
+  padding: 20px 30px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.friend-codes-panel .friend-codes-panel-header {
+  flex-wrap: wrap;
+  gap: 12px 16px;
+}
+.friend-codes-panel .friend-codes-panel-header .friend-codes-panel-heading {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+.friend-codes-panel .friend-codes-panel-header .friend-codes-panel-heading .friend-codes-panel-description {
+  margin-top: 8px;
+}
+.friend-codes-panel .friend-codes-panel-header .friend-codes-panel-actions {
+  flex: 0 0 auto;
+  width: auto;
+  gap: 8px;
+}
+.friend-codes-panel .friend-codes-panel-header .friend-codes-panel-revoke.bd-button-outlined {
+  border-color: var(--status-danger);
+  color: var(--status-danger);
+}
+.friend-codes-panel .friend-codes-panel-header .friend-codes-panel-revoke.bd-button-outlined:hover:not(:disabled) {
+  background-color: var(--status-danger);
+  color: var(--white-500, #fff);
+}
+.friend-codes-panel .friend-codes-panel-count {
+  margin: 20px 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.friend-codes-panel .friend-codes-panel-list {
+  max-height: 40vh;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
   background-color: var(--background-base-lower);
 }
-
-.cardTitle span {
-  color: var(--text-default);
-  font-family: var(--font-primary);
-  font-size: 14px;
-  font-weight: 400;
+.friend-codes-panel .friend-codes-panel-list::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
-
-.panelHeader {
-  margin-top: 16px;
-  margin-bottom: 8px;
-  color: var(--text-default);
-  text-transform: uppercase;
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 0.02em;
-  font-family: var(--font-primary);
-  font-weight: 600;
+.friend-codes-panel .friend-codes-panel-list::-webkit-scrollbar-track {
+  border: 2px solid var(--scrollbar-thin-track);
+  background-color: var(--scrollbar-thin-track);
 }
-
-.panelText {
+.friend-codes-panel .friend-codes-panel-list::-webkit-scrollbar-thumb {
+  min-height: 40px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  background-color: var(--scrollbar-thin-thumb);
+  background-clip: padding-box;
+}
+.friend-codes-panel .friend-codes-panel-list::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+.no-webkit-scrollbar .friend-codes-panel .friend-codes-panel-list {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thin-thumb) var(--scrollbar-thin-track);
+}
+.friend-codes-panel .friend-codes-panel-list .friend-codes-panel-empty {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  gap: 8px;
+  padding: 20px 16px;
+  text-align: center;
 }`
 );
 const styles = {
-    card: "card",
-    cardTitle: "cardTitle",
-    panelHeader: "panelHeader",
-    panelText: "panelText"
+    friendCodesPanel: "friend-codes-panel",
+    friendCodesPanelHeader: "friend-codes-panel-header",
+    friendCodesPanelHeading: "friend-codes-panel-heading",
+    friendCodesPanelDescription: "friend-codes-panel-description",
+    friendCodesPanelActions: "friend-codes-panel-actions",
+    friendCodesPanelRevoke: "friend-codes-panel-revoke",
+    friendCodesPanelCount: "friend-codes-panel-count",
+    friendCodesPanelList: "friend-codes-panel-list",
+    friendCodesPanelEmpty: "friend-codes-panel-empty"
 };
 
-/* components/codeCard.jsx */
-const { Flex: Flex$1, Text: Text$1 } = Components;
-const { clipboard } = DiscordNative;
+/* components/panel.tsx */
+const { Button, Flex, Spinner, Text } = Components;
 
-function FriendCodeCard({ invite }) {
-    return BdApi.React.createElement(
-        "div",
-        { className: styles.card },
-        BdApi.React.createElement(
-            Flex$1,
-            { justify: Flex$1.Justify.START },
-            BdApi.React.createElement(
-                "div",
-                { className: styles.cardTitle },
-                BdApi.React.createElement(
-                    Text$1,
-                    {
-                        tag: "h4",
-                        size: Text$1.Sizes.SIZE_16,
-                        variant: "heading-md/semibold",
-                        className: TextVariantStyles["heading-md/semibold"]
-                    },
-                    invite.code
-                ),
-                BdApi.React.createElement(
-                    "span",
-                    null,
-                    "Expires ",
-                    Parser.parse(`<t:${new Date(invite.expires_at).getTime() / 1e3}:R>`),
-                    " \u2022 ",
-                    invite.uses,
-                    "/",
-                    invite.max_uses,
-                    " uses"
-                )
-            ),
-            BdApi.React.createElement(
-                Flex$1,
-                { justify: Flex$1.Justify.END },
-                BdApi.React.createElement(CopyButton, {
-                    copyText: "Copy",
-                    copiedText: "Copied!",
-                    onClick: () => clipboard.copy(`https://discord.gg/${invite.code}`)
-                })
-            )
-        )
-    );
+function PanelContent() {
+    const { t } = useTranslation();
+    const invites = Hooks.useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.getInvites());
+    const loaded = Hooks.useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.hasLoaded());
+    const failed = Hooks.useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.hasFailed());
+    if (!loaded && failed) {
+        return BdApi.React.createElement(
+            "div",
+            { className: styles.friendCodesPanelEmpty },
+            BdApi.React.createElement(Text, { color: Text.Colors.MUTED }, t("panel.loadFailed")),
+            BdApi.React.createElement(Button, { size: Button.Sizes.SMALL, onClick: fetchInvites }, t("panel.retry"))
+        );
+    }
+    if (!loaded) {
+        return BdApi.React.createElement(
+            "div",
+            { className: styles.friendCodesPanelEmpty },
+            BdApi.React.createElement(Spinner, null)
+        );
+    }
+    if (!invites.length) {
+        return BdApi.React.createElement(
+            "div",
+            { className: styles.friendCodesPanelEmpty },
+            BdApi.React.createElement(Text, { color: Text.Colors.MUTED }, t("panel.empty"))
+        );
+    }
+    return invites.map(invite => BdApi.React.createElement(FriendCodeRow, { key: invite.code, invite }));
 }
 
-/* components/panel.jsx */
-const { Button, Flex, Text } = Components;
-const FormStyles = Webpack.getModule(m => m.header && m.title && Object.keys(m).length === 2);
-const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = InviteModule;
-
 function FriendCodesPanel() {
-    const invites = Hooks.useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.getInvites());
-    const loading = Hooks.useStateFromStores([FriendInvitesStore], () => !FriendInvitesStore.hasLoaded());
+    const { t } = useTranslation();
+    const count = Hooks.useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.getInvites().length);
     const [pending, setPending] = BdApi.React.useState(false);
     BdApi.React.useEffect(() => {
-        getAllFriendInvites();
+        fetchInvites();
     }, []);
-    const runRequest = request => {
+    const runRequest = (request, error) => {
         setPending(true);
-        request().finally(() => setPending(false));
+        request()
+            .catch(err => {
+                Logger.error(error, err);
+                UI.showToast(t(error), { type: "error" });
+            })
+            .finally(() => setPending(false));
     };
     return BdApi.React.createElement(
         "header",
-        { className: FormStyles.header },
-        BdApi.React.createElement(
-            Text,
-            {
-                tag: "h2",
-                size: Text.Sizes.SIZE_20,
-                variant: "heading-lg/semibold",
-                className: TextVariantStyles["heading-lg/semibold"]
-            },
-            "Your Friend Codes"
-        ),
+        { className: styles.friendCodesPanel },
         BdApi.React.createElement(
             Flex,
-            { style: { marginBottom: "16px" }, justify: Flex.Justify.BETWEEN },
-            BdApi.React.createElement("h2", { className: styles.panelHeader }, `Friend Codes - ${invites.length}`),
+            { className: styles.friendCodesPanelHeader, align: Flex.Align.START, justify: Flex.Justify.BETWEEN },
+            BdApi.React.createElement(
+                "div",
+                { className: styles.friendCodesPanelHeading },
+                BdApi.React.createElement(
+                    Text,
+                    { tag: "h2", size: Text.Sizes.SIZE_20, color: Text.Colors.HEADER_PRIMARY, strong: true },
+                    t("panel.title")
+                ),
+                BdApi.React.createElement(
+                    Text,
+                    { className: styles.friendCodesPanelDescription },
+                    t("panel.description")
+                )
+            ),
             BdApi.React.createElement(
                 Flex,
-                { justify: Flex.Justify.END },
+                { className: styles.friendCodesPanelActions, justify: Flex.Justify.END },
                 BdApi.React.createElement(
                     Button,
                     {
-                        color: Button.Colors.GREEN,
-                        look: Button.Looks.FILLED,
-                        disabled: pending,
-                        onClick: () => runRequest(createFriendInvite)
+                        className: styles.friendCodesPanelRevoke,
+                        color: Button.Colors.RED,
+                        look: Button.Looks.OUTLINED,
+                        size: Button.Sizes.SMALL,
+                        disabled: pending || !count,
+                        onClick: () => runRequest(InviteModule.revokeFriendInvites, "errors.revoke")
                     },
-                    "Create Friend Code"
+                    t("panel.revokeAll")
                 ),
                 BdApi.React.createElement(
                     Button,
                     {
-                        style: { marginLeft: "8px" },
-                        color: Button.Colors.RED,
-                        look: Button.Looks.OUTLINED,
-                        disabled: pending || !invites.length,
-                        onClick: () => runRequest(revokeFriendInvites)
+                        size: Button.Sizes.SMALL,
+                        disabled: pending,
+                        onClick: () => runRequest(InviteModule.createFriendInvite, "errors.create")
                     },
-                    "Revoke all Friend Codes"
+                    t("panel.create")
                 )
             )
         ),
         BdApi.React.createElement(
+            Text,
+            {
+                tag: "h3",
+                className: styles.friendCodesPanelCount,
+                size: Text.Sizes.SIZE_12,
+                color: Text.Colors.HEADER_SECONDARY,
+                strong: true
+            },
+            t("panel.count", { count })
+        ),
+        BdApi.React.createElement(
             "div",
-            { style: { maxHeight: "40vh", overflowY: "auto" } },
-            loading
-                ? BdApi.React.createElement(
-                      Text,
-                      { variant: "heading-md/semibold", className: styles.panelText },
-                      "Loading..."
-                  )
-                : invites.length === 0
-                  ? BdApi.React.createElement(
-                        Text,
-                        { variant: "heading-md/semibold", className: styles.panelText },
-                        "You don't have any friend codes yet"
-                    )
-                  : BdApi.React.createElement(
-                        "div",
-                        null,
-                        invites.map(invite => BdApi.React.createElement(FriendCodeCard, { key: invite.code, invite }))
-                    )
+            { className: styles.friendCodesPanelList },
+            BdApi.React.createElement(PanelContent, null)
         )
     );
 }
 
-/* index.jsx */
+/* index.tsx */
+function AddFriendPage({ page, ...props }) {
+    const res = page(props);
+    const children = res?.props?.children;
+    if (Array.isArray(children)) {
+        children.splice(
+            1,
+            0,
+            BdApi.React.createElement(
+                ErrorBoundary,
+                { key: "FriendCodes", id: "FriendCodes.Panel" },
+                BdApi.React.createElement(FriendCodesPanel, null)
+            )
+        );
+    }
+    return res;
+}
+
 class FriendCodes {
+    unsubscribeLocale;
     start() {
-        showChangelog(manifest);
-        this.patchAddFriendsPanel();
         Styles.load();
-        PluginCommands.forEach(cmd => Commands.register(cmd));
+        showChangelog(manifest);
+        this.patchAddFriendPage();
+        this.registerCommands();
+        this.unsubscribeLocale = onLocaleChange(() => this.registerCommands());
     }
     stop() {
+        this.unsubscribeLocale?.();
         Commands.unregisterAll();
         Patcher.unpatchAll();
         Styles.unload();
     }
-    patchAddFriendsPanel() {
-        const TabBar = Webpack.getByKeys("Header", "Item", "Separator", "Panel", { searchExports: true });
-        Patcher.after(TabBar, "Panel", (_, [{ children, id }]) => {
-            if (id !== "ADD_FRIEND") return;
-            Patcher.after(children, "type", (_2, __, res) => {
-                res.props.children.splice(
-                    1,
-                    0,
-                    BdApi.React.createElement(
-                        ErrorBoundary,
-                        { key: "FriendCodesPanel", id: "FriendCodesPanel" },
-                        BdApi.React.createElement(FriendCodesPanel, null)
-                    )
-                );
+    registerCommands() {
+        Commands.unregisterAll();
+        getCommands().forEach(command => Commands.register(command));
+    }
+    patchAddFriendPage() {
+        if (!TabBar) return Logger.error("Failed to find TabBar module");
+        Patcher.after(TabBar, "Panel", (_, [{ id }], res) => {
+            const page = res?.props?.children;
+            if (id !== "ADD_FRIEND" || typeof page?.type !== "function" || page.type === AddFriendPage) return;
+            res.props.children = BdApi.React.createElement(AddFriendPage, {
+                key: page.key,
+                page: page.type,
+                ...page.props
             });
         });
     }

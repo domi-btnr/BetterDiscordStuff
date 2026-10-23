@@ -71,7 +71,7 @@ const RestAPI = lazyExport(() =>
     Webpack.getModule(m => typeof m === "object" && m.del && m.put, { searchExports: true })
 );
 
-/* ../../common/i18n/index.ts */
+/* ../../common/i18n/discord.ts */
 function getLocale() {
     return Webpack.getStore("LocaleStore").locale;
 }

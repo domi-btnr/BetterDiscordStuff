@@ -45,7 +45,7 @@ const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers",
 /* ../../common/Webpack/Flux.ts */
 const Flux = Webpack.getByKeys("Store");
 
-/* ../../common/i18n/index.ts */
+/* ../../common/i18n/discord.ts */
 function getLocale() {
     return Webpack.getStore("LocaleStore").locale;
 }

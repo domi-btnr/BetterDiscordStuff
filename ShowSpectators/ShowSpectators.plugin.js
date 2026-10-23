@@ -98,7 +98,7 @@ function lazyExport(getter) {
 /* ../../common/Webpack/I18nModule.ts */
 const I18nModule = lazyExport(() => Webpack.getModule(m => m.intl));
 
-/* ../../common/i18n/index.ts */
+/* ../../common/i18n/discord.ts */
 function getLocalizedString(key, values) {
     if (!values) return I18nModule.intl?.formatToPlainString(I18nModule.t[key]) ?? void 0;
     return I18nModule.intl?.format(I18nModule.t[key], values) ?? void 0;

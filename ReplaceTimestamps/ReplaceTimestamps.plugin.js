@@ -50,7 +50,7 @@ const Flux = Webpack.getByKeys("Store");
 /* ../../common/Webpack/MessageActions.ts */
 const MessageActions = Webpack.getByKeys("sendMessage", "editMessage");
 
-/* ../../common/i18n/index.ts */
+/* ../../common/i18n/discord.ts */
 function getLocale() {
     return Webpack.getStore("LocaleStore").locale;
 }
