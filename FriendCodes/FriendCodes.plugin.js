@@ -150,9 +150,13 @@ function getLanguages(resources) {
 }
 
 function getDiscordMessage(key, values) {
-    const message = I18nModule.t?.[key];
-    if (!message) return;
-    return I18nModule.intl?.formatToPlainString(message, values) || void 0;
+    try {
+        const message = I18nModule.t?.[key];
+        if (!message) return;
+        return I18nModule.intl?.formatToPlainString(message, values) || void 0;
+    } catch {
+        return void 0;
+    }
 }
 
 function resolveMessage(resources, key, options = {}, discordKey) {
@@ -233,7 +237,7 @@ function getLocale() {
 }
 
 /* ../../common/Changelog/footer.tsx */
-const { Text: Text$2 } = Components;
+const { Text: Text$3 } = Components;
 
 function Footer({ manifest }) {
     if (!manifest.invite && !manifest.source) return null;
@@ -245,7 +249,7 @@ function Footer({ manifest }) {
         issuesUrl = url.toString();
     }
     return BdApi.React.createElement(
-        Text$2,
+        Text$3,
         null,
         "Need support?",
         " ",
@@ -337,84 +341,6 @@ const Styles = {
     }
 };
 
-/* ../../common/ErrorBoundary/style.scss */
-Styles.sheets.push(
-    "/* ../../common/ErrorBoundary/style.scss */",
-    `.errorBoundary {
-  align-items: center;
-  background: #473c41;
-  border: 2px solid #f04747;
-  border-radius: 5px;
-  padding: 5px;
-  margin: 10px;
-  color: #fff;
-  font-size: 16px;
-}
-.errorBoundary .errorText {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}`
-);
-
-/* ../../common/ErrorBoundary/index.tsx */
-const ErrorIcon = props =>
-    BdApi.React.createElement(
-        "svg",
-        {
-            xmlns: "http://www.w3.org/2000/svg",
-            viewBox: "0 0 24 24",
-            fill: "#ddd",
-            width: "24",
-            height: "24",
-            ...props
-        },
-        BdApi.React.createElement("path", { d: "M0 0h24v24H0z", fill: "none" }),
-        BdApi.React.createElement("path", {
-            d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
-        })
-    );
-
-class ErrorBoundary extends BdApi.React.Component {
-    state = { hasError: false, error: null, info: null };
-    componentDidCatch(error, info) {
-        this.setState({ error, info, hasError: true });
-        Logger.error(
-            `[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
-`,
-            error
-        );
-    }
-    render() {
-        if (this.state.hasError) {
-            return this.props.mini
-                ? BdApi.React.createElement(ErrorIcon, { fill: "#f04747" })
-                : BdApi.React.createElement(
-                      "div",
-                      { className: "errorBoundary" },
-                      BdApi.React.createElement(
-                          "div",
-                          { className: "errorText" },
-                          BdApi.React.createElement(
-                              "span",
-                              null,
-                              "An error has occured while rendering ",
-                              this.props.id,
-                              "."
-                          ),
-                          BdApi.React.createElement(
-                              "span",
-                              null,
-                              "Open console (",
-                              BdApi.React.createElement("code", null, "CTRL + SHIFT + i / CMD + SHIFT + i"),
-                              ') - Select the "Console" tab and screenshot the big red error.'
-                          )
-                      )
-                  );
-        } else return this.props.children;
-    }
-}
-
 /* locales/de.json */
 const panel$1 = {
     title: "Deine Freundescodes",
@@ -451,7 +377,7 @@ const commands$1 = {
     }
 };
 
-const de = {
+const de$1 = {
     panel: panel$1,
     card: card$1,
     errors: errors$1,
@@ -494,7 +420,7 @@ const commands = {
     }
 };
 
-const en = {
+const en$1 = {
     panel: panel,
     card: card,
     errors: errors,
@@ -502,8 +428,12 @@ const en = {
 };
 
 /* modules/i18n.ts */
-const { t, useTranslation, Trans } = createI18n({
-    resources: { en, de },
+const {
+    t,
+    useTranslation: useTranslation$1,
+    Trans: Trans$1
+} = createI18n({
+    resources: { en: en$1, de: de$1 },
     discord: {
         "card.copy": "OpuAlK",
         "card.copied": "q30c5i",
@@ -586,6 +516,294 @@ function revokeAllFriendCodes() {
 /* commands/index.ts */
 function getCommands() {
     return [createFriendCode(), revokeAllFriendCodes()];
+}
+
+/* ../../common/ErrorBoundary/locales/de.json */
+const title$1 = "Etwas ist schiefgelaufen";
+const description$1 =
+    "{{plugin}} konnte diesen Bereich nicht anzeigen. Versuche es erneut oder drück <keybind/>, um die Details in der Konsole zu sehen.";
+const retry$1 = "Erneut versuchen";
+const mini$1 = "Bei {{plugin}} ist ein Fehler aufgetreten";
+const copy$1 = "Fehler kopieren";
+const copied$1 = "Kopiert";
+
+const keys$1 = {
+    command: "Befehl",
+    option: "Option"
+};
+
+const de = {
+    title: title$1,
+    description: description$1,
+    retry: retry$1,
+    mini: mini$1,
+    copy: copy$1,
+    copied: copied$1,
+    keys: keys$1
+};
+
+/* ../../common/ErrorBoundary/locales/en.json */
+const title = "Something went wrong";
+const description =
+    "{{plugin}} couldn't show this part. Try again, or press <keybind/> to open the console for details.";
+const retry = "Try Again";
+const mini = "{{plugin}} ran into an error";
+const copy = "Copy Error";
+const copied = "Copied";
+
+const keys = {
+    command: "Command",
+    option: "Option"
+};
+
+const en = {
+    title: title,
+    description: description,
+    retry: retry,
+    mini: mini,
+    copy: copy,
+    copied: copied,
+    keys: keys
+};
+
+/* ../../common/ErrorBoundary/style.scss */
+Styles.sheets.push(
+    "/* ../../common/ErrorBoundary/style.scss */",
+    `.error-boundary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--status-danger, #f23f43);
+  border-radius: 8px;
+  background-color: color-mix(in oklab, var(--status-danger, #f23f43) 8%, transparent);
+}
+.error-boundary .error-boundary-actions {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  gap: 8px;
+}
+.error-boundary .error-boundary-content {
+  display: flex;
+  flex: 999 1 320px;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.error-boundary .error-boundary-content .error-boundary-keybind {
+  display: inline-flex;
+  gap: 2px;
+  margin: 0 2px;
+  vertical-align: text-bottom;
+}
+.error-boundary .error-boundary-content .error-boundary-keybind kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px 1px;
+  border: 1px solid var(--border-strong, rgba(151, 151, 159, 0.44));
+  border-radius: 4px;
+  background-color: var(--background-mod-strong, rgba(151, 151, 159, 0.2));
+  box-shadow: inset 0 -2px 0 0 var(--background-mod-normal, rgba(151, 151, 159, 0.16));
+  color: var(--text-default, #dbdee1);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.error-boundary .error-boundary-content .error-boundary-keybind kbd .error-boundary-symbol {
+  font-family: system-ui, sans-serif;
+}
+.error-boundary .error-boundary-content .error-boundary-details {
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  color: var(--text-muted, #949ba4);
+  font-family: var(--font-code, monospace);
+  font-size: 12px;
+  white-space: pre-wrap;
+  user-select: text;
+}
+
+.error-boundary-mini {
+  display: inline-flex;
+  margin-left: 4px;
+  color: var(--status-danger, #f23f43);
+  vertical-align: text-bottom;
+}`
+);
+const styles$2 = {
+    errorBoundary: "error-boundary",
+    errorBoundaryActions: "error-boundary-actions",
+    errorBoundaryContent: "error-boundary-content",
+    errorBoundaryKeybind: "error-boundary-keybind",
+    errorBoundarySymbol: "error-boundary-symbol",
+    errorBoundaryDetails: "error-boundary-details",
+    errorBoundaryMini: "error-boundary-mini"
+};
+
+/* ../../common/ErrorBoundary/index.tsx */
+const { Button: Button$2, ErrorBoundary: BdErrorBoundary, Text: Text$2 } = Components;
+
+const { Trans, useTranslation } = createI18n({
+    resources: { en, de },
+    discord: {
+        title: "+XstB0",
+        retry: "TdQXA8",
+        copied: "q30c5i"
+    }
+});
+
+const STACK_FRAMES = 2;
+const CONSOLE_KEYS = navigator.userAgent.includes("Mac")
+    ? [{ label: "\u2318", name: "keys.command" }, { label: "\u2325", name: "keys.option" }, { label: "I" }]
+    : [{ label: "Ctrl" }, { label: "Shift" }, { label: "I" }];
+
+function getShortStack(error) {
+    const lines = error.stack?.split("\n") ?? [];
+    const frames = lines
+        .filter(line => line.trimStart().startsWith("at "))
+        .slice(0, STACK_FRAMES)
+        .map(line => line.replace(/[^\s()]*\/([^/\s()]+:\d+:\d+)/g, "$1"));
+    return [`${error.name}: ${error.message}`, ...frames].join("\n");
+}
+
+function copyToClipboard(text) {
+    if (typeof DiscordNative !== "undefined") DiscordNative.clipboard.copy(text);
+    else navigator.clipboard?.writeText(text);
+}
+
+const ErrorIcon = props =>
+    BdApi.React.createElement(
+        "svg",
+        { "viewBox": "0 0 24 24", "width": "24", "height": "24", "aria-hidden": "true", ...props },
+        BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "11", fill: "currentColor" }),
+        BdApi.React.createElement("path", {
+            d: "M12 6.5v7",
+            stroke: "#fff",
+            strokeWidth: "2.5",
+            strokeLinecap: "round"
+        }),
+        BdApi.React.createElement("circle", { cx: "12", cy: "17.5", r: "1.5", fill: "#fff" })
+    );
+
+function Keybind({ keys }) {
+    const { t } = useTranslation();
+    return BdApi.React.createElement(
+        "span",
+        { className: styles$2.errorBoundaryKeybind },
+        keys.map(({ label, name }) =>
+            BdApi.React.createElement(
+                "kbd",
+                { key: label },
+                name
+                    ? BdApi.React.createElement(
+                          "span",
+                          { "className": styles$2.errorBoundarySymbol, "role": "img", "aria-label": t(name) },
+                          label
+                      )
+                    : label
+            )
+        )
+    );
+}
+
+function CopyErrorButton({ id, error }) {
+    const { t } = useTranslation();
+    const [copied, setCopied] = BdApi.React.useState(false);
+    BdApi.React.useEffect(() => {
+        if (!copied) return;
+        const timeout = setTimeout(() => setCopied(false), 1e3);
+        return () => clearTimeout(timeout);
+    }, [copied]);
+    const copy = () => {
+        copyToClipboard(`${manifest.name} v${manifest.version} (${id})
+${error.stack ?? getShortStack(error)}`);
+        setCopied(true);
+    };
+    return BdApi.React.createElement(
+        Button$2,
+        { size: Button$2.Sizes.SMALL, color: copied ? Button$2.Colors.GREEN : Button$2.Colors.PRIMARY, onClick: copy },
+        t(copied ? "copied" : "copy")
+    );
+}
+
+function MiniFallback() {
+    const { t } = useTranslation();
+    const label = t("mini", { plugin: manifest.name });
+    return BdApi.React.createElement(
+        "span",
+        { "className": styles$2.errorBoundaryMini, "role": "img", "aria-label": label, "title": label },
+        BdApi.React.createElement(ErrorIcon, { width: "16", height: "16" })
+    );
+}
+
+function Fallback({ id, error, onRetry }) {
+    const { t } = useTranslation();
+    return BdApi.React.createElement(
+        "div",
+        { className: styles$2.errorBoundary, role: "alert" },
+        BdApi.React.createElement(
+            "div",
+            { className: styles$2.errorBoundaryContent },
+            BdApi.React.createElement(
+                Text$2,
+                { size: Text$2.Sizes.SIZE_16, color: Text$2.Colors.HEADER_PRIMARY, strong: true },
+                t("title")
+            ),
+            BdApi.React.createElement(
+                Text$2,
+                { color: Text$2.Colors.MUTED },
+                BdApi.React.createElement(Trans, {
+                    i18nKey: "description",
+                    values: { plugin: manifest.name },
+                    components: { keybind: BdApi.React.createElement(Keybind, { keys: CONSOLE_KEYS }) }
+                })
+            ),
+            error
+                && BdApi.React.createElement(
+                    "code",
+                    { className: styles$2.errorBoundaryDetails },
+                    "[",
+                    id,
+                    "] ",
+                    getShortStack(error)
+                )
+        ),
+        BdApi.React.createElement(
+            "div",
+            { className: styles$2.errorBoundaryActions },
+            error && BdApi.React.createElement(CopyErrorButton, { id, error }),
+            BdApi.React.createElement(Button$2, { size: Button$2.Sizes.SMALL, onClick: onRetry }, t("retry"))
+        )
+    );
+}
+
+function ErrorBoundary({ id, mini, children }) {
+    const [error, setError] = BdApi.React.useState(null);
+    const [attempt, setAttempt] = BdApi.React.useState(0);
+    const retry = () => {
+        setError(null);
+        setAttempt(attempt + 1);
+    };
+    return BdApi.React.createElement(
+        BdErrorBoundary,
+        {
+            key: attempt,
+            id,
+            name: manifest.name,
+            fallback: mini
+                ? BdApi.React.createElement(MiniFallback, null)
+                : BdApi.React.createElement(Fallback, { id, error, onRetry: retry }),
+            onError: setError
+        },
+        children
+    );
 }
 
 /* modules/store.ts */
@@ -676,7 +894,7 @@ function CopyButton({ copyText, copiedText, onClick }) {
 const { Flex: Flex$1, Text: Text$1 } = Components;
 
 function FriendCodeRow({ invite }) {
-    const { t } = useTranslation();
+    const { t } = useTranslation$1();
     const expiresAt = new Date(invite.expires_at).getTime() / 1e3;
     return BdApi.React.createElement(
         Flex$1,
@@ -692,7 +910,7 @@ function FriendCodeRow({ invite }) {
             BdApi.React.createElement(
                 Text$1,
                 { className: styles$1.friendCodesRowDetails, color: Text$1.Colors.MUTED },
-                BdApi.React.createElement(Trans, {
+                BdApi.React.createElement(Trans$1, {
                     i18nKey: "card.details",
                     values: { uses: invite.uses, maxUses: invite.max_uses },
                     components: {
@@ -803,7 +1021,7 @@ const styles = {
 const { Button, Flex, Spinner, Text } = Components;
 
 function PanelContent() {
-    const { t } = useTranslation();
+    const { t } = useTranslation$1();
     const invites = Hooks.useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.getInvites());
     const loaded = Hooks.useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.hasLoaded());
     const failed = Hooks.useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.hasFailed());
@@ -832,8 +1050,8 @@ function PanelContent() {
     return invites.map(invite => BdApi.React.createElement(FriendCodeRow, { key: invite.code, invite }));
 }
 
-function FriendCodesPanel() {
-    const { t } = useTranslation();
+function PanelBody() {
+    const { t } = useTranslation$1();
     const count = Hooks.useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.getInvites().length);
     const [pending, setPending] = BdApi.React.useState(false);
     BdApi.React.useEffect(() => {
@@ -849,8 +1067,8 @@ function FriendCodesPanel() {
             .finally(() => setPending(false));
     };
     return BdApi.React.createElement(
-        "header",
-        { className: styles.friendCodesPanel },
+        BdApi.React.Fragment,
+        null,
         BdApi.React.createElement(
             Flex,
             { className: styles.friendCodesPanelHeader, align: Flex.Align.START, justify: Flex.Justify.BETWEEN },
@@ -913,20 +1131,24 @@ function FriendCodesPanel() {
     );
 }
 
+function FriendCodesPanel() {
+    return BdApi.React.createElement(
+        "header",
+        { className: styles.friendCodesPanel },
+        BdApi.React.createElement(
+            ErrorBoundary,
+            { id: "FriendCodes.Panel" },
+            BdApi.React.createElement(PanelBody, null)
+        )
+    );
+}
+
 /* index.tsx */
 function AddFriendPage({ page, ...props }) {
     const res = page(props);
     const children = res?.props?.children;
     if (Array.isArray(children)) {
-        children.splice(
-            1,
-            0,
-            BdApi.React.createElement(
-                ErrorBoundary,
-                { key: "FriendCodes", id: "FriendCodes.Panel" },
-                BdApi.React.createElement(FriendCodesPanel, null)
-            )
-        );
+        children.splice(1, 0, BdApi.React.createElement(FriendCodesPanel, { key: "FriendCodes" }));
     }
     return res;
 }

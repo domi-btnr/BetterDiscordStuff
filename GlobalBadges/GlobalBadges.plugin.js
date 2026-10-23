@@ -35,7 +35,7 @@ const manifest = {
 };
 
 /* @api */
-const { Components, Data, DOM, Hooks, Logger, Patcher, UI, Webpack } = new BdApi(manifest.name);
+const { Components, Data, DOM, Hooks, Patcher, UI, Webpack } = new BdApi(manifest.name);
 
 /* ../../common/Webpack/Dispatcher.ts */
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers", {
@@ -45,13 +45,175 @@ const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers",
 /* ../../common/Webpack/Flux.ts */
 const Flux = Webpack.getByKeys("Store");
 
+/* ../../common/Webpack/lazy.ts */
+function lazyExport(getter) {
+    let resolved = false;
+    let cached;
+    const resolve = () => {
+        if (!resolved) {
+            cached = getter() || void 0;
+            resolved = true;
+        }
+        return cached;
+    };
+    return new Proxy(
+        {},
+        {
+            get: (_, key) => resolve()?.[key],
+            set: (_, key, value) => {
+                const target = resolve();
+                if (!target) return false;
+                target[key] = value;
+                return true;
+            },
+            defineProperty: (_, key, descriptor) => {
+                const target = resolve();
+                return !!target && Reflect.defineProperty(target, key, descriptor);
+            },
+            deleteProperty: (_, key) => {
+                const target = resolve();
+                return !!target && Reflect.deleteProperty(target, key);
+            },
+            has: (_, key) => key in (resolve() ?? {}),
+            ownKeys: () => Reflect.ownKeys(resolve() ?? {}),
+            getOwnPropertyDescriptor: (_, key) => {
+                const descriptor = Reflect.getOwnPropertyDescriptor(resolve() ?? {}, key);
+                return descriptor && { ...descriptor, configurable: true };
+            }
+        }
+    );
+}
+
+/* ../../common/Webpack/I18nModule.ts */
+const I18nModule = lazyExport(() => Webpack.getModule(m => m.intl));
+
+/* ../../common/i18n/locale.ts */
+const FALLBACK_LANGUAGE = "en";
+
+function getCurrentLocale() {
+    return I18nModule.intl?.currentLocale ?? FALLBACK_LANGUAGE;
+}
+
+function onLocaleChange(callback) {
+    return I18nModule.intl?.onLocaleChange(callback) ?? (() => void 0);
+}
+
+function useLocale() {
+    return BdApi.React.useSyncExternalStore(onLocaleChange, getCurrentLocale);
+}
+
+/* ../../common/i18n/resolve.ts */
+const pluralRules = new Map();
+
+function getPluralRules(language) {
+    let rules = pluralRules.get(language);
+    if (!rules) pluralRules.set(language, (rules = new Intl.PluralRules(language)));
+    return rules;
+}
+
+function getPath(resource, key) {
+    let value = resource;
+    for (const part of key.split(".")) {
+        if (typeof value !== "object") return;
+        value = value[part];
+    }
+    return typeof value === "string" ? value : void 0;
+}
+
+function getLanguages(resources) {
+    const locale = getCurrentLocale();
+    return [...new Set([locale, locale.split("-")[0], FALLBACK_LANGUAGE])].filter(language => language in resources);
+}
+
+function getDiscordMessage(key, values) {
+    try {
+        const message = I18nModule.t?.[key];
+        if (!message) return;
+        return I18nModule.intl?.formatToPlainString(message, values) || void 0;
+    } catch {
+        return void 0;
+    }
+}
+
+function resolveMessage(resources, key, options = {}, discordKey) {
+    const discordMessage = discordKey && getDiscordMessage(discordKey, options);
+    if (discordMessage) return discordMessage;
+    for (const language of getLanguages(resources)) {
+        const resource = resources[language];
+        if (options.count != null) {
+            const rule = getPluralRules(language).select(options.count);
+            const plural =
+                (options.count === 0 ? getPath(resource, `${key}_zero`) : void 0)
+                ?? getPath(resource, `${key}_${rule}`)
+                ?? getPath(resource, `${key}_other`);
+            if (plural != null) return plural;
+        }
+        const message = getPath(resource, key);
+        if (message != null) return message;
+    }
+    return options.defaultValue;
+}
+
+function interpolate(message, values) {
+    return message.replace(/\{\{\s*(\w+)\s*\}\}/g, (match, name) => (name in values ? String(values[name]) : match));
+}
+
+/* ../../common/i18n/trans.ts */
+const TAG_REGEX = /<(\w+)\s*\/>|<(\w+)>(.*?)<\/\2>/s;
+
+function renderTags(message, components, fill) {
+    const parts = message.split(TAG_REGEX);
+    const children = [];
+    for (let i = 0; i < parts.length; i += 4) {
+        if (parts[i]) children.push(fill(parts[i]));
+        const [selfClosing, tag, inner] = parts.slice(i + 1, i + 4);
+        const component = components[selfClosing ?? tag];
+        if (selfClosing)
+            children.push(component ? BdApi.React.cloneElement(component, { key: i }) : `<${selfClosing}/>`);
+        else if (tag)
+            children.push(component ? BdApi.React.cloneElement(component, { key: i }, fill(inner)) : fill(inner));
+    }
+    return BdApi.React.createElement(BdApi.React.Fragment, null, ...children);
+}
+
+/* ../../common/i18n/createI18n.ts */
+function createI18n({ resources, discord = {} }) {
+    const allResources = resources;
+    const discordKeys = discord;
+    const resolve = (key, options) => resolveMessage(allResources, key, options, discordKeys[key]);
+    function t(key, options = {}) {
+        return interpolate(resolve(key, options) ?? key, options);
+    }
+    const i18n = {
+        /** The language messages are currently picked from. */
+        get language() {
+            return getLanguages(allResources)[0];
+        },
+        /** Every language the plugin has messages for. */
+        languages: Object.keys(resources),
+        exists: (key, options) => resolve(key, options) != null,
+        t
+    };
+    function useTranslation() {
+        useLocale();
+        return { t, i18n, ready: true };
+    }
+    function Trans({ i18nKey, values, components = {}, ...options }) {
+        useLocale();
+        const allValues = { ...options, ...values };
+        const message = resolve(i18nKey, allValues) ?? i18nKey;
+        return renderTags(message, components, text => interpolate(text, allValues));
+    }
+    return { i18n, t, useTranslation, Trans };
+}
+
 /* ../../common/i18n/discord.ts */
 function getLocale() {
     return Webpack.getStore("LocaleStore").locale;
 }
 
 /* ../../common/Changelog/footer.tsx */
-const { Text } = Components;
+const { Text: Text$1 } = Components;
 
 function Footer({ manifest }) {
     if (!manifest.invite && !manifest.source) return null;
@@ -63,7 +225,7 @@ function Footer({ manifest }) {
         issuesUrl = url.toString();
     }
     return BdApi.React.createElement(
-        Text,
+        Text$1,
         null,
         "Need support?",
         " ",
@@ -115,6 +277,54 @@ function showChangelog(manifest) {
     Data.save("lastVersion", manifest.version);
 }
 
+/* ../../common/ErrorBoundary/locales/de.json */
+const title$1 = "Etwas ist schiefgelaufen";
+const description$1 =
+    "{{plugin}} konnte diesen Bereich nicht anzeigen. Versuche es erneut oder drück <keybind/>, um die Details in der Konsole zu sehen.";
+const retry$1 = "Erneut versuchen";
+const mini$1 = "Bei {{plugin}} ist ein Fehler aufgetreten";
+const copy$1 = "Fehler kopieren";
+const copied$1 = "Kopiert";
+
+const keys$1 = {
+    command: "Befehl",
+    option: "Option"
+};
+
+const de = {
+    title: title$1,
+    description: description$1,
+    retry: retry$1,
+    mini: mini$1,
+    copy: copy$1,
+    copied: copied$1,
+    keys: keys$1
+};
+
+/* ../../common/ErrorBoundary/locales/en.json */
+const title = "Something went wrong";
+const description =
+    "{{plugin}} couldn't show this part. Try again, or press <keybind/> to open the console for details.";
+const retry = "Try Again";
+const mini = "{{plugin}} ran into an error";
+const copy = "Copy Error";
+const copied = "Copied";
+
+const keys = {
+    command: "Command",
+    option: "Option"
+};
+
+const en = {
+    title: title,
+    description: description,
+    retry: retry,
+    mini: mini,
+    copy: copy,
+    copied: copied,
+    keys: keys
+};
+
 /* @styles */
 const STYLE_ID = manifest.name + "-popout-styles";
 
@@ -158,79 +368,241 @@ const Styles = {
 /* ../../common/ErrorBoundary/style.scss */
 Styles.sheets.push(
     "/* ../../common/ErrorBoundary/style.scss */",
-    `.errorBoundary {
-  align-items: center;
-  background: #473c41;
-  border: 2px solid #f04747;
-  border-radius: 5px;
-  padding: 5px;
-  margin: 10px;
-  color: #fff;
-  font-size: 16px;
-}
-.errorBoundary .errorText {
+    `.error-boundary {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--status-danger, #f23f43);
+  border-radius: 8px;
+  background-color: color-mix(in oklab, var(--status-danger, #f23f43) 8%, transparent);
+}
+.error-boundary .error-boundary-actions {
+  display: flex;
+  flex: 1 0 auto;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
+}
+.error-boundary .error-boundary-content {
+  display: flex;
+  flex: 999 1 320px;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.error-boundary .error-boundary-content .error-boundary-keybind {
+  display: inline-flex;
+  gap: 2px;
+  margin: 0 2px;
+  vertical-align: text-bottom;
+}
+.error-boundary .error-boundary-content .error-boundary-keybind kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px 1px;
+  border: 1px solid var(--border-strong, rgba(151, 151, 159, 0.44));
+  border-radius: 4px;
+  background-color: var(--background-mod-strong, rgba(151, 151, 159, 0.2));
+  box-shadow: inset 0 -2px 0 0 var(--background-mod-normal, rgba(151, 151, 159, 0.16));
+  color: var(--text-default, #dbdee1);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.error-boundary .error-boundary-content .error-boundary-keybind kbd .error-boundary-symbol {
+  font-family: system-ui, sans-serif;
+}
+.error-boundary .error-boundary-content .error-boundary-details {
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  color: var(--text-muted, #949ba4);
+  font-family: var(--font-code, monospace);
+  font-size: 12px;
+  white-space: pre-wrap;
+  user-select: text;
+}
+
+.error-boundary-mini {
+  display: inline-flex;
+  margin-left: 4px;
+  color: var(--status-danger, #f23f43);
+  vertical-align: text-bottom;
 }`
 );
+const styles = {
+    errorBoundary: "error-boundary",
+    errorBoundaryActions: "error-boundary-actions",
+    errorBoundaryContent: "error-boundary-content",
+    errorBoundaryKeybind: "error-boundary-keybind",
+    errorBoundarySymbol: "error-boundary-symbol",
+    errorBoundaryDetails: "error-boundary-details",
+    errorBoundaryMini: "error-boundary-mini"
+};
 
 /* ../../common/ErrorBoundary/index.tsx */
+const { Button, ErrorBoundary: BdErrorBoundary, Text } = Components;
+
+const { Trans, useTranslation } = createI18n({
+    resources: { en, de },
+    discord: {
+        title: "+XstB0",
+        retry: "TdQXA8",
+        copied: "q30c5i"
+    }
+});
+
+const STACK_FRAMES = 2;
+const CONSOLE_KEYS = navigator.userAgent.includes("Mac")
+    ? [{ label: "\u2318", name: "keys.command" }, { label: "\u2325", name: "keys.option" }, { label: "I" }]
+    : [{ label: "Ctrl" }, { label: "Shift" }, { label: "I" }];
+
+function getShortStack(error) {
+    const lines = error.stack?.split("\n") ?? [];
+    const frames = lines
+        .filter(line => line.trimStart().startsWith("at "))
+        .slice(0, STACK_FRAMES)
+        .map(line => line.replace(/[^\s()]*\/([^/\s()]+:\d+:\d+)/g, "$1"));
+    return [`${error.name}: ${error.message}`, ...frames].join("\n");
+}
+
+function copyToClipboard(text) {
+    if (typeof DiscordNative !== "undefined") DiscordNative.clipboard.copy(text);
+    else navigator.clipboard?.writeText(text);
+}
+
 const ErrorIcon = props =>
     BdApi.React.createElement(
         "svg",
-        {
-            xmlns: "http://www.w3.org/2000/svg",
-            viewBox: "0 0 24 24",
-            fill: "#ddd",
-            width: "24",
-            height: "24",
-            ...props
-        },
-        BdApi.React.createElement("path", { d: "M0 0h24v24H0z", fill: "none" }),
+        { "viewBox": "0 0 24 24", "width": "24", "height": "24", "aria-hidden": "true", ...props },
+        BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "11", fill: "currentColor" }),
         BdApi.React.createElement("path", {
-            d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
-        })
+            d: "M12 6.5v7",
+            stroke: "#fff",
+            strokeWidth: "2.5",
+            strokeLinecap: "round"
+        }),
+        BdApi.React.createElement("circle", { cx: "12", cy: "17.5", r: "1.5", fill: "#fff" })
     );
 
-class ErrorBoundary extends BdApi.React.Component {
-    state = { hasError: false, error: null, info: null };
-    componentDidCatch(error, info) {
-        this.setState({ error, info, hasError: true });
-        Logger.error(
-            `[ErrorBoundary:${this.props.id}] HI OVER HERE!! SHOW THIS SCREENSHOT TO THE DEVELOPER.
-`,
-            error
-        );
-    }
-    render() {
-        if (this.state.hasError) {
-            return this.props.mini
-                ? BdApi.React.createElement(ErrorIcon, { fill: "#f04747" })
-                : BdApi.React.createElement(
-                      "div",
-                      { className: "errorBoundary" },
-                      BdApi.React.createElement(
-                          "div",
-                          { className: "errorText" },
-                          BdApi.React.createElement(
-                              "span",
-                              null,
-                              "An error has occured while rendering ",
-                              this.props.id,
-                              "."
-                          ),
-                          BdApi.React.createElement(
-                              "span",
-                              null,
-                              "Open console (",
-                              BdApi.React.createElement("code", null, "CTRL + SHIFT + i / CMD + SHIFT + i"),
-                              ') - Select the "Console" tab and screenshot the big red error.'
-                          )
+function Keybind({ keys }) {
+    const { t } = useTranslation();
+    return BdApi.React.createElement(
+        "span",
+        { className: styles.errorBoundaryKeybind },
+        keys.map(({ label, name }) =>
+            BdApi.React.createElement(
+                "kbd",
+                { key: label },
+                name
+                    ? BdApi.React.createElement(
+                          "span",
+                          { "className": styles.errorBoundarySymbol, "role": "img", "aria-label": t(name) },
+                          label
                       )
-                  );
-        } else return this.props.children;
-    }
+                    : label
+            )
+        )
+    );
+}
+
+function CopyErrorButton({ id, error }) {
+    const { t } = useTranslation();
+    const [copied, setCopied] = BdApi.React.useState(false);
+    BdApi.React.useEffect(() => {
+        if (!copied) return;
+        const timeout = setTimeout(() => setCopied(false), 1e3);
+        return () => clearTimeout(timeout);
+    }, [copied]);
+    const copy = () => {
+        copyToClipboard(`${manifest.name} v${manifest.version} (${id})
+${error.stack ?? getShortStack(error)}`);
+        setCopied(true);
+    };
+    return BdApi.React.createElement(
+        Button,
+        { size: Button.Sizes.SMALL, color: copied ? Button.Colors.GREEN : Button.Colors.PRIMARY, onClick: copy },
+        t(copied ? "copied" : "copy")
+    );
+}
+
+function MiniFallback() {
+    const { t } = useTranslation();
+    const label = t("mini", { plugin: manifest.name });
+    return BdApi.React.createElement(
+        "span",
+        { "className": styles.errorBoundaryMini, "role": "img", "aria-label": label, "title": label },
+        BdApi.React.createElement(ErrorIcon, { width: "16", height: "16" })
+    );
+}
+
+function Fallback({ id, error, onRetry }) {
+    const { t } = useTranslation();
+    return BdApi.React.createElement(
+        "div",
+        { className: styles.errorBoundary, role: "alert" },
+        BdApi.React.createElement(
+            "div",
+            { className: styles.errorBoundaryContent },
+            BdApi.React.createElement(
+                Text,
+                { size: Text.Sizes.SIZE_16, color: Text.Colors.HEADER_PRIMARY, strong: true },
+                t("title")
+            ),
+            BdApi.React.createElement(
+                Text,
+                { color: Text.Colors.MUTED },
+                BdApi.React.createElement(Trans, {
+                    i18nKey: "description",
+                    values: { plugin: manifest.name },
+                    components: { keybind: BdApi.React.createElement(Keybind, { keys: CONSOLE_KEYS }) }
+                })
+            ),
+            error
+                && BdApi.React.createElement(
+                    "code",
+                    { className: styles.errorBoundaryDetails },
+                    "[",
+                    id,
+                    "] ",
+                    getShortStack(error)
+                )
+        ),
+        BdApi.React.createElement(
+            "div",
+            { className: styles.errorBoundaryActions },
+            error && BdApi.React.createElement(CopyErrorButton, { id, error }),
+            BdApi.React.createElement(Button, { size: Button.Sizes.SMALL, onClick: onRetry }, t("retry"))
+        )
+    );
+}
+
+function ErrorBoundary({ id, mini, children }) {
+    const [error, setError] = BdApi.React.useState(null);
+    const [attempt, setAttempt] = BdApi.React.useState(0);
+    const retry = () => {
+        setError(null);
+        setAttempt(attempt + 1);
+    };
+    return BdApi.React.createElement(
+        BdErrorBoundary,
+        {
+            key: attempt,
+            id,
+            name: manifest.name,
+            fallback: mini
+                ? BdApi.React.createElement(MiniFallback, null)
+                : BdApi.React.createElement(Fallback, { id, error, onRetry: retry }),
+            onError: setError
+        },
+        children
+    );
 }
 
 /* ../../common/Settings/store.ts */
