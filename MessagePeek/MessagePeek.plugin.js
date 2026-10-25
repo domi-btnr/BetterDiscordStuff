@@ -1,6 +1,6 @@
 /**
  * @name MessagePeek
- * @version 1.2.7
+ * @version 1.3.0
  * @description See the last message in a Channel like on mobile
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -15,7 +15,7 @@
 const manifest = {
     $schema: "../../common/Schemas/manifest.schema.json",
     name: "MessagePeek",
-    version: "1.2.7",
+    version: "1.3.0",
     description: "See the last message in a Channel like on mobile",
     author: "domi.btnr",
     authorId: "354191516979429376",
@@ -23,18 +23,23 @@ const manifest = {
     donate: "https://paypal.me/domibtnr",
     source: "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/MessagePeek",
     changelog: {
-        date: "2026-09-05",
+        date: "2026-10-25",
         changes: [
             {
-                type: "fixed",
-                title: "Fixed",
-                items: ["Updated the Plugin to work with the latest Discord update"]
+                type: "added",
+                title: "What's new",
+                items: [
+                    "Timestamps are back in your DMs and update live as time passes",
+                    "When you start Discord in a server, the previews of its most recently active channels load right away, just like your DMs"
+                ]
             },
             {
-                type: "progress",
-                title: "Known broken Features",
+                type: "improved",
+                title: "Rebuilt from the ground up",
                 items: [
-                    "Removed the option to show timestamps in the DM list as it doesn't work and I don't have the time to fix it right now"
+                    "Rewrote the plugin from the ground up, making it lighter and less likely to break when Discord updates",
+                    "Previews support more message types like GIFs, polls and voice messages",
+                    "Changing a setting now applies right away"
                 ]
             }
         ]
@@ -42,7 +47,7 @@ const manifest = {
 };
 
 /* @api */
-const { Components, Data, DOM, Hooks, Patcher, ReactUtils, UI, Utils, Webpack } = new BdApi(manifest.name);
+const { Components, Data, DOM, Hooks, Logger, Patcher, ReactUtils, UI, Utils, Webpack } = new BdApi(manifest.name);
 
 /* ../../common/Webpack/Dispatcher.ts */
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers", {
@@ -145,21 +150,25 @@ function getDiscordMessage(key, values) {
     }
 }
 
-function resolveMessage(resources, key, options = {}, discordKey) {
-    const discordMessage = discordKey && getDiscordMessage(discordKey, options);
-    if (discordMessage) return discordMessage;
+function getPluralKeys(key, count, language) {
+    if (count == null) return [];
+    const forms = new Set([count === 0 ? "zero" : void 0, getPluralRules(language).select(count), "other"]);
+    return [...forms].filter(Boolean).map(form => `${key}_${form}`);
+}
+
+function resolveMessage(resources, key, options = {}, discordKeys = {}) {
+    const { count } = options;
+    const discordCandidates = count == null ? [key] : getPluralKeys(key, count, getCurrentLocale());
+    for (const candidate of discordCandidates) {
+        const discordKey = discordKeys[candidate];
+        const message = discordKey && getDiscordMessage(discordKey, options);
+        if (message) return message;
+    }
     for (const language of getLanguages(resources)) {
-        const resource = resources[language];
-        if (options.count != null) {
-            const rule = getPluralRules(language).select(options.count);
-            const plural =
-                (options.count === 0 ? getPath(resource, `${key}_zero`) : void 0)
-                ?? getPath(resource, `${key}_${rule}`)
-                ?? getPath(resource, `${key}_other`);
-            if (plural != null) return plural;
+        for (const candidate of [...getPluralKeys(key, count, language), key]) {
+            const message = getPath(resources[language], candidate);
+            if (message != null) return message;
         }
-        const message = getPath(resource, key);
-        if (message != null) return message;
     }
     return options.defaultValue;
 }
@@ -190,7 +199,7 @@ function renderTags(message, components, fill) {
 function createI18n({ resources, discord = {} }) {
     const allResources = resources;
     const discordKeys = discord;
-    const resolve = (key, options) => resolveMessage(allResources, key, options, discordKeys[key]);
+    const resolve = (key, options) => resolveMessage(allResources, key, options, discordKeys);
     function t(key, options = {}) {
         return interpolate(resolve(key, options) ?? key, options);
     }
@@ -301,7 +310,7 @@ const keys$1 = {
     option: "Option"
 };
 
-const de = {
+const de$1 = {
     title: title$1,
     description: description$1,
     retry: retry$1,
@@ -325,7 +334,7 @@ const keys = {
     option: "Option"
 };
 
-const en = {
+const en$1 = {
     title: title,
     description: description,
     retry: retry,
@@ -446,7 +455,7 @@ Styles.sheets.push(
   vertical-align: text-bottom;
 }`
 );
-const styles = {
+const styles$2 = {
     errorBoundary: "error-boundary",
     errorBoundaryActions: "error-boundary-actions",
     errorBoundaryContent: "error-boundary-content",
@@ -459,8 +468,8 @@ const styles = {
 /* ../../common/ErrorBoundary/index.tsx */
 const { Button, ErrorBoundary: BdErrorBoundary, Text } = Components;
 
-const { Trans, useTranslation } = createI18n({
-    resources: { en, de },
+const { Trans, useTranslation: useTranslation$1 } = createI18n({
+    resources: { en: en$1, de: de$1 },
     discord: {
         title: "+XstB0",
         retry: "TdQXA8",
@@ -502,10 +511,10 @@ const ErrorIcon = props =>
     );
 
 function Keybind({ keys }) {
-    const { t } = useTranslation();
+    const { t } = useTranslation$1();
     return BdApi.React.createElement(
         "span",
-        { className: styles.errorBoundaryKeybind },
+        { className: styles$2.errorBoundaryKeybind },
         keys.map(({ label, name }) =>
             BdApi.React.createElement(
                 "kbd",
@@ -513,7 +522,7 @@ function Keybind({ keys }) {
                 name
                     ? BdApi.React.createElement(
                           "span",
-                          { "className": styles.errorBoundarySymbol, "role": "img", "aria-label": t(name) },
+                          { "className": styles$2.errorBoundarySymbol, "role": "img", "aria-label": t(name) },
                           label
                       )
                     : label
@@ -523,7 +532,7 @@ function Keybind({ keys }) {
 }
 
 function CopyErrorButton({ id, error }) {
-    const { t } = useTranslation();
+    const { t } = useTranslation$1();
     const [copied, setCopied] = BdApi.React.useState(false);
     BdApi.React.useEffect(() => {
         if (!copied) return;
@@ -543,23 +552,23 @@ ${error.stack ?? getShortStack(error)}`);
 }
 
 function MiniFallback() {
-    const { t } = useTranslation();
+    const { t } = useTranslation$1();
     const label = t("mini", { plugin: manifest.name });
     return BdApi.React.createElement(
         "span",
-        { "className": styles.errorBoundaryMini, "role": "img", "aria-label": label, "title": label },
+        { "className": styles$2.errorBoundaryMini, "role": "img", "aria-label": label, "title": label },
         BdApi.React.createElement(ErrorIcon, { width: "16", height: "16" })
     );
 }
 
 function Fallback({ id, error, onRetry }) {
-    const { t } = useTranslation();
+    const { t } = useTranslation$1();
     return BdApi.React.createElement(
         "div",
-        { className: styles.errorBoundary, role: "alert" },
+        { className: styles$2.errorBoundary, role: "alert" },
         BdApi.React.createElement(
             "div",
-            { className: styles.errorBoundaryContent },
+            { className: styles$2.errorBoundaryContent },
             BdApi.React.createElement(
                 Text,
                 { size: Text.Sizes.SIZE_16, color: Text.Colors.HEADER_PRIMARY, strong: true },
@@ -577,7 +586,7 @@ function Fallback({ id, error, onRetry }) {
             error
                 && BdApi.React.createElement(
                     "code",
-                    { className: styles.errorBoundaryDetails },
+                    { className: styles$2.errorBoundaryDetails },
                     "[",
                     id,
                     "] ",
@@ -586,7 +595,7 @@ function Fallback({ id, error, onRetry }) {
         ),
         BdApi.React.createElement(
             "div",
-            { className: styles.errorBoundaryActions },
+            { className: styles$2.errorBoundaryActions },
             error && BdApi.React.createElement(CopyErrorButton, { id, error }),
             BdApi.React.createElement(Button, { size: Button.Sizes.SMALL, onClick: onRetry }, t("retry"))
         )
@@ -780,121 +789,472 @@ function SettingsPanel({ items, components: customComponents }) {
     });
 }
 
-/* components/styles.scss */
+/* locales/de.json */
+const you$1 = "Du";
+
+const content$1 = {
+    message: "Hat eine Nachricht gesendet",
+    image: "Hat ein Bild gesendet",
+    image_other: "Hat {{count}} Bilder gesendet",
+    video: "Hat ein Video gesendet",
+    video_other: "Hat {{count}} Videos gesendet",
+    audio: "Hat eine Audiodatei gesendet",
+    file: "Hat eine Datei gesendet",
+    file_other: "Hat {{count}} Dateien gesendet",
+    attachment_other: "Hat {{count}} Anhänge gesendet",
+    gif: "Hat ein GIF gesendet",
+    sticker: "Hat einen Sticker gesendet",
+    poll: "Hat eine Umfrage gesendet",
+    voiceMessage: "Sprachnachricht",
+    forwarded: "Hat eine Nachricht weitergeleitet"
+};
+
+const units$1 = {
+    second: "{{value}} Sek.",
+    minute: "{{value}} Min.",
+    hour: "{{value}} Std.",
+    day: "{{value}} T",
+    week: "{{value}} W",
+    month: "{{value}} M",
+    year: "{{value}} J"
+};
+
+const de = {
+    you: you$1,
+    content: content$1,
+    units: units$1
+};
+
+/* locales/en.json */
+const you = "You";
+
+const content = {
+    message: "Sent a message",
+    image: "Sent an image",
+    image_other: "Sent {{count}} images",
+    video: "Sent a video",
+    video_other: "Sent {{count}} videos",
+    audio: "Sent an audio file",
+    file: "Sent a file",
+    file_other: "Sent {{count}} files",
+    attachment_other: "Sent {{count}} attachments",
+    gif: "Sent a GIF",
+    sticker: "Sent a sticker",
+    poll: "Sent a poll",
+    voiceMessage: "Voice Message",
+    forwarded: "Forwarded a message"
+};
+
+const units = {
+    second: "{{value}}s",
+    minute: "{{value}}m",
+    hour: "{{value}}h",
+    day: "{{value}}d",
+    week: "{{value}}w",
+    month: "{{value}}mo",
+    year: "{{value}}y"
+};
+
+const en = {
+    you: you,
+    content: content,
+    units: units
+};
+
+/* modules/i18n.ts */
+const { t, useTranslation } = createI18n({
+    resources: { en, de },
+    discord: {
+        "content.message": "sDqZHL",
+        "content.image": "tCcq5p",
+        "content.image_other": "rtfTKp",
+        "content.video": "KxO2Yl",
+        "content.video_other": "nYvQ07",
+        "content.audio": "FWqQt5",
+        "content.file": "mX8M6i",
+        "content.file_other": "y0gZht",
+        "content.attachment_other": "8/qgDd",
+        "content.gif": "p0oZmy",
+        "content.sticker": "dyquw8",
+        "content.poll": "n3shVJ",
+        "content.voiceMessage": "c8U6xd",
+        "content.forwarded": "9ddYKt"
+    }
+});
+
+/* modules/webpack.ts */
+const { Filters } = Webpack;
+
+const Modules = Webpack.getBulkKeyed({
+    ChannelActions: {
+        filter: Filters.byKeys("preload", "fetchChannel"),
+        cacheId: "MessagePeek.ChannelActions"
+    },
+    ChannelClasses: {
+        filter: Filters.byKeys("channel", "decorator"),
+        cacheId: "MessagePeek.ChannelClasses"
+    },
+    DMRow: {
+        filter: Filters.combine(
+            Filters.byStrings("getRecipientId", "isMultiUserDM"),
+            module => !String(module).includes("aria-posinset"),
+            Filters.bySource('location:"PrivateChannel"')
+        ),
+        searchExports: true,
+        withKey: true,
+        cacheId: "MessagePeek.DMRow"
+    }
+});
+
+const { ChannelActions, ChannelClasses, DMRow } = Modules;
+
+const getGuildChannelRow = signal =>
+    Webpack.waitForModule(Filters.byStrings("connectDragPreview", "hasActiveThreads", "iconClassName"), {
+        searchExports: true,
+        withKey: true,
+        cacheId: "MessagePeek.GuildChannelRow",
+        signal
+    });
+
+const ChannelStore = Webpack.getStore("ChannelStore");
+const GuildChannelStore = Webpack.getStore("GuildChannelStore");
+const MessageStore = Webpack.getStore("MessageStore");
+const SelectedGuildStore = Webpack.getStore("SelectedGuildStore");
+const UserStore = Webpack.getStore("UserStore");
+
+/* modules/messages.ts */
+const IS_VOICE_MESSAGE = 1 << 13;
+
+const ATTACHMENT_GROUPS = {
+    image: "content.image",
+    gif: "content.image",
+    video: "content.video",
+    audio: "content.file",
+    file: "content.file"
+};
+
+function useLastMessage(channelId) {
+    return Hooks.useStateFromStores([MessageStore], () => MessageStore.getMessages(channelId)?.last(), [channelId]);
+}
+
+function preloadChannels(guildId, channels, signal) {
+    channels
+        .filter(channel => channel.lastMessageId && !MessageStore.getMessages(channel.id)?.last())
+        .slice(0, Settings.get("preloadLimit", 10))
+        .reduce(
+            (promise, channel, index) =>
+                promise.then(() => {
+                    if (signal.aborted) return;
+                    ChannelActions?.preload(guildId, channel.id);
+                    return new Promise(resolve => setTimeout(resolve, 125 + index * 125));
+                }),
+            Promise.resolve()
+        );
+}
+
+function getAttachmentKind({ content_type: type = "" }) {
+    if (type === "image/gif") return "gif";
+    if (type.startsWith("image/")) return "image";
+    if (type.startsWith("video/")) return "video";
+    if (type.startsWith("audio/")) return "audio";
+    return "file";
+}
+
+function hasPreview(channelId, location) {
+    if (!Settings.get(location === "dm" ? "showInDMs" : "showInGuilds", true)) return false;
+    const message = MessageStore.getMessages(channelId)?.last();
+    return !!message && !!getMessagePreview(message);
+}
+
+function getMessagePreview(message) {
+    const [embed] = message.embeds;
+    const isGif = String(embed?.type) === "gifv" && message.content === embed.url;
+    if (message.content && !isGif) return message.content;
+    if (embed?.rawDescription) return embed.rawDescription;
+    if (isGif) return t("content.gif");
+    if (message.messageSnapshots?.length) return t("content.forwarded");
+    if (message.poll) return t("content.poll");
+    if (message.stickerItems?.length) return t("content.sticker");
+    if (message.flags & IS_VOICE_MESSAGE) return t("content.voiceMessage");
+    const kinds = message.attachments.map(getAttachmentKind);
+    if (kinds.length === 1) return t(`content.${kinds[0]}`);
+    if (kinds.length > 1) {
+        const groups = new Set(kinds.map(kind => ATTACHMENT_GROUPS[kind]));
+        const [group] = groups;
+        return t(groups.size === 1 ? group : "content.attachment", { count: kinds.length });
+    }
+    if (embed || message.components.length) return t("content.message");
+}
+
+/* modules/rowHeight.ts */
+const EXTRA_HEIGHT = { dm: 8, guild: 16 };
+const originals = new WeakMap();
+const lists = new Set();
+const pendingUpdates = new Set();
+let tracking = false;
+let frame;
+
+function getChannelId(list, location, section, row) {
+    if (location === "dm") return section === 1 ? list.props.privateChannelIds?.[row] : void 0;
+    const { guildChannels } = list.props;
+    try {
+        if (!guildChannels || guildChannels.isPlaceholderRow(section, row)) return;
+        return guildChannels.getChannelFromSectionRow(section, row)?.channel?.id;
+    } catch {
+        return void 0;
+    }
+}
+
+function updateList(list) {
+    pendingUpdates.add(list);
+    frame ??= requestAnimationFrame(() => {
+        frame = void 0;
+        pendingUpdates.forEach(list2 => list2.forceUpdate());
+        pendingUpdates.clear();
+    });
+}
+
+function trackList(node, location) {
+    if (!tracking) return;
+    let fiber = ReactUtils.getInternalInstance(node);
+    while (fiber && typeof fiber.stateNode?.getRowHeight !== "function") fiber = fiber.return;
+    const list = fiber?.stateNode;
+    if (!list || originals.has(list)) return list;
+    const getRowHeight = list.getRowHeight;
+    originals.set(list, getRowHeight);
+    list.getRowHeight = (section, row) => {
+        const channelId = getChannelId(list, location, section, row);
+        const extra = channelId && hasPreview(channelId, location) ? EXTRA_HEIGHT[location] : 0;
+        return getRowHeight.call(list, section, row) + extra;
+    };
+    for (const ref of lists) if (!ref.deref()) lists.delete(ref);
+    lists.add(new WeakRef(list));
+    updateList(list);
+    return list;
+}
+
+function startTracking() {
+    tracking = true;
+}
+
+function stopTracking() {
+    tracking = false;
+    if (frame) cancelAnimationFrame(frame);
+    frame = void 0;
+    pendingUpdates.clear();
+    for (const ref of lists) {
+        const list = ref.deref();
+        if (!list) continue;
+        list.getRowHeight = originals.get(list);
+        originals.delete(list);
+        list.forceUpdate();
+    }
+    lists.clear();
+}
+
+/* components/preview.scss */
 Styles.sheets.push(
-    "/* components/styles.scss */",
-    `a[href^="/channels/@me/"] [class^=layout] {
-  min-height: 42px;
-  max-height: 50px;
-  height: unset;
+    "/* components/preview.scss */",
+    `.message-peek-dm:has(.message-peek-preview) {
+  height: 50px;
+}
+.density-compact .message-peek-dm:has(.message-peek-preview) {
+  height: 46px;
+}
+.density-cozy .message-peek-dm:has(.message-peek-preview) {
+  height: 56px;
+}
+
+.message-peek-preview {
+  margin-top: -2px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.message-peek-preview .message-peek-preview-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
 }`
 );
+const styles$1 = {
+    messagePeekDm: "message-peek-dm",
+    messagePeekPreview: "message-peek-preview",
+    messagePeekPreviewText: "message-peek-preview-text"
+};
 
-/* components/messagePeek.jsx */
-const MessageStore = Webpack.getStore("MessageStore");
+/* components/preview.tsx */
+const Tooltip = Components.Tooltip;
 
-function MessagePeek$1({ channelId, timestampOnly }) {
-    if (!channelId) return null;
-    const lastMessage = Hooks.useStateFromStores([MessageStore], () => MessageStore.getMessages(channelId)?.last());
-    if (!lastMessage) return null;
-    if (!timestampOnly) {
-        const attachmentCount = lastMessage.attachments.length;
-        const content =
-            lastMessage.content
-            || lastMessage.embeds?.[0]?.rawDescription
-            || (lastMessage.stickerItems.length && "Sticker")
-            || (attachmentCount && `${attachmentCount} attachment${attachmentCount > 1 ? "s" : ""}`);
-        if (!content) return null;
-        const charLimit = Settings.get("tooltipCharacterLimit", 256);
-        const authorName =
-            lastMessage.author.email && Settings.get("showYourselfAsYou", true)
-                ? "You"
-                : lastMessage.author["globalName"] || lastMessage.author["username"];
-        return BdApi.React.createElement(
-            "div",
-            {
-                style: {
-                    marginBottom: "2px",
-                    marginTop: "-2px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap"
-                }
-            },
+function PreviewText({ channelId, location }) {
+    const { t } = useTranslation();
+    const settings = Hooks.useStateFromStores(
+        [Settings],
+        () => ({
+            enabled: Settings.get(location === "dm" ? "showInDMs" : "showInGuilds", true),
+            showAuthor: Settings.get("showAuthor", true),
+            showYourselfAsYou: Settings.get("showYourselfAsYou", true),
+            charLimit: Settings.get("tooltipCharacterLimit", 256)
+        }),
+        [location],
+        true
+    );
+    const message = useLastMessage(channelId);
+    const content = settings.enabled && message ? getMessagePreview(message) : void 0;
+    const ref = BdApi.React.useRef(null);
+    const list = BdApi.React.useRef(void 0);
+    const hadContent = BdApi.React.useRef(!!content);
+    BdApi.React.useLayoutEffect(() => {
+        if (ref.current) list.current = trackList(ref.current, location);
+        if (hadContent.current !== !!content && list.current) updateList(list.current);
+        hadContent.current = !!content;
+    }, [!!content]);
+    const tooltip = BdApi.React.useMemo(() => {
+        if (!content) return;
+        const { charLimit } = settings;
+        return Parser.parse(content.length > charLimit ? `${content.slice(0, charLimit).trim()}\u2026` : content);
+    }, [content, settings.charLimit]);
+    const text = BdApi.React.useMemo(() => content && Parser.parseInlineReply(content), [content]);
+    if (!message || !content) return null;
+    const { author } = message;
+    const isYou = settings.showYourselfAsYou && author.id === UserStore.getCurrentUser()?.id;
+    const authorName = isYou ? t("you") : author.globalName || author.username;
+    return BdApi.React.createElement(
+        "div",
+        { ref, className: styles$1.messagePeekPreview },
+        BdApi.React.createElement(Tooltip, { text: tooltip }, props =>
             BdApi.React.createElement(
-                Components.Tooltip,
-                {
-                    text:
-                        content.length > charLimit
-                            ? Parser.parse(content.slice(0, charLimit).trim() + "\u2026")
-                            : Parser.parse(content)
-                },
-                props =>
-                    BdApi.React.createElement(
-                        "div",
-                        {
-                            ...props,
-                            style: {
-                                fontSize: "12px",
-                                fontWeight: "var(--font-weight-medium)",
-                                lineHeight: "16px",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap"
-                            }
-                        },
-                        Settings.get("showAuthor", true) && `${authorName}: `,
-                        Parser.parseInlineReply(content)
-                    )
+                "div",
+                { ...props, className: styles$1.messagePeekPreviewText },
+                settings.showAuthor && `${authorName}: `,
+                text
             )
-        );
-    } else {
-        const now = Date.now();
-        const dateTimeFormatter = new Intl.DateTimeFormat(getLocale(), {
+        )
+    );
+}
+
+function Preview(props) {
+    return BdApi.React.createElement(
+        ErrorBoundary,
+        { id: "MessagePeek.Preview", mini: true },
+        BdApi.React.createElement(PreviewText, { ...props })
+    );
+}
+
+/* components/timestamp.scss */
+Styles.sheets.push(
+    "/* components/timestamp.scss */",
+    `.message-peek-timestamp {
+  flex-shrink: 0;
+  align-content: center;
+  margin-right: 5px;
+  color: var(--channels-default);
+}`
+);
+const styles = {
+    messagePeekTimestamp: "message-peek-timestamp"
+};
+
+/* components/timestamp.tsx */
+const SECOND = 1e3;
+const MINUTE = 60 * SECOND;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
+
+const UNITS = [
+    ["year", 365 * DAY],
+    ["month", 30 * DAY],
+    ["week", 7 * DAY],
+    ["day", DAY],
+    ["hour", HOUR],
+    ["minute", MINUTE],
+    ["second", SECOND]
+];
+
+const dateFormatters = new Map();
+
+function useRelativeTime(timestamp) {
+    const [tick, setTick] = BdApi.React.useState(0);
+    const elapsed = timestamp === void 0 ? 0 : Math.max(0, Date.now() - timestamp);
+    const [unit, ms] = UNITS.find(([, ms2]) => elapsed >= ms2) ?? UNITS[UNITS.length - 1];
+    BdApi.React.useEffect(() => {
+        if (timestamp === void 0) return;
+        const timeout = setTimeout(() => setTick(count => count + 1), Math.min(ms - (elapsed % ms), DAY));
+        return () => clearTimeout(timeout);
+    }, [tick, timestamp]);
+    return timestamp === void 0 ? void 0 : { value: Math.floor(elapsed / ms), unit };
+}
+
+function formatDate(timestamp, locale) {
+    let formatter = dateFormatters.get(locale);
+    if (!formatter) {
+        formatter = new Intl.DateTimeFormat(locale, {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit"
         });
-        const units = [
-            { unit: "s", ms: 1e3 },
-            { unit: "m", ms: 1e3 * 60 },
-            { unit: "h", ms: 1e3 * 60 * 60 },
-            { unit: "d", ms: 1e3 * 60 * 60 * 24 },
-            { unit: "w", ms: 1e3 * 60 * 60 * 24 * 7 },
-            { unit: "mo", ms: 1e3 * 60 * 60 * 24 * 30 },
-            { unit: "y", ms: 1e3 * 60 * 60 * 24 * 365 }
-        ];
-        const diffInMs = lastMessage.timestamp - now;
-        let relativeTime = 0;
-        let unit = "";
-        for (let i = units.length - 1; i >= 0; i--) {
-            const { unit: u, ms } = units[i];
-            if (Math.abs(diffInMs) >= ms) {
-                relativeTime = Math.floor(diffInMs / ms);
-                unit = u;
-                break;
-            }
-        }
-        return BdApi.React.createElement(
-            Components.Tooltip,
-            { text: dateTimeFormatter.format(lastMessage.timestamp) },
-            props =>
-                BdApi.React.createElement(
-                    "div",
-                    {
-                        ...props,
-                        style: {
-                            marginRight: "5px",
-                            alignContent: "center",
-                            color: "var(--channels-default)"
-                        }
-                    },
-                    `${Math.abs(relativeTime)}${unit}`
-                )
-        );
+        dateFormatters.set(locale, formatter);
     }
+    return formatter.format(timestamp);
+}
+
+function LastMessageTimestamp({ channelId, location }) {
+    const { t } = useTranslation();
+    const locale = useLocale();
+    const enabled = Hooks.useStateFromStores(
+        [Settings],
+        () =>
+            Settings.get(location === "dm" ? "showInDMs" : "showInGuilds", true) && Settings.get("showTimestamp", true),
+        [location]
+    );
+    const message = useLastMessage(channelId);
+    const timestamp = message && Number(message.timestamp);
+    const relativeTime = useRelativeTime(timestamp);
+    if (!enabled || timestamp === void 0 || !relativeTime) return null;
+    return BdApi.React.createElement(Tooltip, { text: formatDate(timestamp, locale) }, props =>
+        BdApi.React.createElement(
+            "div",
+            { ...props, className: styles.messagePeekTimestamp },
+            t(`units.${relativeTime.unit}`, { value: relativeTime.value })
+        )
+    );
+}
+
+function Timestamp(props) {
+    return BdApi.React.createElement(
+        ErrorBoundary,
+        { id: "MessagePeek.Timestamp", mini: true },
+        BdApi.React.createElement(LastMessageTimestamp, { ...props })
+    );
+}
+
+/* modules/elements.tsx */
+const findInTree = (tree, filter) => Utils.findInTree(tree, filter, { walkable: ["children", "props"] });
+const findByClassName = (tree, className) =>
+    findInTree(tree, node => typeof node?.props?.className === "string" && node.props.className.startsWith(className));
+
+function MessagePeek$1({ __original: original, __patch: patch, ...props }) {
+    const res = original(props);
+    try {
+        patch(res);
+    } catch (error) {
+        Logger.error("Failed to patch", original, error);
+    }
+    return res;
+}
+
+const isWrapped = element => element?.type === MessagePeek$1;
+
+function patchRender(element, patch) {
+    if (typeof element?.type !== "function" || isWrapped(element)) return;
+    element.props = { ...element.props, __original: element.type, __patch: patch };
+    element.type = MessagePeek$1;
 }
 
 /* settings.json */
@@ -937,7 +1297,7 @@ const items = [
     {
         type: "slider",
         name: "Preload Limit",
-        note: "How many DM channels to preload. This makes an API request for each channel, so be careful with this setting",
+        note: "How many DMs or channels of the currently selected server to load on startup. This makes an API request for each channel, so be careful with this setting",
         id: "preloadLimit",
         minValue: 0,
         maxValue: 30,
@@ -962,86 +1322,99 @@ const SettingsItems = {
     items: items
 };
 
-/* index.jsx */
+/* index.tsx */
+const MAX_PRELOAD = 30;
+
 class MessagePeek {
+    controller;
     start() {
-        if (Settings.get("preloadLimit", 10) > 30) Settings.set("preloadLimit", 10);
-        showChangelog(manifest);
-        this.patchDMs();
-        this.patchGuildChannel();
+        if (Settings.get("preloadLimit", 10) > MAX_PRELOAD) Settings.set("preloadLimit", 10);
         Styles.load();
+        showChangelog(manifest);
+        this.controller = new AbortController();
+        startTracking();
+        this.patchDMs(this.controller.signal);
+        this.patchGuildChannels(this.controller.signal);
     }
     stop() {
+        this.controller?.abort();
         Patcher.unpatchAll();
+        stopTracking();
+        this.rerenderDMList();
         Styles.unload();
     }
-    async patchDMs() {
-        const ChannelContext = BdApi.React.createContext(null);
-        const ChannelWrapper = await Webpack.waitForModule(
-            Webpack.Filters.bySource("isMobile", 'location:"PrivateChannel"')
-        );
-        const NameWrapper = (await Webpack.waitForModule(Webpack.Filters.bySource("AvatarWithText"))).A;
-        const ChannelClasses = await Webpack.waitForModule(Webpack.Filters.byKeys("channel", "decorator"));
-        Patcher.after(ChannelWrapper, "Ay", (_, __, res) => {
-            if (!Settings.get("showInDMs", true)) return;
-            Patcher.after(res, "type", (_2, [props], res2) => {
-                return BdApi.React.createElement(ChannelContext.Provider, { value: props.channel }, res2);
-            });
-        });
-        Patcher.after(NameWrapper, "render", (_, __, res) => {
-            const channel = BdApi.React.useContext(ChannelContext);
-            if (!channel) return res;
-            const nameWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("content__"), {
-                walkable: ["children", "props"]
-            });
-            if (!nameWrapper) return res;
-            nameWrapper.props.children.push(BdApi.React.createElement(MessagePeek$1, { channelId: channel.id }));
-        });
-        const preload = Webpack.getByKeys("preload", "fetchChannel")?.preload;
-        Webpack.getStore("ChannelStore")
-            .getSortedPrivateChannels()
-            .filter(
-                channel => channel.lastMessageId && !Webpack.getStore("MessageStore").getMessages(channel.id)?.last()
-            )
-            .slice(0, Settings.get("preloadLimit", 10))
-            .reduce((promise, channel, index) => {
-                return promise.then(() => {
-                    preload("@me", channel.id);
-                    return new Promise(resolve => setTimeout(resolve, 125 + index * 125));
-                });
-            }, Promise.resolve());
-        const ChannelWrapperElement = document.querySelector(`h2 + .${ChannelClasses.channel}`);
-        if (ChannelWrapperElement) {
-            const ChannelWrapperInstance = ReactUtils.getOwnerInstance(ChannelWrapperElement);
-            if (ChannelWrapperInstance) ChannelWrapperInstance.forceUpdate();
-        }
+    rerenderDMList() {
+        const DMList = ChannelClasses && document.querySelector(`h2 + .${ChannelClasses.channel}`);
+        if (DMList) ReactUtils.getOwnerInstance(DMList)?.forceUpdate();
     }
-    async patchGuildChannel() {
-        const ChannelWrapper = await Webpack.waitForModule(
-            Webpack.Filters.byComponentType(Webpack.Filters.byStrings("channel", "unread", ".ALL_MESSAGES"))
-        );
-        Patcher.after(ChannelWrapper, "render", (_, [{ channel }], res) => {
-            if (!Settings.get("showInGuilds", true)) return;
-            const nameWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("name__"), {
-                walkable: ["children", "props"]
+    patchDMs(signal) {
+        if (!DMRow) return Logger.error("Failed to find DMRow");
+        Patcher.after(...DMRow, (_, args, res) => {
+            const [{ channel }] = args;
+            patchRender(res, inner => {
+                if (signal.aborted) return;
+                const row = findInTree(
+                    inner,
+                    node =>
+                        typeof node?.type === "function"
+                        && !isWrapped(node)
+                        && "id" in node.props
+                        && "children" in node.props
+                );
+                patchRender(row, rowRes => {
+                    const name = findInTree(rowRes, node => node?.type?.displayName === "AvatarWithText");
+                    if (name) {
+                        name.props.innerClassName = Utils.className(name.props.innerClassName, styles$1.messagePeekDm);
+                        name.props.subText = BdApi.React.createElement(
+                            BdApi.React.Fragment,
+                            null,
+                            name.props.subText,
+                            BdApi.React.createElement(Preview, { channelId: channel.id, location: "dm" })
+                        );
+                    }
+                    const icons = findByClassName(rowRes, "iconsContainer");
+                    if (icons) {
+                        icons.props.children = BdApi.React.createElement(
+                            BdApi.React.Fragment,
+                            null,
+                            BdApi.React.createElement(Timestamp, { channelId: channel.id, location: "dm" }),
+                            icons.props.children
+                        );
+                    }
+                });
             });
-            if (!nameWrapper) return res;
-            nameWrapper.props.children = [
-                nameWrapper.props.children,
-                BdApi.React.createElement(MessagePeek$1, { channelId: channel.id })
-            ];
-            if (!Settings.get("showTimestamp", true)) return;
-            const innerWrapper = Utils.findInTree(res, e => e?.props?.className?.startsWith("linkTop"), {
-                walkable: ["children", "props"]
-            });
-            if (!innerWrapper) return res;
-            const children = innerWrapper.props.children;
-            children.splice(
-                children.length - 1,
-                0,
-                BdApi.React.createElement(MessagePeek$1, { channelId: channel.id, timestampOnly: true })
-            );
         });
+        preloadChannels("@me", ChannelStore.getSortedPrivateChannels(), signal);
+        this.rerenderDMList();
+    }
+    async patchGuildChannels(signal) {
+        const GuildChannelRow = await getGuildChannelRow(signal);
+        if (!GuildChannelRow || signal.aborted) return;
+        Patcher.after(...GuildChannelRow, (_, args, res) => {
+            const [{ channel }] = args;
+            const name = findByClassName(res, "name__");
+            if (name) {
+                name.props.children = BdApi.React.createElement(
+                    BdApi.React.Fragment,
+                    null,
+                    name.props.children,
+                    BdApi.React.createElement(Preview, { channelId: channel.id, location: "guild" })
+                );
+            }
+            const linkTop = findByClassName(res, "linkTop")?.props.children;
+            if (Array.isArray(linkTop)) {
+                linkTop.splice(
+                    linkTop.length - 1,
+                    0,
+                    BdApi.React.createElement(Timestamp, { channelId: channel.id, location: "guild" })
+                );
+            }
+        });
+        const guildId = SelectedGuildStore.getGuildId();
+        if (!guildId) return;
+        const channels = GuildChannelStore.getSelectableChannels(guildId).map(({ channel }) => channel);
+        channels.sort((a, b) => (BigInt(b.lastMessageId ?? 0) > BigInt(a.lastMessageId ?? 0) ? 1 : -1));
+        preloadChannels(guildId, channels, signal);
     }
     getSettingsPanel() {
         return BdApi.React.createElement(SettingsPanel, { items: SettingsItems.items });

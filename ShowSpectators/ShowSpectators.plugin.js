@@ -146,21 +146,25 @@ function getDiscordMessage(key, values) {
     }
 }
 
-function resolveMessage(resources, key, options = {}, discordKey) {
-    const discordMessage = discordKey && getDiscordMessage(discordKey, options);
-    if (discordMessage) return discordMessage;
+function getPluralKeys(key, count, language) {
+    if (count == null) return [];
+    const forms = new Set([count === 0 ? "zero" : void 0, getPluralRules(language).select(count), "other"]);
+    return [...forms].filter(Boolean).map(form => `${key}_${form}`);
+}
+
+function resolveMessage(resources, key, options = {}, discordKeys = {}) {
+    const { count } = options;
+    const discordCandidates = count == null ? [key] : getPluralKeys(key, count, getCurrentLocale());
+    for (const candidate of discordCandidates) {
+        const discordKey = discordKeys[candidate];
+        const message = discordKey && getDiscordMessage(discordKey, options);
+        if (message) return message;
+    }
     for (const language of getLanguages(resources)) {
-        const resource = resources[language];
-        if (options.count != null) {
-            const rule = getPluralRules(language).select(options.count);
-            const plural =
-                (options.count === 0 ? getPath(resource, `${key}_zero`) : void 0)
-                ?? getPath(resource, `${key}_${rule}`)
-                ?? getPath(resource, `${key}_other`);
-            if (plural != null) return plural;
+        for (const candidate of [...getPluralKeys(key, count, language), key]) {
+            const message = getPath(resources[language], candidate);
+            if (message != null) return message;
         }
-        const message = getPath(resource, key);
-        if (message != null) return message;
     }
     return options.defaultValue;
 }
@@ -191,7 +195,7 @@ function renderTags(message, components, fill) {
 function createI18n({ resources, discord = {} }) {
     const allResources = resources;
     const discordKeys = discord;
-    const resolve = (key, options) => resolveMessage(allResources, key, options, discordKeys[key]);
+    const resolve = (key, options) => resolveMessage(allResources, key, options, discordKeys);
     function t(key, options = {}) {
         return interpolate(resolve(key, options) ?? key, options);
     }
