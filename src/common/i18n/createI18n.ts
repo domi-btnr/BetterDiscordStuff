@@ -12,9 +12,9 @@ import type { InitOptions, Resource, TOptions, TranslationKey, TransProps } from
 export function createI18n<R extends Resource>({ resources, discord = {} }: InitOptions<R>) {
     type Key = TranslationKey<R>;
     const allResources = resources as Record<string, Resource>;
-    const discordKeys = discord as Partial<Record<Key, string>>;
+    const discordKeys = discord as Record<string, string | undefined>;
 
-    const resolve = (key: Key, options?: TOptions) => resolveMessage(allResources, key, options, discordKeys[key]);
+    const resolve = (key: Key, options?: TOptions) => resolveMessage(allResources, key, options, discordKeys);
 
     /**
      * Translates `key` into Discord's current language.

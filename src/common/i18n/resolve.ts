@@ -36,31 +36,37 @@ function getDiscordMessage(key: string, values: TOptions): string | undefined {
     }
 }
 
+/** @returns The plural keys to look `key` up by, most specific first, or none without a `count`. */
+function getPluralKeys(key: string, count: number | undefined, language: string): string[] {
+    if (count == null) return [];
+    const forms = new Set([count === 0 ? "zero" : undefined, getPluralRules(language).select(count), "other"]);
+    return [...forms].filter(Boolean).map(form => `${key}_${form}`);
+}
+
 /**
- * @param discordKey One of Discord's hashed message keys to try first, see `InitOptions.discord`.
+ * @param discordKeys Discord's hashed message keys to try first, see `InitOptions.discord`. With a `count`, only
+ * the plural ones are used, so a missing Discord plural falls back to the plugin's own plural.
  * @returns The raw message for `key`, picking the plural form by `options.count`, or `options.defaultValue`.
  */
 export function resolveMessage(
     resources: Record<string, Resource>,
     key: string,
     options: TOptions = {},
-    discordKey?: string
+    discordKeys: Record<string, string | undefined> = {}
 ): string | undefined {
-    const discordMessage = discordKey && getDiscordMessage(discordKey, options);
-    if (discordMessage) return discordMessage;
+    const { count } = options;
+    const discordCandidates = count == null ? [key] : getPluralKeys(key, count, getCurrentLocale());
+    for (const candidate of discordCandidates) {
+        const discordKey = discordKeys[candidate];
+        const message = discordKey && getDiscordMessage(discordKey, options);
+        if (message) return message;
+    }
 
     for (const language of getLanguages(resources)) {
-        const resource = resources[language];
-        if (options.count != null) {
-            const rule = getPluralRules(language).select(options.count);
-            const plural =
-                (options.count === 0 ? getPath(resource, `${key}_zero`) : undefined)
-                ?? getPath(resource, `${key}_${rule}`)
-                ?? getPath(resource, `${key}_other`);
-            if (plural != null) return plural;
+        for (const candidate of [...getPluralKeys(key, count, language), key]) {
+            const message = getPath(resources[language], candidate);
+            if (message != null) return message;
         }
-        const message = getPath(resource, key);
-        if (message != null) return message;
     }
     return options.defaultValue;
 }
