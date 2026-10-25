@@ -1,0 +1,28 @@
+{
+    "you": "You",
+    "content": {
+        "message": "Sent a message",
+        "image": "Sent an image",
+        "image_other": "Sent {{count}} images",
+        "video": "Sent a video",
+        "video_other": "Sent {{count}} videos",
+        "audio": "Sent an audio file",
+        "file": "Sent a file",
+        "file_other": "Sent {{count}} files",
+        "attachment_other": "Sent {{count}} attachments",
+        "gif": "Sent a GIF",
+        "sticker": "Sent a sticker",
+        "poll": "Sent a poll",
+        "voiceMessage": "Voice Message",
+        "forwarded": "Forwarded a message"
+    },
+    "units": {
+        "second": "{{value}}s",
+        "minute": "{{value}}m",
+        "hour": "{{value}}h",
+        "day": "{{value}}d",
+        "week": "{{value}}w",
+        "month": "{{value}}mo",
+        "year": "{{value}}y"
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "you": "Du",
+    "content": {
+        "message": "Hat eine Nachricht gesendet",
+        "image": "Hat ein Bild gesendet",
+        "image_other": "Hat {{count}} Bilder gesendet",
+        "video": "Hat ein Video gesendet",
+        "video_other": "Hat {{count}} Videos gesendet",
+        "audio": "Hat eine Audiodatei gesendet",
+        "file": "Hat eine Datei gesendet",
+        "file_other": "Hat {{count}} Dateien gesendet",
+        "attachment_other": "Hat {{count}} Anhänge gesendet",
+        "gif": "Hat ein GIF gesendet",
+        "sticker": "Hat einen Sticker gesendet",
+        "poll": "Hat eine Umfrage gesendet",
+        "voiceMessage": "Sprachnachricht",
+        "forwarded": "Hat eine Nachricht weitergeleitet"
+    },
+    "units": {
+        "second": "{{value}} Sek.",
+        "minute": "{{value}} Min.",
+        "hour": "{{value}} Std.",
+        "day": "{{value}} T",
+        "week": "{{value}} W",
+        "month": "{{value}} M",
+        "year": "{{value}} J"
+    }
+}

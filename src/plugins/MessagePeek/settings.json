@@ -39,7 +39,7 @@
         {
             "type": "slider",
             "name": "Preload Limit",
-            "note": "How many DM channels to preload. This makes an API request for each channel, so be careful with this setting",
+            "note": "How many DMs or channels of the currently selected server to load on startup. This makes an API request for each channel, so be careful with this setting",
             "id": "preloadLimit",
             "minValue": 0,
             "maxValue": 30,
