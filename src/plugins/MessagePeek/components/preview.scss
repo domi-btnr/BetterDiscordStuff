@@ -1,0 +1,28 @@
+.message-peek-dm:has(.message-peek-preview) {
+    height: 50px;
+
+    .density-compact & {
+        height: 46px;
+    }
+
+    .density-cozy & {
+        height: 56px;
+    }
+}
+
+.message-peek-preview {
+    margin-top: -2px;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .message-peek-preview-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+        font-weight: var(--font-weight-medium);
+        line-height: 16px;
+    }
+}
