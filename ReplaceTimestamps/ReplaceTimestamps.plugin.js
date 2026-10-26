@@ -1,6 +1,6 @@
 /**
  * @name ReplaceTimestamps
- * @version 1.4.4
+ * @version 1.5.0
  * @description Replaces plaintext times and dates into Discord's timestamps
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -11,13 +11,11 @@
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
-
 /* @manifest */
 const manifest = {
     $schema: "../../common/Schemas/manifest.schema.json",
     name: "ReplaceTimestamps",
-    version: "1.4.4",
+    version: "1.5.0",
     description: "Replaces plaintext times and dates into Discord's timestamps",
     author: "domi.btnr",
     authorId: "354191516979429376",
@@ -25,19 +23,45 @@ const manifest = {
     donate: "https://paypal.me/domibtnr",
     source: "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/ReplaceTimestamps",
     changelog: {
-        date: "2026-05-15",
+        date: "2026-10-26",
         changes: [
             {
+                type: "added",
+                title: "What's new",
+                items: [
+                    "12-hour times work in more ways, like 5pm, 5 PM or 5:30 pm",
+                    "More date formats: 2003-11-17, 1.2.2003, 17.11.03 and 17.11. for this year, which you can turn off",
+                    'Relative times can combine units, like "in 1h 30m" or "2 days, 3 hours ago"',
+                    "The new Timestamp Style setting shows converted times in Discord's long or relative style",
+                    "Put a backslash in front of a time or date to keep it as typed, like \\05:30"
+                ]
+            },
+            {
                 type: "fixed",
-                title: "Fixed Settings",
-                items: ["Settings open again"]
+                title: "More reliable dates",
+                items: [
+                    "Changing the date order now takes effect immediately, instead of mixing up day and month until you restart the plugin",
+                    "Forum posts now get their times and dates converted too",
+                    'Relative times stay exact when the clocks change, and "in 1 month" on January 31 now lands on the last day of February',
+                    "Dates and times that don't exist, like 31.02.2003 or 25:00, are left as you typed them instead of rolling over into another date"
+                ]
+            },
+            {
+                type: "improved",
+                title: "Rebuilt from the ground up",
+                items: [
+                    'Relative times work with spaces and full words too, like "in 20 min" or "3 days ago"',
+                    "Times and dates inside code, links and mentions are now left as you typed them",
+                    "The Date Format setting is now simply Date Order, day first or month first. Your current choice carries over",
+                    "Rewrote the plugin from the ground up, making it lighter and less likely to break when Discord updates"
+                ]
             }
         ]
     }
 };
 
 /* @api */
-const { Components, Data, Hooks, Patcher, UI, Webpack } = new BdApi(manifest.name);
+const { Components, Data, Hooks, Logger, Patcher, UI, Webpack } = new BdApi(manifest.name);
 
 /* ../../common/Webpack/Dispatcher.ts */
 const Dispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers", {
@@ -669,126 +693,183 @@ function SettingsPanel({ items, components: customComponents }) {
     });
 }
 
-/* modules/utils.js */
-const getUnixTimestamp = (str, format) => {
-    const timeMatch = str.match(exports.timeRegexMatch);
-    const dateMatch = str.match(exports.dateRegexMatch);
-    const formatParts = Settings.get("dateFormat", "dd.MM.yyyy").split(/[./]/);
-    let dayIndex, monthIndex, yearIndex;
-    formatParts.forEach((part, index) => {
-        if (part.includes("dd")) dayIndex = index;
-        if (part.includes("MM")) monthIndex = index;
-        if (part.includes("yyyy")) yearIndex = index;
-    });
-    let date = new Date();
-    if (dateMatch) {
-        const day = parseInt(dateMatch[dayIndex + 1]);
-        const month = parseInt(dateMatch[monthIndex + 1]);
-        const year = parseInt(dateMatch[yearIndex + 1]);
-        date = new Date(year, month - 1, day);
-    }
-    let time = date;
-    if (timeMatch) {
-        let [hours, minutes] = timeMatch[1].split(":").map(e => parseInt(e));
-        if (timeMatch[2] && timeMatch[2].toLowerCase() === "pm" && hours < 12 && hours !== 0) {
-            hours += 12;
-            minutes = minutes.toString().padStart(2, "0");
-        } else if ((timeMatch[2] && timeMatch[2].toLowerCase() === "am" && hours === 12) || hours === 24) {
-            hours = 0;
-        } else if (minutes >= 60) {
-            hours += Math.floor(minutes / 60);
-            minutes = (minutes % 60).toString().padStart(2, "0");
-        }
-        time = new Date(date);
-        time.setHours(hours);
-        time.setMinutes(minutes);
-    }
-    const then = Math.round(time.getTime() / 1e3);
-    if (isNaN(then)) return str;
-    return `<t:${then}${format ? `:${format}` : ""}>`;
+/* modules/timestamps.ts */
+const TIME = String.raw`(?<![\w.:])(?<hours>\d{1,2})(?::(?<minutes>\d{2})(?!\d|:\d))?(?:[ \t]?(?<meridiem>[aApP][mM])\b(?!(?<=[ \t]am)[ \t]+[A-ZÄÖÜ]))?(?<=:\d\d|[mM])`;
+const DATE = String.raw`(?<![\w.])(?<date>\d{4}[./-]\d{1,2}[./-]\d{1,2}|\d{1,2}[./-]\d{1,2}[./-]\d{4}|\d{2}[./-]\d{2}[./-]\d{2}|\d{2}\.\d{2}\.)(?!\w|[./]\d)`;
+
+const STYLES = {
+    short: { time: "t", date: "d", dateTime: "s" },
+    long: { time: "T", date: "D", dateTime: "F" },
+    relative: { time: "R", date: "R", dateTime: "R" }
 };
 
-const getRelativeTime = str => {
-    const timeMatch = str.match(exports.relativeRegexMatch);
-    if (!timeMatch) return str;
-    const now = new Date();
-    let future = false;
-    let value, unit;
-    if (timeMatch[1] && timeMatch[2]) {
-        value = parseInt(timeMatch[1]);
-        unit = timeMatch[2];
-        future = true;
-    } else if (timeMatch[3] && timeMatch[4]) {
-        value = parseInt(timeMatch[3]);
-        unit = timeMatch[4];
-        future = false;
-    }
-    if (isNaN(value)) return str;
-    const adjustDate = (date, value2, unit2, future2) => {
-        switch (unit2.toLowerCase()) {
-            case "s":
-                date.setSeconds(date.getSeconds() + (future2 ? value2 : -value2));
-                break;
-            case "m":
-                date.setMinutes(date.getMinutes() + (future2 ? value2 : -value2));
-                break;
-            case "h":
-                date.setHours(date.getHours() + (future2 ? value2 : -value2));
-                break;
-            case "d":
-                date.setDate(date.getDate() + (future2 ? value2 : -value2));
-                break;
-            case "w":
-                date.setDate(date.getDate() + (future2 ? value2 * 7 : -value2 * 7));
-                break;
-            case "mo":
-                date.setMonth(date.getMonth() + (future2 ? value2 : -value2));
-                break;
-            case "y":
-                date.setFullYear(date.getFullYear() + (future2 ? value2 : -value2));
-                break;
+const UNITS = [
+    [{ ms: 1e3 }, ["s", "sec", "secs", "second", "seconds"]],
+    [{ ms: 6e4 }, ["m", "min", "mins", "minute", "minutes"]],
+    [{ ms: 36e5 }, ["h", "hr", "hrs", "hour", "hours"]],
+    [{ field: "Date", step: 1 }, ["d", "day", "days"]],
+    [{ field: "Date", step: 7 }, ["w", "wk", "wks", "week", "weeks"]],
+    [{ field: "Month", step: 1 }, ["mo", "mos", "month", "months"]],
+    [{ field: "FullYear", step: 1 }, ["y", "yr", "yrs", "year", "years"]]
+];
+
+const UNITS_BY_NAME = new Map(UNITS.flatMap(([unit, names]) => names.map(name => [name, unit])));
+const caseless = word => word.replace(/[a-z]/g, letter => `[${letter}${letter.toUpperCase()}]`);
+const WORDS = [...UNITS_BY_NAME.keys()]
+    .filter(name => name.length > 1)
+    .sort((a, b) => b.length - a.length)
+    .map(caseless)
+    .join("|");
+const DURATION_PART = String.raw`\d+(?:[ \t]*(?:${WORDS})|[smhdwy])\b`;
+const DURATION_SEPARATOR = String.raw`(?:[ \t]*,[ \t]*|[ \t]+${caseless("and")}[ \t]+|[ \t]+)`;
+const DURATION = String.raw`${DURATION_PART}(?:${DURATION_SEPARATOR}${DURATION_PART})*`;
+const AGO = String.raw`[ \t]+${caseless("ago")}\b`;
+const RELATIVE = String.raw`\b(?:${caseless("in")}[ \t]+(?<future>${DURATION})(?!${DURATION_SEPARATOR}${DURATION_PART}|${AGO})|(?<!${caseless("in")}[ \t]+(?:${DURATION_PART}${DURATION_SEPARATOR})*)(?<past>${DURATION})${AGO})`;
+
+const SOURCES = [
+    [`${TIME}[ \\t]+${DATE}`, "dateTime"],
+    [`${DATE}[ \\t]+${TIME}`, "dateTime"],
+    [TIME, "time"],
+    [DATE, "date"]
+];
+
+const PATTERNS = SOURCES.map(([source, kind]) => [new RegExp(source, "g"), kind]);
+const RELATIVE_PATTERN = new RegExp(RELATIVE, "g");
+const DURATION_PARTS = /(\d+)[ \t]*([a-z]+)/gi;
+const ESCAPED = [...SOURCES.map(([source]) => source), RELATIVE]
+    .map(source => source.replace(/\(\?<(?![=!])\w+>/g, "(?:"))
+    .join("|");
+
+const SKIPPED = new RegExp(
+    String.raw`(\`\`\`[\s\S]*?\`\`\`|\`[^\`\n]*\`|\[[^\]\n]*\]\([^)\s]*\)|https?:\/\/\S+|<[^\s<>]+>|\\(?:${ESCAPED}))`
+);
+
+function toTimestamp(match, groups, kind, options) {
+    const date = new Date();
+    if (groups.date) {
+        const [first, second, third] = groups.date.split(/[./-]/).filter(Boolean);
+        if (!third && !options.yearlessDates) return match;
+        let [year, month, day] = [+first, +second, +third];
+        if (first.length !== 4) {
+            [day, month] = options.dateOrder === "month" ? [+second, +first] : [+first, +second];
+            const currentYear = new Date().getFullYear();
+            year = third ? +third : currentYear;
+            if (third?.length === 2) year += year + 2e3 > currentYear + 20 ? 1900 : 2e3;
         }
-        return date;
+        date.setFullYear(year, month - 1, day);
+        date.setHours(0, 0, 0, 0);
+        if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return match;
+    }
+    if (groups.hours) {
+        let hours = +groups.hours;
+        const minutes = +(groups.minutes ?? 0);
+        const meridiem = groups.meridiem?.toLowerCase();
+        if (minutes > 59) return match;
+        if (meridiem) {
+            if (hours < 1 || hours > 12) return match;
+            hours = (hours % 12) + (meridiem === "pm" ? 12 : 0);
+        } else if (hours > 24 || (hours === 24 && minutes > 0)) return match;
+        date.setHours(hours, minutes, 0, 0);
+    }
+    return `<t:${Math.round(date.getTime() / 1e3)}:${STYLES[options.style][kind]}>`;
+}
+
+function toRelativeTimestamp(match, { future, past }) {
+    const date = new Date();
+    const sign = future ? 1 : -1;
+    for (const [, value, name] of (future ?? past).matchAll(DURATION_PARTS)) {
+        const unit = UNITS_BY_NAME.get(name.toLowerCase());
+        const amount = sign * +value;
+        if ("ms" in unit) {
+            date.setTime(date.getTime() + amount * unit.ms);
+            continue;
+        }
+        const { field, step } = unit;
+        if (field === "Date") {
+            date.setDate(date.getDate() + amount * step);
+            continue;
+        }
+        const day = date.getDate();
+        date.setDate(1);
+        date[`set${field}`](date[`get${field}`]() + amount * step);
+        date.setDate(Math.min(day, new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()));
+    }
+    const seconds = Math.round(date.getTime() / 1e3);
+    return isNaN(seconds) ? match : `<t:${seconds}:R>`;
+}
+
+function replaceTimestamps(content) {
+    const options = {
+        dateOrder: Settings.get("dateOrder", "day"),
+        style: Settings.get("timestampStyle", "short"),
+        yearlessDates: Settings.get("yearlessDates", true)
     };
-    const adjustedDate = adjustDate(now, value, unit, future);
-    const then = Math.round(adjustedDate.getTime() / 1e3);
-    return `<t:${then}:R>`;
-};
+    return content
+        .split(SKIPPED)
+        .map((part, index) => {
+            if (index % 2) return part.startsWith("\\") ? part.slice(1) : part;
+            return PATTERNS.reduce(
+                (text, [pattern, kind]) =>
+                    text.replace(pattern, (match, ...args) => toTimestamp(match, args.at(-1), kind, options)),
+                part
+            ).replace(RELATIVE_PATTERN, (match, ...args) => toRelativeTimestamp(match, args.at(-1)));
+        })
+        .join("");
+}
+
+/* modules/webpack.ts */
+const useCreateForumPost = Webpack.getModule(Webpack.Filters.byStrings("use_nested_fields", "applied_tags"), {
+    searchExports: true,
+    withKey: true,
+    cacheId: "ReplaceTimestamps.useCreateForumPost"
+});
 
 /* settings.json */
 const items = [
     {
         type: "dropdown",
-        name: "Date Format",
-        note: "Select the date format for converting dates to timestamps",
-        id: "dateFormat",
+        name: "Date Order",
+        note: "Whether the day or the month comes first in the dates you type. Dates starting with the year, like 2003-11-17, always work, and . / - all work as separators",
+        id: "dateOrder",
         options: [
             {
-                label: "dd.MM.yyyy",
-                value: "dd.MM.yyyy"
+                label: "Day first (17.11.2003)",
+                value: "day"
             },
             {
-                label: "dd/MM/yyyy",
-                value: "dd/MM/yyyy"
-            },
-            {
-                label: "MM.dd.yyyy",
-                value: "MM.dd.yyyy"
-            },
-            {
-                label: "MM/dd/yyyy",
-                value: "MM/dd/yyyy"
-            },
-            {
-                label: "yyyy.MM.dd",
-                value: "yyyy.MM.dd"
-            },
-            {
-                label: "yyyy/MM/dd",
-                value: "yyyy/MM/dd"
+                label: "Month first (11/17/2003)",
+                value: "month"
             }
         ],
-        value: "dd.MM.yyyy"
+        value: "day"
+    },
+    {
+        type: "dropdown",
+        name: "Timestamp Style",
+        note: 'How the converted times and dates are shown. Relative times like "in 5 min" always count from now',
+        id: "timestampStyle",
+        options: [
+            {
+                label: "Short (05:30, 17/11/2003)",
+                value: "short"
+            },
+            {
+                label: "Long (05:30:00, 17 November 2003)",
+                value: "long"
+            },
+            {
+                label: "Relative (in 2 hours)",
+                value: "relative"
+            }
+        ],
+        value: "short"
+    },
+    {
+        type: "switch",
+        name: "Dates Without a Year",
+        note: "Converts dates like 17.11. to this year. Turn it off if prices or versions like 12.05. get converted by mistake",
+        id: "yearlessDates",
+        value: true
     },
     {
         type: "switch",
@@ -803,46 +884,36 @@ const SettingsItems = {
     items: items
 };
 
-/* index.jsx */
-exports.timeRegexMatch = void 0;
-exports.dateRegexMatch = void 0;
-exports.relativeRegexMatch = void 0;
-
+/* index.tsx */
 class ReplaceTimestamps {
     start() {
+        const dateFormat = Settings.get("dateFormat");
+        if (dateFormat) {
+            Settings.set("dateOrder", dateFormat.startsWith("MM") || dateFormat.startsWith("yyyy") ? "month" : "day");
+            Settings.set("dateFormat", void 0);
+        }
         showChangelog(manifest);
         this.patchMessageActions();
+        this.patchForumPosts();
     }
     stop() {
         Patcher.unpatchAll();
     }
     patchMessageActions() {
-        const timeRegex = /(?<!\d)\d{1,2}:\d{2}(?!\d)(am|pm)?/gi;
-        exports.timeRegexMatch = /((?<!\d)\d{1,2}:\d{2}(?!\d))(am|pm)?/i;
-        const dateFormat = Settings.get("dateFormat", "dd.MM.yyyy")
-            .replace(/[./]/g, "[./]")
-            .replace("dd", "(\\d{2})")
-            .replace("MM", "(\\d{2})")
-            .replace("yyyy", "(\\d{4})");
-        const dateRegex = new RegExp(`${dateFormat}`, "gi");
-        exports.dateRegexMatch = new RegExp(`${dateFormat}`, "i");
-        const TimeDateRegex = new RegExp(`(${timeRegex.source})\\s+${dateRegex.source}`, "gi");
-        const DateRegexTime = new RegExp(`${dateRegex.source}\\s+(${timeRegex.source})`, "gi");
-        const relativeRegex = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/gi;
-        exports.relativeRegexMatch = /\b(?:in\s+(\d+)([smhdw]|mo|y)|(\d+)([smhdw]|mo|y)\s+ago)\b/i;
-        const processMessageContent = content =>
-            content
-                .replace(TimeDateRegex, x => getUnixTimestamp(x))
-                .replace(DateRegexTime, x => getUnixTimestamp(x))
-                .replace(timeRegex, x => getUnixTimestamp(x, "t"))
-                .replace(dateRegex, x => getUnixTimestamp(x, "d"))
-                .replace(relativeRegex, getRelativeTime);
-        Patcher.before(MessageActions, "sendMessage", (_, [, msg]) => {
-            msg.content = processMessageContent(msg.content);
+        Patcher.before(MessageActions, "sendMessage", (_, [, message]) => {
+            message.content = replaceTimestamps(message.content);
         });
-        Patcher.before(MessageActions, "editMessage", (_, [, , msg]) => {
+        Patcher.before(MessageActions, "editMessage", (_, [, , message]) => {
             if (!Settings.get("applyToEdits", true)) return;
-            msg.content = processMessageContent(msg.content);
+            message.content = replaceTimestamps(message.content);
+        });
+    }
+    patchForumPosts() {
+        if (!useCreateForumPost) return Logger.error("Failed to find useCreateForumPost");
+        Patcher.after(...useCreateForumPost, (_, __, createPost) => {
+            if (typeof createPost !== "function") return;
+            return (content, ...args) =>
+                createPost(typeof content === "string" ? replaceTimestamps(content) : content, ...args);
         });
     }
     getSettingsPanel() {
@@ -850,4 +921,4 @@ class ReplaceTimestamps {
     }
 }
 
-exports.default = ReplaceTimestamps;
+module.exports = ReplaceTimestamps;
