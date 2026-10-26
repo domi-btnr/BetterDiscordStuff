@@ -1,7 +1,7 @@
 {
     "$schema": "../../common/Schemas/manifest.schema.json",
     "name": "ReplaceTimestamps",
-    "version": "1.4.4",
+    "version": "1.5.0",
     "description": "Replaces plaintext times and dates into Discord's timestamps",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -9,13 +9,37 @@
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/ReplaceTimestamps",
     "changelog": {
-        "date": "2026-05-15",
+        "date": "2026-10-26",
         "changes": [
             {
-                "type": "fixed",
-                "title": "Fixed Settings",
+                "type": "added",
+                "title": "What's new",
                 "items": [
-                    "Settings open again"
+                    "12-hour times work in more ways, like 5pm, 5 PM or 5:30 pm",
+                    "More date formats: 2003-11-17, 1.2.2003, 17.11.03 and 17.11. for this year, which you can turn off",
+                    "Relative times can combine units, like \"in 1h 30m\" or \"2 days, 3 hours ago\"",
+                    "The new Timestamp Style setting shows converted times in Discord's long or relative style",
+                    "Put a backslash in front of a time or date to keep it as typed, like \\05:30"
+                ]
+            },
+            {
+                "type": "fixed",
+                "title": "More reliable dates",
+                "items": [
+                    "Changing the date order now takes effect immediately, instead of mixing up day and month until you restart the plugin",
+                    "Forum posts now get their times and dates converted too",
+                    "Relative times stay exact when the clocks change, and \"in 1 month\" on January 31 now lands on the last day of February",
+                    "Dates and times that don't exist, like 31.02.2003 or 25:00, are left as you typed them instead of rolling over into another date"
+                ]
+            },
+            {
+                "type": "improved",
+                "title": "Rebuilt from the ground up",
+                "items": [
+                    "Relative times work with spaces and full words too, like \"in 20 min\" or \"3 days ago\"",
+                    "Times and dates inside code, links and mentions are now left as you typed them",
+                    "The Date Format setting is now simply Date Order, day first or month first. Your current choice carries over",
+                    "Rewrote the plugin from the ground up, making it lighter and less likely to break when Discord updates"
                 ]
             }
         ]

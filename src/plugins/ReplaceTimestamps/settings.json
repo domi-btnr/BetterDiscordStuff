@@ -3,36 +3,48 @@
     "items": [
         {
             "type": "dropdown",
-            "name": "Date Format",
-            "note": "Select the date format for converting dates to timestamps",
-            "id": "dateFormat",
+            "name": "Date Order",
+            "note": "Whether the day or the month comes first in the dates you type. Dates starting with the year, like 2003-11-17, always work, and . / - all work as separators",
+            "id": "dateOrder",
             "options": [
                 {
-                    "label": "dd.MM.yyyy",
-                    "value": "dd.MM.yyyy"
+                    "label": "Day first (17.11.2003)",
+                    "value": "day"
                 },
                 {
-                    "label": "dd/MM/yyyy",
-                    "value": "dd/MM/yyyy"
-                },
-                {
-                    "label": "MM.dd.yyyy",
-                    "value": "MM.dd.yyyy"
-                },
-                {
-                    "label": "MM/dd/yyyy",
-                    "value": "MM/dd/yyyy"
-                },
-                {
-                    "label": "yyyy.MM.dd",
-                    "value": "yyyy.MM.dd"
-                },
-                {
-                    "label": "yyyy/MM/dd",
-                    "value": "yyyy/MM/dd"
+                    "label": "Month first (11/17/2003)",
+                    "value": "month"
                 }
             ],
-            "value": "dd.MM.yyyy"
+            "value": "day"
+        },
+        {
+            "type": "dropdown",
+            "name": "Timestamp Style",
+            "note": "How the converted times and dates are shown. Relative times like \"in 5 min\" always count from now",
+            "id": "timestampStyle",
+            "options": [
+                {
+                    "label": "Short (05:30, 17/11/2003)",
+                    "value": "short"
+                },
+                {
+                    "label": "Long (05:30:00, 17 November 2003)",
+                    "value": "long"
+                },
+                {
+                    "label": "Relative (in 2 hours)",
+                    "value": "relative"
+                }
+            ],
+            "value": "short"
+        },
+        {
+            "type": "switch",
+            "name": "Dates Without a Year",
+            "note": "Converts dates like 17.11. to this year. Turn it off if prices or versions like 12.05. get converted by mistake",
+            "id": "yearlessDates",
+            "value": true
         },
         {
             "type": "switch",
