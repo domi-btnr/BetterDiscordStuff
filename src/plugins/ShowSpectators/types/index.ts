@@ -1,5 +1,5 @@
 import type { User } from "@vencord/discord-types";
-import type { ComponentType, JSX, MouseEvent, ReactNode, Ref, RefObject } from "react";
+import type { ComponentType, MouseEvent, ReactNode, Ref, RefObject } from "react";
 
 export type AvatarComponent = ComponentType<{
     "src": string;
@@ -9,14 +9,6 @@ export type AvatarComponent = ComponentType<{
 }>;
 
 export type AvatarStyles = Record<"clickableAvatar" | "moreUsers", string>;
-
-export type ClickableComponent = ComponentType<{
-    tag?: keyof JSX.IntrinsicElements;
-    className?: string;
-    onClick?: (event: MouseEvent<HTMLElement>) => void;
-    children: ReactNode;
-    [key: string]: unknown;
-}>;
 
 export interface InteractionProps {
     onClick?: (event: MouseEvent<HTMLElement>) => void;
@@ -43,10 +35,6 @@ export type UserPopoutComponent = ComponentType<{
     align?: "top" | "bottom" | "left" | "right" | "center";
     children: (props: Record<string, unknown>) => ReactNode;
 }>;
-
-export interface UserProfileActions {
-    openUserProfileModal(options: { userId: string; guildId?: string | null }): void;
-}
 
 export type UserSummaryItemComponent = ComponentType<{
     className?: string;

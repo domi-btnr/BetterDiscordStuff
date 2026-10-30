@@ -3,6 +3,8 @@ import type { ModuleWithKey } from "@typings";
 import type {
     ApplicationStreamingStore as ApplicationStreamingStoreType,
     ChannelRTCStore as ChannelRTCStoreType,
+    Clickable as ClickableComponent,
+    OpenUserProfileModal,
     SelectedChannelStore as SelectedChannelStoreType,
     UserStore as UserStoreType,
     WindowStore as WindowStoreType
@@ -11,10 +13,8 @@ import type {
 import type {
     AvatarComponent,
     AvatarStyles as AvatarStylesType,
-    ClickableComponent,
     NameUtils as NameUtilsType,
     UserPopoutComponent,
-    UserProfileActions as UserProfileActionsType,
     UserSummaryItemComponent
 } from "../types";
 
@@ -28,7 +28,7 @@ interface ModuleTypes {
     NameUtils?: NameUtilsType;
     StreamIcon?: ModuleWithKey;
     UserPopout?: UserPopoutComponent;
-    UserProfileActions?: UserProfileActionsType;
+    UserProfileActions?: { openUserProfileModal: OpenUserProfileModal };
     UserSummaryItem: UserSummaryItemComponent;
 }
 

@@ -1,5 +1,4 @@
 import { Webpack } from "@api";
-
-import type { FluxType } from "../../types/discord";
+import type { Flux as FluxType } from "@vencord/discord-types";
 
 export const Flux: FluxType = Webpack.getByKeys("Store")!;
