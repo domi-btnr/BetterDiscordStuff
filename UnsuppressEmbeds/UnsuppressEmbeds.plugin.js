@@ -141,7 +141,7 @@ function showChangelog(manifest) {
     Data.save("lastVersion", manifest.version);
 }
 
-/* ../../common/ContextMenu/index.ts */
+/* ../../common/Utils/contextMenu.ts */
 function findContextMenuGroupByItemId(res, id) {
     if (!res) return null;
     let children = res.props?.children;

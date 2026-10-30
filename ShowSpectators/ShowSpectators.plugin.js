@@ -1,6 +1,6 @@
 /**
  * @name ShowSpectators
- * @version 1.2.0
+ * @version 1.2.1
  * @description Shows you who's spectating your stream under the screenshare panel
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -15,7 +15,7 @@
 const manifest = {
     $schema: "../../common/Schemas/manifest.schema.json",
     name: "ShowSpectators",
-    version: "1.2.0",
+    version: "1.2.1",
     description: "Shows you who's spectating your stream under the screenshare panel",
     author: "domi.btnr",
     authorId: "354191516979429376",
@@ -23,7 +23,7 @@ const manifest = {
     donate: "https://paypal.me/domibtnr",
     source: "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/ShowSpectators",
     changelog: {
-        date: "2026-10-22",
+        date: "2026-10-30",
         changes: [
             {
                 type: "added",
@@ -39,6 +39,13 @@ const manifest = {
                 items: [
                     "Rewrote the plugin from the ground up, making it lighter and less likely to break when Discord updates",
                     "Spectators now show their server avatars"
+                ]
+            },
+            {
+                type: "fixed",
+                title: "Fixed",
+                items: [
+                    "The spectators panel now shows up right away when you reload Discord or turn the plugin on while you're already in a call"
                 ]
             }
         ]
@@ -790,6 +797,54 @@ function SettingsPanel({ items, components: customComponents }) {
     });
 }
 
+/* ../../common/Utils/fiber.ts */
+const ReactReconciler = lazyExport(() =>
+    Webpack.getBySource(".errorRecoveryDisabledLanes|=", {
+        mapDeclarations: true,
+        map: {
+            enqueueConcurrentRenderForLane: fn =>
+                /^function \w+\(\w+,\w+\)\{return \w+\(\w+,null,null,\w+\),\w+\(\w+\)\}$/.test(String(fn)),
+            scheduleUpdateOnFiber: fn => String(fn).includes(".cancelPendingCommit)&&(")
+        }
+    })
+);
+
+const SYNC_LANE = 2;
+const FORCE_UPDATE = 131072;
+
+function forceUpdate(fiber) {
+    const { enqueueConcurrentRenderForLane, scheduleUpdateOnFiber } = ReactReconciler;
+    if (!enqueueConcurrentRenderForLane || !scheduleUpdateOnFiber) return;
+    fiber.flags |= FORCE_UPDATE;
+    if (fiber.alternate) fiber.alternate.flags |= FORCE_UPDATE;
+    const root = enqueueConcurrentRenderForLane(fiber, SYNC_LANE);
+    if (root) scheduleUpdateOnFiber(root, fiber, SYNC_LANE);
+}
+
+const getOriginal = component => component?.__originalFunction ?? component;
+
+function rerenderComponent(component, filter) {
+    if (Array.isArray(component)) component = component[0]?.[component[1]];
+    const original = getOriginal(component);
+    if (typeof original !== "function") return;
+    const container = document.getElementById("app-mount");
+    const key = container && Object.keys(container).find(key2 => key2.startsWith("__reactContainer$"));
+    const root = key ? container[key] : void 0;
+    const stack = [root?.stateNode?.current ?? root];
+    while (stack.length) {
+        const fiber = stack.pop();
+        if (!fiber) continue;
+        stack.push(fiber.sibling, fiber.child);
+        if (getOriginal(fiber.type) !== original || (filter && !filter(fiber))) continue;
+        for (const version of [fiber, fiber.alternate]) {
+            if (!version) continue;
+            if (version.elementType === version.type) version.elementType = component;
+            version.type = component;
+        }
+        forceUpdate(fiber);
+    }
+}
+
 /* modules/webpack.ts */
 const { Filters } = Webpack;
 
@@ -1239,16 +1294,25 @@ const SettingsItems = {
 };
 
 /* index.tsx */
+const isRtcPanel = value => !!value?.length && value.every(location => location === "rtc panel");
+
 class ShowSpectators {
+    unpatchPanel;
     start() {
         Styles.load();
         showChangelog(manifest);
         this.patchStreamIcon();
-        this.patchPanel();
+        this.unpatchPanel = this.patchPanel();
     }
     stop() {
+        this.unpatchPanel?.();
         Patcher.unpatchAll();
         Styles.unload();
+    }
+    /** The voice call panel doesn't re-render on its own, so when already in a call it needs a push to (un)patch. */
+    rerenderPanel() {
+        if (!AccountPanelSections || !SelectedChannelStore.getVoiceChannelId()) return;
+        rerenderComponent(AccountPanelSections, fiber => isRtcPanel(fiber.memoizedProps?.value));
     }
     patchStreamIcon() {
         if (!StreamIcon) return Logger.error("Failed to find StreamIcon module");
@@ -1258,20 +1322,32 @@ class ShowSpectators {
         });
     }
     patchPanel() {
-        if (!AccountPanelSections) return Logger.error("Failed to find AccountPanelSections module");
-        Patcher.after(...AccountPanelSections, (_, args, res) => {
+        if (!AccountPanelSections) {
+            Logger.error("Failed to find AccountPanelSections module");
+            return;
+        }
+        const unpatch = Patcher.after(...AccountPanelSections, (_, args, res) => {
             const [{ value }] = args;
-            if (!value?.length || !value.every(location => location === "rtc panel")) return;
-            const sections = res?.props?.children?.props?.children;
-            if (!Array.isArray(sections) || sections.some(section => section?.key === "ShowSpectators")) return;
-            sections.unshift(
+            if (!isRtcPanel(value)) return;
+            const container = res?.props?.children;
+            const sections = container?.props?.children;
+            if (!BdApi.React.isValidElement(container) || !Array.isArray(sections)) return;
+            res.props.children = BdApi.React.cloneElement(
+                container,
+                void 0,
                 BdApi.React.createElement(
                     ErrorBoundary,
                     { key: "ShowSpectators", id: "ShowSpectators.Panel" },
                     BdApi.React.createElement(SpectatorsPanel, null)
-                )
+                ),
+                ...sections
             );
         });
+        this.rerenderPanel();
+        return () => {
+            unpatch?.();
+            this.rerenderPanel();
+        };
     }
     getSettingsPanel() {
         return BdApi.React.createElement(SettingsPanel, { items: SettingsItems.items });

@@ -789,6 +789,54 @@ function SettingsPanel({ items, components: customComponents }) {
     });
 }
 
+/* ../../common/Utils/fiber.ts */
+const ReactReconciler = lazyExport(() =>
+    Webpack.getBySource(".errorRecoveryDisabledLanes|=", {
+        mapDeclarations: true,
+        map: {
+            enqueueConcurrentRenderForLane: fn =>
+                /^function \w+\(\w+,\w+\)\{return \w+\(\w+,null,null,\w+\),\w+\(\w+\)\}$/.test(String(fn)),
+            scheduleUpdateOnFiber: fn => String(fn).includes(".cancelPendingCommit)&&(")
+        }
+    })
+);
+
+const SYNC_LANE = 2;
+const FORCE_UPDATE = 131072;
+
+function forceUpdate(fiber) {
+    const { enqueueConcurrentRenderForLane, scheduleUpdateOnFiber } = ReactReconciler;
+    if (!enqueueConcurrentRenderForLane || !scheduleUpdateOnFiber) return;
+    fiber.flags |= FORCE_UPDATE;
+    if (fiber.alternate) fiber.alternate.flags |= FORCE_UPDATE;
+    const root = enqueueConcurrentRenderForLane(fiber, SYNC_LANE);
+    if (root) scheduleUpdateOnFiber(root, fiber, SYNC_LANE);
+}
+
+const getOriginal = component => component?.__originalFunction ?? component;
+
+function rerenderComponent(component, filter) {
+    if (Array.isArray(component)) component = component[0]?.[component[1]];
+    const original = getOriginal(component);
+    if (typeof original !== "function") return;
+    const container = document.getElementById("app-mount");
+    const key = container && Object.keys(container).find(key2 => key2.startsWith("__reactContainer$"));
+    const root = key ? container[key] : void 0;
+    const stack = [root?.stateNode?.current ?? root];
+    while (stack.length) {
+        const fiber = stack.pop();
+        if (!fiber) continue;
+        stack.push(fiber.sibling, fiber.child);
+        if (getOriginal(fiber.type) !== original || filter) continue;
+        for (const version of [fiber, fiber.alternate]) {
+            if (!version) continue;
+            if (version.elementType === version.type) version.elementType = component;
+            version.type = component;
+        }
+        forceUpdate(fiber);
+    }
+}
+
 /* locales/de.json */
 const you$1 = "Du";
 
@@ -890,10 +938,6 @@ const Modules = Webpack.getBulkKeyed({
         filter: Filters.byKeys("preload", "fetchChannel"),
         cacheId: "MessagePeek.ChannelActions"
     },
-    ChannelClasses: {
-        filter: Filters.byKeys("channel", "decorator"),
-        cacheId: "MessagePeek.ChannelClasses"
-    },
     DMRow: {
         filter: Filters.combine(
             Filters.byStrings("getRecipientId", "isMultiUserDM"),
@@ -906,7 +950,7 @@ const Modules = Webpack.getBulkKeyed({
     }
 });
 
-const { ChannelActions, ChannelClasses, DMRow } = Modules;
+const { ChannelActions, DMRow } = Modules;
 
 const getGuildChannelRow = signal =>
     Webpack.waitForModule(Filters.byStrings("connectDragPreview", "hasActiveThreads", "iconClassName"), {
@@ -1327,29 +1371,43 @@ const MAX_PRELOAD = 30;
 
 class MessagePeek {
     controller;
-    start() {
+    unpatchDMs;
+    unpatchGuildChannels;
+    async start() {
         if (Settings.get("preloadLimit", 10) > MAX_PRELOAD) Settings.set("preloadLimit", 10);
         Styles.load();
         showChangelog(manifest);
         this.controller = new AbortController();
         startTracking();
-        this.patchDMs(this.controller.signal);
-        this.patchGuildChannels(this.controller.signal);
+        this.unpatchDMs = this.patchDMs(this.controller.signal);
+        this.unpatchGuildChannels = await this.patchGuildChannels(this.controller.signal);
     }
     stop() {
         this.controller?.abort();
+        this.unpatchDMs?.();
+        this.unpatchGuildChannels?.();
         Patcher.unpatchAll();
         stopTracking();
-        this.rerenderDMList();
         Styles.unload();
     }
-    rerenderDMList() {
-        const DMList = ChannelClasses && document.querySelector(`h2 + .${ChannelClasses.channel}`);
-        if (DMList) ReactUtils.getOwnerInstance(DMList)?.forceUpdate();
+    /**
+     * Patches a row component and re-renders the rows that are already on screen.
+     * @returns Removes the patch again and re-renders the rows.
+     */
+    patchRows(row, callback) {
+        const unpatch = Patcher.after(...row, callback);
+        rerenderComponent(row);
+        return () => {
+            unpatch?.();
+            rerenderComponent(row);
+        };
     }
     patchDMs(signal) {
-        if (!DMRow) return Logger.error("Failed to find DMRow");
-        Patcher.after(...DMRow, (_, args, res) => {
+        if (!DMRow) {
+            Logger.error("Failed to find DMRow");
+            return;
+        }
+        const unpatch = this.patchRows(DMRow, (_, args, res) => {
             const [{ channel }] = args;
             patchRender(res, inner => {
                 if (signal.aborted) return;
@@ -1385,12 +1443,12 @@ class MessagePeek {
             });
         });
         preloadChannels("@me", ChannelStore.getSortedPrivateChannels(), signal);
-        this.rerenderDMList();
+        return unpatch;
     }
     async patchGuildChannels(signal) {
         const GuildChannelRow = await getGuildChannelRow(signal);
         if (!GuildChannelRow || signal.aborted) return;
-        Patcher.after(...GuildChannelRow, (_, args, res) => {
+        const unpatch = this.patchRows(GuildChannelRow, (_, args, res) => {
             const [{ channel }] = args;
             const name = findByClassName(res, "name__");
             if (name) {
@@ -1411,10 +1469,12 @@ class MessagePeek {
             }
         });
         const guildId = SelectedGuildStore.getGuildId();
-        if (!guildId) return;
-        const channels = GuildChannelStore.getSelectableChannels(guildId).map(({ channel }) => channel);
-        channels.sort((a, b) => (BigInt(b.lastMessageId ?? 0) > BigInt(a.lastMessageId ?? 0) ? 1 : -1));
-        preloadChannels(guildId, channels, signal);
+        if (guildId) {
+            const channels = GuildChannelStore.getSelectableChannels(guildId).map(({ channel }) => channel);
+            channels.sort((a, b) => (BigInt(b.lastMessageId ?? 0) > BigInt(a.lastMessageId ?? 0) ? 1 : -1));
+            preloadChannels(guildId, channels, signal);
+        }
+        return unpatch;
     }
     getSettingsPanel() {
         return BdApi.React.createElement(SettingsPanel, { items: SettingsItems.items });

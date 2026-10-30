@@ -305,6 +305,54 @@ function showChangelog(manifest) {
     Data.save("lastVersion", manifest.version);
 }
 
+/* ../../common/Utils/fiber.ts */
+const ReactReconciler = lazyExport(() =>
+    Webpack.getBySource(".errorRecoveryDisabledLanes|=", {
+        mapDeclarations: true,
+        map: {
+            enqueueConcurrentRenderForLane: fn =>
+                /^function \w+\(\w+,\w+\)\{return \w+\(\w+,null,null,\w+\),\w+\(\w+\)\}$/.test(String(fn)),
+            scheduleUpdateOnFiber: fn => String(fn).includes(".cancelPendingCommit)&&(")
+        }
+    })
+);
+
+const SYNC_LANE = 2;
+const FORCE_UPDATE = 131072;
+
+function forceUpdate(fiber) {
+    const { enqueueConcurrentRenderForLane, scheduleUpdateOnFiber } = ReactReconciler;
+    if (!enqueueConcurrentRenderForLane || !scheduleUpdateOnFiber) return;
+    fiber.flags |= FORCE_UPDATE;
+    if (fiber.alternate) fiber.alternate.flags |= FORCE_UPDATE;
+    const root = enqueueConcurrentRenderForLane(fiber, SYNC_LANE);
+    if (root) scheduleUpdateOnFiber(root, fiber, SYNC_LANE);
+}
+
+const getOriginal = component => component?.__originalFunction ?? component;
+
+function rerenderComponent(component, filter) {
+    if (Array.isArray(component)) component = component[0]?.[component[1]];
+    const original = getOriginal(component);
+    if (typeof original !== "function") return;
+    const container = document.getElementById("app-mount");
+    const key = container && Object.keys(container).find(key2 => key2.startsWith("__reactContainer$"));
+    const root = key ? container[key] : void 0;
+    const stack = [root?.stateNode?.current ?? root];
+    while (stack.length) {
+        const fiber = stack.pop();
+        if (!fiber) continue;
+        stack.push(fiber.sibling, fiber.child);
+        if (getOriginal(fiber.type) !== original || filter) continue;
+        for (const version of [fiber, fiber.alternate]) {
+            if (!version) continue;
+            if (version.elementType === version.type) version.elementType = component;
+            version.type = component;
+        }
+        forceUpdate(fiber);
+    }
+}
+
 /* @styles */
 const STYLE_ID = manifest.name + "-popout-styles";
 
@@ -1159,16 +1207,18 @@ function AddFriendPage({ page, ...props }) {
 
 class FriendCodes {
     unsubscribeLocale;
+    unpatchAddFriendPage;
     start() {
         Styles.load();
         showChangelog(manifest);
-        this.patchAddFriendPage();
+        this.unpatchAddFriendPage = this.patchAddFriendPage();
         this.registerCommands();
         this.unsubscribeLocale = onLocaleChange(() => this.registerCommands());
     }
     stop() {
         this.unsubscribeLocale?.();
         Commands.unregisterAll();
+        this.unpatchAddFriendPage?.();
         Patcher.unpatchAll();
         Styles.unload();
     }
@@ -1177,8 +1227,11 @@ class FriendCodes {
         getCommands().forEach(command => Commands.register(command));
     }
     patchAddFriendPage() {
-        if (!TabBar) return Logger.error("Failed to find TabBar module");
-        Patcher.after(TabBar, "Panel", (_, [{ id }], res) => {
+        if (!TabBar) {
+            Logger.error("Failed to find TabBar module");
+            return;
+        }
+        const unpatch = Patcher.after(TabBar, "Panel", (_, [{ id }], res) => {
             const page = res?.props?.children;
             if (id !== "ADD_FRIEND" || typeof page?.type !== "function" || page.type === AddFriendPage) return;
             res.props.children = BdApi.React.createElement(AddFriendPage, {
@@ -1187,6 +1240,11 @@ class FriendCodes {
                 ...page.props
             });
         });
+        rerenderComponent(TabBar.Panel);
+        return () => {
+            unpatch?.();
+            rerenderComponent(TabBar?.Panel);
+        };
     }
 }
 
