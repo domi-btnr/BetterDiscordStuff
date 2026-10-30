@@ -7,17 +7,12 @@ import type {
     UserStore as UserStoreType
 } from "@vencord/discord-types";
 
-import type {
-    ChannelActions as ChannelActionsType,
-    ChannelClasses as ChannelClassesType,
-    MessageStore as MessageStoreType
-} from "../types";
+import type { ChannelActions as ChannelActionsType, MessageStore as MessageStoreType } from "../types";
 
 const { Filters } = Webpack;
 
 interface ModuleTypes {
     ChannelActions?: ChannelActionsType;
-    ChannelClasses?: ChannelClassesType;
     DMRow?: ModuleWithKey;
 }
 
@@ -25,10 +20,6 @@ const Modules = Webpack.getBulkKeyed<ModuleTypes>({
     ChannelActions: {
         filter: Filters.byKeys("preload", "fetchChannel"),
         cacheId: "MessagePeek.ChannelActions"
-    },
-    ChannelClasses: {
-        filter: Filters.byKeys("channel", "decorator"),
-        cacheId: "MessagePeek.ChannelClasses"
     },
     DMRow: {
         filter: Filters.combine(
@@ -42,7 +33,7 @@ const Modules = Webpack.getBulkKeyed<ModuleTypes>({
     }
 });
 
-export const { ChannelActions, ChannelClasses, DMRow } = Modules;
+export const { ChannelActions, DMRow } = Modules;
 
 export const getGuildChannelRow = (signal: AbortSignal) =>
     Webpack.waitForModule<ModuleWithKey>(Filters.byStrings("connectDragPreview", "hasActiveThreads", "iconClassName"), {

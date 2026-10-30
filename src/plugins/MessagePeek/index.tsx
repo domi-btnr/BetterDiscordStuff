@@ -1,9 +1,11 @@
-import { Logger, Patcher, ReactUtils, Utils } from "@api";
+import { Logger, Patcher, Utils } from "@api";
 import showChangelog from "@common/Changelog";
 import type { SettingsItem } from "@common/Settings";
 import { Settings, SettingsPanel } from "@common/Settings";
+import { rerenderComponent } from "@common/Utils";
 import manifest from "@manifest";
 import Styles from "@styles";
+import type { ModuleWithKey } from "@typings";
 import type { Channel } from "@vencord/discord-types";
 
 import Preview from "./components/preview";
@@ -12,49 +14,57 @@ import Timestamp from "./components/timestamp";
 import { findByClassName, findInTree, isWrapped, patchRender } from "./modules/elements";
 import { preloadChannels } from "./modules/messages";
 import { startTracking, stopTracking } from "./modules/rowHeight";
-import {
-    ChannelClasses,
-    ChannelStore,
-    DMRow,
-    getGuildChannelRow,
-    GuildChannelStore,
-    SelectedGuildStore
-} from "./modules/webpack";
+import { ChannelStore, DMRow, getGuildChannelRow, GuildChannelStore, SelectedGuildStore } from "./modules/webpack";
 import SettingsItems from "./settings.json";
 
 const MAX_PRELOAD = 30;
 
 export default class MessagePeek {
     controller?: AbortController;
+    unpatchDMs?: () => void;
+    unpatchGuildChannels?: () => void;
 
-    start() {
+    async start() {
         if (Settings.get("preloadLimit", 10) > MAX_PRELOAD) Settings.set("preloadLimit", 10);
 
         Styles.load();
         showChangelog(manifest);
         this.controller = new AbortController();
         startTracking();
-        this.patchDMs(this.controller.signal);
-        this.patchGuildChannels(this.controller.signal);
+        this.unpatchDMs = this.patchDMs(this.controller.signal);
+        this.unpatchGuildChannels = await this.patchGuildChannels(this.controller.signal);
     }
 
     stop() {
         this.controller?.abort();
+        this.unpatchDMs?.();
+        this.unpatchGuildChannels?.();
         Patcher.unpatchAll();
         stopTracking();
-        this.rerenderDMList();
         Styles.unload();
     }
 
-    rerenderDMList() {
-        const DMList = ChannelClasses && document.querySelector<HTMLElement>(`h2 + .${ChannelClasses.channel}`);
-        if (DMList) ReactUtils.getOwnerInstance(DMList)?.forceUpdate();
+    /**
+     * Patches a row component and re-renders the rows that are already on screen.
+     * @returns Removes the patch again and re-renders the rows.
+     */
+    patchRows(row: ModuleWithKey, callback: Parameters<typeof Patcher.after>[2]) {
+        const unpatch = Patcher.after(...row, callback);
+        rerenderComponent(row);
+
+        return () => {
+            unpatch?.();
+            rerenderComponent(row);
+        };
     }
 
     patchDMs(signal: AbortSignal) {
-        if (!DMRow) return Logger.error("Failed to find DMRow");
+        if (!DMRow) {
+            Logger.error("Failed to find DMRow");
+            return;
+        }
 
-        Patcher.after(...DMRow, (_, args, res) => {
+        const unpatch = this.patchRows(DMRow, (_, args, res) => {
             const [{ channel }] = args as [{ channel: Channel }];
 
             patchRender(res, inner => {
@@ -94,14 +104,14 @@ export default class MessagePeek {
         });
 
         preloadChannels("@me", ChannelStore.getSortedPrivateChannels(), signal);
-        this.rerenderDMList();
+        return unpatch;
     }
 
     async patchGuildChannels(signal: AbortSignal) {
         const GuildChannelRow = await getGuildChannelRow(signal);
         if (!GuildChannelRow || signal.aborted) return;
 
-        Patcher.after(...GuildChannelRow, (_, args, res) => {
+        const unpatch = this.patchRows(GuildChannelRow, (_, args, res) => {
             const [{ channel }] = args as [{ channel: Channel }];
             const name = findByClassName(res, "name__");
             if (name) {
@@ -120,10 +130,12 @@ export default class MessagePeek {
         });
 
         const guildId = SelectedGuildStore.getGuildId();
-        if (!guildId) return;
-        const channels = GuildChannelStore.getSelectableChannels(guildId).map(({ channel }) => channel);
-        channels.sort((a, b) => (BigInt(b.lastMessageId ?? 0) > BigInt(a.lastMessageId ?? 0) ? 1 : -1));
-        preloadChannels(guildId, channels, signal);
+        if (guildId) {
+            const channels = GuildChannelStore.getSelectableChannels(guildId).map(({ channel }) => channel);
+            channels.sort((a, b) => (BigInt(b.lastMessageId ?? 0) > BigInt(a.lastMessageId ?? 0) ? 1 : -1));
+            preloadChannels(guildId, channels, signal);
+        }
+        return unpatch;
     }
 
     getSettingsPanel() {

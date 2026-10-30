@@ -2,6 +2,13 @@ allowBuilds:
     "@parcel/watcher": true
     esbuild: true
 
+minimumReleaseAgeExclude:
+    - "@vencord/discord-types@1.15.14"
+
+overrides:
+    "@types/react": "19.2.3"
+    "@types/react-dom": "19.2.3"
+
 peerDependencyRules:
     allowedVersions:
-        "@vencord/discord-types>@types/react": "19"
+        "eslint-plugin-react>eslint": "10"

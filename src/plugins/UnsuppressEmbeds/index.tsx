@@ -1,6 +1,6 @@
 import { ContextMenu, Webpack } from "@api";
 import showChangelog from "@common/Changelog";
-import { findContextMenuGroupByItemId } from "@common/ContextMenu";
+import { findContextMenuGroupByItemId } from "@common/Utils";
 import { RestAPI } from "@common/Webpack";
 import manifest from "@manifest";
 import { Channel, Constants, Message, PermissionsBits, PermissionStore, UserStore } from "@vencord/discord-types";

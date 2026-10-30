@@ -1,7 +1,6 @@
 import { Webpack } from "@api";
+import type { FluxDispatcher } from "@vencord/discord-types";
 
-import type { DispatcherType } from "../../types/discord";
-
-export const Dispatcher: DispatcherType = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers", {
+export const Dispatcher: FluxDispatcher = Webpack.getByKeys("dispatch", "subscribe", "_actionHandlers", {
     searchExports: true
 })!;
