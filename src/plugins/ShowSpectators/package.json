@@ -1,7 +1,7 @@
 {
     "$schema": "../../common/Schemas/manifest.schema.json",
     "name": "ShowSpectators",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Shows you who's spectating your stream under the screenshare panel",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -9,7 +9,7 @@
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/ShowSpectators",
     "changelog": {
-        "date": "2026-10-22",
+        "date": "2026-10-30",
         "changes": [
             {
                 "type": "added",
@@ -25,6 +25,13 @@
                 "items": [
                     "Rewrote the plugin from the ground up, making it lighter and less likely to break when Discord updates",
                     "Spectators now show their server avatars"
+                ]
+            },
+            {
+                "type": "fixed",
+                "title": "Fixed",
+                "items": [
+                    "The spectators panel now shows up right away when you reload Discord or turn the plugin on while you're already in a call"
                 ]
             }
         ]

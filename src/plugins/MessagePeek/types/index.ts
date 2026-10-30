@@ -6,8 +6,6 @@ export interface ChannelActions {
     preload(guildId: string, channelId: string): void;
 }
 
-export type ChannelClasses = Record<"channel" | "decorator", string>;
-
 export type Location = "dm" | "guild";
 
 export type MessageStore = Omit<MessageStoreType, "getMessages"> & {

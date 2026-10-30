@@ -1,6 +1,7 @@
 import { Commands, Logger, Patcher } from "@api";
 import showChangelog from "@common/Changelog";
 import { onLocaleChange } from "@common/i18n";
+import { rerenderComponent } from "@common/Utils";
 import manifest from "@manifest";
 import Styles from "@styles";
 
@@ -24,11 +25,12 @@ function AddFriendPage({ page, ...props }: AddFriendPageProps) {
 
 export default class FriendCodes {
     unsubscribeLocale?: () => void;
+    unpatchAddFriendPage?: () => void;
 
     start() {
         Styles.load();
         showChangelog(manifest);
-        this.patchAddFriendPage();
+        this.unpatchAddFriendPage = this.patchAddFriendPage();
         this.registerCommands();
         this.unsubscribeLocale = onLocaleChange(() => this.registerCommands());
     }
@@ -36,6 +38,7 @@ export default class FriendCodes {
     stop() {
         this.unsubscribeLocale?.();
         Commands.unregisterAll();
+        this.unpatchAddFriendPage?.();
         Patcher.unpatchAll();
         Styles.unload();
     }
@@ -46,12 +49,21 @@ export default class FriendCodes {
     }
 
     patchAddFriendPage() {
-        if (!TabBar) return Logger.error("Failed to find TabBar module");
+        if (!TabBar) {
+            Logger.error("Failed to find TabBar module");
+            return;
+        }
 
-        Patcher.after(TabBar, "Panel", (_, [{ id }], res) => {
+        const unpatch = Patcher.after(TabBar, "Panel", (_, [{ id }], res) => {
             const page = res?.props?.children;
             if (id !== "ADD_FRIEND" || typeof page?.type !== "function" || page.type === AddFriendPage) return;
             res.props.children = <AddFriendPage key={page.key} page={page.type} {...page.props} />;
         });
+        rerenderComponent(TabBar.Panel);
+
+        return () => {
+            unpatch?.();
+            rerenderComponent(TabBar?.Panel);
+        };
     }
 }
