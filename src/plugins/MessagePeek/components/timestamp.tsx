@@ -92,7 +92,7 @@ function LastMessageTimestamp({ channelId, location }: TimestampProps) {
 
 export default function Timestamp(props: TimestampProps) {
     return (
-        <ErrorBoundary id="MessagePeek.Timestamp" mini>
+        <ErrorBoundary id="MessagePeek.Timestamp" size="mini">
             <LastMessageTimestamp {...props} />
         </ErrorBoundary>
     );

@@ -13,6 +13,7 @@
         flex: 1 0 auto;
         flex-direction: column;
         gap: 8px;
+        min-width: 140px;
     }
 
     .error-boundary-content {
@@ -67,7 +68,21 @@
 
 .error-boundary-mini {
     display: inline-flex;
-    margin-left: 4px;
     color: var(--status-danger, #f23f43);
     vertical-align: text-bottom;
+}
+
+.error-boundary-small {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-default, #dbdee1);
+    font-size: 14px;
+    line-height: 18px;
+    vertical-align: top;
+
+    svg {
+        flex-shrink: 0;
+        color: var(--status-danger, #f23f43);
+    }
 }

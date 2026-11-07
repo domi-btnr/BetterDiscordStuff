@@ -1,4 +1,5 @@
 import { Components, Hooks } from "@api";
+import ErrorBoundary from "@common/ErrorBoundary";
 import { getLocalizedString } from "@common/i18n";
 import { Settings } from "@common/Settings";
 
@@ -55,11 +56,9 @@ function SpectatorAvatars({ spectators, openFullProfile }: SpectatorAvatarsProps
     );
 }
 
-function Panel() {
+function Panel({ spectators }: { spectators: Spectators }) {
     const openFullProfile = Hooks.useStateFromStores([Settings] as any, () => Settings.get("openFullProfile", false));
     const compact = Hooks.useStateFromStores([Settings] as any, () => Settings.get("compactMode", false));
-    const spectators = useSpectators();
-    if (!spectators) return null;
 
     const { streamer, total } = spectators;
     return (
@@ -89,5 +88,12 @@ function Panel() {
 
 export function SpectatorsPanel() {
     const showPanel = Hooks.useStateFromStores([Settings] as any, () => Settings.get("showPanel", true));
-    return showPanel ? <Panel /> : null;
+    const spectators = useSpectators();
+    if (!showPanel || !spectators) return null;
+
+    return (
+        <ErrorBoundary id="ShowSpectators.Panel" showStackTrace={false} showButtons="copy-error">
+            <Panel spectators={spectators} />
+        </ErrorBoundary>
+    );
 }

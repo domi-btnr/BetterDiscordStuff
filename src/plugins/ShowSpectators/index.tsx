@@ -1,6 +1,5 @@
 import { Logger, Patcher } from "@api";
 import showChangelog from "@common/Changelog";
-import ErrorBoundary from "@common/ErrorBoundary";
 import type { SettingsItem } from "@common/Settings";
 import { SettingsPanel } from "@common/Settings";
 import { rerenderComponent } from "@common/Utils";
@@ -63,9 +62,7 @@ export default class ShowSpectators {
             res.props.children = cloneElement(
                 container,
                 undefined,
-                <ErrorBoundary key="ShowSpectators" id="ShowSpectators.Panel">
-                    <SpectatorsPanel />
-                </ErrorBoundary>,
+                <SpectatorsPanel key="ShowSpectators" />,
                 ...sections
             );
         });

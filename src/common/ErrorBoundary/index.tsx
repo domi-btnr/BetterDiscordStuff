@@ -1,6 +1,6 @@
 import { Components } from "@api";
 import manifest from "@manifest";
-import { type ReactNode, type SVGProps, useEffect, useState } from "react";
+import { type CSSProperties, type ReactNode, type SVGProps, useEffect, useState } from "react";
 
 import { createI18n } from "../i18n";
 import de from "./locales/de.json";
@@ -50,13 +50,27 @@ function copyToClipboard(text: string) {
 interface ErrorBoundaryProps {
     /** Shown in the log and the error details, e.g. `"FriendCodes.Panel"`. */
     id: string;
-    /** Renders only a small error icon, for tight spots like tooltips. */
-    mini?: boolean;
+    /**
+     * How big the error should be. Defaults to `"full"`.
+     * - `"full"`: the error card with the details and buttons.
+     * - `"small"`: an icon with a short text, e.g. in tooltips.
+     * - `"mini"`: only an icon, e.g. next to text.
+     */
+    size?: "full" | "small" | "mini";
+    /** Shows the first stack frames below the error message. Defaults to `true`. */
+    showStackTrace?: boolean;
+    /**
+     * Which buttons the error card shows. Defaults to `true`.
+     * - `true`: all buttons.
+     * - `false`: no buttons.
+     * - A button's id: only that button.
+     */
+    showButtons?: boolean | "copy-error" | "try-again";
+    style?: CSSProperties;
     children: ReactNode;
 }
 
-interface FallbackProps {
-    id: string;
+interface FallbackProps extends Pick<ErrorBoundaryProps, "id" | "showStackTrace" | "showButtons" | "style"> {
     error: Error | null;
     onRetry(): void;
 }
@@ -111,22 +125,35 @@ function CopyErrorButton({ id, error }: { id: string; error: Error }) {
     );
 }
 
-function MiniFallback() {
+function MiniFallback({ style }: Pick<ErrorBoundaryProps, "style">) {
     const { t } = useTranslation();
     const label = t("mini", { plugin: manifest.name });
 
     return (
-        <span className={styles.errorBoundaryMini} role="img" aria-label={label} title={label}>
+        <span className={styles.errorBoundaryMini} style={style} role="img" aria-label={label} title={label}>
             <ErrorIcon width="16" height="16" />
         </span>
     );
 }
 
-function Fallback({ id, error, onRetry }: FallbackProps) {
+function SmallFallback({ style }: Pick<ErrorBoundaryProps, "style">) {
     const { t } = useTranslation();
 
     return (
-        <div className={styles.errorBoundary} role="alert">
+        <span className={styles.errorBoundarySmall} style={style} role="alert">
+            <ErrorIcon width="1.15em" height="1.15em" />
+            {t("mini", { plugin: manifest.name })}
+        </span>
+    );
+}
+
+function Fallback({ id, error, onRetry, showStackTrace, showButtons, style }: FallbackProps) {
+    const { t } = useTranslation();
+    const showCopy = !!error && (showButtons === true || showButtons === "copy-error");
+    const showRetry = showButtons === true || showButtons === "try-again";
+
+    return (
+        <div className={styles.errorBoundary} style={style} role="alert">
             <div className={styles.errorBoundaryContent}>
                 <Text size={Text.Sizes.SIZE_16} color={Text.Colors.HEADER_PRIMARY} strong>
                     {t("title")}
@@ -138,23 +165,34 @@ function Fallback({ id, error, onRetry }: FallbackProps) {
                         components={{ keybind: <Keybind keys={CONSOLE_KEYS} /> }}
                     />
                 </Text>
-                {error && (
+                {showStackTrace && error && (
                     <code className={styles.errorBoundaryDetails}>
                         [{id}] {getShortStack(error)}
                     </code>
                 )}
             </div>
-            <div className={styles.errorBoundaryActions}>
-                {error && <CopyErrorButton id={id} error={error} />}
-                <Button size={Button.Sizes.SMALL} onClick={onRetry}>
-                    {t("retry")}
-                </Button>
-            </div>
+            {(showCopy || showRetry) && (
+                <div className={styles.errorBoundaryActions}>
+                    {showCopy && <CopyErrorButton id={id} error={error} />}
+                    {showRetry && (
+                        <Button size={Button.Sizes.SMALL} onClick={onRetry}>
+                            {t("retry")}
+                        </Button>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
 
-export default function ErrorBoundary({ id, mini, children }: ErrorBoundaryProps) {
+export default function ErrorBoundary({
+    id,
+    size = "full",
+    showStackTrace = true,
+    showButtons = true,
+    style,
+    children
+}: ErrorBoundaryProps) {
     const [error, setError] = useState<Error | null>(null);
     const [attempt, setAttempt] = useState(0);
 
@@ -168,7 +206,22 @@ export default function ErrorBoundary({ id, mini, children }: ErrorBoundaryProps
             key={attempt}
             id={id}
             name={manifest.name}
-            fallback={mini ? <MiniFallback /> : <Fallback id={id} error={error} onRetry={retry} />}
+            fallback={
+                size === "mini" ? (
+                    <MiniFallback style={style} />
+                ) : size === "small" ? (
+                    <SmallFallback style={style} />
+                ) : (
+                    <Fallback
+                        id={id}
+                        error={error}
+                        onRetry={retry}
+                        showStackTrace={showStackTrace}
+                        showButtons={showButtons}
+                        style={style}
+                    />
+                )
+            }
             onError={setError}
         >
             {children}

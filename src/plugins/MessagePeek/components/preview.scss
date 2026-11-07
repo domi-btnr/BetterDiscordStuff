@@ -1,4 +1,4 @@
-.message-peek-dm:has(.message-peek-preview) {
+.message-peek-dm:has(.message-peek-preview, .error-boundary-small) {
     height: 50px;
 
     .density-compact & {

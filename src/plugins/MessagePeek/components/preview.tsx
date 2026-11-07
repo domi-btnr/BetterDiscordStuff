@@ -74,7 +74,7 @@ function PreviewText({ channelId, location }: PreviewProps) {
 
 export default function Preview(props: PreviewProps) {
     return (
-        <ErrorBoundary id="MessagePeek.Preview" mini>
+        <ErrorBoundary id="MessagePeek.Preview" size="small" style={{ fontSize: 12, lineHeight: "16px" }}>
             <PreviewText {...props} />
         </ErrorBoundary>
     );

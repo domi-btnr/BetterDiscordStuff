@@ -66,7 +66,7 @@ export function StreamIconTooltip({ children }: { children: ReactElement<any> })
     return (
         <Tooltip
             text={
-                <ErrorBoundary id="ShowSpectators.Tooltip" mini>
+                <ErrorBoundary id="ShowSpectators.Tooltip" size="small">
                     <StreamTooltip />
                 </ErrorBoundary>
             }
