@@ -1,7 +1,7 @@
 /**
  * @runAt idle
  * @name LateAttachments
- * @version 1.0.0
+ * @version 1.0.1
  * @description Allows you to add attachments to messages when editing them
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -17,7 +17,7 @@ const manifest = {
     $schema: "../../common/Schemas/manifest.schema.json",
     runAt: "idle",
     name: "LateAttachments",
-    version: "1.0.0",
+    version: "1.0.1",
     description: "Allows you to add attachments to messages when editing them",
     author: "domi.btnr",
     authorId: "354191516979429376",
@@ -25,7 +25,7 @@ const manifest = {
     donate: "https://paypal.me/domibtnr",
     source: "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/LateAttachments",
     changelog: {
-        date: "2026-09-22",
+        date: "2026-11-07",
         changes: [
             {
                 type: "added",
@@ -36,6 +36,11 @@ const manifest = {
                     "Mark attachments as spoilers before saving",
                     "Live upload progress while saving"
                 ]
+            },
+            {
+                type: "fixed",
+                title: "Fixed",
+                items: ["Fixed for the latest Discord update"]
             }
         ]
     }
@@ -395,7 +400,7 @@ Styles.sheets.push(
     `[class^=messageListItem] ul[class^=channelAttachmentArea_] {
   gap: 12px;
 }
-[class^=messageListItem] [class*=attachmentItemSmall__] {
+[class^=messageListItem] [class*=attachmentItemSmall_] {
   max-height: 200px;
   max-width: 200px;
   padding: 8px;

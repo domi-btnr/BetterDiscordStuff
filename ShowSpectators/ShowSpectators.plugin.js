@@ -1,6 +1,6 @@
 /**
  * @name ShowSpectators
- * @version 1.2.1
+ * @version 1.2.2
  * @description Shows you who's spectating your stream under the screenshare panel
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -15,7 +15,7 @@
 const manifest = {
     $schema: "../../common/Schemas/manifest.schema.json",
     name: "ShowSpectators",
-    version: "1.2.1",
+    version: "1.2.2",
     description: "Shows you who's spectating your stream under the screenshare panel",
     author: "domi.btnr",
     authorId: "354191516979429376",
@@ -23,7 +23,7 @@ const manifest = {
     donate: "https://paypal.me/domibtnr",
     source: "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/ShowSpectators",
     changelog: {
-        date: "2026-10-30",
+        date: "2026-11-07",
         changes: [
             {
                 type: "added",
@@ -45,7 +45,8 @@ const manifest = {
                 type: "fixed",
                 title: "Fixed",
                 items: [
-                    "The spectators panel now shows up right away when you reload Discord or turn the plugin on while you're already in a call"
+                    "The spectators panel now shows up right away when you reload Discord or turn the plugin on while you're already in a call",
+                    "Fixed for the latest Discord update"
                 ]
             }
         ]
@@ -410,6 +411,7 @@ Styles.sheets.push(
   flex: 1 0 auto;
   flex-direction: column;
   gap: 8px;
+  min-width: 140px;
 }
 .error-boundary .error-boundary-content {
   display: flex;
@@ -458,9 +460,22 @@ Styles.sheets.push(
 
 .error-boundary-mini {
   display: inline-flex;
-  margin-left: 4px;
   color: var(--status-danger, #f23f43);
   vertical-align: text-bottom;
+}
+
+.error-boundary-small {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-default, #dbdee1);
+  font-size: 14px;
+  line-height: 18px;
+  vertical-align: top;
+}
+.error-boundary-small svg {
+  flex-shrink: 0;
+  color: var(--status-danger, #f23f43);
 }`
 );
 const styles$3 = {
@@ -470,7 +485,8 @@ const styles$3 = {
     errorBoundaryKeybind: "error-boundary-keybind",
     errorBoundarySymbol: "error-boundary-symbol",
     errorBoundaryDetails: "error-boundary-details",
-    errorBoundaryMini: "error-boundary-mini"
+    errorBoundaryMini: "error-boundary-mini",
+    errorBoundarySmall: "error-boundary-small"
 };
 
 /* ../../common/ErrorBoundary/index.tsx */
@@ -559,21 +575,33 @@ ${error.stack ?? getShortStack(error)}`);
     );
 }
 
-function MiniFallback() {
+function MiniFallback({ style }) {
     const { t } = useTranslation();
     const label = t("mini", { plugin: manifest.name });
     return BdApi.React.createElement(
         "span",
-        { "className": styles$3.errorBoundaryMini, "role": "img", "aria-label": label, "title": label },
+        { "className": styles$3.errorBoundaryMini, style, "role": "img", "aria-label": label, "title": label },
         BdApi.React.createElement(ErrorIcon, { width: "16", height: "16" })
     );
 }
 
-function Fallback({ id, error, onRetry }) {
+function SmallFallback({ style }) {
     const { t } = useTranslation();
     return BdApi.React.createElement(
+        "span",
+        { className: styles$3.errorBoundarySmall, style, role: "alert" },
+        BdApi.React.createElement(ErrorIcon, { width: "1.15em", height: "1.15em" }),
+        t("mini", { plugin: manifest.name })
+    );
+}
+
+function Fallback({ id, error, onRetry, showStackTrace, showButtons, style }) {
+    const { t } = useTranslation();
+    const showCopy = !!error && (showButtons === true || showButtons === "copy-error");
+    const showRetry = showButtons === true || showButtons === "try-again";
+    return BdApi.React.createElement(
         "div",
-        { className: styles$3.errorBoundary, role: "alert" },
+        { className: styles$3.errorBoundary, style, role: "alert" },
         BdApi.React.createElement(
             "div",
             { className: styles$3.errorBoundaryContent },
@@ -591,7 +619,8 @@ function Fallback({ id, error, onRetry }) {
                     components: { keybind: BdApi.React.createElement(Keybind, { keys: CONSOLE_KEYS }) }
                 })
             ),
-            error
+            showStackTrace
+                && error
                 && BdApi.React.createElement(
                     "code",
                     { className: styles$3.errorBoundaryDetails },
@@ -601,16 +630,18 @@ function Fallback({ id, error, onRetry }) {
                     getShortStack(error)
                 )
         ),
-        BdApi.React.createElement(
-            "div",
-            { className: styles$3.errorBoundaryActions },
-            error && BdApi.React.createElement(CopyErrorButton, { id, error }),
-            BdApi.React.createElement(Button, { size: Button.Sizes.SMALL, onClick: onRetry }, t("retry"))
-        )
+        (showCopy || showRetry)
+            && BdApi.React.createElement(
+                "div",
+                { className: styles$3.errorBoundaryActions },
+                showCopy && BdApi.React.createElement(CopyErrorButton, { id, error }),
+                showRetry
+                    && BdApi.React.createElement(Button, { size: Button.Sizes.SMALL, onClick: onRetry }, t("retry"))
+            )
     );
 }
 
-function ErrorBoundary({ id, mini, children }) {
+function ErrorBoundary({ id, size = "full", showStackTrace = true, showButtons = true, style, children }) {
     const [error, setError] = BdApi.React.useState(null);
     const [attempt, setAttempt] = BdApi.React.useState(0);
     const retry = () => {
@@ -623,9 +654,19 @@ function ErrorBoundary({ id, mini, children }) {
             key: attempt,
             id,
             name: manifest.name,
-            fallback: mini
-                ? BdApi.React.createElement(MiniFallback, null)
-                : BdApi.React.createElement(Fallback, { id, error, onRetry: retry }),
+            fallback:
+                size === "mini"
+                    ? BdApi.React.createElement(MiniFallback, { style })
+                    : size === "small"
+                      ? BdApi.React.createElement(SmallFallback, { style })
+                      : BdApi.React.createElement(Fallback, {
+                            id,
+                            error,
+                            onRetry: retry,
+                            showStackTrace,
+                            showButtons,
+                            style
+                        }),
             onError: setError
         },
         children
@@ -902,7 +943,6 @@ const Modules = Webpack.getBulkKeyed({
 const {
     AccountPanelSections,
     Avatar,
-    AvatarStyles,
     Clickable,
     NameUtils,
     StreamIcon,
@@ -910,6 +950,17 @@ const {
     UserProfileActions,
     UserSummaryItem
 } = Modules;
+
+const byClassName = name => value => typeof value === "string" && value.startsWith(`${name}_`);
+const hasClassName = name => module =>
+    !!module && typeof module === "object" && Object.values(module).some(byClassName(name));
+
+const AvatarStyles =
+    Modules.AvatarStyles
+    ?? Webpack.getModule(Filters.combine(hasClassName("clickableAvatar"), hasClassName("moreUsers")), {
+        map: { clickableAvatar: byClassName("clickableAvatar"), moreUsers: byClassName("moreUsers") },
+        cacheId: "ShowSpectators.AvatarStylesFallback"
+    });
 
 const ApplicationStreamingStore = Webpack.getStore("ApplicationStreamingStore");
 
@@ -1123,7 +1174,7 @@ function StreamIconTooltip({ children }) {
         {
             text: BdApi.React.createElement(
                 ErrorBoundary,
-                { id: "ShowSpectators.Tooltip", mini: true },
+                { id: "ShowSpectators.Tooltip", size: "small" },
                 BdApi.React.createElement(StreamTooltip, null)
             )
         },
@@ -1219,11 +1270,9 @@ function SpectatorAvatars({ spectators, openFullProfile }) {
     });
 }
 
-function Panel() {
+function Panel({ spectators }) {
     const openFullProfile = Hooks.useStateFromStores([Settings], () => Settings.get("openFullProfile", false));
     const compact = Hooks.useStateFromStores([Settings], () => Settings.get("compactMode", false));
-    const spectators = useSpectators();
-    if (!spectators) return null;
     const { streamer, total } = spectators;
     return BdApi.React.createElement(
         "div",
@@ -1254,7 +1303,13 @@ function Panel() {
 
 function SpectatorsPanel() {
     const showPanel = Hooks.useStateFromStores([Settings], () => Settings.get("showPanel", true));
-    return showPanel ? BdApi.React.createElement(Panel, null) : null;
+    const spectators = useSpectators();
+    if (!showPanel || !spectators) return null;
+    return BdApi.React.createElement(
+        ErrorBoundary,
+        { id: "ShowSpectators.Panel", showStackTrace: false, showButtons: "copy-error" },
+        BdApi.React.createElement(Panel, { spectators })
+    );
 }
 
 /* settings.json */
@@ -1335,11 +1390,7 @@ class ShowSpectators {
             res.props.children = BdApi.React.cloneElement(
                 container,
                 void 0,
-                BdApi.React.createElement(
-                    ErrorBoundary,
-                    { key: "ShowSpectators", id: "ShowSpectators.Panel" },
-                    BdApi.React.createElement(SpectatorsPanel, null)
-                ),
+                BdApi.React.createElement(SpectatorsPanel, { key: "ShowSpectators" }),
                 ...sections
             );
         });
