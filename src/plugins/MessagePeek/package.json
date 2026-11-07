@@ -1,7 +1,7 @@
 {
     "$schema": "../../common/Schemas/manifest.schema.json",
     "name": "MessagePeek",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "description": "See the last message in a Channel like on mobile",
     "author": "domi.btnr",
     "authorId": "354191516979429376",
@@ -9,7 +9,7 @@
     "donate": "https://paypal.me/domibtnr",
     "source": "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/MessagePeek",
     "changelog": {
-        "date": "2026-10-25",
+        "date": "2026-11-07",
         "changes": [
             {
                 "type": "added",
@@ -26,6 +26,13 @@
                     "Rewrote the plugin from the ground up, making it lighter and less likely to break when Discord updates",
                     "Previews support more message types like GIFs, polls and voice messages",
                     "Changing a setting now applies right away"
+                ]
+            },
+            {
+                "type": "fixed",
+                "title": "Fixed",
+                "items": [
+                    "Fixed for the latest Discord update"
                 ]
             }
         ]

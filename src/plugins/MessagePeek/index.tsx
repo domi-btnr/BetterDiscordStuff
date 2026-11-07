@@ -113,7 +113,7 @@ export default class MessagePeek {
 
         const unpatch = this.patchRows(GuildChannelRow, (_, args, res) => {
             const [{ channel }] = args as [{ channel: Channel }];
-            const name = findByClassName(res, "name__");
+            const name = findByClassName(res, "name_");
             if (name) {
                 name.props.children = (
                     <>

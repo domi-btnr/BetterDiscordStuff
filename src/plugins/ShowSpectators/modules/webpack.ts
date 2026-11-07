@@ -86,7 +86,6 @@ const Modules = Webpack.getBulkKeyed<ModuleTypes>({
 export const {
     AccountPanelSections,
     Avatar,
-    AvatarStyles,
     Clickable,
     NameUtils,
     StreamIcon,
@@ -94,6 +93,20 @@ export const {
     UserProfileActions,
     UserSummaryItem
 } = Modules;
+
+/**
+ * Matches the class name of `name`, e.g. `"moreUsers_m-EqeQ"` for `"moreUsers"`
+ */
+const byClassName = (name: string) => (value: unknown) => typeof value === "string" && value.startsWith(`${name}_`);
+const hasClassName = (name: string) => (module: unknown) =>
+    !!module && typeof module === "object" && Object.values(module).some(byClassName(name));
+
+export const AvatarStyles: AvatarStylesType =
+    Modules.AvatarStyles
+    ?? Webpack.getModule(Filters.combine(hasClassName("clickableAvatar"), hasClassName("moreUsers")), {
+        map: { clickableAvatar: byClassName("clickableAvatar"), moreUsers: byClassName("moreUsers") },
+        cacheId: "ShowSpectators.AvatarStylesFallback"
+    });
 
 export const ApplicationStreamingStore = Webpack.getStore(
     "ApplicationStreamingStore"
