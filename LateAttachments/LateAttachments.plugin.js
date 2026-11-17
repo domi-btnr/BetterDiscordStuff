@@ -1,7 +1,7 @@
 /**
  * @runAt idle
  * @name LateAttachments
- * @version 1.0.1
+ * @version 1.0.2
  * @description Allows you to add attachments to messages when editing them
  * @author domi.btnr
  * @authorId 354191516979429376
@@ -17,7 +17,7 @@ const manifest = {
     $schema: "../../common/Schemas/manifest.schema.json",
     runAt: "idle",
     name: "LateAttachments",
-    version: "1.0.1",
+    version: "1.0.2",
     description: "Allows you to add attachments to messages when editing them",
     author: "domi.btnr",
     authorId: "354191516979429376",
@@ -25,7 +25,7 @@ const manifest = {
     donate: "https://paypal.me/domibtnr",
     source: "https://github.com/domi-btnr/BetterDiscordStuff/tree/development/src/plugins/LateAttachments",
     changelog: {
-        date: "2026-11-07",
+        date: "2026-11-17",
         changes: [
             {
                 type: "added",
@@ -40,7 +40,7 @@ const manifest = {
             {
                 type: "fixed",
                 title: "Fixed",
-                items: ["Fixed for the latest Discord update"]
+                items: ["Fixed for the latest Discord update", "Fixed the plugin failing to start for some users"]
             }
         ]
     }
@@ -362,9 +362,25 @@ async function submitEditWithAttachments(channelId, messageId, payload, uploads)
     });
 }
 
-/* components/AddAttachmentButton.tsx */
-const PlusLargeIcon = Webpack.getByKeys("PlusLargeIcon").PlusLargeIcon;
+/* components/icons.tsx */
+const PlusLargeIcon = props =>
+    BdApi.React.createElement(
+        "svg",
+        {
+            xmlns: "http://www.w3.org/2000/svg",
+            width: "24",
+            height: "24",
+            fill: "none",
+            viewBox: "0 0 24 24",
+            ...props
+        },
+        BdApi.React.createElement("path", {
+            fill: "currentColor",
+            d: "M13 3a1 1 0 1 0-2 0v8H3a1 1 0 1 0 0 2h8v8a1 1 0 0 0 2 0v-8h8a1 1 0 0 0 0-2h-8V3Z"
+        })
+    );
 
+/* components/AddAttachmentButton.tsx */
 const styles = {
     ...Webpack.getByKeys("attachButtonInner"),
     ...Webpack.getByKeys("buttonWrapper", "notificationDot")
