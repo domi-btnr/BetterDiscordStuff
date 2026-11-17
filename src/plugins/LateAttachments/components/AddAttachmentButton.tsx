@@ -1,11 +1,10 @@
 import { Components, Webpack } from "@api";
 import { getLocalizedString } from "@common/i18n";
-import React from "react";
 
 import { activateUploadDialogue } from "../modules/attachments";
 import { Strings } from "../modules/shared";
+import { PlusLargeIcon } from "./icons";
 
-const PlusLargeIcon = (Webpack.getByKeys("PlusLargeIcon") as { PlusLargeIcon: React.ComponentType }).PlusLargeIcon;
 const styles = {
     ...(Webpack.getByKeys("attachButtonInner") as Record<string, string>),
     ...(Webpack.getByKeys("buttonWrapper", "notificationDot") as Record<string, string>)
